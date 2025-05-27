@@ -27,7 +27,7 @@
         <div class="info-box">
           <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Employees</span>
+            <span class="info-box-text">Nhân viên</span>
             <span class="info-box-number">7</span>
           </div>
         </div>
@@ -38,8 +38,8 @@
         <div class="info-box">
           <span class="info-box-icon bg-success"><i class="fas fa-database"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Payroll Proc</span>
-            <span class="info-box-number">0</span>
+            <span class="info-box-text">Thanh toán lương</span>
+            <span class="info-box-number">0/7</span>
           </div>
         </div>
       </div>
@@ -49,8 +49,8 @@
         <div class="info-box">
           <span class="info-box-icon bg-warning"><i class="fas fa-laptop"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Applicants</span>
-            <span class="info-box-number">10</span>
+            <span class="info-box-text">Người nộp đơn</span>
+            <span class="info-box-number">7</span>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@
       <div class="col-lg-6">
         <div class="card">
           <div class="card-header border-0">
-            <h3 class="card-title">Attendance</h3>
+            <h3 class="card-title">Sự tham gia</h3>
           </div>
           <div class="card-body">
             <canvas id="attendance" style="max-height: 500px;"></canvas>
@@ -76,18 +76,29 @@
         <!-- Recently Added -->
         <div class="card card-success">
           <div class="card-header">
-            <h3 class="card-title">Recently Added Employee</h3>
+            <h3 class="card-title">Nhân viên mới được thêm vào</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                  <i class="fas fa-expand"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
+            </div>
           </div>
           <div class="card-body">
             <table class="table v-middle no-border">
               <tbody>
                 <tr>
-                  <td><img src="default.png" width="55" height="60" class="img-circle" alt="picture"></td>
+                  <td><img src="assets/images/tcong.jpg" width="55" height="60" class="img-circle" alt="picture"></td>
                   <td>John Doe</td>
                   <td align="right"><span class="label label-light-danger">2 months ago</span></td>
                 </tr>
                 <tr>
-                  <td><img src="default.png" width="55" height="60" class="img-circle" alt="picture"></td>
+                  <td><img src="assets/images/tcong.jpg" width="55" height="60" class="img-circle" alt="picture"></td>
                   <td>Jane Smith</td>
                   <td align="right"><span class="label label-light-danger">1 month ago</span></td>
                 </tr>
@@ -102,7 +113,7 @@
         <!-- Employees Chart -->
         <div class="card">
           <div class="card-header border-0">
-            <h3 class="card-title">Employees</h3>
+            <h3 class="card-title">Nhân viên</h3>
           </div>
           <div class="card-body">
             <canvas id="employees" height="200"></canvas>
@@ -112,10 +123,25 @@
         <!-- Gender Ratio -->
         <div class="card card-success">
           <div class="card-header">
-            <h3 class="card-title">Gender Ratio</h3>
+            <h3 class="card-title">Tỷ lệ giới tính</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                  <i class="fas fa-expand"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
+            </div>
           </div>
           <div class="card-body">
-            <canvas id="gender"></canvas>
+            <div style="width: 550px; height: 550px;margin: 0 auto;">
+                <canvas id="gender"></canvas>
+            </div>
+
           </div>
         </div>
       </div>

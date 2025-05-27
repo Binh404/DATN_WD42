@@ -22,13 +22,13 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right">
         <a href="#" class="dropdown-item">
-          <i class="fas fa-user mr-2"></i> Profile
+          <i class="fas fa-user mr-2"></i> Hồ sơ
         </a>
         <div class="dropdown-divider"></div>
         {{-- <a href="{{ route('logout') }}" class="dropdown-item"
            onclick="event.preventDefault(); document.getElementById('navbar-logout').submit();">
         </a> --}}
-        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+        <i class="fas fa-sign-out-alt mr-2"></i> Đăng xuất
         {{-- <form id="navbar-logout" action="{{ route('logout') }}" method="POST" style="display: none;"> --}}
           @csrf
         </form>
