@@ -55,17 +55,17 @@
   </ul>
 </nav>
 <script>
-    function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
-            notification.style.zIndex = '9999';
-            notification.innerHTML = message;
-            document.body.appendChild(notification);
+    // function showNotification(message) {
+    //         const notification = document.createElement('div');
+    //         notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+    //         notification.style.zIndex = '9999';
+    //         notification.innerHTML = message;
+    //         document.body.appendChild(notification);
 
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
+    //         setTimeout(() => {
+    //             notification.remove();
+    //         }, 3000);
+    //     }
 </script>
 <style>
      .notification-badge {
