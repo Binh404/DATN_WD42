@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="/dashboard" class="brand-link">
+  <a href="{{route("home")}}" class="brand-link">
     <div class="d-flex">
       <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
       <span class="brand-text font-weight-light">DV TECH</span>
@@ -33,7 +33,7 @@
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-laptop"></i>
-            <p>Tài Khoản Người Dùng <i class="right fas fa-angle-left"></i></p>
+            <p>Tài Khoản<i class="right fas fa-angle-left"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -62,7 +62,7 @@
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
-            <p>Quản lí hồ sơ <i class="fas fa-angle-left right"></i></p>
+            <p>Hồ sơ <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
