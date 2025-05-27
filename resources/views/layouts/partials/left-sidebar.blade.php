@@ -2,8 +2,8 @@
   <!-- Brand Logo -->
   <a href="/dashboard" class="brand-link">
     <div class="d-flex">
-      <img src="{{ asset('assets/images/company_logo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
-      <span class="brand-text font-weight-light">Company Name</span>
+      <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
+      <span class="brand-text font-weight-light">DV TECH</span>
     </div>
   </a>
 
@@ -12,7 +12,7 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="{{asset('assets/images/default.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
+        <img src="{{asset('assets/images/user.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
       </div>
       <div class="info">
         <a href="#" class="d-block">User Name</a>
@@ -39,15 +39,22 @@
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Application</p>
+                <p>Danh sách</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Jobs</p>
+                <p>Tạo tài khoản mới</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý vai trò</p>
+              </a>
+            </li>
+
           </ul>
         </li>
 
@@ -55,7 +62,7 @@
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
-            <p>People Management <i class="fas fa-angle-left right"></i></p>
+            <p>Quản lí hồ sơ <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -89,7 +96,7 @@
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
-            <p>Attendance <i class="right fas fa-angle-left"></i></p>
+            <p>Sự tham gia <i class="right fas fa-angle-left"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -125,11 +132,45 @@
           </ul>
         </li>
 
+        <!-- Payments Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-database"></i>
+            <p>Thanh toán <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lương</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Org Chart</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Teams</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Vendors</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
         <!-- Settings Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-cog"></i>
-            <p>Settings <i class="fas fa-angle-left right"></i></p>
+            <p>Cài đặt <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
@@ -180,6 +221,30 @@
                 <p>Platform Settings</p>
               </a>
             </li>
+          </ul>
+        </li>
+
+        <!-- Help Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Trợ giúp <i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Liên hệ</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>FAQ's</p>
+              </a>
+            </li>
+
+
           </ul>
         </li>
       </ul>

@@ -28,7 +28,7 @@
           <span class="info-box-icon bg-info"><i class="fas fa-users"></i></span>
           <div class="info-box-content">
             <span class="info-box-text">Employees</span>
-            <span class="info-box-number">123</span>
+            <span class="info-box-number">7</span>
           </div>
         </div>
       </div>
