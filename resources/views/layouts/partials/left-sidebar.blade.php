@@ -487,6 +487,7 @@
             </li>
              </ul>
         </li>
+
             <!-- Phân quyền Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
@@ -508,6 +509,34 @@
             </li>
           </ul>
         </li>
+
+        <!-- Phòng ban Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Phòng ban  <i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/phongban" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý phòng ban</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý công việc</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Báo cáo phòng ban</p>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </div>
@@ -524,3 +553,4 @@
     <form id="sidebar-logout" action="#" method="POST" style="display: none;">{{ csrf_field() }}</form>
   </div>
 </aside>
+
