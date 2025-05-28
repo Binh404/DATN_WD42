@@ -312,10 +312,11 @@
 }
 
 .menu-icon {
-  width: 20px;
+  min-width: 30px;
   text-align: center;
-  margin-right: 12px;
+  margin-right: 10px;
   font-size: 16px;
+  display: inline-block;
 }
 
 .menu-text {
@@ -326,6 +327,8 @@
 .submenu-arrow {
   font-size: 12px;
   transition: transform 0.3s ease;
+  width: 20px;
+  text-align: center;
 }
 
 /* Submenu Styling */
@@ -349,12 +352,12 @@
 .submenu-link {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 16px;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: all 0.2s ease;
   border-radius: 4px;
-  margin: 2px;
+  margin: 2px 4px;
 }
 
 .submenu-link:hover {
@@ -370,10 +373,11 @@
 }
 
 .submenu-icon {
-  width: 16px;
+  min-width: 30px;
   text-align: center;
   margin-right: 10px;
   font-size: 12px;
+  display: inline-block;
 }
 
 /* Footer Styling */
