@@ -27,5 +27,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             UserProfileSeeder::class,
         ]);
+        
+        $this->call([
+            PhongBanSeeder::class,
+        ]);
     }
 }
