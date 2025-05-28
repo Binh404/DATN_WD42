@@ -18,7 +18,7 @@
         <a href="#" class="d-block">User Name</a>
       </div>
     </div>
-
+ 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -91,38 +91,6 @@
             </li>
           </ul>
         </li>
-
-        <!-- Phòng ban -->
-          <li class="nav-item">
-          <ap href="#" class="nav-link">
-            <i class="nav-icon fas fa-user"></i>
-            <p>Phòng ban<i class="fas fa-angle-left right"></i></p>
-          </ap>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/phongban" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Quản lý phòng ban</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Quản lý công việc</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Báo cáo phòng ban</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-
-
-
-
 
         <!-- Attendance Section -->
         <li class="nav-item">
@@ -275,6 +243,8 @@
                 <p>FAQ's</p>
               </a>
             </li>
+             </ul>
+        </li>
 
             <!-- Phân quyền Section -->
         <li class="nav-item">
@@ -284,7 +254,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{route("roles.index")}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>
@@ -295,8 +265,34 @@
                 <p>FAQ's</p>
               </a>
             </li>
+          </ul>
+        </li>
 
-
+        <!-- Phòng ban Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Phòng ban  <i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/phongban" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý phòng ban</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý công việc</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Báo cáo phòng ban</p>
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
