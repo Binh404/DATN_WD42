@@ -13,7 +13,11 @@ class RoleController extends Controller
     public function create()
     {
         // Lấy permission và group theo group_id (hoặc group_name nếu có)
-        $permissions = Permission::all()->groupBy('group_id');
+        // $permissions = Permission::all()->groupBy('group_id');
+        $permissions = Permission::join('permission_groups', 'permissions.group_id', '=', 'permission_groups.id')
+            ->select('permissions.*', 'permission_groups.name as group_name')
+            ->get()
+            ->groupBy('group_name');
         return view('admin.vaitro.roles_create', compact('permissions'));
     }
 

@@ -33,6 +33,13 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['name', 'guard_name']);
+
+            // Thêm foreign key constraint
+            $table->foreign('group_id')
+                  ->references('id')
+                  ->on('permission_groups')
+                  ->onDelete('set null')
+                  ->onUpdate('cascade');
         });
 
         Schema::create($tableNames['roles'], static function (Blueprint $table) use ($teams, $columnNames) {
