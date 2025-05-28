@@ -61,10 +61,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($phongBans as $phongBan)
+                        @foreach($phongBans as $index => $phongBan)
                             <tr class="border-bottom">
                                 <td class="px-4 py-3 align-middle">
-                                    <span class="badge bg-light text-dark fw-normal">#{{ $phongBan->id }}</span>
+                                    <span class="badge bg-light text-dark fw-normal">#{{ $index + 1 }}</span>
                                 </td>
                                 <td class="px-4 py-3 align-middle">
                                     <div class="d-flex align-items-center">

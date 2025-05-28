@@ -10,9 +10,10 @@ use App\Http\Controllers\DashboardController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 
-// Admin routes
-Route::get('/phongban', [PhongBanController::class, 'index'])->name('phongban.index');
-
+// Admin Phòng Ban
+Route::get('/phongban', [PhongBanController::class, 'index']);
+Route::get('/phongban/create', [PhongBanController::class, 'create']);
+Route::post('/phongban/store', [PhongBanController::class, 'store']);
 
 Route::get('/employee', function () {
     return view('layoutsEmploye.master');

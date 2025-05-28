@@ -13,7 +13,7 @@ class PhongBanController extends Controller
      */
     public function index()
     {
-        $phongBans = PhongBan::all();
+        $phongBans = PhongBan::orderBy("id", "desc")->get();
         return view("admin.phongban.index", compact('phongBans'));
     }
 
