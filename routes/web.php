@@ -57,5 +57,3 @@ Route::prefix('employee')->group(function () {
         return view('employe.task');
     });
 });
-
-// Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('home');
