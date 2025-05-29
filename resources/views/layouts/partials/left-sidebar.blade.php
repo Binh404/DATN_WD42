@@ -22,7 +22,7 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{route("home")}}" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -299,7 +299,7 @@
   </div>
   <!-- Sidebar Footer Items -->
   <hr>
-  <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
+  <!-- <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
     <a href="#" class="link text-center text-light" title="Account Setting">
       <i class="fas fa-cog"></i>
     </a>
@@ -308,6 +308,5 @@
       <i class="fa fa-power-off"></i>
     </a>
     <form id="sidebar-logout" action="#" method="POST" style="display: none;">{{ csrf_field() }}</form>
-  </div>
+  </div> -->
 </aside>
-
