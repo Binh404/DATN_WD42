@@ -15,8 +15,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 Route::get('/phongban', [PhongBanController::class, 'index']);
 Route::get('/phongban/create', [PhongBanController::class, 'create']);
 Route::post('/phongban/store', [PhongBanController::class, 'store']);
+Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
 Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
-Route::post('/phongban/update/{id}', [PhongBanController::class, 'update']);
+Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
 Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
 // Admin Vai Trò

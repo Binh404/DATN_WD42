@@ -11,11 +11,16 @@ class PhongBanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $phongBans = PhongBan::orderBy("id", "desc")->get();
+        $query = PhongBan::orderBy("id", "desc");
+        if ($request->has('search')) {
+            $query->where('ten_phong_ban', 'like', '%' . $request->search . '%');
+        }
+        $phongBans = $query->get();
         return view("admin.phongban.index", compact('phongBans'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -36,6 +41,7 @@ class PhongBanController extends Controller
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:0,1',
         ]);
+        date_default_timezone_set('Asia/Bangkok');
 
         PhongBan::create($validated);
 
@@ -47,7 +53,8 @@ class PhongBanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $phongBan = PhongBan::findOrFail($id);
+        return view('admin.phongban.show', compact('phongBan'));
     }
 
     /**
@@ -72,6 +79,7 @@ class PhongBanController extends Controller
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:0,1',
         ]);
+        date_default_timezone_set('Asia/Bangkok');
 
         $phongban->update($validated);
 
