@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             UserProfileSeeder::class,
+            CongViecSeeder::class,
+            PhanCongCongViecSeeder::class,
         ]);
 
     }

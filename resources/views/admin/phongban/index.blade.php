@@ -5,14 +5,15 @@
 @include('layouts.partials.statistics')
 
 <div class="container-fluid px-4">
-    
-<!-- Header Section -->
+
+    <!-- Header Section -->
     <div class="row align-items-center mb-4">
         <div class="col-md-4">
             <h2 class="fw-bold text-primary mb-0">
                 <i class="fas fa-building me-2"></i>Quản Lý Phòng Ban
             </h2>
         </div>
+
 
         <div class="col-md-5">
             <form method="GET" action="/phongban">
@@ -38,6 +39,17 @@
             </a>
         </div>
     </div>
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
 
     <!-- Main Table Card -->
     <div class="card border-0 shadow-sm">
@@ -91,14 +103,14 @@
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-gradient rounded-circle d-flex align-items-center justify-content-center me-3"
-                                        style="width: 40px; height: 40px;">
+                                    <div class="bg-primary bg-gradient rounded-circle d-flex align-items-center justify-content-center me-3 department-icon"
+                                        style="width: 40px; height: 40px; min-width: 40px;">
                                         <i class="fas fa-building text-white"></i>
                                     </div>
-                                    <div>
+                                    <div class="department-name" style="min-width: 0;">
                                         <h6 class="mb-0 fw-semibold">
                                             <a href="/phongban/show/{{$phongBan->id}}"
-                                                class="text-decoration-none text-black d-inline-flex align-items-center">
+                                                class="text-decoration-none text-black d-inline-flex align-items-center text-truncate">
                                                 {{ $phongBan->ten_phong_ban }}
                                             </a>
                                         </h6>
@@ -124,7 +136,7 @@
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="text-muted small">
-                                    <i class="fas fa-calendar me-1"></i>
+                                    <!-- <i class="fas fa-calendar me-1"></i> -->
                                     @if($phongBan->created_at)
                                     {{ date('d/m/Y H:i:s', strtotime($phongBan->created_at)) }}
                                     @endif
@@ -132,7 +144,7 @@
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="text-muted small">
-                                    <i class="fas fa-calendar-edit me-1"></i>
+                                    <!-- <i class="fas fa-calendar-edit me-1"></i> -->
                                     @if($phongBan->updated_at)
                                     {{ date('d/m/Y H:i:s', strtotime($phongBan->updated_at)) }}
                                     @endif

@@ -40,6 +40,10 @@ class PhongBanController extends Controller
             'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban',
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:0,1',
+        ], [
+            'ten_phong_ban.required' => 'Vui lòng nhập tên phòng ban!',
+            'ma_phong_ban.required' => 'Vui lòng nhập mã phòng ban!',
+            'ma_phong_ban.unique' => 'Mã phòng ban đã tồn tại!',
         ]);
         date_default_timezone_set('Asia/Bangkok');
 
@@ -78,6 +82,10 @@ class PhongBanController extends Controller
             'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban,' . $phongban->id,
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:0,1',
+        ], [
+            'ten_phong_ban.required' => 'Vui lòng nhập tên phòng ban!',
+            'ma_phong_ban.required' => 'Vui lòng nhập mã phòng ban!',
+            'ma_phong_ban.unique' => 'Mã phòng ban đã tồn tại!',
         ]);
         date_default_timezone_set('Asia/Bangkok');
 
