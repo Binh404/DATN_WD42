@@ -11,15 +11,22 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 
-// Admin routes
-Route::get('/phongban', [PhongBanController::class, 'index'])->name('phongban.index');
+// Admin Phòng Ban
+Route::get('/phongban', [PhongBanController::class, 'index']);
+Route::get('/phongban/create', [PhongBanController::class, 'create']);
+Route::post('/phongban/store', [PhongBanController::class, 'store']);
+Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
+Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
+Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
+Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
+// Admin Vai Trò
 Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
 Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
 Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
 
 
-
+// Employee Routes
 Route::get('/employee', function () {
     return view('layoutsEmploye.master');
 });

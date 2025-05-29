@@ -299,7 +299,7 @@
   </div>
   <!-- Sidebar Footer Items -->
   <hr>
-  <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
+  <!-- <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
     <a href="#" class="link text-center text-light" title="Account Setting">
       <i class="fas fa-cog"></i>
     </a>
@@ -308,6 +308,5 @@
       <i class="fa fa-power-off"></i>
     </a>
     <form id="sidebar-logout" action="#" method="POST" style="display: none;">{{ csrf_field() }}</form>
-  </div>
+  </div> -->
 </aside>
-

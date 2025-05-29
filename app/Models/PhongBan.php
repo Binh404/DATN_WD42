@@ -18,9 +18,9 @@ class PhongBan extends Model
         'trang_thai'
     ];
 
-    protected $casts = [
-        'trang_thai' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'trang_thai' => 'integer',
+    //     'created_at' => 'datetime',
+    //     'updated_at' => 'datetime',
+    // ];
 } 
