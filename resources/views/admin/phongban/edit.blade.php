@@ -2,7 +2,7 @@
 @section('title', 'Chỉnh sửa phòng ban')
 
 @section('content')
-@include('layouts.partials.statistics')
+
 
 <div class="d-flex justify-content-center align-items-center min-vh-100 py-5">
     <div class="card shadow-lg" style="width: 100%; max-width: 600px;">

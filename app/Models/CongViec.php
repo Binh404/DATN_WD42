@@ -10,9 +10,10 @@ class CongViec extends Model
      use HasFactory;
 
     protected $table = 'congviec';  // Tên bảng trong cơ sở dữ liệu
-    protected $primaryKey = 'id';  // Khóa chính
+    // protected $primaryKey = 'id';  // Khóa chính
     protected $fillable = [
         'ten_cong_viec',
+        'phong_ban_id',
         'mo_ta',
         'trang_thai',
         'do_uu_tien',
@@ -25,5 +26,10 @@ class CongViec extends Model
     public function phancongs()
     {
         return $this->hasMany(PhanCong::class, 'cong_viec_id', 'id');
+    }
+    // Mối quan hệ với bảng Phòng ban
+    public function phongBan()
+    {
+        return $this->belongsTo(PhongBan::class, 'phong_ban_id', 'id');
     }
 }

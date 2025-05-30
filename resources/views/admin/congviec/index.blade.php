@@ -70,8 +70,11 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clipboard-list me-1"></i>Tên Công Việc
                             </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
+                            </th> -->
+                            <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-building me-1"></i>Phòng Ban
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-info-circle me-1"></i>Trạng Thái
@@ -91,10 +94,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($congviecs as $congviec)
+                        @foreach($congviecs as $index => $congviec)
                         <tr class="align-middle border-bottom">
                             <td class="px-4 py-3">
-                                <span class="badge bg-light text-dark">#{{ $congviec->id }}</span>
+                                <span class="badge bg-light text-dark">#{{ $index + 1 }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="d-flex align-items-center">
@@ -112,16 +115,21 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
+                            <!-- <td class="px-4 py-3">
                                 <span class="text-muted text-truncate d-inline-block" style="max-width: 200px;">
                                     {{ $congviec->mo_ta ?: 'Chưa có mô tả' }}
+                                </span>
+                            </td> -->
+                            <td class="px-4 py-3">
+                                <span class="text-muted text-truncate d-inline-block" style="max-width: 200px;">
+                                    {{ $congviec->phongban->ten_phong_ban ?? 'Không có phòng ban!' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass = [
-                                        'Chưa bắt đầu' => 'secondary',
-                                        'Đang thực hiện' => 'primary',
+                                        'Chưa bắt đầu' => 'danger',
+                                        'Đang làm' => 'warning',
                                         'Hoàn thành' => 'success',
                                         'Tạm dừng' => 'warning',
                                         'Hủy bỏ' => 'danger'

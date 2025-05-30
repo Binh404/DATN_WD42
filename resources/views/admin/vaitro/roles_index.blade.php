@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-@include('layouts.partials.statistics')
+
 <div class="container">
     <h2>Danh sách vai trò</h2>
     <a href="{{ route('roles.create') }}" class="btn btn-primary mb-3">Thêm vai trò</a>

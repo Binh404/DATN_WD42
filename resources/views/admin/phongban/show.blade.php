@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-@include('layouts.partials.statistics')
+
 
 <div class="container mt-4">
     <div class="row justify-content-center">

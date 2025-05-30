@@ -2,7 +2,7 @@
 @section('title', 'Thêm phòng ban mới')
 
 @section('content')
-@include('layouts.partials.statistics')
+
 
 <div class="d-flex justify-content-center align-items-center min-vh-100 py-5">
     <div class="card shadow-lg" style="width: 100%; max-width: 600px;">
@@ -43,7 +43,7 @@
                     </div>
                     @enderror
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="ten_phong_ban" class="form-label fw-bold">
                         <i class="fas fa-tag me-2 text-primary"></i>
