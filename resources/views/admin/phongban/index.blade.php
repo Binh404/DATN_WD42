@@ -5,7 +5,7 @@
 
 <div class="container-fluid px-4">
 
-<!-- Header Section -->
+    <!-- Header Section -->
     <div class="row align-items-center mb-4">
         <div class="col-md-4">
             <h2 class="fw-bold text-primary mb-0">
@@ -74,12 +74,18 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-building me-1"></i>Tên Phòng Ban
                             </th>
+
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-coins text-yellow-500 mr-1"></i>Ngân sách
                             </th>
                             <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
                             </th> -->
+
+                            <!-- {{-- <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-align-left me-1"></i>Mô Tả
+                            </th> --}} -->
+
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-toggle-on me-1"></i>Trạng Thái
                             </th>
@@ -130,6 +136,7 @@
                                     {{ number_format($phongBan->ngan_sach, 0, ',', '.') }} VNĐ
                                 </span>
                             </td>
+
                             <td class="px-4 py-3 align-middle">
                                 @if($phongBan->trang_thai == 1)
                                 <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">

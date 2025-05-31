@@ -73,9 +73,9 @@
                             <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
                             </th> -->
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-building me-1"></i>Phòng Ban
-                            </th>
+                            </th> -->
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-info-circle me-1"></i>Trạng Thái
                             </th>
@@ -123,11 +123,11 @@
                                     {{ $congviec->mo_ta ?: 'Chưa có mô tả' }}
                                 </span>
                             </td> -->
-                            <td class="px-4 py-3">
+                            <!-- <td class="px-4 py-3">
                                 <span class="text-muted text-truncate d-inline-block" style="max-width: 200px;">
                                     {{ $congviec->phongban->ten_phong_ban ?? 'Không có phòng ban!' }}
                                 </span>
-                            </td>
+                            </td> -->
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass = [
