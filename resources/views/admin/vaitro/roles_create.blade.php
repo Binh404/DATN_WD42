@@ -36,7 +36,7 @@
                                         <div class="form-check mb-1">
                                             <input class="form-check-input perm-check" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="perm{{ $permission->id }}" data-group="group-{{ $group }}">
                                             <label class="form-check-label" for="perm{{ $permission->id }}">
-                                                {{ $permission->name }}
+                                                {{ $permission->ten }}
                                             </label>
                                         </div>
                                     @endforeach
