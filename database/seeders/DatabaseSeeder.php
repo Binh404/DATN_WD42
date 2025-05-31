@@ -23,18 +23,9 @@ class DatabaseSeeder extends Seeder
             // Seeders cơ bản - chạy trước
             ChiNhanhSeeder::class,
             PhongBanSeeder::class,
-<<<<<<< HEAD
-            PermissionGroupSeeder::class,
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            UserProfileSeeder::class,
-            CongViecSeeder::class,
-            PhanCongCongViecSeeder::class,
-        ]);
-=======
+
             ChucVuSeeder::class,
->>>>>>> 7f08057deaa1c7216823e093642b297f56f2e436
+
 
             // User và profile
             NguoiDungSeeder::class,
