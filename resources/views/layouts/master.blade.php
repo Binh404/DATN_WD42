@@ -123,7 +123,7 @@
     //   }
 
       // Ngừng sự kiện bọt (ngừng kéo menu item con khi nhấp vào link)
-      e.preventDefault();
+    //   e.preventDefault();
     });
   });
 </script>

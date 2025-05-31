@@ -18,12 +18,11 @@
         <a href="#" class="d-block">User Name</a>
       </div>
     </div>
-
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{route("home")}}" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -243,6 +242,8 @@
                 <p>FAQ's</p>
               </a>
             </li>
+             </ul>
+        </li>
 
             <!-- Phân quyền Section -->
         <li class="nav-item">
@@ -252,7 +253,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{route("roles.index")}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>
@@ -263,8 +264,34 @@
                 <p>FAQ's</p>
               </a>
             </li>
+          </ul>
+        </li>
 
-
+        <!-- Phòng ban Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Phòng ban  <i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/phongban" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý phòng ban</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/congviec" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý công việc</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Báo cáo phòng ban</p>
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -272,7 +299,7 @@
   </div>
   <!-- Sidebar Footer Items -->
   <hr>
-  <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
+  <!-- <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
     <a href="#" class="link text-center text-light" title="Account Setting">
       <i class="fas fa-cog"></i>
     </a>
@@ -281,5 +308,5 @@
       <i class="fa fa-power-off"></i>
     </a>
     <form id="sidebar-logout" action="#" method="POST" style="display: none;">{{ csrf_field() }}</form>
-  </div>
+  </div> -->
 </aside>
