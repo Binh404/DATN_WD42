@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use App\Models\PhongBan;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
+use App\Models\ChucVu;
+use App\Models\VaiTro;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
+    
     public function create(): View
     {
-        return view('auth.register');
+        $phongban = PhongBan::all();
+        $chucvu = ChucVu::all();
+        return view('auth.register', compact('phongban','chucvu'));
     }
+
 
     /**
      * Handle an incoming registration request.

@@ -6,6 +6,9 @@ use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 
+use App\Http\Controllers\ChucVuController;
+
+Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
 
 Route::get('/', function () {
     return view('auth.login');
