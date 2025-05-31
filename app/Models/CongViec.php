@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class CongViec extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
-    protected $table = 'congviec';  // Tên bảng trong cơ sở dữ liệu
-    protected $primaryKey = 'id';  // Khóa chính
+    protected $table = 'cong_viec';
+
     protected $fillable = [
         'ten_cong_viec',
         'mo_ta',
@@ -19,11 +19,20 @@ class CongViec extends Model
         'ngay_bat_dau',
         'deadline',
         'ngay_hoan_thanh',
-    ];  // Các trường được phép mass assign
+        'tien_do',
+    ];
 
-    // Mối quan hệ với bảng Phân công công việc
-    public function phancongs()
+    // protected $casts = [
+    //     'ngay_bat_dau' => 'datetime',
+    //     'deadline' => 'datetime',
+    //     'ngay_hoan_thanh' => 'datetime',
+    //     'tien_do' => 'integer',
+    //     'created_at' => 'datetime',
+    //     'updated_at' => 'datetime',
+    // ];
+
+    public function phanCong()
     {
-        return $this->hasMany(PhanCong::class, 'cong_viec_id', 'id');
+        return $this->hasMany(PhanCongCongViec::class, 'cong_viec_id');
     }
 }
