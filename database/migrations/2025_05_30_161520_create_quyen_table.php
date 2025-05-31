@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('phong_ban', function (Blueprint $table) {
+        Schema::create('quyen', function (Blueprint $table) {
             $table->id();
-            $table->string('ten_phong_ban');
-            $table->string('ma_phong_ban')->unique();
+            $table->string('ten')->unique();
+            $table->string('ten_hien_thi');
             $table->text('mo_ta')->nullable();
-            $table->tinyInteger('trang_thai')->default(1);
+            $table->foreignId('nhom_quyen_id')->constrained('nhom_quyen');
+            $table->string('phan_he');
+            $table->string('hanh_dong');
             $table->timestamps();
+
+            $table->index(['phan_he', 'hanh_dong']);
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('phong_ban');
+        Schema::dropIfExists('quyen');
     }
 };

@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('phong_ban', function (Blueprint $table) {
-            $table->unsignedBigInteger('truong_phong_id')->nullable()->after('mo_ta');
-            $table->foreign('truong_phong_id')->references('id')->on('users')->onDelete('set null');
+        Schema::create('ky_nang', function (Blueprint $table) {
+            $table->id();
+            $table->string('ten');
+            $table->string('danh_muc')->nullable();
+            $table->text('mo_ta')->nullable();
+            $table->boolean('trang_thai')->default(true);
+            $table->timestamps();
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('phong_ban', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('ky_nang');
     }
 };

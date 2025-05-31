@@ -20,15 +20,51 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call([
+            // Seeders cơ bản - chạy trước
+            ChiNhanhSeeder::class,
             PhongBanSeeder::class,
-            PermissionGroupSeeder::class,
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            UserProfileSeeder::class,
+            ChucVuSeeder::class,
+
+            // User và profile
+            NguoiDungSeeder::class,
+            HoSoNguoiDungSeeder::class,
+
+            // Hợp đồng và lương
+            HopDongLaoDongSeeder::class,
+            PhuCapSeeder::class,
+            PhuCapNhanVienSeeder::class,
+            BangLuongSeeder::class,
+            LuongNhanVienSeeder::class,
+
+            // Kỹ năng
+            KyNangSeeder::class,
+            KyNangNhanVienSeeder::class,
+
+            // Chấm công và nghỉ phép
+            LoaiNghiPhepSeeder::class,
+            SoDuNghiPhepNhanVienSeeder::class,
+            ChamCongSeeder::class,
+            DonXinNghiSeeder::class,
+
+            // Công việc
             CongViecSeeder::class,
             PhanCongCongViecSeeder::class,
-        ]);
 
+            // Tuyển dụng
+            TinTuyenDungSeeder::class,
+            UngVienSeeder::class,
+
+            // Tài liệu
+            TaiLieuSeeder::class,
+
+            // Phân quyền
+            NhomQuyenSeeder::class,
+            QuyenSeeder::class,
+            VaiTroSeeder::class,
+            VaiTroQuyenSeeder::class,
+            NguoiDungVaiTroSeeder::class,
+            NguoiDungQuyenSeeder::class,
+
+        ]);
     }
 }

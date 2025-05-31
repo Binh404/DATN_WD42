@@ -6,20 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('permission_groups', function (Blueprint $table) {
+        Schema::create('nhom_quyen', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->text('description')->nullable();
-            $table->string('color', 7)->nullable();
-            $table->string('icon', 50)->nullable();
+            $table->string('ten');
+            $table->string('ma')->unique();
+            $table->text('mo_ta')->nullable();
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('permission_groups');
+        Schema::dropIfExists('nhom_quyen');
     }
-}; 
+};
