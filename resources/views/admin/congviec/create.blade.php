@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Thêm Công Việc Mới</h2>
 
-    @if ($errors->any())
+    <!-- @if ($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
             @foreach ($errors->all() as $error)
@@ -12,14 +12,14 @@
             @endforeach
         </ul>
     </div>
-    @endif
+    @endif -->
 
     <!-- Form thêm công việc -->
     <form action="/congviec/store" method="POST">
         @csrf
         <div class="form-group">
             <label for="ten_cong_viec">Tên Công Việc</label>
-            <input type="text" name="ten_cong_viec" class="form-control" id="ten_cong_viec" placeholder="Nhập tên công việc" required>
+            <input type="text" name="ten_cong_viec" class="form-control" id="ten_cong_viec" placeholder="Nhập tên công việc">
         </div>
 
         <div class="form-group">
@@ -27,19 +27,11 @@
             <textarea name="mo_ta" class="form-control" id="mo_ta" rows="4" placeholder="Mô tả công việc"></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="phong_ban_id">Chọn Phòng Ban</label>
-            <select name="phong_ban_id" class="form-control" id="phong_ban_id" required>
-                <option value="">Chọn phòng ban</option>
-                @foreach($phongBans as $phongBan)
-                <option value="{{ $phongBan->id }}">{{ $phongBan->ten_phong_ban }}</option>
-                @endforeach
-            </select>
-        </div>
+        
 
         <div class="form-group">
             <label for="do_uu_tien">Độ Ưu Tiên</label>
-            <select name="do_uu_tien" class="form-control" id="do_uu_tien" required>
+            <select name="do_uu_tien" class="form-control" id="do_uu_tien">
                 <option value="Cao">Cao</option>
                 <option value="Trung bình">Trung bình</option>
                 <option value="Thấp">Thấp</option>
@@ -48,7 +40,7 @@
 
         <div class="form-group">
             <label for="trang_thai">Trạng Thái</label>
-            <select name="trang_thai" class="form-control" id="trang_thai" required>
+            <select name="trang_thai" class="form-control" id="trang_thai">
                 <option value="Chưa bắt đầu">Chưa bắt đầu</option>
                 <option value="Đang làm">Đang làm</option>
                 <option value="Hoàn thành">Hoàn thành</option>
@@ -57,12 +49,12 @@
 
         <div class="form-group">
             <label for="ngay_bat_dau">Ngày Bắt Đầu</label>
-            <input type="date" name="ngay_bat_dau" class="form-control" id="ngay_bat_dau" required>
+            <input type="date" name="ngay_bat_dau" class="form-control" id="ngay_bat_dau">
         </div>
 
         <div class="form-group">
             <label for="deadline">Ngày Deadline</label>
-            <input type="date" name="deadline" class="form-control" id="deadline" required>
+            <input type="date" name="deadline" class="form-control" id="deadline">
         </div>
 
         <div class="form-group">

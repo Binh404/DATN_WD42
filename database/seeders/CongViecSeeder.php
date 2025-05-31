@@ -1,10 +1,10 @@
 <?php
 
 namespace Database\Seeders;
-
 use App\Models\CongViec;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CongViecSeeder extends Seeder
 {
@@ -13,37 +13,43 @@ class CongViecSeeder extends Seeder
      */
     public function run(): void
     {
-        $congviecs = [
-            [
-                'ten_cong_viec' => 'Phân tích yêu cầu hệ thống',
-                'mo_ta' => 'Phân tích yêu cầu và thiết kế hệ thống phần mềm.',
-                'trang_thai' => 'Chưa bắt đầu',
-                'do_uu_tien' => 'Cao',
-                'ngay_bat_dau' => now(),
-                'deadline' => now()->addDays(7),
+        DB::table('cong_viec')->insert([
+             [
+                'ten_cong_viec' => 'Phát triển module quản lý nhân sự',
+                'mo_ta' => 'Xây dựng module quản lý thông tin nhân viên, hồ sơ và chấm công',
+                'trang_thai' => 'dang_lam',
+                'do_uu_tien' => 'cao',
+                'ngay_bat_dau' => '2024-12-01 09:00:00',
+                'deadline' => '2024-12-30 17:00:00',
+                'tien_do' => 60,
                 'ngay_hoan_thanh' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'ten_cong_viec' => 'Thiết kế giao diện người dùng',
-                'mo_ta' => 'Thiết kế giao diện và trải nghiệm người dùng cho phần mềm.',
-                'trang_thai' => 'Đang làm',
-                'do_uu_tien' => 'Trung bình',
-                'ngay_bat_dau' => now(),
-                'deadline' => now()->addDays(10),
-                'ngay_hoan_thanh' => null,
+                'ten_cong_viec' => 'Thiết kế giao diện tuyển dụng',
+                'mo_ta' => 'Thiết kế UI/UX cho module tuyển dụng và quản lý ứng viên',
+                'trang_thai' => 'hoan_thanh',
+                'do_uu_tien' => 'trung_binh',
+                'ngay_bat_dau' => '2024-11-15 08:30:00',
+                'deadline' => '2024-11-30 17:30:00',
+                'ngay_hoan_thanh' => '2024-11-28 16:45:00',
+                'tien_do' => 100,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'ten_cong_viec' => 'Lập trình chức năng',
-                'mo_ta' => 'Phát triển các tính năng của phần mềm theo yêu cầu.',
-                'trang_thai' => 'Hoàn thành',
-                'do_uu_tien' => 'Cao',
-                'ngay_bat_dau' => now()->subDays(5),
-                'deadline' => now()->subDays(2),
-                'ngay_hoan_thanh' => now()->subDays(2),
+                'ten_cong_viec' => 'Kiểm tra bảo mật hệ thống',
+                'mo_ta' => 'Thực hiện audit bảo mật và penetration testing cho hệ thống HRM',
+                'trang_thai' => 'chua_bat_dau',
+                'do_uu_tien' => 'cao',
+                'ngay_bat_dau' => '2025-01-15 09:00:00',
+                'deadline' => '2025-01-25 17:00:00',
+                'ngay_hoan_thanh' => null,
+                'tien_do' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
-        ];
-        foreach ($congviecs as $congviec) {
-            CongViec::create($congviec);
-        }
+        ]);
     }
 }

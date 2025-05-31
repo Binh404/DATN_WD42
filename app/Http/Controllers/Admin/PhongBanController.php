@@ -39,11 +39,14 @@ class PhongBanController extends Controller
             'ten_phong_ban' => 'required|string|max:255',
             'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban',
             'mo_ta' => 'nullable|string',
+            'ngan_sach' => 'nullable|numeric|min:0',
             'trang_thai' => 'required|in:0,1',
         ], [
             'ten_phong_ban.required' => 'Vui lòng nhập tên phòng ban!',
             'ma_phong_ban.required' => 'Vui lòng nhập mã phòng ban!',
             'ma_phong_ban.unique' => 'Mã phòng ban đã tồn tại!',
+            'ngan_sach.numeric' => 'Ngân sách phải là số!',
+            'ngan_sach.min' => 'Ngân sách không được nhỏ hơn 0!',
         ]);
         date_default_timezone_set('Asia/Bangkok');
 
@@ -79,15 +82,19 @@ class PhongBanController extends Controller
 
         $validated = $request->validate([
             'ten_phong_ban' => 'required|string|max:255',
-            'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban,' . $phongban->id,
+            'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban',
             'mo_ta' => 'nullable|string',
+            'ngan_sach' => 'nullable|numeric|min:0',
             'trang_thai' => 'required|in:0,1',
         ], [
             'ten_phong_ban.required' => 'Vui lòng nhập tên phòng ban!',
             'ma_phong_ban.required' => 'Vui lòng nhập mã phòng ban!',
             'ma_phong_ban.unique' => 'Mã phòng ban đã tồn tại!',
+            'ngan_sach.numeric' => 'Ngân sách phải là số!',
+            'ngan_sach.min' => 'Ngân sách không được nhỏ hơn 0!',
         ]);
         date_default_timezone_set('Asia/Bangkok');
+
 
         $phongban->update($validated);
 

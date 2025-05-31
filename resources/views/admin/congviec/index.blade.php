@@ -88,6 +88,9 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clock me-1"></i>Thời Hạn
                             </th>
+                            <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-clock me-1"></i>Ngày hoàn thành
+                            </th>
                             <th class="px-4 py-3 fw-semibold text-muted text-center">
                                 <i class="fas fa-cogs me-1"></i>Hành Động
                             </th>
@@ -186,6 +189,16 @@
                                 <span class="badge bg-{{ $timeClass }}-subtle text-{{ $timeClass }} border border-{{ $timeClass }}-subtle px-3 py-2">
                                     <i class="fas fa-clock me-1"></i>{{ $timeStatus }}
                                 </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                @if($congviec->ngay_hoan_thanh)
+                                    <div class="text-muted small">
+                                        <i class="fas fa-calendar-check me-1"></i>
+                                        {{ date('d/m/Y', strtotime($congviec->ngay_hoan_thanh)) }}
+                                    </div>
+                                @else
+                                    <span class="text-muted">Chưa hoàn thành</span>
+                                @endif
                             </td>
                             <td class="px-4 py-3">
                                 <div class="d-flex gap-2 justify-content-center">

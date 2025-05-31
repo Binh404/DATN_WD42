@@ -11,14 +11,14 @@ class CongViecController extends Controller
 {
     public function index()
     {
-        $congviecs = CongViec::with('phongban')->orderBy('id', 'desc')->get();
+        $congviecs = CongViec::orderBy('id', 'desc')->get();
         return view('admin.congviec.index', compact('congviecs'));
     }
 
     public function create()
     {
-        $phongBans = PhongBan::all();
-        return view('admin.congviec.create', compact('phongBans'));
+        // $phongBans = PhongBan::all();
+        return view('admin.congviec.create');
     }
 
     public function store(Request $request)
@@ -26,15 +26,13 @@ class CongViecController extends Controller
         $validated = $request->validate([
             'ten_cong_viec' => 'required|string|max:255',
             'mo_ta' => 'nullable|string',
-            'phong_ban_id' => 'required|exists:phong_ban,id',
-            'trang_thai' => 'required|in:Chưa bắt đầu,Đang làm,Hoàn thành',
-            'do_uu_tien' => 'required|in:Cao,Trung bình,Thấp',  // Kiểm tra giá trị độ ưu tiên hợp lệ
+            'trang_thai' => 'required|in:chua_bat_dau, dang_lam, hoan_thanh',  // Kiểm tra giá trị trạng thái hợp lệ
+            'do_uu_tien' => 'required|in:cao, trung_binh, thap',  // Kiểm tra giá trị độ ưu tiên hợp lệ
             'ngay_bat_dau' => 'required|date',
             'deadline' => 'required|date',
             'ngay_hoan_thanh' => 'nullable|date|after_or_equal:ngay_bat_dau',
         ], [
             'ten_cong_viec.required' => 'Tên công việc là bắt buộc.',
-            'phong_ban_id.required' => 'Vui lòng chọn phòng ban.',
             'trang_thai.required' => 'Trạng thái công việc là bắt buộc.',
             'do_uu_tien.required' => 'Độ ưu tiên là bắt buộc.',
             'ngay_bat_dau.required' => 'Ngày bắt đầu là bắt buộc.',
@@ -49,16 +47,15 @@ class CongViecController extends Controller
 
     public function show($id)
     {
-        $congviec = CongViec::with('phongban')->findOrFail($id);
+        $congviec = CongViec::findOrFail($id);
         return view('admin.congviec.show', compact('congviec'));
     }
 
     public function edit($id)
     {
         $congviec = CongViec::findOrFail($id);  // Tìm công việc theo ID
-        $phongBans = PhongBan::all();  // Lấy danh sách phòng ban
-
-        return view('admin.congviec.edit', compact('congviec', 'phongBans'));
+        // $phongBans = PhongBan::all();  // Lấy danh sách phòng ban
+        return view('admin.congviec.edit', compact('congviec'));
     }
 
     // Cập nhật công việc sau khi sửa
@@ -67,7 +64,6 @@ class CongViecController extends Controller
         $validated = $request->validate([
             'ten_cong_viec' => 'required|string|max:255',
             'mo_ta' => 'nullable|string',
-            'phong_ban_id' => 'required|exists:phong_ban,id',
             'trang_thai' => 'required|in:Chua bat dau, Dang lam, Hoan thanh',
             'do_uu_tien' => 'required|in:Cao, Trung bình, Thấp',
             'ngay_bat_dau' => 'required|date',

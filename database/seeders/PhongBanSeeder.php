@@ -2,54 +2,111 @@
 
 namespace Database\Seeders;
 
-use App\Models\PhongBan;
+use DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PhongBanSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $phongbans = [
+        DB::table('phong_ban')->insert([
+            // Phòng ban cấp cao
             [
-                'ten_phong_ban' => 'Phòng Nhân sự',
-                'ma_phong_ban' => 'PB001',
-                'mo_ta' => 'Phụ trách công tác nhân sự, tuyển dụng và phát triển nguồn nhân lực của công ty',
-                'trang_thai' => 1,
+                'id' => 1,
+                'ten_phong_ban' => 'Ban Giám Đốc',
+                'ma_phong_ban' => 'BGD',
+                'mo_ta' => 'Ban lãnh đạo công ty',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => null,
+                'ngan_sach' => 5000000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'ten_phong_ban' => 'Phòng Kỹ thuật',
-                'ma_phong_ban' => 'PB002',
-                'mo_ta' => 'Phụ trách các vấn đề kỹ thuật, phát triển và bảo trì hệ thống',
-                'trang_thai' => 1,
+                'id' => 2,
+                'ten_phong_ban' => 'Phòng Nhân Sự',
+                'ma_phong_ban' => 'HR',
+                'mo_ta' => 'Quản lý nhân sự và tuyển dụng',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => 1,
+                'ngan_sach' => 500000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'ten_phong_ban' => 'Phòng Kinh doanh',
-                'ma_phong_ban' => 'PB003',
-                'mo_ta' => 'Phụ trách hoạt động kinh doanh, bán hàng và phát triển thị trường',
-                'trang_thai' => 1,
+                'id' => 3,
+                'ten_phong_ban' => 'Phòng Kế Toán',
+                'ma_phong_ban' => 'KT',
+                'mo_ta' => 'Quản lý tài chính và kế toán',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => 1,
+                'ngan_sach' => 800000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
+                'id' => 4,
+                'ten_phong_ban' => 'Phòng Công Nghệ Thông Tin',
+                'ma_phong_ban' => 'IT',
+                'mo_ta' => 'Phát triển và vận hành hệ thống IT',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => 1,
+                'ngan_sach' => 1500000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 5,
                 'ten_phong_ban' => 'Phòng Marketing',
-                'ma_phong_ban' => 'PB004',
-                'mo_ta' => 'Phụ trách chiến lược marketing, quảng bá thương hiệu và sản phẩm',
-                'trang_thai' => 1,
+                'ma_phong_ban' => 'MKT',
+                'mo_ta' => 'Marketing và truyền thông',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => 1,
+                'ngan_sach' => 1000000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'ten_phong_ban' => 'Phòng Tài chính - Kế toán',
-                'ma_phong_ban' => 'PB005',
-                'mo_ta' => 'Phụ trách quản lý tài chính, kế toán và ngân sách của công ty',
-                'trang_thai' => 1,
+                'id' => 6,
+                'ten_phong_ban' => 'Phòng Kinh Doanh',
+                'ma_phong_ban' => 'SALES',
+                'mo_ta' => 'Bán hàng và chăm sóc khách hàng',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 1,
+                'phong_ban_cha_id' => 1,
+                'ngan_sach' => 2000000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+            // Phòng ban tại chi nhánh HCM
             [
-                'ten_phong_ban' => 'Phòng IT',
-                'ma_phong_ban' => 'PB25',
-                'mo_ta' => 'Phụ trách quản lý hệ thống công nghệ thông tin, bảo trì và phát triển phần mềm',
-                'trang_thai' => 2,
+                'id' => 7,
+                'ten_phong_ban' => 'Phòng Kinh Doanh HCM',
+                'ma_phong_ban' => 'SALES_HCM',
+                'mo_ta' => 'Bán hàng tại khu vực phía Nam',
+                'truong_phong_id' => null,
+                'chi_nhanh_id' => 2,
+                'phong_ban_cha_id' => 6,
+                'ngan_sach' => 800000000,
+                'trang_thai' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-        ];
-
-        foreach ($phongbans as $phongban) {
-            PhongBan::create($phongban);
-        }
+        ]);
     }
-} 
+}
