@@ -12,7 +12,7 @@ class CongViec extends Model
     protected $table = 'cong_viec';
 
     protected $fillable = [
-        'ten_cong_viec',
+        'ten_cong_viec',    
         'mo_ta',
         'trang_thai',
         'do_uu_tien',

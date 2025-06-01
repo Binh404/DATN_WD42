@@ -40,7 +40,6 @@ class CongViecController extends Controller
             'ngay_hoan_thanh.after_or_equal' => 'Ngày hoàn thành phải sau hoặc bằng ngày bắt đầu.',
         ]);
         CongViec::create($validated);
-
         // Quay lại trang danh sách công việc với thông báo thành công
         return redirect('/congviec')->with('success', 'Công việc đã được thêm thành công!');
     }

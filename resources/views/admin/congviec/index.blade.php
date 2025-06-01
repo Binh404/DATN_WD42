@@ -2,8 +2,6 @@
 @section('title', 'Danh Sách Công Việc')
 
 @section('content')
-@include('layouts.partials.statistics')
-
 <div class="container-fluid px-4">
     <!-- Header Section -->
     <div class="row align-items-center mb-4">
@@ -84,7 +82,7 @@
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-calendar-alt me-1"></i>Ngày Bắt Đầu
-                            </th>
+                            </th>   
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clock me-1"></i>Thời Hạn
                             </th>
