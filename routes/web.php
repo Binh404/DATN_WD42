@@ -67,3 +67,22 @@ Route::prefix('employee')->group(function () {
         return view('employe.task');
     });
 });
+
+
+// Trang giới thiệu và tuyển dụng Routes
+Route::prefix('homepage')->group(function () {
+
+    Route::get('/', function () {
+        return view('homePage.home');
+    });
+    Route::get('/about', function () {
+        return view('homePage.about');
+    });
+    Route::get('/job', function () {
+        return view('homePage.job');
+    });
+    Route::get('/job/detail', function () {
+        return view('homePage.detailJob');
+    });
+   
+});
