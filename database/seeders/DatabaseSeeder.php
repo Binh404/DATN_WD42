@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
             // Seeders cơ bản - chạy trước
             ChiNhanhSeeder::class,
             PhongBanSeeder::class,
+
             ChucVuSeeder::class,
+
 
             // User và profile
             NguoiDungSeeder::class,

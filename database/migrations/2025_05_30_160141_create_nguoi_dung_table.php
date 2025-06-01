@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
              $table->string('ten_dang_nhap')->unique();
             $table->string('email')->unique();
-            $table->string('mat_khau');
+            $table->string('password');
             $table->boolean('email_da_xac_minh')->default(false);
             $table->string('token_ghi_nho', 100)->nullable();
             $table->tinyInteger('trang_thai')->default(1);
