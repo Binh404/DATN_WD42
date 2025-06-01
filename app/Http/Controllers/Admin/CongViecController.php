@@ -28,16 +28,16 @@ class CongViecController extends Controller
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:chua_bat_dau, dang_lam, hoan_thanh',  // Kiểm tra giá trị trạng thái hợp lệ
             'do_uu_tien' => 'required|in:cao, trung_binh, thap',  // Kiểm tra giá trị độ ưu tiên hợp lệ
-            'ngay_bat_dau' => 'required|date',
-            'deadline' => 'required|date',
-            'ngay_hoan_thanh' => 'nullable|date|after_or_equal:ngay_bat_dau',
+            // 'ngay_bat_dau' => 'required|date',
+            // 'deadline' => 'required|date',
+            // 'ngay_hoan_thanh' => 'nullable|date|after_or_equal:ngay_bat_dau',
         ], [
             'ten_cong_viec.required' => 'Tên công việc là bắt buộc.',
             'trang_thai.required' => 'Trạng thái công việc là bắt buộc.',
             'do_uu_tien.required' => 'Độ ưu tiên là bắt buộc.',
-            'ngay_bat_dau.required' => 'Ngày bắt đầu là bắt buộc.',
-            'deadline.required' => 'Deadline là bắt buộc.',
-            'ngay_hoan_thanh.after_or_equal' => 'Ngày hoàn thành phải sau hoặc bằng ngày bắt đầu.',
+            // 'ngay_bat_dau.required' => 'Ngày bắt đầu là bắt buộc.',
+            // 'deadline.required' => 'Deadline là bắt buộc.',
+            // 'ngay_hoan_thanh.after_or_equal' => 'Ngày hoàn thành phải sau hoặc bằng ngày bắt đầu.',
         ]);
         CongViec::create($validated);
         // Quay lại trang danh sách công việc với thông báo thành công

@@ -80,7 +80,7 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-star me-1"></i>Độ Ưu Tiên
                             </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-calendar-alt me-1"></i>Ngày Bắt Đầu
                             </th>   
                             <th class="px-4 py-3 fw-semibold text-muted">
@@ -88,7 +88,7 @@
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clock me-1"></i>Ngày hoàn thành
-                            </th>
+                            </th> -->
                             <th class="px-4 py-3 fw-semibold text-muted text-center">
                                 <i class="fas fa-cogs me-1"></i>Hành Động
                             </th>
@@ -131,9 +131,7 @@
                                     $statusClass = [
                                         'Chưa bắt đầu' => 'danger',
                                         'Đang làm' => 'warning',
-                                        'Hoàn thành' => 'success',
-                                        'Tạm dừng' => 'warning',
-                                        'Hủy bỏ' => 'danger'
+                                        'Hoàn thành' => 'success'
                                     ][$congviec->trang_thai] ?? 'secondary';
                                 @endphp
                                 <span class="badge bg-{{ $statusClass }}-subtle text-{{ $statusClass }} border border-{{ $statusClass }}-subtle px-3 py-2">
@@ -158,7 +156,7 @@
                                     <i class="fas fa-{{ $priorityIcon }} me-1"></i>{{ $congviec->do_uu_tien }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3">
+                            <!-- <td class="px-4 py-3">
                                 <div class="text-muted small">
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     {{ date('d/m/Y', strtotime($congviec->ngay_bat_dau)) }}
@@ -197,7 +195,7 @@
                                 @else
                                     <span class="text-muted">Chưa hoàn thành</span>
                                 @endif
-                            </td>
+                            </td> -->
                             <td class="px-4 py-3">
                                 <div class="d-flex gap-2 justify-content-center">
                                     <a href="/congviec/show/{{ $congviec->id }}" 

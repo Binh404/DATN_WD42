@@ -27,27 +27,25 @@
             <textarea name="mo_ta" class="form-control" id="mo_ta" rows="4" placeholder="Mô tả công việc"></textarea>
         </div>
 
-        
-
         <div class="form-group">
             <label for="do_uu_tien">Độ Ưu Tiên</label>
             <select name="do_uu_tien" class="form-control" id="do_uu_tien">
-                <option value="Cao">Cao</option>
-                <option value="Trung bình">Trung bình</option>
-                <option value="Thấp">Thấp</option>
+                <option value="cao">Cao</option>
+                <option value="trung_binh">Trung bình</option>
+                <option value="thap">Thấp</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="trang_thai">Trạng Thái</label>
             <select name="trang_thai" class="form-control" id="trang_thai">
-                <option value="Chưa bắt đầu">Chưa bắt đầu</option>
-                <option value="Đang làm">Đang làm</option>
-                <option value="Hoàn thành">Hoàn thành</option>
+                <option value="chua_bat_dau">Chưa bắt đầu</option>
+                <option value="dang_lam">Đang làm</option>
+                <option value="hoan_thanh">Hoàn thành</option>
             </select>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="ngay_bat_dau">Ngày Bắt Đầu</label>
             <input type="date" name="ngay_bat_dau" class="form-control" id="ngay_bat_dau">
         </div>
@@ -60,7 +58,7 @@
         <div class="form-group">
             <label for="ngay_hoan_thanh">Ngày Hoàn Thành</label>
             <input type="date" name="ngay_hoan_thanh" class="form-control" id="ngay_hoan_thanh">
-        </div>
+        </div> -->
 
         <button type="submit" class="btn btn-primary">Thêm Công Việc</button>
     </form>

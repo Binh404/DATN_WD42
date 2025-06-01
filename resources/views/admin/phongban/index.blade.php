@@ -75,9 +75,9 @@
                                 <i class="fas fa-building me-1"></i>Tên Phòng Ban
                             </th>
 
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-coins text-yellow-500 mr-1"></i>Ngân sách
-                            </th>
+                            </th> -->
                             <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
                             </th> -->
@@ -131,11 +131,6 @@
                                     {{ $phongBan->mo_ta ?: 'Chưa có mô tả' }}
                                 </span>
                             </td> -->
-                            <td class="px-4 py-3 align-middle">
-                                <span class="text-muted">
-                                    {{ number_format($phongBan->ngan_sach, 0, ',', '.') }} VNĐ
-                                </span>
-                            </td>
 
                             <td class="px-4 py-3 align-middle">
                                 @if($phongBan->trang_thai == 1)

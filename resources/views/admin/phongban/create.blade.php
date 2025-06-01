@@ -62,27 +62,7 @@
                     </div>
                     @enderror
                 </div>
-
-                <div class="mb-4">
-                    <label for="ten_phong_ban" class="form-label fw-bold">
-                        <i class="fas fa-money-bill-wave me-2 text-primary"></i>
-                        Ngân sách
-                    </label>
-                    <input type="number"
-                        name="ngan_sach"
-                        id="ngan_sach"
-                        class="form-control form-control-lg @error('ngan_sach') is-invalid @enderror"
-                        value="{{ old('ngan_sach') }}"
-                        placeholder="Nhập ngân sách phòng ban">
-                    @error('ngan_sach')
-                    <div class="invalid-feedback">
-                        <i class="fas fa-exclamation-triangle me-1"></i>
-                        {{ $message }}
-                    </div>
-                    @enderror
-                </div>
-
-
+                
                 <div class="mb-4">
                     <label for="mo_ta" class="form-label fw-bold">
                         <i class="fas fa-align-left me-2 text-primary"></i>

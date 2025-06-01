@@ -35,13 +35,6 @@
                                 </tr>
 
                                 <tr>
-                                    <th class="text-muted fw-semibold" style="width: 30%;">
-                                        <i class="fas fa-coins text-yellow-500 mr-1"></i>Ngân sách
-                                    </th>
-                                    <td class="fw-bold text-dark">{{ $phongBan->ngan_sach }}</td>
-                                </tr>
-
-                                <tr>
                                     <th class="text-muted fw-semibold">
                                         <i class="fas fa-file-alt me-2"></i>Mô tả
                                     </th>
