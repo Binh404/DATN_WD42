@@ -19,6 +19,6 @@ class UngTuyen extends Model
         'kinh_nghiem',
         'ky_nang',
         'thu_gioi_thieu',
-        'cv_path'
+        'tai_cv'
     ];
 }

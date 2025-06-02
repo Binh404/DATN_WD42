@@ -22,9 +22,9 @@ class UngTuyenController extends Controller
         ]);
 
         // Lưu file CV
-        if ($request->hasFile('cv')) {
-            $cvPath = $request->file('cv')->store('applications/cv', 'public');
-            $validated['cv_path'] = $cvPath;
+        if ($request->hasFile('tai_cv')) {
+            $cvPath = $request->file('tai_cv')->store('applications/tai_cv', 'public');
+            $validated['tai_cv'] = $cvPath;
         }
         $application = UngTuyen::create($validated);
         // return redirect("/homepage/job")->with('success', 'Đơn ứng tuyển đã được gửi thành công!');

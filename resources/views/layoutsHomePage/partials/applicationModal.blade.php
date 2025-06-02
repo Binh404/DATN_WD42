@@ -53,7 +53,7 @@
                     <label for="tai_cv">Tải lên CV *</label>
                     <div class="file-upload">
                         <input type="file" id="tai_cv" name="tai_cv" accept=".pdf,.doc,.docx" required>
-                        <label for="cv" class="file-upload-label">
+                        <label for="tai_cv" class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 0.5rem; color: #4ecdc4;"></i><br>
                             <span id="fileLabel">Chọn file CV (PDF, DOC, DOCX)</span>
                         </label>
