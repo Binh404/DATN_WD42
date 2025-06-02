@@ -3,7 +3,7 @@
 <div id="home" class="page active">
     <section class="hero">
         <div class="container">
-            <h1>Chào Mừng Đến Với TechCorp</h1>
+            <h1>Chào Mừng Đến Với DV Tech</h1>
             <p>Nơi kết nối tài năng với cơ hội - Xây dựng tương lai cùng nhau</p>
             <a href="{{url('homepage/job')}}" class="cta-button">
                 Khám Phá Cơ Hội Việc Làm

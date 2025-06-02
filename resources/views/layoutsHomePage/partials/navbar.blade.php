@@ -1,8 +1,8 @@
 <header>
     <nav class="container">
-        <a href="#" class="logo">
+        <a href="{{url("homepage")}}" class="logo">
             <i class="fas fa-rocket"></i>
-            TechCorp
+            DV Tech
         </a>
         <ul class="nav-links">
             <li><a href="{{url('homepage')}}">Trang Chủ</a></li>
