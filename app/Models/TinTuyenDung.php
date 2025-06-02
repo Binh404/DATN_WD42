@@ -38,6 +38,8 @@ class TinTuyenDung extends Model
     ];
 
     protected $casts = [
+        'phuc_loi' => 'array',
+        'yeu_cau' => 'array',
         'ky_nang_yeu_cau' => 'array',
         'han_nop_ho_so' => 'date',
         'lam_viec_tu_xa' => 'boolean',
