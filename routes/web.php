@@ -26,6 +26,12 @@ Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
 // Admin Công Việc
 Route::get('/congviec', [CongViecController::class, 'index']);
+Route::get('/congviec/create', [CongViecController::class, 'create']);
+Route::post('/congviec/store', [CongViecController::class, 'store']);
+Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
+Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
+Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
+Route::delete('/congviec/delete/{id}', [CongViecController::class, 'destroy']);
 
 
 
