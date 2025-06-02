@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
-use App\Http\Controllers\Client\ApplicationController;
+use App\Http\Controllers\Admin\PhongBanController;
+use App\Http\Controllers\client\TuyenDungController;
+use App\Http\Controllers\Client\UngTuyenController;
+use App\Models\UngTuyen;
+
 Route::get('/', function () {
     return view('admin.dashboard.index');
 });
@@ -75,8 +78,6 @@ Route::prefix('employee')->group(function () {
 });
 
 
-// Client Application
-Route::post('/application/store', [ApplicationController::class, 'store'])->name('application.store');
 
 // Trang giới thiệu và tuyển dụng Routes
 Route::prefix('homepage')->group(function () {
@@ -87,11 +88,14 @@ Route::prefix('homepage')->group(function () {
     Route::get('/about', function () {
         return view('homePage.about');
     });
-    Route::get('/job', function () {
-        return view('homePage.job');
-    });
-    Route::get('/job/detail', function () {
-        return view('homePage.detailJob');
-    });
-   
+    Route::get('/job', [TuyenDungController::class, 'getJob'])->name('tuyendung.job');
+    Route::get('/job/{id}', [TuyenDungController::class, 'getJobDetail'])->name('tuyendung.getJobDetail');
+
+
+    // Route::get('/job/detail', function () {
+    //     return view('homePage.detailJob');
+    // });
 });
+
+    // Client Application
+    Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);

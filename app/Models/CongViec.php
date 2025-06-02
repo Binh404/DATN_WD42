@@ -12,7 +12,7 @@ class CongViec extends Model
     protected $table = 'cong_viec';
 
     protected $fillable = [
-        'ten_cong_viec',    
+        'ten_cong_viec',
         'mo_ta',
         'trang_thai',
         'do_uu_tien',
@@ -22,14 +22,14 @@ class CongViec extends Model
         'tien_do',
     ];
 
-    // protected $casts = [
-    //     'ngay_bat_dau' => 'datetime',
-    //     'deadline' => 'datetime',
-    //     'ngay_hoan_thanh' => 'datetime',
-    //     'tien_do' => 'integer',
-    //     'created_at' => 'datetime',
-    //     'updated_at' => 'datetime',
-    // ];
+    protected $casts = [
+        'ngay_bat_dau' => 'datetime',
+        'deadline' => 'datetime',
+        'ngay_hoan_thanh' => 'datetime',
+        'tien_do' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function phanCong()
     {
