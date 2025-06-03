@@ -3,42 +3,66 @@
 
 @section('content')
 
-<h2 class="text-2xl font-bold mb-4">Danh sách Ứng Viên</h2>
-
-<table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-    <thead class="bg-gray-200">
-        <tr>
-            <th class="py-3 px-4 text-left">STT</th>
-            <th class="py-3 px-4 text-left">Tên Ứng Viên</th>
-            <th class="py-3 px-4 text-left">Email</th>
-            <th class="py-3 px-4 text-left">Số Điện Thoại</th>
-            <th class="py-3 px-4 text-left">Kinh Nghiệm</th>
-            <th class="py-3 px-4 text-left">Kỹ Năng</th>
-            <th class="py-3 px-4 text-left">Vị Trí</th>
-            <th class="py-3 px-4 text-left">Hành Động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($ungViens as $key => $uv)
-        <tr class="border-b hover:bg-gray-100">
-            <td class="py-2 px-4">{{ $key + 1 }}</td>
-            <td class="py-2 px-4">{{ $uv->ten_ung_vien }}</td>
-            <td class="py-2 px-4">{{ $uv->email }}</td>
-            <td class="py-2 px-4">{{ $uv->so_dien_thoai }}</td>
-            <td class="py-2 px-4">{{ $uv->kinh_nghiem }}</td>
-            <td class="py-2 px-4">{{ $uv->ky_nang }}</td>
-            <td class="py-2 px-4">{{ $uv->tinTuyenDung->tieu_de }}</td>
-            <td class="py-2 px-4 flex space-x-2">
-                <a href="#" class="text-blue-500 hover:underline">Xem</a>
-                <form action="#" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ứng viên này không?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-red-500 hover:underline">Xóa</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+<div class="container mt-4">
+    <h2 class="text-center mb-4 fw-bold text-primary">📋 Danh sách Ứng Viên</h2>
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle shadow-sm rounded">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên Ứng Viên</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Số Điện Thoại</th>
+                    <th scope="col">Kinh Nghiệm</th>
+                    <th scope="col">Kỹ Năng</th>
+                    <th scope="col">Vị Trí</th>
+                    <th scope="col">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($ungViens as $key => $uv)
+                <tr>
+                    <td class="text-center">{{ $key + 1 }}</td>
+                    <td>{{ $uv->ten_ung_vien }}</td>
+                    <td>{{ $uv->email }}</td>
+                    <td>{{ $uv->so_dien_thoai }}</td>
+                    <td>{{ $uv->kinh_nghiem }}</td>
+                    <td>{{ $uv->ky_nang }}</td>
+                    <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
+                    <td class="text-center">
+                        <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white me-1">Xem</a>
+                        <form action="/ungvien/delete/{{ $uv->id }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ứng viên này không?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @endsection
+
+<style>
+    table tr:hover {
+        background-color: #f0f8ff !important;
+        transition: background 0.3s ease;
+    }
+
+    .btn-info:hover {
+        background-color: #0d6efd !important;
+    }
+</style>

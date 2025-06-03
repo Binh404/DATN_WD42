@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\TinTuyenDung;
 use App\Models\UngTuyen;
+use App\Models\UngVien;
 use Illuminate\Http\Request;
 
 class UngTuyenController extends Controller
 {
 
+    // Admin Ung Tuyen
     public function index() {
         $ungViens = UngTuyen::with('tinTuyenDung')->orderBy('id', 'desc')->get();
         return view('admin.ungtuyen.index', compact('ungViens'));
     }
 
+
+    // Client Application
     public function store(Request $request)
     {
             // Validate dữ liệu form
@@ -54,5 +58,16 @@ class UngTuyenController extends Controller
             $application = UngTuyen::create($validated);
             
             echo "<script>alert('Đăng ký ứng tuyển thành công!'); window.location.href = '/homepage/job';</script>";
+    }
+
+    // Admin xóa đơn ứng tuyển
+    public function destroy($id) {
+        $ungVien = UngTuyen::findOrFail($id)->delete();
+        return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
+    }
+
+    public function show($id) {
+        $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
+        return view('admin.ungtuyen.show', compact('ungVien'));
     }
 }

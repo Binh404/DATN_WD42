@@ -38,6 +38,8 @@ Route::delete('/congviec/delete/{id}', [CongViecController::class, 'destroy']);
 
 // Admin Ứng Tuyển
 Route::get('/ungvien', [UngTuyenController::class, 'index']);
+Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
+Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
 
 // Client Application
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
