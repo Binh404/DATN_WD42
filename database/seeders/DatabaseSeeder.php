@@ -55,6 +55,8 @@ class DatabaseSeeder extends Seeder
             // Tuyển dụng
             TinTuyenDungSeeder::class,
             UngVienSeeder::class,
+            YeuCauTuyenDungSeeder::class,
+            LichSuYeuCauTuyenDungSeeder::class,
 
             // Tài liệu
             TaiLieuSeeder::class,
