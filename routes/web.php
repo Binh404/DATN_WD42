@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
@@ -7,11 +8,33 @@ use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\client\TinTuyenDungController;
 
+use App\Http\Controllers\ChucVuController;
+
+Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
+
 Route::get('/', function () {
-    return view('admin.dashboard.index');
+    return view('auth.login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
+Route::get('/dashboard', function () {
+    return view('admin.dashboard.index');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
+
+
+
+// Route::get('/', function () {
+//     return view('admin.dashboard.index');
+// });
+
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 
 // Admin Phòng Ban
 Route::get('/phongban', [PhongBanController::class, 'index']);

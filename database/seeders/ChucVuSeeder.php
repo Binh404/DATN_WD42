@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class ChucVuSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class ChucVuSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('chuc_vu')->insert([
+        FacadesDB::table('chuc_vu')->insert([
             [
                 'id' => 1,
                 'ten' => 'Giám Đốc',
