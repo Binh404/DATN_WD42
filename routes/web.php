@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\client\TinTuyenDungController;
+use App\Http\Middleware\PreventBackHistory;
 
 
 
@@ -22,34 +23,39 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
         return view('admin.dashboard.index');
         })->name('admin.dashboard');;
     // Admin Phòng Ban
-    Route::get('/phongban', [PhongBanController::class, 'index']);
-    Route::get('/phongban/create', [PhongBanController::class, 'create']);
-    Route::post('/phongban/store', [PhongBanController::class, 'store']);
-    Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
-    Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
-    Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
+    // Route::get('/phongban', [PhongBanController::class, 'index']);
+    // Route::get('/phongban/create', [PhongBanController::class, 'create']);
+    // Route::post('/phongban/store', [PhongBanController::class, 'store']);
+    // Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
+    // Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
+    // Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
     Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
 
     // Admin Công Việc
-    Route::get('/congviec', [CongViecController::class, 'index']);
-    Route::get('/congviec/create', [CongViecController::class, 'create']);
-    Route::post('/congviec/store', [CongViecController::class, 'store']);
-    Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
-    Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
-    Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
+    // Route::get('/congviec', [CongViecController::class, 'index']);
+    // Route::get('/congviec/create', [CongViecController::class, 'create']);
+    // Route::post('/congviec/store', [CongViecController::class, 'store']);
+    // Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
+    // Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
+    // Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
     Route::delete('/congviec/delete/{id}', [CongViecController::class, 'destroy']);
 
     // Admin Vai Trò
-    Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
-    Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
-    Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+    // Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
+    // Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
+    // Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+
+    //Admin Profile
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
 
 // HR routes
-Route::middleware(['auth', CheckRole::class . ':hr'])->group(function () {
-    Route::get('/hr/dashboard', function () {
+Route::middleware(['auth', CheckRole::class . ':admin,hr'])->group(function () {
+    Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
     // Admin Phòng Ban
@@ -69,40 +75,53 @@ Route::middleware(['auth', CheckRole::class . ':hr'])->group(function () {
     Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
 
     // Admin Vai Trò
+    Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
     Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
-    Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+
+    // HR Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Employee routes
 Route::prefix('employee')->middleware(['auth', CheckRole::class . ':employee'])->group(function () {
 
-     Route::get('/dashboard', function () {
+    Route::get('/dashboard', function () {
         return view('employe.dashboard');
     })->name('employee.dashboard');
 
-            Route::get('/advance', function () {
-                return view('employe.advance');
-            });
-            Route::get('/attendance', function () {
-                return view('employe.attendance');
-            });
-            Route::get('/leave', function () {
-                return view('employe.leave');
-            });
-            Route::get('/notification', function () {
-                return view('employe.notification');
-            });
-            Route::get('/profile', function () {
-                return view('employe.profile');
-            });
-            Route::get('/salary', function () {
-                return view('employe.salary');
-            });
-            Route::get('/task', function () {
-                return view('employe.task');
-            });
+    Route::get('/advance', function () {
+        return view('employe.advance');
+    });
+
+    Route::get('/attendance', function () {
+        return view('employe.attendance');
+    });
+
+    Route::get('/leave', function () {
+        return view('employe.leave');
+    });
+
+    Route::get('/notification', function () {
+        return view('employe.notification');
+    });
+
+    Route::get('/salary', function () {
+        return view('employe.salary');
+    });
+
+    Route::get('/task', function () {
+        return view('employe.task');
+    });
+
+    // ✅ EM Profile - đặt tên khác để không bị trùng
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('employee.profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('employee.profile.destroy');
 });
+
 
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
 
@@ -110,17 +129,22 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('admin.dashboard.index');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
+// Route::middleware(['auth', PreventBackHistory::class])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('admin.dashboard.index');
+//     })->name('dashboard');
+
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
+
+
+
+// ->middleware(['auth', 'verified'])->name('dashboard')
 require __DIR__ . '/auth.php';
 
 

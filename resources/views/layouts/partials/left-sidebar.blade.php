@@ -253,7 +253,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="" class="nav-link">
+              <a href="/vaitro" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>

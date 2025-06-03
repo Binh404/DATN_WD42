@@ -15,7 +15,7 @@ class NguoiDungSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('nguoi_dung')->insert([
+        DB::table('nguoi_dung')->insert([
             [
                 'id' => 1,
                 'ten_dang_nhap' => 'admin',

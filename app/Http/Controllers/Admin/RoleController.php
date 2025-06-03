@@ -37,7 +37,7 @@ class RoleController extends Controller
 
     public function index()
     {
-        $roles = \Spatie\Permission\Models\Role::all();
+        $roles = Role::all();
         return view('admin.vaitro.roles_index', compact('roles'));
     }
 }
