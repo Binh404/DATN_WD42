@@ -22,14 +22,14 @@ class CongViec extends Model
         'tien_do',
     ];
 
-    protected $casts = [
-        'ngay_bat_dau' => 'datetime',
-        'deadline' => 'datetime',
-        'ngay_hoan_thanh' => 'datetime',
-        'tien_do' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'ngay_bat_dau' => 'datetime',
+    //     'deadline' => 'datetime',
+    //     'ngay_hoan_thanh' => 'datetime',
+    //     'tien_do' => 'integer',
+    //     'created_at' => 'datetime',
+    //     'updated_at' => 'datetime',
+    // ];
 
     public function phanCong()
     {

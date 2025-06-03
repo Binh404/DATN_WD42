@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use DB;
-use Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class NguoiDungSeeder extends Seeder
 {
@@ -14,14 +15,14 @@ class NguoiDungSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('nguoi_dung')->insert([
+        DB::table('nguoi_dung')->insert([
             [
                 'id' => 1,
                 'ten_dang_nhap' => 'admin',
                 'email' => 'admin@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -35,8 +36,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'hr.manager',
                 'email' => 'hr.manager@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -50,8 +51,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'hr.staff',
                 'email' => 'hr.staff@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -65,8 +66,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'it.manager',
                 'email' => 'it.manager@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -80,8 +81,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'dev.senior',
                 'email' => 'dev.senior@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -95,8 +96,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'dev.junior',
                 'email' => 'dev.junior@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -110,8 +111,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'acc.manager',
                 'email' => 'acc.manager@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
@@ -125,8 +126,8 @@ class NguoiDungSeeder extends Seeder
                 'ten_dang_nhap' => 'acc.staff',
                 'email' => 'acc.staff@company.com',
                 'password' => Hash::make('password123'),
-                'email_da_xac_minh' => true,
-                'token_ghi_nho' => null,
+                'email_verified_at' => true,
+                'remember_token' => null,
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',

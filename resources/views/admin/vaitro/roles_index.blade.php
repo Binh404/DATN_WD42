@@ -21,11 +21,11 @@
             @foreach($roles as $role)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $role->name }}</td>
-                    <td>{{ $role->display_name }}</td>
-                    <td>{{ $role->description }}</td>
-                    <td>{{ $role->level }}</td>
-                    <td>{{ $role->is_system ? '✔' : '' }}</td>
+                    <td>{{ $role->ten }}</td>
+                    <td>{{ $role->ten_hien_thi }}</td>
+                    <td>{{ $role->mo_ta }}</td>
+                    <td>{{ $role->la_vai_tro_he_thong }}</td>
+                    <td>{{ $role->trang_thai ? '✔' : '' }}</td>
                     <td>
                         <a href="#" class="btn btn-warning btn-sm">Sửa</a>
                         <a href="#" class="btn btn-danger btn-sm">Xóa</a>
