@@ -16,8 +16,8 @@ return new class extends Migration
              $table->string('ten_dang_nhap')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->boolean('email_da_xac_minh')->default(false);
-            $table->string('token_ghi_nho', 100)->nullable();
+            $table->boolean('email_verified_at')->default(false);
+            $table->string('remember_token', 255)->nullable();
             $table->tinyInteger('trang_thai')->default(1);
             $table->timestamp('lan_dang_nhap_cuoi')->nullable();
             $table->ipAddress('ip_dang_nhap_cuoi')->nullable();

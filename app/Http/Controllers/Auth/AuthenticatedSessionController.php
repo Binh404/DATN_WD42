@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Hiển thị form đăng nhập.
      */
     public function create(): View
     {
@@ -20,26 +20,41 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Xử lý request đăng nhập.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+    // Đảm bảo đã load vai trò
+
+        $roles = $user->vaiTros->pluck('ten')->toArray();
+
+        if (in_array('admin', $roles)) {
+            return redirect()->route('admin.dashboard');
+        } elseif (in_array('hr', $roles)) {
+            return redirect()->route('hr.dashboard');
+        } elseif (in_array('employee', $roles)) {
+            return redirect()->route('employee.dashboard');
+        }
+
+        // Không có vai trò phù hợp
+        Auth::logout();
+        return redirect()->route('login')->withErrors([
+            'email' => 'Tài khoản không có quyền truy cập hệ thống.',
+        ]);
     }
 
     /**
-     * Destroy an authenticated session.
+     * Đăng xuất khỏi phiên đăng nhập.
      */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

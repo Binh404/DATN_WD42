@@ -65,7 +65,7 @@ class NguoiDung extends Authenticatable
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
 
-    public function vaiTro()
+    public function vaiTros()
     {
         return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
                     ->withTimestamps();
