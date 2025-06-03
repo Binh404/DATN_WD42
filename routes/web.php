@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
-use App\Http\Controllers\client\TuyenDungController;
+use App\Http\Controllers\client\TinTuyenDungController;
 
 Route::get('/', function () {
     return view('admin.dashboard.index');
@@ -85,8 +85,10 @@ Route::prefix('homepage')->group(function () {
     Route::get('/about', function () {
         return view('homePage.about');
     });
-    Route::get('/job', [TuyenDungController::class, 'getJob'])->name('tuyendung.job');
-    Route::get('/job/{id}', [TuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
+    Route::get('/job', [TinTuyenDungController::class, 'getJob'])->name('tuyendung.job');
+    Route::get('/job/{id}', [TinTuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
+    Route::post('/apply', [TinTuyenDungController::class, 'applyJob'])->name('job.apply');
+
 
 
     // Route::get('/job/detail', function () {
