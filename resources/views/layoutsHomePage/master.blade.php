@@ -14,15 +14,12 @@
         @yield('content')
     </main>
 
-    <!-- Application Modal -->
-    @include('layoutsHomePage.partials.applicationModal')
-
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="{{asset('js/homePage.js')}}"></script>
     <script>
     function openApplicationModal(jobTitle, jobId) {
         document.getElementById('modalJobTitle').textContent = 'Ứng Tuyển: ' + jobTitle;
-        document.getElementById('job_id').value = jobId;
+        document.getElementById('tin_tuyen_dung_id').value = jobId;
         document.getElementById('applicationModal').style.display = 'block';
     }
 

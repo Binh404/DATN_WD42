@@ -280,12 +280,12 @@
                 <p>Quản lý phòng ban</p>
               </a>
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <a href="/congviec" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Quản lý công việc</p>
               </a>
-            </li> -->
+            </li>
             <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -303,7 +303,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="" class="nav-link">
+              <a href="/ungvien" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Ứng viên</p>
               </a>

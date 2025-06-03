@@ -12,7 +12,7 @@ class UngTuyen extends Model
     use HasFactory;
 
     protected $fillable = [
-        'job_id',
+        'tin_tuyen_dung_id',
         'ten_ung_vien',
         'email',
         'so_dien_thoai',
@@ -21,4 +21,8 @@ class UngTuyen extends Model
         'thu_gioi_thieu',
         'tai_cv'
     ];
+
+    public function tinTuyenDung() {
+        return $this->belongsTo(TinTuyenDung::class, 'tin_tuyen_dung_id');
+    }
 }

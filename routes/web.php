@@ -36,6 +36,11 @@ Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
 Route::delete('/congviec/delete/{id}', [CongViecController::class, 'destroy']);
 
 
+// Admin Ứng Tuyển
+Route::get('/ungvien', [UngTuyenController::class, 'index']);
+
+// Client Application
+Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
 
 
 // Admin Vai Trò
@@ -96,6 +101,3 @@ Route::prefix('homepage')->group(function () {
     //     return view('homePage.detailJob');
     // });
 });
-
-    // Client Application
-    Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
