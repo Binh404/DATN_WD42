@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\client\TuyenDungController;
-
+use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\ChucVuController;
 
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
@@ -18,7 +18,6 @@ Route::get('/', function () {
 
 
 
-use App\Http\Middleware\PreventBackHistory;
 
 Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     Route::get('/dashboard', function () {
@@ -34,7 +33,6 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
 
 // ->middleware(['auth', 'verified'])->name('dashboard')
 require __DIR__ . '/auth.php';
-
 
 
 // Route::get('/', function () {
@@ -110,7 +108,7 @@ Route::prefix('homepage')->group(function () {
         return view('homePage.about');
     });
     Route::get('/job', [TuyenDungController::class, 'getJob'])->name('tuyendung.job');
-    Route::get('/job/{id}', [TuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
+    Route::get('/job/{id}', [TuyenDungController::class, 'getJobDetail'])->name('tuyendung.getJobDetail');
 
 
     // Route::get('/job/detail', function () {
