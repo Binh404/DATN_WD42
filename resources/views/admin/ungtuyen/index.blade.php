@@ -5,16 +5,42 @@
 
 <div class="container mt-4">
     <h2 class="text-center mb-4 fw-bold text-primary">📋 Danh sách Ứng Viên</h2>
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-@if(session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+
+    <form method="GET" action="/ungvien" class="filter-form">
+        <input type="text" name="ten_ung_vien" placeholder="Tên ứng viên" value="{{ request('ten_ung_vien') }}">
+        <input type="text" name="ky_nang" placeholder="Kỹ năng" value="{{ request('ky_nang') }}">
+
+        <select name="kinh_nghiem">
+            <option value="">Tất cả kinh nghiệm</option>
+            <option value="0-1" {{ request('kinh_nghiem') == '0-1' ? 'selected' : '' }}>0-1 năm</option>
+            <option value="1-3" {{ request('kinh_nghiem') == '1-3' ? 'selected' : '' }}>1-3 năm</option>
+            <option value="3-5" {{ request('kinh_nghiem') == '3-5' ? 'selected' : '' }}>3-5 năm</option>
+            <option value="5+" {{ request('kinh_nghiem') == '5+' ? 'selected' : '' }}>Trên 5 năm</option>
+        </select>
+
+        <select name="vi_tri">
+            <option value="">Tất cả vị trí</option>
+            @foreach($viTriList as $id => $tieuDe)
+            <option value="{{ $id }}" {{ request('vi_tri') == $id ? 'selected' : '' }}>
+                {{ $tieuDe }}
+            </option>
+            @endforeach
+        </select>
+
+        <button type="submit">Lọc</button>
+    </form>
+
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle shadow-sm rounded">
             <thead class="table-primary text-center">

@@ -1,148 +1,166 @@
-<!-- Application Modal -->
 <div id="applicationModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 id="modalJobTitle"></h2>
             <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalJobTitle" style="color: white; margin: 0;">Ứng Tuyển Vị Trí</h2>
         </div>
         <div class="modal-body">
-            <form id="applicationForm" action="/ungtuyen/store" method="POST" enctype="multipart/form-data">
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                Đơn ứng tuyển của bạn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+            </div>
+            <form id="applicationForm" action="/ungtuyen/store" method="post" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="tin_tuyen_dung_id" id="tin_tuyen_dung_id">
-                
+                <input type="hidden" name="tin_tuyen_dung_id" id="tin_tuyen_dung_id" value="{{ $tuyenDung->id ?? '' }}">
                 <div class="form-group">
-                    <label for="ho_ten">Họ và tên</label>
-                    <input type="text" class="form-control" id="ho_ten" name="ho_ten" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="so_dien_thoai">Số điện thoại</label>
-                    <input type="tel" class="form-control" id="so_dien_thoai" name="so_dien_thoai" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="kinh_nghiem">Kinh nghiệm làm việc (năm)</label>
-                    <input type="number" class="form-control" id="kinh_nghiem" name="kinh_nghiem" required min="0">
-                </div>
-
-                <div class="form-group">
-                    <label for="cv" class="form-label">CV của bạn</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
-                        <label class="custom-file-label" for="cv" id="fileLabel">Chọn file CV (PDF, DOC, DOCX)</label>
+                    <label for="ten_ung_vien">Họ và Tên *</label>
+                    <input type="text" id="ten_ung_vien" name="ten_ung_vien" placeholder="Nhập họ và tên đầy đủ">
+                    @error('ten_ung_vien')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
                     </div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="thu_xin_viec">Thư xin việc</label>
-                    <textarea class="form-control" id="thu_xin_viec" name="thu_xin_viec" rows="4" required></textarea>
+                    <label for="email">Email *</label>
+                    <input type="text" id="email" name="email" placeholder="your.email@example.com">
+                    @error('email')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary">Nộp đơn ứng tuyển</button>
+
+                <div class="form-group">
+                    <label for="so_dien_thoai">Số Điện Thoại *</label>
+                    <input type="tel" id="so_dien_thoai" name="so_dien_thoai" placeholder="0123 456 789">
+                    @error('so_dien_thoai')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <label for="kinh_nghiem">Kinh Nghiệm</label>
+                    <select id="kinh_nghiem" name="kinh_nghiem">
+                        <option value="">Chọn mức kinh nghiệm</option>
+                        <option value="0-1">0-1 năm</option>
+                        <option value="1-3">1-3 năm</option>
+                        <option value="3-5">3-5 năm</option>
+                        <option value="5+">Trên 5 năm</option>
+                    </select>
+                    @error('kinh_nghiem')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <label for="ky_nang">Kỹ Năng</label>
+                    <input type="text" id="ky_nang" name="ky_nang" placeholder="VD: JavaScript, React, Node.js, Python...">
+                    @error('ky_nang')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <label for="thu_gioi_thieu">Thư Giới Thiệu</label>
+                    <textarea id="thu_gioi_thieu" name="thu_gioi_thieu" rows="4"
+                        placeholder="Giới thiệu ngắn gọn về bản thân và lý do muốn ứng tuyển vị trí này..."></textarea>
+                    @error('thu_gioi_thieu')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <label for="tai_cv">Tải lên CV *</label>
+                    <div class="file-upload">
+                        <input type="file" id="tai_cv" name="tai_cv" accept=".pdf,.doc,.docx">
+                        <label for="tai_cv" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Chọn file CV (PDF, DOC, DOCX)</span>
+                        </label>
+                    </div>
+                    @error('tai_cv')
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi Đơn Ứng Tuyển
+                </button>
             </form>
         </div>
     </div>
 </div>
 
 <style>
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
+    select {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+    }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 8px;
-}
+    select:focus {
+        outline: none;
+        border-color: #4ecdc4;
+        box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+    }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+    select option {
+        background-color: #2d3748;
+        color: white;
+        padding: 1rem;
+    }
 
-.close {
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    .error-message {
+        color: #ff4444;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
 
-.close:hover {
-    color: black;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.custom-file {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.custom-file-input {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: calc(1.5em + 0.75rem + 2px);
-    opacity: 0;
-}
-
-.custom-file-label {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.btn-primary:hover {
-    background-color: #45a049;
-}
+    .form-group input.error,
+    .form-group select.error,
+    .form-group textarea.error {
+        border-color: #ff4444;
+    }
 </style>
-
 @if ($errors->any())
 <script>
     window.onload = function() {
