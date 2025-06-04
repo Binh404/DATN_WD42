@@ -42,7 +42,7 @@ Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
 Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
 
 // Client Application
-Route::get('/ungtuyen/create/{id}', [UngTuyenController::class, 'create']);
+// Route::get('/ungtuyen/create/{id}', [UngTuyenController::class, 'create']);
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
 
 

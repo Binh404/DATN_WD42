@@ -17,10 +17,10 @@ class UngTuyenController extends Controller
         return view('admin.ungtuyen.index', compact('ungViens'));
     }
 
-    public function create($id) {
-        $tuyenDung = TinTuyenDung::findOrFail($id);
-        return view('homePage.ungtuyen', compact('tuyenDung'));
-    }
+    // public function create($id) {
+    //     $tuyenDung = TinTuyenDung::findOrFail($id);
+    //     return view('homePage.ungtuyen', compact('tuyenDung'));
+    // }
 
     // Client Application
     public function store(Request $request)
@@ -60,7 +60,6 @@ class UngTuyenController extends Controller
 
             // Tạo đơn ứng tuyển
             $application = UngTuyen::create($validated);
-            
             echo "<script>alert('Đăng ký ứng tuyển thành công!'); window.location.href = '/homepage/job';</script>";
     }
 

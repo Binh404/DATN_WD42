@@ -82,7 +82,9 @@
 
             <div class="sidebar">
                 <div class="sidebar-card">
-                    <a class="apply-button" href="/ungtuyen/create/{{$tuyenDung->id}}">Ứng tuyển ngay</a>
+                    <button class="apply-button" onclick="openApplicationModal('{{$tuyenDung->tieu_de}}', {{$tuyenDung->id}})">
+                        Ứng tuyển ngay
+                    </button>
                     <button class="save-button">
                         Lưu tin tuyển dụng
                     </button>
