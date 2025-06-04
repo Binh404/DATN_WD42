@@ -14,22 +14,22 @@ class RoleController extends Controller
     {
         // Lấy permission và group theo group_id (hoặc group_name nếu có)
         // $permissions = Permission::all()->groupBy('group_id');
-        $permissions = Permission::join('permission_groups', 'permissions.group_id', '=', 'permission_groups.id')
-            ->select('permissions.*', 'permission_groups.name as group_name')
+        $permissions = Permission::join('nhom_quyen', 'quyen.nhom_quyen_id', '=', 'nhom_quyen.id')
+            ->select('quyen.*', 'nhom_quyen.ten as ten_nhom')
             ->get()
-            ->groupBy('group_name');
+            ->groupBy('ten_nhom');
         return view('admin.vaitro.roles_create', compact('permissions'));
     }
 
     public function store(Request $request)
     {
         $role = Role::create([
-            'name' => $request->name,
-            'display_name' => $request->display_name,
-            'description' => $request->description,
-            'level' => $request->level ?? 0,
-            'is_system' => $request->is_system ?? false,
-            'guard_name' => 'web',
+            'ten' => $request->name,
+            'ten_hien_thi' => $request->display_name,
+            'mo_ta' => $request->description,
+            'la_vai_tro_he_thong' => $request->level ?? 0,
+            'trang_thai' => $request->is_system ?? false,
+            'ten_nhom' => 'web',
         ]);
         $role->syncPermissions($request->permissions ?? []);
         return redirect()->route('roles.create')->with('success', 'Tạo vai trò thành công!');

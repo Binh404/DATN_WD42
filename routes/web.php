@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\employee\BangLuongController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\CongViecController;
+use App\Http\Controllers\Admin\PhongBanController;
+use App\Http\Controllers\client\TuyenDungController;
 
 Route::get('/', function () {
     return view('admin.dashboard.index');
@@ -58,4 +60,24 @@ Route::prefix('employee')->group(function () {
     Route::get('/task', function () {
         return view('employe.task');
     });
+});
+
+
+// Trang giới thiệu và tuyển dụng Routes
+Route::prefix('homepage')->group(function () {
+
+    Route::get('/', function () {
+        return view('homePage.home');
+    });
+    Route::get('/about', function () {
+        return view('homePage.about');
+    });
+    Route::get('/job', [TuyenDungController::class, 'getJob'])->name('tuyendung.job');
+    Route::get('/job/{id}', [TuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
+
+
+    // Route::get('/job/detail', function () {
+    //     return view('homePage.detailJob');
+    // });
+
 });

@@ -36,6 +36,7 @@ class BangLuong extends Model
 
     public function luongNhanVien()
     {
+        // hehe
         return $this->hasMany(LuongNhanVien::class, 'bang_luong_id');
     }
 
