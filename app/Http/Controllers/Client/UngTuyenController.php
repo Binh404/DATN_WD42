@@ -17,6 +17,10 @@ class UngTuyenController extends Controller
         return view('admin.ungtuyen.index', compact('ungViens'));
     }
 
+    public function create($id) {
+        $tuyenDung = TinTuyenDung::findOrFail($id);
+        return view('homePage.ungtuyen', compact('tuyenDung'));
+    }
 
     // Client Application
     public function store(Request $request)

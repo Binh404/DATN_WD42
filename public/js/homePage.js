@@ -1,5 +1,3 @@
-
-
 // Modal functions
 function openApplicationModal(jobTitle, jobId) {
     document.getElementById('modalJobTitle').textContent = `Ứng Tuyển: ${jobTitle}`;
@@ -36,6 +34,36 @@ window.addEventListener('click', function(e) {
     if (e.target === modal) {
         closeModal();
     }
+});
+
+// Progress bar animation
+window.onscroll = function() {
+    let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    let scrolled = (winScroll / height) * 100;
+    document.getElementById("progressBar").style.width = scrolled + "%";
+};
+
+// Typed.js initialization for the hero section
+document.addEventListener('DOMContentLoaded', function() {
+    if(document.querySelector('.typed-text')) {
+        let typed = new Typed('.typed-text', {
+            strings: ["Phát triển sự nghiệp", "Khám phá cơ hội", "Thực hiện ước mơ"],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true
+        });
+    }
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
 });
 
 // Header scroll effect
