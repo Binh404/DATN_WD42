@@ -10,13 +10,15 @@ use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Middleware\PreventLoginCacheMiddleware;
 
 
 
 
 
 // Admin routes
-Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
+Route::middleware(['auth',PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
   Route::get('/admin/dashboard', function () {
@@ -54,7 +56,7 @@ Route::middleware(['auth', CheckRole::class . ':admin'])->group(function () {
 });
 
 // HR routes
-Route::middleware(['auth', CheckRole::class . ':admin,hr'])->group(function () {
+Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
@@ -86,7 +88,7 @@ Route::middleware(['auth', CheckRole::class . ':admin,hr'])->group(function () {
 });
 
 // Employee routes
-Route::prefix('employee')->middleware(['auth', CheckRole::class . ':employee'])->group(function () {
+Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('employe.dashboard');
@@ -125,9 +127,20 @@ Route::prefix('employee')->middleware(['auth', CheckRole::class . ':employee'])-
 
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
 
-Route::get('/', function () {
-    return view('auth.login');
+
+
+Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
+    Route::get('/', function () {
+        return view('auth.login');
+    })->name('login');
+
+    Route::get('/login', function () {
+        return view('auth.login');
+    });
 });
+
+
+
 
 
 

@@ -17,6 +17,7 @@ class CheckRole
      */
 public function handle($request, Closure $next, ...$vaiTro)
 {
+
     if (!Auth::check()) {
         return redirect()->route('login');
     }
