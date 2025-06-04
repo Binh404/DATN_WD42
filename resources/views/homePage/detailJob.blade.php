@@ -82,7 +82,7 @@
 
             <div class="sidebar">
                 <div class="sidebar-card">
-                    <button class="apply-button" onclick="openApplicationModal('Frontend Developer', 1)">
+                    <button class="apply-button" onclick="openApplicationModal('{{$tuyenDung->tieu_de}}', {{$tuyenDung->id}})">
                         Ứng tuyển ngay
                     </button>
                     <button class="save-button">
@@ -118,6 +118,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Application Modal -->
+    @include('layoutsHomePage.partials.applicationModal', ['tuyenDung' => $tuyenDung])
 @endsection
 <style>
     .company-logo {

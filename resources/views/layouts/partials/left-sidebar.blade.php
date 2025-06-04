@@ -286,10 +286,26 @@
                 <p>Quản lý công việc</p>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Báo cáo phòng ban</p>
+              </a>
+            </li> -->
+          </ul>
+        </li>
+
+         <!-- Ứng tuyển Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Ứng tuyển<i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/ungvien" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Ứng viên</p>
               </a>
             </li>
           </ul>

@@ -4,14 +4,15 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChucVuController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
-use App\Http\Controllers\client\TinTuyenDungController;
-use App\Http\Middleware\PreventBackHistory;
-use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Client\UngTuyenController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
+use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\client\TinTuyenDungController;
 
 
 
@@ -76,6 +77,13 @@ Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin
     Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
     Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
 
+    // Admin Ứng Tuyển
+    Route::get('/ungvien', [UngTuyenController::class, 'index']);
+    Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
+    Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
+
+
+
     // Admin Vai Trò
     Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
@@ -118,15 +126,13 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
         return view('employe.task');
     });
 
-    // ✅ EM Profile - đặt tên khác để không bị trùng
+    // EM Profile , đặt tên khác để không bị trùng
     Route::get('/profile', [ProfileController::class, 'edit'])->name('employee.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('employee.profile.destroy');
 });
 
-
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
-
 
 
 Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
@@ -139,29 +145,7 @@ Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddle
     });
 });
 
-
-
-
-
-
-
-// Route::middleware(['auth', PreventBackHistory::class])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('admin.dashboard.index');
-//     })->name('dashboard');
-
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-
-
-// ->middleware(['auth', 'verified'])->name('dashboard')
 require __DIR__ . '/auth.php';
-
-
-
 
 // Trang giới thiệu và tuyển dụng Routes
 Route::prefix('homepage')->group(function () {
@@ -172,9 +156,13 @@ Route::prefix('homepage')->group(function () {
     Route::get('/about', function () {
         return view('homePage.about');
     });
+
     Route::get('/job', [TinTuyenDungController::class, 'getJob'])->name('tuyendung.job');
     Route::get('/job/{id}', [TinTuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
     Route::post('/apply', [TinTuyenDungController::class, 'applyJob'])->name('job.apply');
 
 
 });
+
+// Client Application
+    Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
