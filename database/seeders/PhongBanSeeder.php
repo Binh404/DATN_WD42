@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class PhongBanSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class PhongBanSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('phong_ban')->insert([
+        FacadesDB::table('phong_ban')->insert([
             // Phòng ban cấp cao
             [
                 'id' => 1,

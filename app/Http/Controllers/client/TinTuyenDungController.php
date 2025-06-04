@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TinTuyenDung;
 use Illuminate\Http\Request;
 
-class TuyenDungController extends Controller
+class TinTuyenDungController extends Controller
 {
     //
     public function getJob()

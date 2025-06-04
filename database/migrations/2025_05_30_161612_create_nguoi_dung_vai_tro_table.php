@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('nguoi_dung_vai_tro', function (Blueprint $table) {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onDelete('cascade');
             $table->foreignId('vai_tro_id')->constrained('vai_tro')->onDelete('cascade');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
+            // $table->timestamp('created_at')->useCurrent();
 
             $table->primary(['nguoi_dung_id', 'vai_tro_id']);
         });

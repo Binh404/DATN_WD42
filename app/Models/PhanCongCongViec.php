@@ -18,6 +18,10 @@ class PhanCongCongViec extends Model
         'phong_ban_id',
         'vai_tro_trong_cv',
         'ghi_chu',
+        'ngay_bat_dau',
+        'deadline',
+        'ngay_hoan_thanh',
+        'tien_do',
     ];
 
     protected $casts = [
