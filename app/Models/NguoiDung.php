@@ -64,6 +64,12 @@ class NguoiDung extends Model
     {
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
+    public function chamCong(){
+        return $this->hasMany(ChamCong::class, 'nguoi_dung_id');
+    }
+    public function soDuNghiPhepNhanVien(){
+        return $this->hasMany(SoDuNghiPhepNhanVien::class, 'nguoi_dung_id');
+    }
 
     public function vaiTro()
     {
@@ -75,5 +81,20 @@ class NguoiDung extends Model
     {
         return $this->belongsToMany(Quyen::class, 'nguoi_dung_quyen', 'nguoi_dung_id', 'quyen_id')
                     ->withTimestamps();
+    }
+    //bảng đơn xin nghi
+    public function donXinNghi()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_dung_id');
+    }
+
+    public function donXinNghiDuocDuyet()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_duyet_id');
+    }
+
+    public function donXinNghiBanGiao()
+    {
+        return $this->hasMany(DonXinNghi::class, 'ban_giao_cho_id');
     }
 }

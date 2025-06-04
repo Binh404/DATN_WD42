@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\employee\BangLuongController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\CongViecController;
 
 Route::get('/', function () {
     return view('admin.dashboard.index');
@@ -20,14 +20,6 @@ Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
 Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
 Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
 Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
-
-
-
-// Admin Công Việc
-Route::get('/congviec', [CongViecController::class, 'index']);
-
-
-
 
 // Admin Vai Trò
 Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
@@ -60,9 +52,9 @@ Route::prefix('employee')->group(function () {
     Route::get('/profile', function () {
         return view('employe.profile');
     });
-    Route::get('/salary', function () {
-        return view('employe.salary');
-    });
+    // Bang Luong
+    Route::get('/salary',[BangLuongController::class, 'index'])->name('bangluong.index');
+    Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
     Route::get('/task', function () {
         return view('employe.task');
     });
