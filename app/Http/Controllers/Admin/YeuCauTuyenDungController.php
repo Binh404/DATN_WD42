@@ -18,26 +18,23 @@ class YeuCauTuyenDungController extends Controller
      */
     public function index(Request $request)
     {
-
-        // không phải lỗi đừng xóa của tôi
         $user = auth()->user();
         $query = YeuCauTuyenDung::with('chucVu')->orderBy("id", "desc");
 
-
         if ($user->coVaiTro('DEPARTMENT')) {
             $query->where('phong_ban_id', $user->phong_ban_id);
+            $yeuCauTuyenDungs = $query->paginate(10);
+            return view("admin.yeucautuyendung.index", compact('yeuCauTuyenDungs'));
         }
 
-        // Tìm kiếm theo tên phòng ban hoặc trường khác nếu có
-        if ($request->has('search')) {
-            $query->whereHas('phongBan', function ($q) use ($request) {
-                $q->where('ten_phong_ban', 'like', '%' . $request->search . '%');
-            });
+        if ($user->coVaiTro('HR')) {
+            $query->where('trang_thai', 'da_duyet');
+            $TuyenDungs = $query->paginate(10);
+            return view("admin.captrenthongbao.tuyendung.index", compact('TuyenDungs'));
         }
 
-        $yeuCauTuyenDungs = $query->paginate(10);
-
-        return view("admin.yeucautuyendung.index", compact('yeuCauTuyenDungs'));
+        abort(403, 'Bạn không có quyền truy cập trang này.');
+     
     }
 
 
@@ -93,7 +90,9 @@ class YeuCauTuyenDungController extends Controller
      */
     public function show(string $id)
     {
-        
+
+        $tuyenDung = YeuCauTuyenDung::with('phongBan', 'chucVu', 'nguoiTao')->findOrFail($id);
+        return view("admin.captrenthongbao.tuyendung.show", compact('tuyenDung'));
     }
 
     /**
@@ -103,7 +102,6 @@ class YeuCauTuyenDungController extends Controller
     {
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
 
-        // Lấy dữ liệu phụ trợ nếu cần, ví dụ danh sách chức vụ
         $chucVus = ChucVu::where('phong_ban_id', auth()->user()->phong_ban_id)->get();
 
         return view('admin.yeucautuyendung.edit', compact('yeuCau', 'chucVus'));

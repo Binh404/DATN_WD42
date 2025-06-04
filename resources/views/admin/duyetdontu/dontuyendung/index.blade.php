@@ -146,7 +146,7 @@
                     <div class="mb-4">
                         <i class="fas fa-search fa-3x text-muted opacity-50"></i>
                     </div>
-                    <h5 class="text-muted mb-3">Không tìm thấy phòng ban nào</h5>
+                    <h5 class="text-muted mb-3">Chưa có yêu cầu nào</h5>
                     @if(request('search'))
                     <p class="text-muted mb-4">
                         Không có kết quả nào cho từ khóa: <strong>"{{ request('search') }}"</strong>
@@ -155,11 +155,8 @@
                         <i class="fas fa-list me-1"></i>Xem tất cả
                     </a>
                     @else
-                    <p class="text-muted mb-4">Chưa có phòng ban nào được tạo.</p>
+                    <p class="text-muted mb-4">Chưa có yêu cầu nào được tạo.</p>
                     @endif
-                    <a href="/yeu$yeuCauTuyenDung/create" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Thêm phòng ban đầu tiên
-                    </a>
                 </div>
                 @endif
             </div>

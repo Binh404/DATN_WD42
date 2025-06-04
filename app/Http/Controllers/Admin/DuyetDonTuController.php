@@ -19,24 +19,35 @@ class DuyetDonTuController extends Controller
 
     public function duyetDonTuyenDung($id)
     {
+        $user = auth()->user();
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
+
         if ($yeuCau->trang_thai !== 'cho_duyet') {
             return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
-        $yeuCau->update(['trang_thai' => 'da_duyet']);
+        $yeuCau->update([
+            'trang_thai' => 'da_duyet',
+            'nguoi_duyet_id' => $user->id,
+            'thoi_gian_duyet' => now()
+        ]);
 
         return back()->with('success', 'Đã duyệt yêu cầu tuyển dụng.');
     }
 
     public function tuChoiDonTuyenDung($id)
     {
+        $user = auth()->user();
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
         if ($yeuCau->trang_thai !== 'cho_duyet') {
             return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
-        $yeuCau->update(['trang_thai' => 'bi_tu_choi']);
+        $yeuCau->update([
+            'trang_thai' => 'bi_tu_choi',
+            'nguoi_duyet_id' => $user->id,
+            'thoi_gian_duyet' => now()
+        ]);
 
         return back()->with('success', 'Đã từ chối yêu cầu tuyển dụng.');
     }

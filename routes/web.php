@@ -62,6 +62,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('dontuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('dontuyendung.tuchoi');
 });
 
+// HRM
+Route::prefix('hr')->name('hr.')->group(function () {
+    // tuyển dụng
+    Route::resource('captrenthongbao', YeuCauTuyenDungController::class)->names('captrenthongbao');
+});
+
+
 
 // Trưởng phòng
 Route::prefix('department')->name('department.')->group(function () {
