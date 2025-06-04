@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Middleware\CheckRole;
+
+use App\Http\Controllers\employee\BangLuongController;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChucVuController;
 use App\Http\Controllers\ProfileController;
@@ -118,10 +121,9 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
         return view('employe.notification');
     });
 
-    Route::get('/salary', function () {
-        return view('employe.salary');
-    });
-
+    // Bang Luong
+    Route::get('/salary',[BangLuongController::class, 'index'])->name('bangluong.index');
+    Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
     Route::get('/task', function () {
         return view('employe.task');
     });
