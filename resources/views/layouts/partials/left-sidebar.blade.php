@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="{{route("home")}}" class="brand-link">
+  <a href="" class="brand-link">
     <div class="d-flex">
       <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
       <span class="brand-text font-weight-light">DV TECH</span>
@@ -22,7 +22,7 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="{{route("home")}}" class="nav-link">
+          <a href="" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -253,7 +253,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route("roles.index")}}" class="nav-link">
+              <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>
@@ -294,6 +294,64 @@
             </li>
           </ul>
         </li>
+
+        <!-- Gửi đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Đơn từ <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('department.yeucautuyendung.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Yêu cầu tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Duyệt đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Duyệt đơn <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('admin.dontuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Đề xuất tăng lương</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Đề xuất tăng chức</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        
       </ul>
     </nav>
   </div>

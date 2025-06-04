@@ -1,17 +1,43 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
+use App\Http\Controllers\Admin\DonTuController;
+use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Admin\PhongBanController;
+use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 use App\Http\Controllers\client\TuyenDungController;
 
+use App\Http\Controllers\ChucVuController;
+
+Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
+
 Route::get('/', function () {
-    return view('admin.dashboard.index');
+    return view('auth.login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
+Route::get('/dashboard', function () {
+    return view('admin.dashboard.index');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
+
+
+
+// Route::get('/', function () {
+//     return view('admin.dashboard.index');
+// });
+
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 
 // Admin Phòng Ban
 Route::get('/phongban', [PhongBanController::class, 'index']);
@@ -28,6 +54,22 @@ Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 Route::get('/congviec', [CongViecController::class, 'index']);
 
 
+// Admin duyệt yêu cầu
+Route::prefix('admin')->name('admin.')->group(function () {
+    // đơn yêu cầu tuyển dụng
+    Route::get('dontuyendung', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('dontuyendung.index');
+    Route::post('dontuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('dontuyendung.duyet');
+    Route::post('dontuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('dontuyendung.tuchoi');
+});
+
+
+// Trưởng phòng
+Route::prefix('department')->name('department.')->group(function () {
+    // yêu cầu tuyển dụng
+    Route::resource('yeucautuyendung', YeuCauTuyenDungController::class)->names('yeucautuyendung');
+    Route::patch('yeucautuyendung/{id}/cancel', [YeuCauTuyenDungController::class, 'cancel'])->name('yeucautuyendung.cancel');
+});
+
 
 
 // Admin Vai Trò
@@ -37,10 +79,6 @@ Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
 
 
 // Employee Routes
-Route::get('/employee', function () {
-    return view('layoutsEmploye.master');
-});
-
 Route::prefix('employee')->group(function () {
 
     Route::get('/advance', function () {
@@ -49,7 +87,7 @@ Route::prefix('employee')->group(function () {
     Route::get('/attendance', function () {
         return view('employe.attendance');
     });
-    Route::get('/dashboard', function () {
+    Route::get('', function () {
         return view('employe.dashboard');
     });
     Route::get('/leave', function () {
