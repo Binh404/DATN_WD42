@@ -12,61 +12,53 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
+{
+    $this->call([
+        // 1. Cơ sở tổ chức
+        ChiNhanhSeeder::class,
+        PhongBanSeeder::class,
+        ChucVuSeeder::class,
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        $this->call([
-            // Seeders cơ bản - chạy trước
-            ChiNhanhSeeder::class,
-            PhongBanSeeder::class,
+        // 2. Phân quyền - phải chạy trước User
+        NhomQuyenSeeder::class,
+        QuyenSeeder::class,
+        VaiTroSeeder::class,
+        VaiTroQuyenSeeder::class,
 
-            ChucVuSeeder::class,
+        // 3. Người dùng
+        NguoiDungSeeder::class,
+        NguoiDungVaiTroSeeder::class,
+        NguoiDungQuyenSeeder::class,
+        HoSoNguoiDungSeeder::class,
 
+        // 4. Hợp đồng, phụ cấp, lương
+        HopDongLaoDongSeeder::class,
+        PhuCapSeeder::class,
+        PhuCapNhanVienSeeder::class,
+        BangLuongSeeder::class,
+        LuongNhanVienSeeder::class,
 
-            // User và profile
-            NguoiDungSeeder::class,
-            HoSoNguoiDungSeeder::class,
+        // 5. Kỹ năng
+        KyNangSeeder::class,
+        KyNangNhanVienSeeder::class,
 
-            // Hợp đồng và lương
-            HopDongLaoDongSeeder::class,
-            PhuCapSeeder::class,
-            PhuCapNhanVienSeeder::class,
-            BangLuongSeeder::class,
-            LuongNhanVienSeeder::class,
+        // 6. Chấm công & nghỉ phép
+        LoaiNghiPhepSeeder::class,
+        SoDuNghiPhepNhanVienSeeder::class,
+        ChamCongSeeder::class,
+        DonXinNghiSeeder::class,
 
-            // Kỹ năng
-            KyNangSeeder::class,
-            KyNangNhanVienSeeder::class,
+        // 7. Công việc
+        CongViecSeeder::class,
+        PhanCongCongViecSeeder::class,
 
-            // Chấm công và nghỉ phép
-            LoaiNghiPhepSeeder::class,
-            SoDuNghiPhepNhanVienSeeder::class,
-            ChamCongSeeder::class,
-            DonXinNghiSeeder::class,
+        // 8. Tuyển dụng
+        TinTuyenDungSeeder::class,
+        UngVienSeeder::class,
 
-            // Công việc
-            CongViecSeeder::class,
-            PhanCongCongViecSeeder::class,
+        // 9. Tài liệu
+        TaiLieuSeeder::class,
+    ]);
+}
 
-            // Tuyển dụng
-            TinTuyenDungSeeder::class,
-            UngVienSeeder::class,
-
-            // Tài liệu
-            TaiLieuSeeder::class,
-
-            // Phân quyền
-            NhomQuyenSeeder::class,
-            QuyenSeeder::class,
-            VaiTroSeeder::class,
-            VaiTroQuyenSeeder::class,
-            NguoiDungVaiTroSeeder::class,
-            NguoiDungQuyenSeeder::class,
-
-        ]);
-    }
 }

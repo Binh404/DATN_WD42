@@ -1,10 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-<<<<<<< HEAD
-  <a href="" class="brand-link">
-=======
   <a href="{{route("home")}}" class="brand-link">
->>>>>>> 8433f539af4d82709e3d418072bec201e093113f
     <div class="d-flex">
       <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
       <span class="brand-text font-weight-light">DV TECH</span>
@@ -26,11 +22,7 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-<<<<<<< HEAD
-          <a href="" class="nav-link">
-=======
           <a href="{{route("home")}}" class="nav-link">
->>>>>>> 8433f539af4d82709e3d418072bec201e093113f
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -261,11 +253,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-<<<<<<< HEAD
-              <a href="/vaitro" class="nav-link">
-=======
               <a href="{{route("roles.index")}}" class="nav-link">
->>>>>>> 8433f539af4d82709e3d418072bec201e093113f
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>
