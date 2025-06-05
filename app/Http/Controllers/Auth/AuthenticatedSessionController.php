@@ -38,6 +38,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('hr.dashboard');
         } elseif (in_array('employee', $roles)) {
             return redirect()->route('employee.dashboard');
+        } elseif (in_array('department', $roles)) {
+            return redirect()->route('department.yeucautuyendung.index');
         }
 
         // Không có vai trò phù hợp
