@@ -269,7 +269,8 @@
             <p>Tạo tin tuyển dụng chuyên nghiệp và thu hút ứng viên tài năng</p>
         </div>
 
-        <form action="{{ route('hr.tintuyendung.store') }}" method="POST" class="form-container" id="jobPostingForm">
+        <form action="{{ route('hr.tintuyendung.store') }}" method="POST" class="form-container" id="jobPostingForm"
+            onsubmit="return validateForm(event)">
             @csrf
             <div class="form-grid">
                 <!-- Thông tin cơ bản -->
@@ -298,7 +299,7 @@
                         <div class="form-group">
                             <label for="so_vi_tri">Số vị trí tuyển <span class="required">*</span></label>
                             <input type="number" id="so_vi_tri" name="so_vi_tri"
-                                value="{{ old('so_vi_tri', $yeuCau->so_luong ?? '') }}" min="1"
+                                value="{{ old('so_vi_tri', $yeuCau->so_luong ?? '') }}"
                                 class="{{ $errors->has('so_vi_tri') ? 'error' : '' }}">
                             @error('so_vi_tri')
                                 <span class="error-message">{{ $message }}</span>
@@ -395,7 +396,6 @@
                                     class="required">*</span></label>
                             <input type="number" id="kinh_nghiem_toi_thieu" name="kinh_nghiem_toi_thieu"
                                 value="{{ old('kinh_nghiem_toi_thieu', $yeuCau->kinh_nghiem_toi_thieu ?? '') }}"
-                                min="0" max="20"
                                 class="{{ $errors->has('kinh_nghiem_toi_thieu') ? 'error' : '' }}">
                             @error('kinh_nghiem_toi_thieu')
                                 <span class="error-message">{{ $message }}</span>
@@ -405,8 +405,8 @@
                             <label for="kinh_nghiem_toi_da">Kinh nghiệm tối đa (năm) <span
                                     class="required">*</span></label>
                             <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da"
-                                value="{{ old('kinh_nghiem_toi_da', $yeuCau->kinh_nghiem_toi_da ?? '') }}" min="0"
-                                max="20" class="{{ $errors->has('kinh_nghiem_toi_da') ? 'error' : '' }}">
+                                value="{{ old('kinh_nghiem_toi_da', $yeuCau->kinh_nghiem_toi_da ?? '') }}"
+                                class="{{ $errors->has('kinh_nghiem_toi_da') ? 'error' : '' }}">
                             @error('kinh_nghiem_toi_da')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -446,7 +446,7 @@
                         <div class="form-group">
                             <label for="luong_toi_thieu">Lương tối thiểu (VNĐ)</label>
                             <input type="number" id="luong_toi_thieu" name="luong_toi_thieu" placeholder="10000000"
-                                step="100000" value="{{ old('luong_toi_thieu', $yeuCau->luong_toi_thieu ?? '') }}"
+                                value="{{ old('luong_toi_thieu', $yeuCau->luong_toi_thieu ?? '') }}"
                                 class="{{ $errors->has('luong_toi_thieu') ? 'error' : '' }}">
                             @error('luong_toi_thieu')
                                 <span class="error-message">{{ $message }}</span>
@@ -455,7 +455,7 @@
                         <div class="form-group">
                             <label for="luong_toi_da">Lương tối đa (VNĐ)</label>
                             <input type="number" id="luong_toi_da" name="luong_toi_da" placeholder="20000000"
-                                step="100000" value="{{ old('luong_toi_da', $yeuCau->luong_toi_da ?? '') }}"
+                                value="{{ old('luong_toi_da', $yeuCau->luong_toi_da ?? '') }}"
                                 class="{{ $errors->has('luong_toi_da') ? 'error' : '' }}">
                             @error('luong_toi_da')
                                 <span class="error-message">{{ $message }}</span>
@@ -665,5 +665,201 @@
             document.getElementById('trang_thai').value = 'nhap';
             document.getElementById('jobPostingForm').submit();
         }
+
+        function validateForm(event) {
+            const tieuDe = document.getElementById('tieu_de').value.trim();
+            const ma = document.getElementById('ma').value.trim();
+            const soLuong = document.getElementById('so_vi_tri').value.trim();
+            const phongBan = document.getElementById('phong_ban_id').value.trim();
+            const chucVu = document.getElementById('chuc_vu_id').value.trim();
+            const loaiHopDong = document.getElementById('loai_hop_dong').value.trim();
+            const kinhNghiemToiThieu = document.getElementById('kinh_nghiem_toi_thieu').value.trim();
+            const kinhNghiemToiDa = document.getElementById('kinh_nghiem_toi_da').value.trim();
+            const moTa = document.getElementById('mo_ta_cong_viec').value.trim();
+            const trinhDoHocVan = document.getElementById('trinh_do_hoc_van').value.trim();
+            const luongToiThieu = document.getElementById('luong_toi_thieu').value.trim();
+            const luongToiDa = document.getElementById('luong_toi_da').value.trim();
+            const hanNop = document.getElementById('han_nop_ho_so').value.trim();
+            const phucLoi = document.getElementById('phuc_loi').value.trim();
+
+            const yeuCau = document.getElementById('yeu_cau').value.trim();
+
+            // Xóa lỗi cũ
+            document.querySelectorAll('.validation-error').forEach(e => e.remove());
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.style.border = '';
+            });
+
+            let isValid = true;
+
+            // Validate mã (bắt buộc, ít nhất 3 ký tự)
+            if (ma === '') {
+                showValidationError('ma', 'Mã yêu cầu không được để trống');
+                isValid = false;
+            } else if (ma.length < 3) {
+                showValidationError('ma', 'Mã yêu cầu phải có ít nhất 3 ký tự');
+                isValid = false;
+            }
+
+            if (tieuDe === '') {
+                showValidationError('tieu_de', 'Tiêu đề không được để trống');
+                isValid = false;
+            }
+
+
+            if (hanNop === '') {
+                showValidationError('han_nop_ho_so', 'Hạn nộp hồ sơ không được để trống');
+                isValid = false;
+            } else {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const hanNopDate = new Date(hanNop);
+
+                if (hanNopDate <= today) {
+                    showValidationError('han_nop_ho_so', 'Hạn nộp hồ sơ phải là ngày trong tương lai');
+                    isValid = false;
+                }
+            }
+
+            // Validate số lượng (bắt buộc, số nguyên > 0)
+            if (soLuong === '') {
+                showValidationError('so_vi_tri', 'Số lượng không được để trống');
+                isValid = false;
+            } else if (soLuong < 1 || !Number.isInteger(Number(soLuong))) {
+                showValidationError('so_vi_tri', 'Số lượng phải là số nguyên lớn hơn 0');
+                isValid = false;
+            }
+
+            // Validate loại hợp đồng (bắt buộc)
+            if (loaiHopDong === '') {
+                showValidationError('loai_hop_dong', 'Vui lòng chọn loại hợp đồng');
+                isValid = false;
+            }
+
+            if (chucVu === '') {
+                showValidationError('chuc_vu_id', 'Vui lòng chọn chức vụ');
+                isValid = false;
+            }
+
+            if (trinhDoHocVan === '') {
+                showValidationError('trinh_do_hoc_van', 'Vui lòng chọn trình độ học vấn');
+                isValid = false;
+            }
+
+            // Validate lương (nếu có nhập thì phải hợp lệ)
+            if (luongToiThieu !== '' && (isNaN(luongToiThieu) || parseFloat(luongToiThieu) < 0)) {
+                showValidationError('luong_toi_thieu', 'Lương tối thiểu phải là số không âm');
+                isValid = false;
+            } else if (luongToiThieu === '') {
+                showValidationError('luong_toi_thieu', 'Vui lòng điền lương tối thiểu');
+                isValid = false;
+            }
+
+            if (luongToiDa !== '' && (isNaN(luongToiDa) || parseFloat(luongToiDa) < 0)) {
+                showValidationError('luong_toi_da', 'Lương tối đa phải là số không âm');
+                isValid = false;
+            } else if (luongToiDa === '') {
+                showValidationError('luong_toi_thieu', 'Vui lòng điền lương tối đa');
+                isValid = false;
+            }
+
+            // Validate range lương (nếu cả 2 đều có giá trị)
+            if (luongToiThieu !== '' && luongToiDa !== '' &&
+                !isNaN(luongToiThieu) && !isNaN(luongToiDa) &&
+                parseFloat(luongToiThieu) >= parseFloat(luongToiDa)) {
+                showValidationError('luong_toi_da', 'Lương tối đa phải lớn hơn lương tối thiểu');
+                isValid = false;
+            }
+
+            // Validate kinh nghiệm (nếu có nhập thì phải hợp lệ)
+            if (kinhNghiemToiThieu !== '' && (isNaN(kinhNghiemToiThieu) || parseFloat(kinhNghiemToiThieu) < 0)) {
+                showValidationError('kinh_nghiem_toi_thieu', 'Kinh nghiệm tối thiểu phải là số không âm');
+                isValid = false;
+            } else if (kinhNghiemToiThieu === '') {
+                showValidationError('kinh_nghiem_toi_thieu', 'Vui lòng điền kinh nghiệm tối thiểu');
+                isValid = false;
+            }
+
+            if (kinhNghiemToiDa !== '' && (isNaN(kinhNghiemToiDa) || parseFloat(kinhNghiemToiDa) < 0)) {
+                showValidationError('kinh_nghiem_toi_da', 'Kinh nghiệm tối đa phải là số không âm');
+                isValid = false;
+            } else if (kinhNghiemToiDa === '') {
+                showValidationError('kinh_nghiem_toi_da', 'Vui lòng điền kinh nghiệm tối đa');
+                isValid = false;
+            }
+
+            // Validate range kinh nghiệm (nếu cả 2 đều có giá trị)
+            if (kinhNghiemToiThieu !== '' && kinhNghiemToiDa !== '' &&
+                !isNaN(kinhNghiemToiThieu) && !isNaN(kinhNghiemToiDa) &&
+                parseFloat(kinhNghiemToiThieu) >= parseFloat(kinhNghiemToiDa)) {
+                showValidationError('kinh_nghiem_toi_da', 'Kinh nghiệm tối đa phải lớn hơn kinh nghiệm tối thiểu');
+                isValid = false;
+            }
+
+            if (moTa === '') {
+                showValidationError('mo_ta_cong_viec', 'Vui lòng điền mô tả công việc');
+                isValid = false;
+            }
+
+            if (yeuCau === '') {
+                showValidationError('yeu_cau', 'Vui lòng điền yêu cầu');
+                isValid = false;
+            }
+
+
+            // Scroll to first error if any
+            if (!isValid) {
+                event.preventDefault();
+                const firstError = document.querySelector('.validation-error');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }
+
+
+            return isValid;
+        }
+
+        function showValidationError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+
+            const error = document.createElement('div');
+            error.className = 'validation-error';
+            error.style.color = '#dc3545';
+            error.style.fontSize = '0.875rem';
+            error.style.marginTop = '0.25rem';
+            error.style.display = 'block';
+            error.textContent = message;
+
+            field.parentNode.appendChild(error);
+            field.style.border = '1px solid #dc3545';
+        }
+
+        // Thêm event listener để xóa lỗi khi user nhập lại
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['ma', 'so_luong', 'chuc_vu_id', 'loai_hop_dong', 'trinh_do_hoc_van',
+                'luong_toi_thieu', 'luong_toi_da', 'kinh_nghiem_toi_thieu', 'kinh_nghiem_toi_da',
+                'mo_ta_cong_viec', 'yeu_cau'
+            ];
+
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        // Xóa lỗi của field hiện tại
+                        const error = this.parentNode.querySelector('.validation-error');
+                        if (error) {
+                            error.remove();
+                            this.style.border = '';
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endsection
