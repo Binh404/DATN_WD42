@@ -1,7 +1,109 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
+
+use App\Http\Controllers\employee\BangLuongController;
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\CongViecController;
+use App\Http\Controllers\Admin\PhongBanController;
+use App\Http\Controllers\client\TuyenDungController;
+use App\Http\Controllers\Client\UngTuyenController;
+use App\Models\UngTuyen;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin.dashboard.index');
+});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
+
+// Admin Phòng Ban
+Route::get('/phongban', [PhongBanController::class, 'index']);
+Route::get('/phongban/create', [PhongBanController::class, 'create']);
+Route::post('/phongban/store', [PhongBanController::class, 'store']);
+Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
+Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
+Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
+Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
+
+
+
+// Admin Công Việc
+Route::get('/congviec', [CongViecController::class, 'index']);
+Route::get('/congviec/create', [CongViecController::class, 'create']);
+Route::post('/congviec/store', [CongViecController::class, 'store']);
+Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
+Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
+Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
+Route::delete('/congviec/delete/{id}', [CongViecController::class, 'destroy']);
+
+
+// Admin Ứng Tuyển
+Route::get('/ungvien', [UngTuyenController::class, 'index']);
+Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
+Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
+
+// Client Application
+Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+
+
+// Admin Vai Trò
+Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
+Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
+Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+
+
+// Employee Routes
+Route::get('/employee', function () {
+    return view('layoutsEmploye.master');
+});
+
+Route::prefix('employee')->group(function () {
+
+    Route::get('/advance', function () {
+        return view('employe.advance');
+    });
+    Route::get('/attendance', function () {
+        return view('employe.attendance');
+    });
+    Route::get('/dashboard', function () {
+        return view('employe.dashboard');
+    });
+    Route::get('/leave', function () {
+        return view('employe.leave');
+    });
+    Route::get('/notification', function () {
+        return view('employe.notification');
+    });
+    Route::get('/profile', function () {
+        return view('employe.profile');
+    });
+    Route::get('/salary', function () {
+        return view('employe.salary');
+    });
+    Route::get('/task', function () {
+        return view('employe.task');
+    });
+});
+
+
+
+// Trang giới thiệu và tuyển dụng Routes
+Route::prefix('homepage')->group(function () {
+
+    Route::get('/', function () {
+        return view('homePage.home');
+    });
+    Route::get('/about', function () {
+        return view('homePage.about');
+    });
+    Route::get('/job', [TuyenDungController::class, 'getJob'])->name('tuyendung.job');
+    Route::get('/job/{id}', [TuyenDungController::class, 'getJobDetail'])->name('tuyendung.getJobDetail');
+
+
+    // Route::get('/job/detail', function () {
+    //     return view('homePage.detailJob');
+    // });
 });
