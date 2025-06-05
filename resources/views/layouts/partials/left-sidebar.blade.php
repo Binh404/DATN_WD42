@@ -310,6 +310,95 @@
             </li>
           </ul>
         </li>
+
+        <!-- Gửi đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Đơn từ <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('department.yeucautuyendung.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Yêu cầu tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Duyệt đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Duyệt đơn <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('admin.duyetdon.tuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+            
+          </ul>
+        </li>
+
+        <!-- Cấp trên thông báo Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Cấp trên thông báo <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('hr.captrenthongbao.tuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gửi báo cáo</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tăng lương</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Tin tuyển dụng Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Tin tuyển dụng <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('hr.tintuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tin đã đăng</p>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </div>

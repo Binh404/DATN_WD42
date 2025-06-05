@@ -100,4 +100,15 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(DonXinNghi::class, 'ban_giao_cho_id');
     }
+
+
+    public function coVaiTro($tenVaiTro)
+    {
+        return $this->vaiTros()->where('ten', $tenVaiTro)->exists();
+    }
+
+    public function coBatKyVaiTro(array $dsTenVaiTro)
+    {
+        return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
+    }
 }
