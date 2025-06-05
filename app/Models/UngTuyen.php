@@ -13,6 +13,7 @@ class UngTuyen extends Model
 
     protected $fillable = [
         'tin_tuyen_dung_id',
+        'ma_ung_tuyen',
         'ten_ung_vien',
         'email',
         'so_dien_thoai',

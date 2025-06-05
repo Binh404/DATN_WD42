@@ -62,6 +62,7 @@
             <thead class="table-primary text-center">
                 <tr>
                     <th scope="col">STT</th>
+                    <th scope="col">Mã Ứng Tuyển</th>
                     <th scope="col">Tên Ứng Viên</th>
                     <th scope="col">Email</th>
                     <th scope="col">Số Điện Thoại</th>
@@ -76,6 +77,7 @@
                 @foreach($ungViens as $key => $uv)
                 <tr>
                     <td class="text-center">{{ $key + 1 }}</td>
+                    <td>{{ $uv->ma_ung_tuyen }}</td>
                     <td>{{ $uv->ten_ung_vien }}</td>
                     <td>{{ $uv->email }}</td>
                     <td>{{ $uv->so_dien_thoai }}</td>

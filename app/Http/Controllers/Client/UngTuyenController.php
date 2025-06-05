@@ -31,19 +31,19 @@ class UngTuyenController extends Controller
         if ($request->filled('vi_tri')) {
             $ungVienQuery->where('tin_tuyen_dung_id', $request->vi_tri);
         }
-        
+
         $ungViens = $ungVienQuery->get();
-        
+
         // Calculate matching score for each candidate
-        foreach($ungViens as $ungVien) {
+        foreach ($ungViens as $ungVien) {
             $ungVien->matching_score = $ungVien->calculateMatchingPercentage();
         }
-        
+
         // Sort by matching score if requested
         if ($request->filled('sort_by_score')) {
             $ungViens = $ungViens->sortByDesc('matching_score');
         }
-        
+
         return view('admin.ungtuyen.index', compact('ungViens', 'viTriList'));
     }
 
@@ -77,11 +77,23 @@ class UngTuyenController extends Controller
             'thu_gioi_thieu.max' => 'Thư giới thiệu không được vượt quá 1000 ký tự.',
         ]);
 
+        // Kiểm tra email đã ứng tuyển vào tin này chưa
+        $kiemtra = UngTuyen::where('email', $request->email)
+            ->where('tin_tuyen_dung_id', $request->tin_tuyen_dung_id)->first();
+
+        if ($kiemtra) {
+            return back()->withErrors(['email' => 'Bạn đã ứng tuyển vị trí này rồi.'])->withInput();
+        }
+
         // Lưu file CV
         if ($request->hasFile('tai_cv')) {
             $cvPath = $request->file('tai_cv')->store('applications/tai_cv', 'public');
             $validated['tai_cv'] = $cvPath;
         }
+
+        // Sinh mã ứng tuyển tự động
+        $maUngTuyen = UngTuyen::max('id') ?? 0;
+        $validated['ma_ung_tuyen'] = 'UT' . str_pad($maUngTuyen + 1, 5, '0', STR_PAD_LEFT);
 
         // Tạo đơn ứng tuyển
         $application = UngTuyen::create($validated);
@@ -100,12 +112,12 @@ class UngTuyenController extends Controller
     {
         $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
         $matchingPercentage = $ungVien->calculateMatchingPercentage();
-        
+
         // Get matching details
         $matchingDetails = [
             'skills' => [
                 'candidate' => array_map('trim', explode(',', strtolower($ungVien->ky_nang))),
-                'required' => array_map('strtolower', json_decode($ungVien->tinTuyenDung->ky_nang_yeu_cau, true))
+                'required' => array_map('strtolower', $ungVien->tinTuyenDung->ky_nang_yeu_cau)
             ],
             'experience' => [
                 'candidate' => (int) filter_var($ungVien->kinh_nghiem, FILTER_SANITIZE_NUMBER_INT),
@@ -115,7 +127,7 @@ class UngTuyenController extends Controller
                 ]
             ]
         ];
-        
+
         return view('admin.ungtuyen.show', compact('ungVien', 'matchingPercentage', 'matchingDetails'));
     }
 }

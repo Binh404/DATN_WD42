@@ -8,6 +8,11 @@
             
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <label class="text-muted fw-bold">Mã ứng viên</label>
+                    <p class="form-control-plaintext">{{ $ungVien->ma_ung_tuyen }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label class="text-muted fw-bold">Tên ứng viên</label>
                     <p class="form-control-plaintext">{{ $ungVien->ten_ung_vien }}</p>
                 </div>
