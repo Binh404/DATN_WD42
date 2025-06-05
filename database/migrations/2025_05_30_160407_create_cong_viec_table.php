@@ -17,10 +17,10 @@ return new class extends Migration
             $table->text('mo_ta')->nullable();
             $table->enum('trang_thai', ['chua_bat_dau', 'dang_lam', 'hoan_thanh', 'qua_han', 'tam_dung'])->default('chua_bat_dau');
             $table->enum('do_uu_tien', ['cao', 'trung_binh', 'thap'])->default('trung_binh');
-            $table->dateTime('ngay_bat_dau')->nullable();
-            $table->dateTime('deadline')->nullable();
-            $table->dateTime('ngay_hoan_thanh')->nullable();
-            $table->tinyInteger('tien_do')->default(0);
+            // $table->dateTime('ngay_bat_dau')->nullable();
+            // $table->dateTime('deadline')->nullable();
+            // $table->dateTime('ngay_hoan_thanh')->nullable();
+            // $table->tinyInteger('tien_do')->default(0);
             $table->timestamps();
         });
     }

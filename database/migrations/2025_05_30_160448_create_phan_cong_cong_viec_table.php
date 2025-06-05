@@ -19,6 +19,10 @@ return new class extends Migration
             $table->foreignId('phong_ban_id')->constrained('phong_ban');
             $table->enum('vai_tro_trong_cv', ['chu_tri', 'phoi_hop', 'theo_doi'])->default('chu_tri');
             $table->text('ghi_chu')->nullable();
+            $table->dateTime('ngay_bat_dau')->nullable();
+            $table->dateTime('deadline')->nullable();
+            $table->dateTime('ngay_hoan_thanh')->nullable();
+            $table->tinyInteger('tien_do')->default(0);
             $table->timestamps();
         });
     }

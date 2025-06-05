@@ -7,6 +7,7 @@
     <title>Cổng thông tin nhân viên</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/employee.css') }}">
+    @yield('css')
 </head>
 
 <body>
@@ -21,7 +22,7 @@
 
     <!-- Modals -->
     @include('employe.modals')
-
+    @yield('javascript')
     <script src="{{asset('js/employee.js')}}"></script>
 
 </body>

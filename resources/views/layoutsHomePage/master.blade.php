@@ -14,10 +14,26 @@
         @yield('content')
     </main>
 
-    <!-- Application Modal -->
-    @include('layoutsHomePage.partials.applicationModal')
-
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="{{asset('js/homePage.js')}}"></script>
+    <script>
+    function openApplicationModal(jobTitle, jobId) {
+        document.getElementById('modalJobTitle').textContent = 'Ứng Tuyển: ' + jobTitle;
+        document.getElementById('tin_tuyen_dung_id').value = jobId;
+        document.getElementById('applicationModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('applicationModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        var modal = document.getElementById('applicationModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    </script>
 </body>
 </html>

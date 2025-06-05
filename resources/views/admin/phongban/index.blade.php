@@ -74,9 +74,18 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-building me-1"></i>Tên Phòng Ban
                             </th>
-                            {{-- <th class="px-4 py-3 fw-semibold text-muted">
+
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-coins text-yellow-500 mr-1"></i>Ngân sách
+                            </th> -->
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
-                            </th> --}}
+                            </th> -->
+
+                            <!-- {{-- <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-align-left me-1"></i>Mô Tả
+                            </th> --}} -->
+
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-toggle-on me-1"></i>Trạng Thái
                             </th>
@@ -117,11 +126,12 @@
                                 </div>
                             </td>
 
-                            {{-- <td class="px-4 py-3 align-middle">
+                            <!-- <td class="px-4 py-3 align-middle">
                                 <span class="text-muted">
                                     {{ $phongBan->mo_ta ?: 'Chưa có mô tả' }}
                                 </span>
-                            </td> --}}
+                            </td> -->
+
                             <td class="px-4 py-3 align-middle">
                                 @if($phongBan->trang_thai == 1)
                                 <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
@@ -151,6 +161,12 @@
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="d-flex gap-2 justify-content-center">
+                                        <a href="/phongban/show/{{ $phongBan->id }}" 
+                                       class="btn btn-outline-primary btn-sm rounded-pill"
+                                       data-bs-toggle="tooltip" 
+                                       title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <!-- Sửa -->
                                     <a href="/phongban/edit/{{ $phongBan->id }}" class="btn btn-outline-warning btn-sm rounded-pill"
                                         data-bs-toggle="tooltip" title="Chỉnh sửa">
@@ -193,36 +209,6 @@
                     </a>
                 </div>
                 @endif
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title text-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-1">Bạn có chắc chắn muốn xóa phòng ban:</p>
-                <p class="fw-bold text-danger" id="deleteName"></p>
-                <div class="alert alert-warning">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Hành động này không thể hoàn tác!
-                </div>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Hủy
-                </button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">
-                    <i class="fas fa-trash me-1"></i>Xóa
-                </button>
             </div>
         </div>
     </div>
