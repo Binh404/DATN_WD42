@@ -39,13 +39,18 @@
         <img src="assets/images/tcong.jpg"  class="img-circle elevation-2" height="30" width="30" alt="User">
       </a>
       <div class="dropdown-menu dropdown-menu-right">
+<<<<<<< HEAD
         <a href="{{route('profile.edit')}}" class="dropdown-item">
+=======
+        <a href="#" class="dropdown-item">
+>>>>>>> 8433f539af4d82709e3d418072bec201e093113f
           <i class="fas fa-user mr-2"></i> Hồ sơ
         </a>
         <div class="dropdown-divider"></div>
         {{-- <a href="{{ route('logout') }}" class="dropdown-item"
            onclick="event.preventDefault(); document.getElementById('navbar-logout').submit();">
         </a> --}}
+<<<<<<< HEAD
        
         <form method="POST" action="{{ route('logout') }}" id="logout-form">
           @csrf
@@ -56,6 +61,12 @@
           </button>
         </form>
       
+=======
+        <i class="fas fa-sign-out-alt mr-2"></i> Đăng xuất
+        {{-- <form id="navbar-logout" action="{{ route('logout') }}" method="POST" style="display: none;"> --}}
+          @csrf
+        </form>
+>>>>>>> 8433f539af4d82709e3d418072bec201e093113f
       </div>
     </li>
   </ul>

@@ -55,5 +55,4 @@ class LuongNhanVien extends Model
     {
         return $this->hasMany(KhauTruLuong::class, 'luong_nhan_vien_id');
     }
-
 }
