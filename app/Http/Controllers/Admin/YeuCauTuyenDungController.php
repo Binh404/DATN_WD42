@@ -16,7 +16,7 @@ class YeuCauTuyenDungController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function danhSachYeuCauTuyenDung(Request $request)
     {
         $user = auth()->user();
         $query = YeuCauTuyenDung::with('chucVu')->orderBy("id", "desc");
@@ -26,17 +26,21 @@ class YeuCauTuyenDungController extends Controller
             $yeuCauTuyenDungs = $query->paginate(10);
             return view("admin.yeucautuyendung.index", compact('yeuCauTuyenDungs'));
         }
+        abort(403, 'Bạn không có quyền truy cập trang này.');
+    }
+
+    public function danhSachThongBaoTuyenDung()
+    {
+        $user = auth()->user();
+        $query = YeuCauTuyenDung::with('chucVu')->orderBy("id", "desc");
 
         if ($user->coVaiTro('HR')) {
             $query->where('trang_thai', 'da_duyet');
             $TuyenDungs = $query->paginate(10);
             return view("admin.captrenthongbao.tuyendung.index", compact('TuyenDungs'));
         }
-
         abort(403, 'Bạn không có quyền truy cập trang này.');
-     
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -44,10 +48,11 @@ class YeuCauTuyenDungController extends Controller
     public function create()
     {
         $user = auth()->user();
-
-        $chucVus = ChucVu::where('phong_ban_id', $user->phong_ban_id)->get();
-
-        return view("admin.yeucautuyendung.create", compact('chucVus'));
+        if ($user->coVaiTro('DEPARTMENT')) {
+            $chucVus = ChucVu::where('phong_ban_id', $user->phong_ban_id)->get();
+            return view("admin.yeucautuyendung.create", compact('chucVus'));
+        }
+        abort(403, 'Bạn không có quyền truy cập trang này.');
     }
 
     /**
@@ -59,20 +64,22 @@ class YeuCauTuyenDungController extends Controller
             'ma' => 'required|string|max:20|unique:yeu_cau_tuyen_dung,ma',
             'so_luong' => 'required|integer|min:1',
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
-            'loai_hop_dong' => 'required|in:thu_viec,chinh_thuc,thoi_vu,thoi_han',
-            'trinh_do_hoc_van' => 'nullable|string|max:100',
+            'loai_hop_dong' => 'required|in:thu_viec,xac_dinh_thoi_han,khong_xac_dinh_thoi_han',
+            'trinh_do_hoc_van' => 'required|string|max:100',
 
-            'luong_toi_thieu' => 'nullable|numeric|min:0',
-            'luong_toi_da' => 'nullable|numeric|gte:luong_toi_thieu',
+            'luong_toi_thieu' => 'required|numeric|min:0',
+            'luong_toi_da' => 'required|numeric|gte:luong_toi_thieu',
 
-            'kinh_nghiem_toi_thieu' => 'nullable|numeric|min:0',
-            'kinh_nghiem_toi_da' => 'nullable|numeric|gte:kinh_nghiem_toi_thieu',
+            'kinh_nghiem_toi_thieu' => 'required|numeric|min:0',
+            'kinh_nghiem_toi_da' => 'required|numeric|gte:kinh_nghiem_toi_thieu',
 
-            'mo_ta_cong_viec' => 'nullable|string',
-            'yeu_cau' => 'nullable|string',
-            'ky_nang_yeu_cau' => 'nullable|string',
+            'mo_ta_cong_viec' => 'required|string',
+            'yeu_cau' => 'required|string',
+            'ky_nang_yeu_cau' => 'required|string',
             'ghi_chu' => 'nullable|string',
         ]);
+
+        $validated['ky_nang_yeu_cau'] = array_map('trim', explode(',', $validated['ky_nang_yeu_cau']));
 
         $user = Auth::user();
 
@@ -88,11 +95,16 @@ class YeuCauTuyenDungController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function chiTietThongBaoTuyenDung(string $id)
     {
-
         $tuyenDung = YeuCauTuyenDung::with('phongBan', 'chucVu', 'nguoiTao')->findOrFail($id);
         return view("admin.captrenthongbao.tuyendung.show", compact('tuyenDung'));
+    }
+
+    public function chiTietYeuCauTuyenDung(string $id)
+    {
+        $tuyenDung = YeuCauTuyenDung::with('phongBan', 'chucVu', 'nguoiTao')->findOrFail($id);
+        return view("admin.yeucautuyendung.show", compact('tuyenDung'));
     }
 
     /**
@@ -119,24 +131,34 @@ class YeuCauTuyenDungController extends Controller
             'so_luong' => 'required|integer|min:1',
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'loai_hop_dong' => 'required|in:thu_viec,chinh_thuc,thoi_vu,thoi_han',
-            'trinh_do_hoc_van' => 'nullable|string|max:100',
+            'trinh_do_hoc_van' => 'required|string|max:100',
 
-            'luong_toi_thieu' => 'nullable|numeric|min:0',
-            'luong_toi_da' => 'nullable|numeric|gte:luong_toi_thieu',
+            'luong_toi_thieu' => 'required|numeric|min:0',
+            'luong_toi_da' => 'required|numeric|gte:luong_toi_thieu',
 
-            'kinh_nghiem_toi_thieu' => 'nullable|numeric|min:0',
-            'kinh_nghiem_toi_da' => 'nullable|numeric|gte:kinh_nghiem_toi_thieu',
+            'kinh_nghiem_toi_thieu' => 'required|numeric|min:0',
+            'kinh_nghiem_toi_da' => 'required|numeric|gte:kinh_nghiem_toi_thieu',
 
-            'mo_ta_cong_viec' => 'nullable|string',
-            'yeu_cau' => 'nullable|string',
-            'ky_nang_yeu_cau' => 'nullable|string',
+            'mo_ta_cong_viec' => 'required|string',
+            'yeu_cau' => 'required|string',
+            'ky_nang_yeu_cau' => 'required|string',
             'ghi_chu' => 'nullable|string',
         ]);
 
-        $yeuCau->update($validated);
+        $validated['ky_nang_yeu_cau'] = array_map('trim', explode(',', $validated['ky_nang_yeu_cau']));
+
+        if($yeuCau->trang_thai === 'cho_duyet'){
+            $yeuCau->update($validated);
+
+            return redirect()->route('department.yeucautuyendung.index')
+                ->with('success', 'Cập nhật yêu cầu tuyển dụng thành công!');
+        }
 
         return redirect()->route('department.yeucautuyendung.index')
-            ->with('success', 'Cập nhật yêu cầu tuyển dụng thành công!');
+            ->with('error', 'CHỉ có thể cập nhật yêu cầu đang ở trạng thái chờ duyệt!');
+
+
+        
     }
 
     public function cancel($id)

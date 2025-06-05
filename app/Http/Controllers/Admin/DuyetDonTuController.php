@@ -13,8 +13,12 @@ class DuyetDonTuController extends Controller
      */
     public function danhSachDonTuyenDung()
     {
-        $yeuCaus = YeuCauTuyenDung::where('trang_thai', 'cho_duyet')->get();
-        return view('admin.duyetdontu.dontuyendung.index', compact('yeuCaus'));
+        $user = auth()->user();
+        if ($user->coVaiTro('ADMIN')) {
+            $yeuCaus = YeuCauTuyenDung::where('trang_thai', 'cho_duyet')->get();
+            return view('admin.duyetdontu.dontuyendung.index', compact('yeuCaus'));
+        }
+        abort(403, 'Bạn không có quyền truy cập trang này.');
     }
 
     public function duyetDonTuyenDung($id)
@@ -31,8 +35,7 @@ class DuyetDonTuController extends Controller
             'nguoi_duyet_id' => $user->id,
             'thoi_gian_duyet' => now()
         ]);
-
-        return back()->with('success', 'Đã duyệt yêu cầu tuyển dụng.');
+        return redirect()->route('admin.duyetdon.tuyendung.index')->with('success', 'Đã duyệt yêu cầu tuyển dụng.');
     }
 
     public function tuChoiDonTuyenDung($id)
@@ -49,7 +52,7 @@ class DuyetDonTuController extends Controller
             'thoi_gian_duyet' => now()
         ]);
 
-        return back()->with('success', 'Đã từ chối yêu cầu tuyển dụng.');
+        return redirect()->route('admin.duyetdon.tuyendung.index')->with('success', 'Đã từ chối yêu cầu tuyển dụng.');
     }
 
     /**
@@ -73,7 +76,8 @@ class DuyetDonTuController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $yeuCau = YeuCauTuyenDung::with('phongBan', 'chucVu')->findOrFail($id);
+        return view('admin.duyetdontu.dontuyendung.show', compact('yeuCau'));
     }
 
     /**

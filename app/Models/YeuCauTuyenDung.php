@@ -29,15 +29,18 @@ class YeuCauTuyenDung extends Model
         'ky_nang_yeu_cau',
         'ghi_chu',
         'trang_thai',
+        'trang_thai_dang ',
         'nguoi_duyet_id',
         'thoi_gian_duyet',
     ];
 
     protected $casts = [
         'thoi_gian_duyet' => 'datetime',
+        'ky_nang_yeu_cau' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
 
     /**
      * Người tạo yêu cầu (trưởng phòng)

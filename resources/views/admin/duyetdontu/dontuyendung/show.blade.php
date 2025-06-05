@@ -327,10 +327,10 @@
             <div class="header-content">
                 <div class="header-left">
                     <h1>📋 CHI TIẾT YÊU CẦU TUYỂN DỤNG</h1>
-                    <p>Thông báo từ Giám Đốc</p>
+                    <p>Yêu Cầu Từ {{ $yeuCau->phongBan->ten_phong_ban }}</p>
                 </div>
                 <div class="header-right">
-                    <div class="request-id">Mã: {{ $tuyenDung->ma }}</div>
+                    <div class="request-id">Mã: {{ $yeuCau->ma }}</div>
                 </div>
             </div>
         </div>
@@ -342,36 +342,34 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Mã yêu cầu</div>
-                        <div class="info-value highlight">{{ $tuyenDung->ma }}</div>
+                        <div class="info-value highlight">{{ $yeuCau->ma }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Phòng ban</div>
-                        <div class="info-value">{{ $tuyenDung->phongBan->ten_phong_ban }}</div>
+                        <div class="info-value">{{ $yeuCau->phongBan->ten_phong_ban }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Chức vụ</div>
-                        <div class="info-value">{{ $tuyenDung->chucVu->ten }}</div>
+                        <div class="info-value">{{ $yeuCau->chucVu->ten }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Số lượng</div>
-                        <div class="info-value success">{{ $tuyenDung->so_luong }}</div>
+                        <div class="info-value success">{{ $yeuCau->so_luong }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Loại hợp đồng</div>
-                        @if ($tuyenDung->loai_hop_dong === 'chinh_thuc')
-                            <div class="info-value">Chính thức</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thu_viec')
+                        @if ($yeuCau->loai_hop_dong === 'thu_viec')
                             <div class="info-value">Thử việc</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_vu')
-                            <div class="info-value">Thời vụ</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_han')
-                            <div class="info-value">Có thời hạn</div>
+                        @elseif($yeuCau->loai_hop_dong === 'xac_dinh_thoi_han')
+                            <div class="info-value">Xác định thời hạn</div>
+                        @elseif($yeuCau->loai_hop_dong === 'khong_xac_dinh_thoi_han')
+                            <div class="info-value">Không xác định thời hạn</div>
                         @endif
 
                     </div>
                     <div class="info-item">
                         <div class="info-label">Mức lương</div>
-                        <div class="info-value highlight">{{ $tuyenDung->luong_toi_thieu }} - {{ $tuyenDung->luong_toi_da }}
+                        <div class="info-value highlight">{{ $yeuCau->luong_toi_thieu }} - {{ $yeuCau->luong_toi_da }}
                             VND
                         </div>
                     </div>
@@ -383,12 +381,12 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Trình độ học vấn</div>
-                        <div class="info-value">{{ $tuyenDung->trinh_do_hoc_van }}</div>
+                        <div class="info-value">{{ $yeuCau->trinh_do_hoc_van }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Kinh nghiệm</div>
-                        <div class="info-value">{{ $tuyenDung->kinh_nghiem_toi_thieu }} -
-                            {{ $tuyenDung->kinh_nghiem_toi_da }} năm</div>
+                        <div class="info-value">{{ $yeuCau->kinh_nghiem_toi_thieu }} -
+                            {{ $yeuCau->kinh_nghiem_toi_da }} năm</div>
                     </div>
                 </div>
             </div>
@@ -398,24 +396,24 @@
 
                 <div class="description-section">
                     <div class="description-title">💼 Mô tả công việc</div>
-                    <div class="description-content">{{ $tuyenDung->mo_ta_cong_viec }}</div>
+                    <div class="description-content">{{ $yeuCau->mo_ta_cong_viec }}</div>
                 </div>
 
                 <div class="description-section">
                     <div class="description-title">✅ Yêu cầu công việc</div>
-                    <div class="description-content">{{ $tuyenDung->yeu_cau }}</div>
+                    <div class="description-content">{{ $yeuCau->yeu_cau }}</div>
                 </div>
 
                 <div class="description-section">
                     <div class="description-title">🔧 Kỹ năng yêu cầu</div>
                     <div class="description-content">
-                        {{ is_array($tuyenDung->ky_nang_yeu_cau) ? implode(', ', $tuyenDung->ky_nang_yeu_cau) : $tuyenDung->ky_nang_yeu_cau }}
+                        {{ is_array($yeuCau->ky_nang_yeu_cau) ? implode(', ', $yeuCau->ky_nang_yeu_cau) : $yeuCau->ky_nang_yeu_cau }}
                     </div>
                 </div>
 
                 <div class="description-section">
                     <div class="description-title">📋 Ghi chú</div>
-                    <div class="description-content">{{ $tuyenDung->ghi_chu }}</div>
+                    <div class="description-content">{{ $yeuCau->ghi_chu }}</div>
                 </div>
             </div>
         </div>
@@ -424,11 +422,11 @@
             <div class="footer-info">
                 <div class="footer-item">
                     <div class="footer-label">Ngày tạo</div>
-                    <div class="footer-value" id="current-date">{{ $tuyenDung->created_at }}</div>
+                    <div class="footer-value" id="current-date">{{ $yeuCau->created_at }}</div>
                 </div>
                 <div class="footer-item">
                     <div class="footer-label">Người yêu cầu</div>
-                    <div class="footer-value">{{ $tuyenDung->nguoiTao->ten_dang_nhap }}</div>
+                    <div class="footer-value">{{ $yeuCau->nguoiTao->ten_dang_nhap }}</div>
                 </div>
                 <div class="footer-item">
                     <div class="footer-label">Phòng ban nhận</div>
@@ -437,13 +435,16 @@
             </div>
 
             <div class="actions">
-                @if ($tuyenDung->trang_thai_dang === 'chua_dang')
-                    <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
-                        <button class="btn btn-primary">
-                            Đăng tin tuyển dụng
-                        </button>
-                    </a>
-                @endif
+                <form action="{{ route('admin.duyetdon.tuyendung.duyet', $yeuCau->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button class="btn btn-success btn-sm" onclick="return confirm('Duyệt đơn này?')">Duyệt</button>
+                </form>
+
+                <form action="{{ route('admin.duyetdon.tuyendung.tuchoi', $yeuCau->id) }}" method="POST"
+                    style="display:inline-block">
+                    @csrf
+                    <button class="btn btn-danger btn-sm" onclick="return confirm('Từ chối đơn này?')">Từ chối</button>
+                </form>
 
             </div>
         </div>

@@ -159,7 +159,7 @@
 
             <div id="notifications-list">
                 @foreach ($TuyenDungs as $index => $item)
-                <a class="notification-item" href="{{ route('hr.captrenthongbao.show', ['captrenthongbao' => $item->id]) }}">
+                <a class="notification-item" href="{{ route('hr.captrenthongbao.tuyendung.show', ['id' => $item->id]) }}">
                         <div class="notification-card important" data-priority="important">
                             <div class="notification-header">
                                 <div class="notification-title">Tuyển dụng chức vụ {{ $item->chucVu->ten }}</div>

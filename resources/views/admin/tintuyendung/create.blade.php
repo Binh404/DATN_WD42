@@ -1,0 +1,669 @@
+@extends('layouts.master')
+@section('title', 'Yêu cầu tuyển dụng')
+
+@section('content')
+    <style>
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #4facfe;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: #4facfe;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-skill {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-skill input {
+            flex: 1;
+        }
+
+        .add-skill button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-skill button:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+        }
+
+        .status-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .status-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            margin: 0 -40px -40px -40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .draft-btn {
+            background: #718096;
+            margin-right: 15px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .preview-btn {
+            background: #805ad5;
+            margin-left: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <div class="container animate-fade-in">
+        <div class="header">
+            <h1><i class="fas fa-briefcase"></i> Đăng Tin Tuyển Dụng</h1>
+            <p>Tạo tin tuyển dụng chuyên nghiệp và thu hút ứng viên tài năng</p>
+        </div>
+
+        <form action="{{ route('hr.tintuyendung.store') }}" method="POST" class="form-container" id="jobPostingForm">
+            @csrf
+            <div class="form-grid">
+                <!-- Thông tin cơ bản -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Thông tin cơ bản
+                    </h3>
+                    <div class="form-group">
+                        <label for="tieu_de">Tiêu đề công việc <span class="required">*</span></label>
+                        <input type="text" id="tieu_de" name="tieu_de" placeholder="VD: Senior Frontend Developer"
+                            value="{{ old('tieu_de') }}" class="{{ $errors->has('tieu_de') ? 'error' : '' }}">
+                        @error('tieu_de')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ma">Mã tuyển dụng <span class="required">*</span></label>
+                            <input type="text" id="ma" name="ma" placeholder="VD: JOB-2024-001"
+                                value="{{ old('ma') }}" class="{{ $errors->has('ma') ? 'error' : '' }}">
+                            @error('ma')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="so_vi_tri">Số vị trí tuyển <span class="required">*</span></label>
+                            <input type="number" id="so_vi_tri" name="so_vi_tri"
+                                value="{{ old('so_vi_tri', $yeuCau->so_luong ?? '') }}" min="1"
+                                class="{{ $errors->has('so_vi_tri') ? 'error' : '' }}">
+                            @error('so_vi_tri')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phong_ban_id">Phòng ban <span class="required">*</span></label>
+                            <select id="phong_ban_id" name="phong_ban_id"
+                                class="{{ $errors->has('phong_ban_id') ? 'error' : '' }}">
+                                <option value="">Chọn phòng ban</option>
+                                @foreach ($phongBans as $key => $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ old('phong_ban_id') == $item->id || (isset($yeuCau) && $item->id === $yeuCau->phongBan->id) ? 'selected' : '' }}>
+                                        {{ $item->ten_phong_ban }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('phong_ban_id')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="chuc_vu_id">Chức vụ <span class="required">*</span></label>
+                            <select id="chuc_vu_id" name="chuc_vu_id"
+                                class="{{ $errors->has('chuc_vu_id') ? 'error' : '' }}">
+                                @if (isset($yeuCau))
+                                    <option value="{{ $yeuCau->chuc_vu_id }}"
+                                        {{ old('chuc_vu_id') == $yeuCau->chuc_vu_id ? 'selected' : '' }}>
+                                        {{ $yeuCau->chucVu->ten }}
+                                    </option>
+                                @endif
+                            </select>
+                            @error('chuc_vu_id')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Điều kiện công việc -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        Điều kiện công việc
+                    </h3>
+                    <div class="form-group">
+                        <label for="loai_hop_dong">Loại hợp đồng <span class="required">*</span></label>
+                        <select id="loai_hop_dong" name="loai_hop_dong"
+                            class="{{ $errors->has('loai_hop_dong') ? 'error' : '' }}">
+                            <option value="">Chọn loại hợp đồng</option>
+                            <option value="thu_viec"
+                                {{ old('loai_hop_dong') == 'thu_viec' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'thu_viec') ? 'selected' : '' }}>
+                                Thử việc
+                            </option>
+                            <option value="xac_dinh_thoi_han"
+                                {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'xac_dinh_thoi_han') ? 'selected' : '' }}>
+                                Xác định thời hạn
+                            </option>
+                            <option value="khong_xac_dinh_thoi_han"
+                                {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'khong_xac_dinh_thoi_han') ? 'selected' : '' }}>
+                                Không xác định thời hạn
+                            </option>
+                        </select>
+                        @error('loai_hop_dong')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="cap_do_kinh_nghiem">Cấp độ kinh nghiệm <span class="required">*</span></label>
+                        <select id="cap_do_kinh_nghiem" name="cap_do_kinh_nghiem"
+                            class="{{ $errors->has('cap_do_kinh_nghiem') ? 'error' : '' }}">
+                            <option value="">Chọn cấp độ</option>
+                            <option value="intern" {{ old('cap_do_kinh_nghiem') == 'intern' ? 'selected' : '' }}>Intern
+                            </option>
+                            <option value="fresher" {{ old('cap_do_kinh_nghiem') == 'fresher' ? 'selected' : '' }}>Fresher
+                            </option>
+                            <option value="junior" {{ old('cap_do_kinh_nghiem') == 'junior' ? 'selected' : '' }}>Junior
+                            </option>
+                            <option value="middle" {{ old('cap_do_kinh_nghiem') == 'middle' ? 'selected' : '' }}>Middle
+                            </option>
+                            <option value="senior" {{ old('cap_do_kinh_nghiem') == 'senior' ? 'selected' : '' }}>Senior
+                            </option>
+                        </select>
+                        @error('cap_do_kinh_nghiem')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="kinh_nghiem_toi_thieu">Kinh nghiệm tối thiểu (năm) <span
+                                    class="required">*</span></label>
+                            <input type="number" id="kinh_nghiem_toi_thieu" name="kinh_nghiem_toi_thieu"
+                                value="{{ old('kinh_nghiem_toi_thieu', $yeuCau->kinh_nghiem_toi_thieu ?? '') }}"
+                                min="0" max="20"
+                                class="{{ $errors->has('kinh_nghiem_toi_thieu') ? 'error' : '' }}">
+                            @error('kinh_nghiem_toi_thieu')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="kinh_nghiem_toi_da">Kinh nghiệm tối đa (năm) <span
+                                    class="required">*</span></label>
+                            <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da"
+                                value="{{ old('kinh_nghiem_toi_da', $yeuCau->kinh_nghiem_toi_da ?? '') }}" min="0"
+                                max="20" class="{{ $errors->has('kinh_nghiem_toi_da') ? 'error' : '' }}">
+                            @error('kinh_nghiem_toi_da')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trinh_do_hoc_van">Trình độ học vấn</label>
+                        <select id="trinh_do_hoc_van" name="trinh_do_hoc_van"
+                            class="{{ $errors->has('trinh_do_hoc_van') ? 'error' : '' }}">
+                            <option value="">Chọn trình độ</option>
+                            <option value="Trung cấp"
+                                {{ old('trinh_do_hoc_van') == 'Trung cấp' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Trung cấp') ? 'selected' : '' }}>
+                                Trung cấp
+                            </option>
+                            <option value="Cao đẳng"
+                                {{ old('trinh_do_hoc_van') == 'Cao đẳng' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Cao đẳng') ? 'selected' : '' }}>
+                                Cao đẳng
+                            </option>
+                            <option value="Đại học"
+                                {{ old('trinh_do_hoc_van') == 'Đại học' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Đại học') ? 'selected' : '' }}>
+                                Đại học
+                            </option>
+                        </select>
+                        @error('trinh_do_hoc_van')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Mức lương -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Mức lương & Thời hạn
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="luong_toi_thieu">Lương tối thiểu (VNĐ)</label>
+                            <input type="number" id="luong_toi_thieu" name="luong_toi_thieu" placeholder="10000000"
+                                step="100000" value="{{ old('luong_toi_thieu', $yeuCau->luong_toi_thieu ?? '') }}"
+                                class="{{ $errors->has('luong_toi_thieu') ? 'error' : '' }}">
+                            @error('luong_toi_thieu')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="luong_toi_da">Lương tối đa (VNĐ)</label>
+                            <input type="number" id="luong_toi_da" name="luong_toi_da" placeholder="20000000"
+                                step="100000" value="{{ old('luong_toi_da', $yeuCau->luong_toi_da ?? '') }}"
+                                class="{{ $errors->has('luong_toi_da') ? 'error' : '' }}">
+                            @error('luong_toi_da')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="han_nop_ho_so">Hạn nộp hồ sơ <span class="required">*</span></label>
+                        <input type="date" id="han_nop_ho_so" name="han_nop_ho_so"
+                            value="{{ old('han_nop_ho_so') }}"
+                            class="{{ $errors->has('han_nop_ho_so') ? 'error' : '' }}">
+                        @error('han_nop_ho_so')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="lam_viec_tu_xa" name="lam_viec_tu_xa" value="1"
+                            {{ old('lam_viec_tu_xa') ? 'checked' : '' }}>
+                        <label for="lam_viec_tu_xa">Cho phép làm việc từ xa</label>
+                        @error('lam_viec_tu_xa')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="tuyen_gap" name="tuyen_gap" value="1"
+                            {{ old('tuyen_gap') ? 'checked' : '' }}>
+                        <label for="tuyen_gap">Tuyển gấp</label>
+                        @error('tuyen_gap')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Kỹ năng yêu cầu -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-cogs"></i>
+                        Kỹ năng yêu cầu
+                    </h3>
+                    <div class="skills-container" id="skillsContainer">
+                        <!-- Skills will be added here dynamically -->
+                    </div>
+
+                    @error('ky_nang_yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                    @error('ky_nang_yeu_cau.*')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                    <div class="add-skill">
+                        <input type="text" id="skillInput"
+                            placeholder="Nhập kỹ năng (VD: JavaScript, React, Node.js)">
+                        <button type="button" onclick="addSkill()">
+                            <i class="fas fa-plus"></i> Thêm
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- trạng thái --}}
+            <input type="hidden" name="trang_thai" id="trang_thai" value="{{ old('trang_thai', 'dang_tuyen') }}">
+            @error('trang_thai')
+                <span class="error-message">{{ $message }}</span>
+            @enderror
+
+            <input type="hidden" name="yeu_cau_id" id="yeu_cau_id" value="{{ $yeuCau->id }}">
+
+            <!-- Mô tả chi tiết -->
+            <div class="form-section" style="margin-top: 30px;">
+                <h3 class="section-title">
+                    <i class="fas fa-file-alt"></i>
+                    Mô tả chi tiết
+                </h3>
+                <div class="form-group">
+                    <label for="mo_ta_cong_viec">Mô tả công việc <span class="required">*</span></label>
+                    <textarea id="mo_ta_cong_viec" name="mo_ta_cong_viec" placeholder="Mô tả chi tiết về công việc, trách nhiệm chính..."
+                        class="{{ $errors->has('mo_ta_cong_viec') ? 'error' : '' }}">{{ old('mo_ta_cong_viec', $yeuCau->mo_ta_cong_viec ?? '') }}</textarea>
+                    @error('mo_ta_cong_viec')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="yeu_cau">Yêu cầu ứng viên <span class="required">*</span></label>
+                    <textarea id="yeu_cau" name="yeu_cau" placeholder="Các yêu cầu về kinh nghiệm, kỹ năng, tính cách..."
+                        class="{{ $errors->has('yeu_cau') ? 'error' : '' }}">{{ old('yeu_cau', $yeuCau->yeu_cau ?? '') }}</textarea>
+                    @error('yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="phuc_loi">Phúc lợi</label>
+                    <textarea id="phuc_loi" name="phuc_loi"
+                        placeholder="Các phúc lợi dành cho nhân viên: bảo hiểm, thưởng, nghỉ phép..."
+                        class="{{ $errors->has('phuc_loi') ? 'error' : '' }}">{{ old('phuc_loi') }}</textarea>
+                    @error('phuc_loi')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="button" class="submit-btn draft-btn" onclick="saveDraft()">
+                    <i class="fas fa-save"></i> Lưu nháp
+                </button>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Đăng tin tuyển dụng
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+
+    <script>
+        let skills = [];
+
+        // Khởi tạo skills từ dữ liệu có sẵn
+        const kyNangYeuCau = @json($yeuCau->ky_nang_yeu_cau ?? []);
+        if (Array.isArray(kyNangYeuCau)) {
+            skills.push(...kyNangYeuCau);
+        }
+        renderSkills();
+
+        function addSkill() {
+            const input = document.getElementById('skillInput');
+            const skill = input.value.trim();
+
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                renderSkills();
+                input.value = '';
+            } else if (skill && skills.includes(skill)) {
+                alert('Kỹ năng này đã được thêm!');
+            }
+        }
+
+        function removeSkill(skill) {
+            skills = skills.filter(s => s !== skill);
+            renderSkills();
+        }
+
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+
+            if (skills.length === 0) {
+                container.innerHTML = '<div style="color: #666; font-style: italic;">Chưa có kỹ năng nào</div>';
+            } else {
+                container.innerHTML = skills.map(skill => `
+            <div class="skill-tag">
+                ${escapeHtml(skill)}
+                <button type="button" onclick="removeSkill('${escapeHtml(skill).replace(/'/g, '\\\'')}')" title="Xóa">×</button>
+            </div>
+        `).join('');
+            }
+
+            updateHiddenInputs();
+        }
+
+        function updateHiddenInputs() {
+            // Xóa các input cũ
+            const oldInputs = document.querySelectorAll('input[name="ky_nang_yeu_cau[]"]');
+            oldInputs.forEach(input => input.remove());
+
+            const form = document.getElementById('jobPostingForm');
+
+            // Nếu có skills, tạo hidden input cho mỗi skill
+            if (skills.length > 0) {
+                skills.forEach(skill => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ky_nang_yeu_cau[]'; // Quan trọng: phải có []
+                    input.value = skill;
+                    form.appendChild(input);
+                });
+            } else {
+                // Nếu không có skills, tạo một input rỗng để đảm bảo field tồn tại
+                const emptyInput = document.createElement('input');
+                emptyInput.type = 'hidden';
+                emptyInput.name = 'ky_nang_yeu_cau[]';
+                emptyInput.value = '';
+                form.appendChild(emptyInput);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('skillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+
+        document.getElementById('jobPostingForm').addEventListener('submit', function(e) {
+            updateHiddenInputs();
+            document.getElementById('trang_thai').value = 'dang_tuyen';
+        });
+
+        function saveDraft() {
+            updateHiddenInputs();
+            document.getElementById('trang_thai').value = 'nhap';
+            document.getElementById('jobPostingForm').submit();
+        }
+    </script>
+@endsection

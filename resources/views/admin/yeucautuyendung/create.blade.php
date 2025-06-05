@@ -9,7 +9,7 @@
         </div>
 
         <div class="form-container">
-            <form id="recruitmentForm" action="{{route('department.yeucautuyendung.store')}}" method="POST">
+            <form id="recruitmentForm" action="{{ route('department.yeucautuyendung.store') }}" method="POST">
                 @csrf
                 <div class="section-title">Thông Tin Cơ Bản</div>
 
@@ -17,11 +17,17 @@
                     <div class="form-group">
                         <label for="ma">Mã Yêu Cầu <span class="required">*</span></label>
                         <input type="text" id="ma" name="ma" placeholder="VD: YC001">
+                        @error('ma')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="so_luong">Số Lượng Cần Tuyển <span class="required">*</span></label>
                         <input type="number" id="so_luong" name="so_luong" min="1" placeholder="1">
+                        @error('so_luong')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
 
 
@@ -34,17 +40,22 @@
                                 <option value="{{ $chucVu->id }}">{{ $chucVu->ten }}</option>
                             @endforeach
                         </select>
+                        @error('chuc_vu_id')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="loai_hop_dong">Loại Hợp Đồng <span class="required">*</span></label>
-                        <select id="loai_hop_dong" name="loai_hop_dong" >
+                        <select id="loai_hop_dong" name="loai_hop_dong">
                             <option value="">-- Chọn Loại Hợp Đồng --</option>
                             <option value="thu_viec">Thử Việc</option>
-                            <option value="chinh_thuc">Chính Thức</option>
-                            <option value="thoi_vu">Thời Vụ</option>
-                            <option value="thoi_han">Có Thời Hạn</option>
+                            <option value="xac_dinh_thoi_han">Xác Định Thời Hạn</option>
+                            <option value="khong_xac_dinh_thoi_han">Không Xác Định Thời Hạn</option>
                         </select>
+                        @error('loai_hop_dong')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
@@ -55,6 +66,9 @@
                             <option value="Cao đẳng">Cao đẳng</option>
                             <option value="Đại học">Đại học</option>
                         </select>
+                        @error('trinh_do_hoc_van')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -66,10 +80,18 @@
                         <div class="salary-range">
                             <input type="number" id="luong_toi_thieu" name="luong_toi_thieu" placeholder="Lương tối thiểu"
                                 min="0">
+
                             <span>đến</span>
                             <input type="number" id="luong_toi_da" name="luong_toi_da" placeholder="Lương tối đa"
                                 min="0">
+
                         </div>
+                        @error('luong_toi_thieu')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                        @error('luong_toi_da')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
@@ -77,10 +99,18 @@
                         <div class="experience-range">
                             <input type="number" id="kinh_nghiem_toi_thieu" name="kinh_nghiem_toi_thieu"
                                 placeholder="Tối thiểu" min="0">
+
                             <span>đến</span>
                             <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da" placeholder="Tối đa"
                                 min="0">
+
                         </div>
+                        @error('kinh_nghiem_toi_thieu')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                        @error('kinh_nghiem_toi_da')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -90,21 +120,33 @@
                     <label for="mo_ta_cong_viec">Mô Tả Công Việc</label>
                     <textarea id="mo_ta_cong_viec" name="mo_ta_cong_viec"
                         placeholder="Mô tả chi tiết về công việc, trách nhiệm và quyền hạn..."></textarea>
+                    @error('mo_ta_cong_viec')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group full-width">
                     <label for="yeu_cau">Yêu Cầu Ứng Viên</label>
                     <textarea id="yeu_cau" name="yeu_cau" placeholder="Các yêu cầu về trình độ, kinh nghiệm, kỹ năng..."></textarea>
+                    @error('yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group full-width">
                     <label for="ky_nang_yeu_cau">Kỹ Năng Yêu Cầu</label>
                     <textarea id="ky_nang_yeu_cau" name="ky_nang_yeu_cau" placeholder="Các kỹ năng chuyên môn, kỹ năng mềm cần thiết..."></textarea>
+                    @error('ky_nang_yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group full-width">
                     <label for="ghi_chu">Ghi Chú</label>
                     <textarea id="ghi_chu" name="ghi_chu" placeholder="Các thông tin bổ sung khác..."></textarea>
+                    @error('ghi_chu')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="btn-container">
@@ -123,6 +165,12 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
         }
 
         .header {

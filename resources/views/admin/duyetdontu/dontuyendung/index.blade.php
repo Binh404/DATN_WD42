@@ -66,6 +66,9 @@
                                 <i class="fas fa-code me-1"></i>Mã Yêu Cầu
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-building me-1"></i>Phòng Ban
+                            </th>
+                            <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-building me-1"></i>Chức Vụ
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
@@ -89,8 +92,12 @@
                                 <code class="bg-light text-dark px-2 py-1 rounded">{{ $item->ma }}</code>
                             </td>
                             <td class="px-4 py-3 align-middle">
+                                <span>{{ $item->phongBan->ten_phong_ban ?? 'Không có chức vụ' }}</span>
+                            </td>
+                            <td class="px-4 py-3 align-middle">
                                 <span>{{ $item->chucVu->ten ?? 'Không có chức vụ' }}</span>
                             </td>
+                            
 
                             <td class="px-4 py-3 align-middle">
                                 @if($item->trang_thai == 'cho_duyet')
@@ -124,16 +131,11 @@
 
                             <td class="px-4 py-3 align-middle">
                                 <div class="d-flex gap-2 justify-content-center">
+                                    <a href="{{ route('admin.duyetdon.tuyendung.show', ['id' => $item->id]) }}">
+                                        <button class="btn btn-warning btn-sm">Xem chi tiết</button>
+                                    </a>
 
-                                    <form action="{{ route('admin.dontuyendung.duyet', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-success btn-sm" onclick="return confirm('Duyệt đơn này?')">Duyệt</button>
-                                    </form>
-                    
-                                    <form action="{{ route('admin.dontuyendung.tuchoi', $item->id) }}" method="POST" style="display:inline-block">
-                                        @csrf
-                                        <button class="btn btn-danger btn-sm" onclick="return confirm('Từ chối đơn này?')">Từ chối</button>
-                                    </form>
+                                    
                                 </div>
                             </td>
                         </tr>

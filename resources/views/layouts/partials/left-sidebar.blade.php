@@ -325,7 +325,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route('admin.dontuyendung.index')}}" class="nav-link">
+              <a href="{{route('admin.duyetdon.tuyendung.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Tuyển dụng</p>
               </a>
@@ -336,21 +336,11 @@
                 <p>Xin nghỉ việc</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Đề xuất tăng lương</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Đề xuất tăng chức</p>
-              </a>
-            </li>
+            
           </ul>
         </li>
 
+        <!-- Cấp trên thông báo Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
@@ -358,7 +348,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route('hr.captrenthongbao.index')}}" class="nav-link">
+              <a href="{{route('hr.captrenthongbao.tuyendung.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Tuyển dụng</p>
               </a>
@@ -373,6 +363,22 @@
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Tăng lương</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Tin tuyển dụng Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Tin tuyển dụng <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('hr.tintuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tin đã đăng</p>
               </a>
             </li>
           </ul>

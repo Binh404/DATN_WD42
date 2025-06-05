@@ -326,8 +326,7 @@
         <div class="header">
             <div class="header-content">
                 <div class="header-left">
-                    <h1>📋 CHI TIẾT YÊU CẦU TUYỂN DỤNG</h1>
-                    <p>Thông báo từ Giám Đốc</p>
+                    <h1>📋 CHI TIẾT TIN TUYỂN DỤNG</h1>
                 </div>
                 <div class="header-right">
                     <div class="request-id">Mã: {{ $tuyenDung->ma }}</div>
@@ -354,18 +353,16 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Số lượng</div>
-                        <div class="info-value success">{{ $tuyenDung->so_luong }}</div>
+                        <div class="info-value success">{{ $tuyenDung->so_vi_tri }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Loại hợp đồng</div>
-                        @if ($tuyenDung->loai_hop_dong === 'chinh_thuc')
-                            <div class="info-value">Chính thức</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thu_viec')
+                        @if ($tuyenDung->loai_hop_dong === 'thu_viec')
                             <div class="info-value">Thử việc</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_vu')
-                            <div class="info-value">Thời vụ</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_han')
-                            <div class="info-value">Có thời hạn</div>
+                        @elseif($tuyenDung->loai_hop_dong === 'xac_dinh_thoi_han')
+                            <div class="info-value">Xác định thời hạn</div>
+                        @elseif($tuyenDung->loai_hop_dong === 'khong_xac_dinh_thoi_han')
+                            <div class="info-value">Không xác định thời hạn</div>
                         @endif
 
                     </div>
@@ -403,19 +400,42 @@
 
                 <div class="description-section">
                     <div class="description-title">✅ Yêu cầu công việc</div>
-                    <div class="description-content">{{ $tuyenDung->yeu_cau }}</div>
+                    @php
+                        $yeuCau = $tuyenDung->yeu_cau;
+                        $yeuCauText = is_array($yeuCau) ? implode(', ', $yeuCau) : (string) $yeuCau;
+                    @endphp
+                    <div class="description-content">
+                        @if (is_array($tuyenDung->yeu_cau))
+                            <ul>
+                                @foreach ($tuyenDung->yeu_cau as $yeuCau)
+                                    <li>{{ $yeuCau }}</li>
+                                @endforeach
+                            </ul>
+                        @else
+                            {{ $tuyenDung->yeu_cau }}
+                        @endif
+                    </div>
                 </div>
 
                 <div class="description-section">
                     <div class="description-title">🔧 Kỹ năng yêu cầu</div>
                     <div class="description-content">
-                        {{ is_array($tuyenDung->ky_nang_yeu_cau) ? implode(', ', $tuyenDung->ky_nang_yeu_cau) : $tuyenDung->ky_nang_yeu_cau }}
+                        @if (is_array($tuyenDung->ky_nang_yeu_cau))
+                            <ul>
+                                @foreach ($tuyenDung->ky_nang_yeu_cau as $kyNang)
+                                    <li>{{ $kyNang }}</li>
+                                @endforeach
+                            </ul>
+                        @else
+                            {{ $tuyenDung->ky_nang_yeu_cau }}
+                        @endif
                     </div>
+
                 </div>
 
                 <div class="description-section">
                     <div class="description-title">📋 Ghi chú</div>
-                    <div class="description-content">{{ $tuyenDung->ghi_chu }}</div>
+                    <div class="description-content">{{ $tuyenDung->ghi_chu ? $tuyenDung->ghi_chu : 'Không có ghi chú'}}</div>
                 </div>
             </div>
         </div>
@@ -426,25 +446,21 @@
                     <div class="footer-label">Ngày tạo</div>
                     <div class="footer-value" id="current-date">{{ $tuyenDung->created_at }}</div>
                 </div>
+
                 <div class="footer-item">
-                    <div class="footer-label">Người yêu cầu</div>
-                    <div class="footer-value">{{ $tuyenDung->nguoiTao->ten_dang_nhap }}</div>
-                </div>
-                <div class="footer-item">
-                    <div class="footer-label">Phòng ban nhận</div>
+                    <div class="footer-label">Phòng ban</div>
                     <div class="footer-value">Phòng Nhân Sự</div>
                 </div>
             </div>
 
             <div class="actions">
-                @if ($tuyenDung->trang_thai_dang === 'chua_dang')
-                    <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
+                @if ($tuyenDung->trang_thai === 'nhap')
+                    <a href="{{ route('hr.tintuyendung.edit', $tuyenDung->id) }}">
                         <button class="btn btn-primary">
-                            Đăng tin tuyển dụng
+                            Chỉnh sửa
                         </button>
                     </a>
                 @endif
-
             </div>
         </div>
     </div>

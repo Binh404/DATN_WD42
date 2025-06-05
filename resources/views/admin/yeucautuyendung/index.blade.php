@@ -130,9 +130,14 @@
 
                             <td class="px-4 py-3 align-middle">
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <a href="{{ route('department.yeucautuyendung.edit', ['yeucautuyendung' => $yeuCauTuyenDung->id]) }}" class="btn btn-outline-warning btn-sm rounded-pill"
+                                    <a href="{{ route('department.yeucautuyendung.edit', ['id' => $yeuCauTuyenDung->id]) }}" class="btn btn-outline-warning btn-sm rounded-pill"
                                         data-bs-toggle="tooltip" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <a href="{{ route('department.yeucautuyendung.show', ['id' => $yeuCauTuyenDung->id]) }}" class="btn btn-outline-success btn-sm rounded-pill"
+                                        data-bs-toggle="tooltip" title="Chỉnh sửa">
+                                        <i class="fas fa-eye"></i>
                                     </a>
 
                                     <form action="{{ route('department.yeucautuyendung.cancel', $yeuCauTuyenDung->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn hủy yêu cầu này không?')">

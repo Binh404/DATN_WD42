@@ -54,27 +54,39 @@ Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 Route::get('/congviec', [CongViecController::class, 'index']);
 
 
-// Admin duyệt yêu cầu
+// Admin
 Route::prefix('admin')->name('admin.')->group(function () {
     // đơn yêu cầu tuyển dụng
-    Route::get('dontuyendung', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('dontuyendung.index');
-    Route::post('dontuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('dontuyendung.duyet');
-    Route::post('dontuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('dontuyendung.tuchoi');
+    Route::get('duyetdon/tuyendung', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('duyetdon.tuyendung.index');
+    Route::get('duyetdon/tuyendung/{id}', [DuyetDonTuController::class, 'show'])->name('duyetdon.tuyendung.show');
+    Route::post('duyetdon/tuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('duyetdon.tuyendung.duyet');
+    Route::post('duyetdon/tuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('duyetdon.tuyendung.tuchoi');
 });
 
-// HRM
+// HR
 Route::prefix('hr')->name('hr.')->group(function () {
     // tuyển dụng
-    Route::resource('captrenthongbao', YeuCauTuyenDungController::class)->names('captrenthongbao');
+    Route::get('captrenthongbao/tuyendung/danhsach', [YeuCauTuyenDungController::class, 'danhSachThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.index');
+    Route::get('captrenthongbao/tuyendung/{id}', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
+    Route::get('tintuyendung/create-from-request/{id}', [TuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
+    Route::resource('tintuyendung', TuyenDungController::class)->names('tintuyendung');
 });
-
 
 
 // Trưởng phòng
 Route::prefix('department')->name('department.')->group(function () {
-    // yêu cầu tuyển dụng
-    Route::resource('yeucautuyendung', YeuCauTuyenDungController::class)->names('yeucautuyendung');
+    // quản lý yêu cầu tuyển dụng
+    Route::get('yeucautuyendung/create', [YeuCauTuyenDungController::class, 'create'])->name('yeucautuyendung.create');
+    Route::post('yeucautuyendung/store', [YeuCauTuyenDungController::class, 'store'])->name('yeucautuyendung.store');
+
+    Route::get('yeucautuyendung/edit/{id}', [YeuCauTuyenDungController::class, 'edit'])->name('yeucautuyendung.edit');
+    Route::put('yeucautuyendung/update/{id}', [YeuCauTuyenDungController::class, 'update'])->name('yeucautuyendung.update');
+
     Route::patch('yeucautuyendung/{id}/cancel', [YeuCauTuyenDungController::class, 'cancel'])->name('yeucautuyendung.cancel');
+
+    Route::get('yeucautuyendung/show/{id}', [YeuCauTuyenDungController::class, 'chiTietYeuCauTuyenDung'])->name('yeucautuyendung.show');
+
+    Route::get('yeucautuyendung', [YeuCauTuyenDungController::class, 'danhSachYeuCauTuyenDung'])->name('yeucautuyendung.index');
 });
 
 

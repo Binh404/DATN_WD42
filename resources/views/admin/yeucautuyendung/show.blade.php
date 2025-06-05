@@ -327,10 +327,18 @@
             <div class="header-content">
                 <div class="header-left">
                     <h1>📋 CHI TIẾT YÊU CẦU TUYỂN DỤNG</h1>
-                    <p>Thông báo từ Giám Đốc</p>
                 </div>
                 <div class="header-right">
-                    <div class="request-id">Mã: {{ $tuyenDung->ma }}</div>
+                    @if ($tuyenDung->trang_thai === 'da_duyet')
+                        <div class="request-id">Trạng thái: Đã duyệt</div>
+                    @elseif($tuyenDung->trang_thai === 'cho_duyet')
+                        <div class="request-id">Trạng thái: Chờ duyệt</div>
+                    @elseif($tuyenDung->trang_thai === 'bi_tu_choi')
+                        <div class="request-id">Trạng thái: Bị từ chối</div>
+                    @elseif($tuyenDung->trang_thai === 'huy_bo')
+                        <div class="request-id">Trạng thái: Đã hủy</div>
+                    @endif
+
                 </div>
             </div>
         </div>
@@ -437,13 +445,13 @@
             </div>
 
             <div class="actions">
-                @if ($tuyenDung->trang_thai_dang === 'chua_dang')
+                {{-- @if ($tuyenDung->trang_thai_dang === 'chua_dang')
                     <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
                         <button class="btn btn-primary">
                             Đăng tin tuyển dụng
                         </button>
                     </a>
-                @endif
+                @endif --}}
 
             </div>
         </div>
