@@ -31,7 +31,19 @@ class UngTuyenController extends Controller
         if ($request->filled('vi_tri')) {
             $ungVienQuery->where('tin_tuyen_dung_id', $request->vi_tri);
         }
+        
         $ungViens = $ungVienQuery->get();
+        
+        // Calculate matching score for each candidate
+        foreach($ungViens as $ungVien) {
+            $ungVien->matching_score = $ungVien->calculateMatchingPercentage();
+        }
+        
+        // Sort by matching score if requested
+        if ($request->filled('sort_by_score')) {
+            $ungViens = $ungViens->sortByDesc('matching_score');
+        }
+        
         return view('admin.ungtuyen.index', compact('ungViens', 'viTriList'));
     }
 
@@ -87,6 +99,23 @@ class UngTuyenController extends Controller
     public function show($id)
     {
         $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
-        return view('admin.ungtuyen.show', compact('ungVien'));
+        $matchingPercentage = $ungVien->calculateMatchingPercentage();
+        
+        // Get matching details
+        $matchingDetails = [
+            'skills' => [
+                'candidate' => array_map('trim', explode(',', strtolower($ungVien->ky_nang))),
+                'required' => array_map('strtolower', json_decode($ungVien->tinTuyenDung->ky_nang_yeu_cau, true))
+            ],
+            'experience' => [
+                'candidate' => (int) filter_var($ungVien->kinh_nghiem, FILTER_SANITIZE_NUMBER_INT),
+                'required' => [
+                    'min' => $ungVien->tinTuyenDung->kinh_nghiem_toi_thieu,
+                    'max' => $ungVien->tinTuyenDung->kinh_nghiem_toi_da
+                ]
+            ]
+        ];
+        
+        return view('admin.ungtuyen.show', compact('ungVien', 'matchingPercentage', 'matchingDetails'));
     }
 }
