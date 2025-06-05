@@ -19,7 +19,6 @@ return new class extends Migration
             $table->boolean('la_vai_tro_he_thong')->default(false);
             $table->boolean('trang_thai')->default(true);
             $table->timestamps();
-
             $table->index('trang_thai');
         });
     }

@@ -79,7 +79,7 @@ class PhongBanController extends Controller
 
         $validated = $request->validate([
             'ten_phong_ban' => 'required|string|max:255',
-            'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban',
+            'ma_phong_ban' => 'required|string|max:50|unique:phong_ban,ma_phong_ban,' . $phongban->id,
             'mo_ta' => 'nullable|string',
             'trang_thai' => 'required|in:0,1',
         ], [
