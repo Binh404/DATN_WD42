@@ -29,6 +29,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
     // Đảm bảo đã load vai trò
+        // dd($request->session()->get('_token'));
 
         $roles = $user->vaiTros->pluck('ten')->toArray();
 

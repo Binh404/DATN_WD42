@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Middleware\CheckRole;
 
 use App\Http\Controllers\employee\BangLuongController;
@@ -100,7 +101,28 @@ Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin
 
 // Employee routes
 Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+      // Danh sách chấm công
+    // / Chấm công routes
+    Route::prefix('cham-cong')->name('cham-cong.')->group(function () {
+        // Hiển thị trang chấm công
+        Route::get('/', [ChamCongController::class, 'index'])->name('index');
 
+        // API chấm công
+        Route::post('/vao', [ChamCongController::class, 'chamCongVao'])->name('vao');
+        Route::post('/ra', [ChamCongController::class, 'chamCongRa'])->name('ra');
+
+        // Kiểm tra trạng thái chấm công
+        Route::get('/trang-thai', [ChamCongController::class, 'trangThaiChamCong'])->name('trang-thai');
+
+        // Lịch sử chấm công
+        Route::get('/lich-su', [ChamCongController::class, 'lichSuChamCong'])->name('lich-su');
+
+        // Báo cáo chấm công
+        Route::get('/bao-cao', [ChamCongController::class, 'baoCaoChamCong'])->name('bao-cao');
+
+        // Xuất báo cáo Excel
+        Route::get('/xuat-excel', [ChamCongController::class, 'xuatExcel'])->name('xuat-excel');
+    });
     Route::get('/dashboard', function () {
         return view('employe.dashboard');
     })->name('employee.dashboard');
