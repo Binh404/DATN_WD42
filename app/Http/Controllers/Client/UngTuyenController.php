@@ -226,7 +226,7 @@ class UngTuyenController extends Controller
     public function danhSachPhongVan(Request $request)
     {
         $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
-        $ungVienQuery = UngTuyen::with('tinTuyenDung')
+        $ungVienQuery = UngTuyen::with(['tinTuyenDung', 'nguoiCapNhatTrangThai'])
             ->where('trang_thai', 'phe_duyet')
             ->orderBy('diem_danh_gia', 'desc');
         
@@ -247,9 +247,9 @@ class UngTuyenController extends Controller
         }
         
         $ungViens = $ungVienQuery->get()->map(function($uv) {
-            // Nếu trang_thai_pv là null, set là 0 (chưa phỏng vấn)
+            // Nếu trang_thai_pv là null, set là Chưa phỏng vấn
             if ($uv->trang_thai_pv === null) {
-                $uv->update(['trang_thai_pv' => 0]);
+                $uv->update(['trang_thai_pv' => 'Chưa phỏng vấn']);
             }
             return $uv;
         });
@@ -260,12 +260,12 @@ class UngTuyenController extends Controller
     public function capNhatDiemPhongVan(Request $request, $id)
     {
         $rules = [
-            'trang_thai_pv' => 'required|in:đã phỏng vấn,pass,fail',
+            'trang_thai_pv' => 'required|in:Đã phỏng vấn,Đạt,Không đạt',
             'ghi_chu_phong_van' => 'nullable|string'
         ];
 
-        // Chỉ validate điểm khi trạng thái là "đã phỏng vấn"
-        if ($request->trang_thai_pv === 'đã phỏng vấn') {
+        // Chỉ validate điểm khi trạng thái là "Đã phỏng vấn"
+        if ($request->trang_thai_pv === 'Đã phỏng vấn') {
             $rules['diem_phong_van'] = 'required|numeric|min:0|max:10';
         }
 
@@ -276,11 +276,11 @@ class UngTuyenController extends Controller
             'ghi_chu_phong_van' => $request->ghi_chu_phong_van
         ];
 
-        // Chỉ cập nhật điểm khi trạng thái là "đã phỏng vấn"
-        if ($request->trang_thai_pv === 'đã phỏng vấn') {
+        // Chỉ cập nhật điểm khi trạng thái là "Đã phỏng vấn"
+        if ($request->trang_thai_pv === 'Đã phỏng vấn') {
             $data['diem_phong_van'] = $request->diem_phong_van;
         } else {
-            $data['diem_phong_van'] = null; // Reset điểm về null khi chuyển sang trạng thái khác
+            $data['diem_phong_van'] = null;
         }
 
         $ungVien = UngTuyen::findOrFail($id);
