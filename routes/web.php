@@ -54,6 +54,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
     // Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
     // Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+    Route::delete('/vaitro/delete/{id}', [RoleController::class, 'destroy']);
 
     //Admin Profile
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -83,16 +84,20 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
 
     // Admin Ứng Tuyển
-    Route::get('/ungvien', [UngTuyenController::class, 'index']);
+    Route::get('/ungvien', [UngTuyenController::class, 'index'])->name('ungvien.index');
+    Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');
+    Route::post('/ungvien/phe-duyet', [UngTuyenController::class, 'pheDuyet'])->name('ungvien.phe-duyet');
     Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
     Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
-
-
+    Route::post('/ungvien/{id}/diem-danh-gia', [UngTuyenController::class, 'luuDiemDanhGia'])->name('ungvien.luudiemdanhgia');
+    Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
+    Route::post('/ungvien/{id}/cap-nhat-diem-phong-van', [UngTuyenController::class, 'capNhatDiemPhongVan'])->name('ungvien.capnhatdiemphongvan');
 
     // Admin Vai Trò
     Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
-    Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::post('/vaitro/store', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/vaitro/edit/{id}', [CongViecController::class, 'edit']);
 
     // HR Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -202,3 +207,12 @@ Route::prefix('department')->name('department.')->group(function () {
 
 // Client Application
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+
+
+
+// Route Gửi Email Phỏng Vấn N8N
+Route::post('/ungvien/guiemailall', [UngTuyenController::class, 'guiEmailAll']);
+
+
+// Route xuất file excel
+Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);

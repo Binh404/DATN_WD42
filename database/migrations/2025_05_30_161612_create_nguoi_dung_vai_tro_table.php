@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nguoi_dung_vai_tro', function (Blueprint $table) {
-            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onDelete('cascade');
-            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onDelete('cascade');
+            $table->unsignedBigInteger('role_id');
+            $table->string('model_type'); // ví dụ: App\Models\NguoiDung
+            $table->unsignedBigInteger('nguoi_dung_id');
             $table->timestamps();
-            // $table->timestamp('created_at')->useCurrent();
 
-            $table->primary(['nguoi_dung_id', 'vai_tro_id']);
+            $table->index(['role_id', 'nguoi_dung_id', 'model_type'], 'ndvt_index');
+
+            // Thiết lập khóa ngoại nếu bạn dùng bảng vai_tro thay vì roles
+            $table->foreign('role_id')->references('id')->on('vai_tro')->onDelete('cascade');
         });
     }
 

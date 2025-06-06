@@ -7,16 +7,16 @@
     <form action="{{ route('roles.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Tên vai trò</label>
-            <input type="text" name="name" class="form-control" required>
+            <label for="ten" class="form-label">Tên vai trò</label>
+            <input type="text" name="ten" class="form-control" required>
         </div>
         <div class="mb-3">
             <label for="display_name" class="form-label">Tên hiển thị</label>
-            <input type="text" name="display_name" class="form-control">
+            <input type="text" name="ten_hien_thi" class="form-control">
         </div>
         <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea name="description" class="form-control"></textarea>
+            <label for="mo_ta" class="form-label">Mô tả</label>
+            <textarea name="mo_ta" class="form-control"></textarea>
         </div>
         <div class="mb-3">
             <label class="form-label fw-bold">Phân quyền</label>

@@ -8,10 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class NguoiDung extends Authenticatable  implements CanResetPassword
 {
-    use  HasFactory, Notifiable, CanResetPasswordTrait;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasRoles;
+
 
     protected $table = 'nguoi_dung';
 
@@ -76,7 +79,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
 
     public function vaiTros()
     {
-        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
+        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'role_id')
             ->withTimestamps();
     }
 

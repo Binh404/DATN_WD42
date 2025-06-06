@@ -5,16 +5,16 @@
             <h2 id="modalJobTitle" style="color: white; margin: 0;">Ứng Tuyển Vị Trí</h2>
         </div>
         <div class="modal-body">
-            <div class="success-message" id="successMessage">
+            <!-- <div class="success-message" id="successMessage">
                 <i class="fas fa-check-circle"></i>
                 Đơn ứng tuyển của bạn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
-            </div>
+            </div> -->
             <form id="applicationForm" action="/ungtuyen/store" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="tin_tuyen_dung_id" id="tin_tuyen_dung_id" value="{{ $tuyenDung->id ?? '' }}">
                 <div class="form-group">
                     <label for="ten_ung_vien">Họ và Tên *</label>
-                    <input type="text" id="ten_ung_vien" name="ten_ung_vien" placeholder="Nhập họ và tên đầy đủ">
+                    <input type="text" id="ten_ung_vien" name="ten_ung_vien" placeholder="Nhập họ và tên đầy đủ" value="{{ old('ten_ung_vien') }}">
                     @error('ten_ung_vien')
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle me-1"></i>
@@ -25,7 +25,7 @@
 
                 <div class="form-group">
                     <label for="email">Email *</label>
-                    <input type="text" id="email" name="email" placeholder="your.email@example.com">
+                    <input type="text" id="email" name="email" placeholder="your.email@example.com" value="{{ old('email') }}">
                     @error('email')
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle me-1"></i>
@@ -37,7 +37,7 @@
 
                 <div class="form-group">
                     <label for="so_dien_thoai">Số Điện Thoại *</label>
-                    <input type="tel" id="so_dien_thoai" name="so_dien_thoai" placeholder="0123 456 789">
+                    <input type="tel" id="so_dien_thoai" name="so_dien_thoai" placeholder="0123 456 789" value="{{ old('so_dien_thoai') }}">
                     @error('so_dien_thoai')
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle me-1"></i>
@@ -49,7 +49,7 @@
 
                 <div class="form-group">
                     <label for="kinh_nghiem">Kinh Nghiệm</label>
-                    <select id="kinh_nghiem" name="kinh_nghiem">
+                    <select id="kinh_nghiem" name="kinh_nghiem" value="{{ old('kinh_nghiem') }}">
                         <option value="">Chọn mức kinh nghiệm</option>
                         <option value="0-1">0-1 năm</option>
                         <option value="1-3">1-3 năm</option>
@@ -67,7 +67,7 @@
 
                 <div class="form-group">
                     <label for="ky_nang">Kỹ Năng</label>
-                    <input type="text" id="ky_nang" name="ky_nang" placeholder="VD: JavaScript, React, Node.js, Python...">
+                    <input type="text" id="ky_nang" name="ky_nang" placeholder="VD: JavaScript, React, Node.js, Python..." value="{{ old('ky_nang') }}">
                     @error('ky_nang')
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle me-1"></i>
@@ -93,7 +93,7 @@
                 <div class="form-group">
                     <label for="tai_cv">Tải lên CV *</label>
                     <div class="file-upload">
-                        <input type="file" id="tai_cv" name="tai_cv" accept=".pdf,.doc,.docx">
+                        <input type="file" id="tai_cv" name="tai_cv" accept=".pdf,.doc,.docx" value="{{ old('tai_cv') }}">
                         <label for="tai_cv" class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Chọn file CV (PDF, DOC, DOCX)</span>
@@ -161,3 +161,10 @@
         border-color: #ff4444;
     }
 </style>
+@if ($errors->any())
+<script>
+    window.onload = function() {
+        document.getElementById('applicationModal').style.display = 'block';
+    };
+</script>
+@endif
