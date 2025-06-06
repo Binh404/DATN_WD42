@@ -338,6 +338,9 @@ tbody tr:hover {
 .notification-item.warning {
     border-left: 4px solid #ed8936;
 }
+.notification-item.info {
+    border-left: 4px solid #4299e1;
+}
 
 .notification-item:hover {
     transform: translateY(-2px);

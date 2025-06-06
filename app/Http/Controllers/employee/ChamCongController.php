@@ -163,6 +163,24 @@ class ChamCongController extends Controller
             ]);
         }
     }
+    public function lichSuChamCong(Request $request)
+    {
+        $user = Auth::user();
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+
+        $chamCongThang = ChamCong::layBangChamCongThang($user->id, $month, $year);
+        $lichChamCong = $this->taoLichChamCong($chamCongThang, $month, $year);
+        $thongKe = $this->layThongKeThang($user->id, $month, $year);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'lich_cham_cong' => $lichChamCong,
+                'thong_ke' => $thongKe
+            ]
+        ]);
+    }
      public function trangThaiChamCong()
     {
         $user = Auth::user();
