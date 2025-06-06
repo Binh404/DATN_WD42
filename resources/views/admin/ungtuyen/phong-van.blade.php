@@ -30,6 +30,30 @@
     </div>
     @endif
 
+
+    <!-- Gửi email và đặt lịch -->
+    <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;">
+        @csrf
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label for="dat_lich" class="form-label mb-0">Đặt lịch phỏng vấn</label>
+                <input type="datetime-local" name="dat_lich" id="dat_lich" class="form-control">
+                @error('dat_lich')
+                <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-envelope-open-text me-2"></i>Gửi Email Phỏng Vấn</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Xuất Excel -->
+   <a href="/ungvien/export" class="btn btn-success">
+        📥 Xuất Excel
+    </a>
+
+
     <!-- Filter Section -->
     <div class="card mb-4">
         <div class="card-body">
@@ -110,12 +134,12 @@
                             <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
                             <td>
                                 <div class="progress" style="height: 25px;">
-                                    <div class="progress-bar bg-success" 
-                                         role="progressbar" 
-                                         style="width: {{ $uv->diem_danh_gia }}%"
-                                         aria-valuenow="{{ $uv->diem_danh_gia }}" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
+                                    <div class="progress-bar bg-success"
+                                        role="progressbar"
+                                        style="width: {{ $uv->diem_danh_gia }}%"
+                                        aria-valuenow="{{ $uv->diem_danh_gia }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
                                         {{ $uv->diem_danh_gia }}%
                                     </div>
                                 </div>
@@ -123,25 +147,25 @@
                             <td class="text-center">
                                 @switch($uv->trang_thai_pv)
                                 @case('đã phỏng vấnvấn')
-                                        <span class="badge bg-success">Đã phỏng vấn</span>
-                                        @break
-                                    @case('pass')
-                                        <span class="badge bg-success">Pass</span>
-                                        @break
-                                    @case('fail')
-                                        <span class="badge bg-danger">Fail</span>
-                                        @break
-                                    @default
-                                        <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
+                                <span class="badge bg-success">Đã phỏng vấn</span>
+                                @break
+                                @case('pass')
+                                <span class="badge bg-success">Pass</span>
+                                @break
+                                @case('fail')
+                                <span class="badge bg-danger">Fail</span>
+                                @break
+                                @default
+                                <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
                                 @endswitch
                             </td>
                             <td class="text-center">
                                 @if($uv->diem_phong_van !== null)
-                                    <span class="fw-bold {{ $uv->diem_phong_van >= 5 ? 'text-success' : 'text-danger' }}">
-                                        {{ number_format($uv->diem_phong_van, 1) }}/10
-                                    </span>
+                                <span class="fw-bold {{ $uv->diem_phong_van >= 5 ? 'text-success' : 'text-danger' }}">
+                                    {{ number_format($uv->diem_phong_van, 1) }}/10
+                                </span>
                                 @else
-                                    <span class="text-muted">Chưa có</span>
+                                <span class="text-muted">Chưa có</span>
                                 @endif
                             </td>
                             <td>
@@ -149,8 +173,8 @@
                                     <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-primary" 
-                                            onclick="showDiemPhongVanModal({{ $uv->id }})">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="showDiemPhongVanModal({{ $uv->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </div>
@@ -185,15 +209,15 @@
                     </div>
                     <div class="mb-3" id="diemPhongVanGroup">
                         <label for="diem_phong_van" class="form-label">Điểm phỏng vấn (thang điểm 10)</label>
-                        <input type="number" class="form-control" id="diem_phong_van" 
-                               name="diem_phong_van" min="0" max="10" step="0.5"
-                               placeholder="Nhập điểm từ 0-10">
+                        <input type="number" class="form-control" id="diem_phong_van"
+                            name="diem_phong_van" min="0" max="10" step="0.5"
+                            placeholder="Nhập điểm từ 0-10">
                         <div class="form-text">Điểm tối đa là 10, có thể nhập số lẻ (0.5)</div>
                     </div>
                     <div class="mb-3">
                         <label for="ghi_chu_phong_van" class="form-label">Ghi chú</label>
-                        <textarea class="form-control" id="ghi_chu_phong_van" 
-                                  name="ghi_chu_phong_van" rows="3"></textarea>
+                        <textarea class="form-control" id="ghi_chu_phong_van"
+                            name="ghi_chu_phong_van" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -208,47 +232,47 @@
 @endsection
 
 <script>
-function showDiemPhongVanModal(id) {
-    const modal = new bootstrap.Modal(document.getElementById('modalDiemPhongVan'));
-    const form = document.getElementById('formDiemPhongVan');
-    form.action = `/ungvien/${id}/cap-nhat-diem-phong-van`;
-    handleStatusChange(document.getElementById('trang_thai_pv').value);
-    modal.show();
-}
-
-function handleStatusChange(status) {
-    const diemInput = document.getElementById('diem_phong_van');
-    const diemGroup = document.getElementById('diemPhongVanGroup');
-    
-    if (status === 'đã phỏng vấn') {
-        diemGroup.style.display = 'block';
-        diemInput.required = true;
-    } else {
-        diemGroup.style.display = 'none';
-        diemInput.required = false;
-        diemInput.value = '';
+    function showDiemPhongVanModal(id) {
+        const modal = new bootstrap.Modal(document.getElementById('modalDiemPhongVan'));
+        const form = document.getElementById('formDiemPhongVan');
+        form.action = `/ungvien/${id}/cap-nhat-diem-phong-van`;
+        handleStatusChange(document.getElementById('trang_thai_pv').value);
+        modal.show();
     }
-}
+
+    function handleStatusChange(status) {
+        const diemInput = document.getElementById('diem_phong_van');
+        const diemGroup = document.getElementById('diemPhongVanGroup');
+
+        if (status === 'đã phỏng vấn') {
+            diemGroup.style.display = 'block';
+            diemInput.required = true;
+        } else {
+            diemGroup.style.display = 'none';
+            diemInput.required = false;
+            diemInput.value = '';
+        }
+    }
 </script>
 
 <style>
-.progress {
-    border-radius: 15px;
-    background-color: #e9ecef;
-}
+    .progress {
+        border-radius: 15px;
+        background-color: #e9ecef;
+    }
 
-.progress-bar {
-    transition: width 0.6s ease;
-    font-weight: bold;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-}
+    .progress-bar {
+        transition: width 0.6s ease;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    }
 
-.table th {
-    font-weight: 600;
-    text-align: center;
-}
+    .table th {
+        font-weight: 600;
+        text-align: center;
+    }
 
-.table td {
-    vertical-align: middle;
-}
-</style> 
+    .table td {
+        vertical-align: middle;
+    }
+</style>
