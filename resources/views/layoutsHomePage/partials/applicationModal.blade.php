@@ -161,3 +161,10 @@
         border-color: #ff4444;
     }
 </style>
+@if ($errors->any())
+<script>
+    window.onload = function() {
+        document.getElementById('applicationModal').style.display = 'block';
+    };
+</script>
+@endif
