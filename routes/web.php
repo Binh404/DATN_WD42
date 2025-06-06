@@ -11,23 +11,26 @@ use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CongViecController;
+use App\Http\Controllers\Admin\DonTuController;
+use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\client\TinTuyenDungController;
+use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 
 
 
 
 
 // Admin routes
-Route::middleware(['auth',PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
-  Route::get('/admin/dashboard', function () {
+    Route::get('/admin/dashboard', function () {
         return view('admin.dashboard.index');
-        })->name('admin.dashboard');;
+    })->name('admin.dashboard');;
     // Admin Phòng Ban
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // Route::get('/phongban/create', [PhongBanController::class, 'create']);
@@ -57,11 +60,10 @@ Route::middleware(['auth',PreventBackHistory::class, CheckRole::class . ':admin'
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 // HR routes
-Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
@@ -101,7 +103,7 @@ Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin
 });
 
 // Employee routes
-Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('employe.dashboard');
@@ -114,7 +116,6 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
     Route::get('/attendance', function () {
         return view('employe.attendance');
     });
-
     Route::get('/leave', function () {
         return view('employe.leave');
     });
@@ -124,7 +125,7 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
     });
 
     // Bang Luong
-    Route::get('/salary',[BangLuongController::class, 'index'])->name('bangluong.index');
+    Route::get('/salary', [BangLuongController::class, 'index'])->name('bangluong.index');
     Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
     Route::get('/task', function () {
         return view('employe.task');
@@ -162,11 +163,44 @@ Route::prefix('homepage')->group(function () {
     });
 
     Route::get('/job', [TinTuyenDungController::class, 'getJob'])->name('tuyendung.job');
-    Route::get('/job/{id}', [TinTuyenDungController::class,'getJobDetail'])->name('tuyendung.getJobDetail');
+    Route::get('/job/{id}', [TinTuyenDungController::class, 'getJobDetail'])->name('tuyendung.getJobDetail');
     Route::post('/apply', [TinTuyenDungController::class, 'applyJob'])->name('job.apply');
+});
+
+// Admin
+Route::prefix('admin')->name('admin.')->group(function () {
+    // đơn yêu cầu tuyển dụng
+    Route::get('duyetdon/tuyendung', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('duyetdon.tuyendung.index');
+    Route::get('duyetdon/tuyendung/{id}', [DuyetDonTuController::class, 'show'])->name('duyetdon.tuyendung.show');
+    Route::post('duyetdon/tuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('duyetdon.tuyendung.duyet');
+    Route::post('duyetdon/tuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('duyetdon.tuyendung.tuchoi');
+});
+
+// HR
+Route::prefix('hr')->name('hr.')->group(function () {
+    // tuyển dụng
+    Route::get('captrenthongbao/tuyendung/danhsach', [YeuCauTuyenDungController::class, 'danhSachThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.index');
+    Route::get('captrenthongbao/tuyendung/{id}', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
+    Route::get('tintuyendung/create-from-request/{id}', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
+    Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
+});
 
 
+// Trưởng phòng
+Route::prefix('department')->name('department.')->group(function () {
+    // quản lý yêu cầu tuyển dụng
+    Route::get('yeucautuyendung/create', [YeuCauTuyenDungController::class, 'create'])->name('yeucautuyendung.create');
+    Route::post('yeucautuyendung/store', [YeuCauTuyenDungController::class, 'store'])->name('yeucautuyendung.store');
+
+    Route::get('yeucautuyendung/edit/{id}', [YeuCauTuyenDungController::class, 'edit'])->name('yeucautuyendung.edit');
+    Route::put('yeucautuyendung/update/{id}', [YeuCauTuyenDungController::class, 'update'])->name('yeucautuyendung.update');
+
+    Route::patch('yeucautuyendung/{id}/cancel', [YeuCauTuyenDungController::class, 'cancel'])->name('yeucautuyendung.cancel');
+
+    Route::get('yeucautuyendung/show/{id}', [YeuCauTuyenDungController::class, 'chiTietYeuCauTuyenDung'])->name('yeucautuyendung.show');
+
+    Route::get('yeucautuyendung', [YeuCauTuyenDungController::class, 'danhSachYeuCauTuyenDung'])->name('yeucautuyendung.index');
 });
 
 // Client Application
-    Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
