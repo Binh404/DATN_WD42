@@ -140,3 +140,9 @@ const createMobileMenu = () => {
 
 // Initialize mobile menu
 createMobileMenu();
+
+function handleApplyClick(button) {
+    const jobTitle = button.getAttribute('data-title');
+    const jobId = button.getAttribute('data-id');
+    openApplicationModal(jobTitle, jobId);
+}

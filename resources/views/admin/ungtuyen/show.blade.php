@@ -8,6 +8,11 @@
             
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <label class="text-muted fw-bold">Mã ứng viên</label>
+                    <p class="form-control-plaintext">{{ $ungVien->ma_ung_tuyen }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label class="text-muted fw-bold">Tên ứng viên</label>
                     <p class="form-control-plaintext">{{ $ungVien->ten_ung_vien }}</p>
                 </div>
@@ -61,6 +66,29 @@
             </div>
         </div>
     </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title">Đánh giá ứng viên</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('ungvien.luudiemdanhgia', $ungVien->id) }}" method="POST">
+                @csrf
+                <div class="form-group mb-3">
+                    <label for="diem_phong_van">Điều chỉnh điểm đánh giá (nếu cần)</label>
+                    <input type="number" class="form-control" id="diem_phong_van" name="diem_phong_van" 
+                        min="0" max="100" step="1" value="{{ old('diem_phong_van', $ungVien->diem_danh_gia) }}" required>
+                    <small class="text-muted">Nhập điểm từ 0 đến 100</small>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="ghi_chu_phong_van">Ghi chú đánh giá bổ sung</label>
+                    <textarea class="form-control" id="ghi_chu_phong_van" name="ghi_chu_phong_van" 
+                        rows="3">{{ old('ghi_chu_phong_van', $ungVien->ghi_chu) }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Modal hiển thị CV -->
@@ -74,16 +102,17 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            @php
+                $cvPath = storage_path('app/public/' . $ungVien->tai_cv);
+                $extension = pathinfo($cvPath, PATHINFO_EXTENSION);
+                $publicPath = asset('storage/' . $ungVien->tai_cv);
+            @endphp
             <div class="modal-body p-0">
-                @php
-                    $extension = pathinfo(storage_path('app/public/' . $ungVien->tai_cv), PATHINFO_EXTENSION);
-                @endphp
-
-                @if(in_array(strtolower($extension), ['pdf', 'doc', 'docx']))
+                @if(file_exists($cvPath) && in_array(strtolower($extension), ['pdf', 'doc', 'docx']))
                     <div class="cv-container">
                         @if(strtolower($extension) === 'pdf')
                             <iframe 
-                                src="{{ asset('storage/' . $ungVien->tai_cv) }}" 
+                                src="{{ $publicPath }}" 
                                 width="100%" 
                                 height="100%" 
                                 class="border-0"
@@ -93,9 +122,9 @@
                             <div class="alert alert-info m-3">
                                 <i class="fas fa-info-circle me-2"></i>
                                 File CV là định dạng {{ strtoupper($extension) }}. 
-                                <a href="{{ asset('storage/' . $ungVien->tai_cv) }}" 
+                                <a href="{{ $publicPath }}" 
                                    class="btn btn-primary btn-sm ms-3" 
-                                   target="_blank">
+                                   download>
                                     <i class="fas fa-download me-2"></i>Tải xuống
                                 </a>
                             </div>
@@ -104,20 +133,52 @@
                 @else
                     <div class="alert alert-warning m-3">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        Định dạng file không được hỗ trợ
+                        Không thể tải file CV. File không tồn tại hoặc định dạng không được hỗ trợ.
+                        @if(!file_exists($cvPath))
+                            <br>Lỗi: File không tồn tại tại đường dẫn chỉ định.
+                        @endif
+                        @if(!in_array(strtolower($extension), ['pdf', 'doc', 'docx']))
+                            <br>Lỗi: Định dạng file không được hỗ trợ ({{ $extension }}).
+                        @endif
                     </div>
                 @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <!-- <a href="{{ asset('storage/' . $ungVien->tai_cv) }}" class="btn btn-primary" target="_blank">
+                @if(file_exists($cvPath))
+                <a href="{{ $publicPath }}" class="btn btn-primary" download>
                     <i class="fas fa-download me-2"></i>Tải xuống
-                </a> -->
+                </a>
+                @endif
             </div>
         </div>
     </div>
 </div>
 @endif
+
+<style>
+.modal-xl {
+    max-width: 90%;
+}
+
+.cv-container {
+    min-height: 600px;
+    background: #f8f9fa;
+}
+
+@media (max-width: 992px) {
+    .modal-fullscreen-lg-down {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .modal-fullscreen-lg-down .modal-content {
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+    }
+}
+</style>
 
 <style>
 .form-control-plaintext {
@@ -135,24 +196,6 @@
 
 .card-title {
     font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.modal-xl {
-    max-width: 90%;
-}
-
-@media (max-width: 992px) {
-    .modal-fullscreen-lg-down {
-        max-width: 100%;
-        margin: 0;
-    }
-    
-    .modal-fullscreen-lg-down .modal-content {
-        height: 100vh;
-        border: 0;
-        border-radius: 0;
-    }
 }
 </style>
 @endsection
