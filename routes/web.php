@@ -51,6 +51,7 @@ Route::middleware(['auth',PreventBackHistory::class, CheckRole::class . ':admin'
     // Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
     // Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
     // Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+    Route::delete('/vaitro/delete/{id}', [RoleController::class, 'destroy']);
 
     //Admin Profile
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -90,7 +91,8 @@ Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin
     // Admin Vai Trò
     Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
-    Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::post('/vaitro/store', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/vaitro/edit/{id}', [CongViecController::class, 'edit']);
 
     // HR Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

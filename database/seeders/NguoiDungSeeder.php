@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -125,6 +126,22 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 3,
                 'chuc_vu_id' => 7,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 8,
+                'ten_dang_nhap' => 'acc',
+                'email' => 'acc@company.com',
+                'password' => Hash::make('111'),
+                'vai_tro_id' => 3,
+                'email_verified_at' => true,
+                'remember_token' => Str::random(10),
+                'trang_thai' => 1,
+                'lan_dang_nhap_cuoi' => now(),
+                'ip_dang_nhap_cuoi' => '127.0.0.1',
+                'phong_ban_id' => 4,
+                'chuc_vu_id' => 8,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
