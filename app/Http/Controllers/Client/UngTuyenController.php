@@ -38,12 +38,17 @@ class UngTuyenController extends Controller
             $ungVienQuery->where('tin_tuyen_dung_id', $request->vi_tri);
         }
 
-        // Sort by diem_danh_gia if requested
+        $ungViens = $ungVienQuery->get();
+
+        // Calculate matching score for each candidate
+        foreach ($ungViens as $ungVien) {
+            $ungVien->matching_score = $ungVien->tinhDiemDanhGia();
+        }
+
+        // Sort by matching score if requested
         if ($request->filled('sort_by_score')) {
             $ungVienQuery->orderBy('diem_danh_gia', 'desc');
         }
-
-        $ungViens = $ungVienQuery->get();
 
         return view('admin.ungtuyen.index', compact('ungViens', 'viTriList'));
     }
@@ -92,7 +97,7 @@ class UngTuyenController extends Controller
             $validated['tai_cv'] = $cvPath;
         }
 
-        // Sinh mã ứng tuyển tự độngAdd commentMore actions
+        // Sinh mã ứng tuyển tự động
         $maUngTuyen = UngTuyen::max('id') ?? 0;
         $validated['ma_ung_tuyen'] = 'UT' . str_pad($maUngTuyen + 1, 5, '0', STR_PAD_LEFT);
 
@@ -109,53 +114,6 @@ class UngTuyenController extends Controller
         return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
     }
 
-    public function show($id)
-    {
-        $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
-
-        try {
-            // Tính điểm matching dựa trên hàm có sẵn
-            $diemDanhGia = $ungVien->tinhDiemDanhGia();
-
-            // Debug thông tin
-            Log::info('Tính điểm ứng viên:', [
-                'id' => $ungVien->id,
-                'ky_nang' => $ungVien->ky_nang,
-                'kinh_nghiem' => $ungVien->kinh_nghiem,
-                'thu_gioi_thieu' => $ungVien->thu_gioi_thieu,
-                'diem_danh_gia' => $diemDanhGia
-            ]);
-
-            // Lưu điểm vào database
-            $ungVien->update([
-                'diem_danh_gia' => $diemDanhGia
-            ]);
-
-            Log::info('Đã lưu điểm thành công');
-        } catch (\Exception $e) {
-            Log::error('Lỗi khi lưu điểm:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
-
-        $matchingDetails = [
-            'skills' => [
-                'candidate' => array_map('trim', explode(',', strtolower($ungVien->ky_nang))),
-                'required' => array_map('strtolower', $ungVien->tinTuyenDung->ky_nang_yeu_cau)
-            ],
-            'experience' => [
-                'candidate' => (int) filter_var($ungVien->kinh_nghiem, FILTER_SANITIZE_NUMBER_INT),
-                'required' => [
-                    'min' => $ungVien->tinTuyenDung->kinh_nghiem_toi_thieu,
-                    'max' => $ungVien->tinTuyenDung->kinh_nghiem_toi_da
-                ]
-            ]
-        ];
-
-        return view('admin.ungtuyen.show', compact('ungVien', 'matchingDetails'));
-    }
-
     public function luuDiemDanhGia(Request $request, $id)
     {
         $request->validate([
@@ -164,7 +122,7 @@ class UngTuyenController extends Controller
         ]);
 
         $ungVien = UngTuyen::findOrFail($id);
-
+        
         $ungVien->update([
             'diem_phong_van' => $request->diem_phong_van,
             'ghi_chu_phong_van' => $request->ghi_chu_phong_van,
@@ -243,7 +201,7 @@ class UngTuyenController extends Controller
     public function danhSachPhongVan(Request $request)
     {
         $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
-        $ungVienQuery = UngTuyen::with(['tinTuyenDung', 'nguoiCapNhatTrangThai'])
+        $ungVienQuery = UngTuyen::with('tinTuyenDung')
             ->where('trang_thai', 'phe_duyet')
             ->orderBy('diem_danh_gia', 'desc');
 
@@ -264,9 +222,9 @@ class UngTuyenController extends Controller
         }
 
         $ungViens = $ungVienQuery->get()->map(function ($uv) {
-            // Nếu trang_thai_pv là null, set là Chưa phỏng vấn
+            // Nếu trang_thai_pv là null, set là 0 (chưa phỏng vấn)
             if ($uv->trang_thai_pv === null) {
-                $uv->update(['trang_thai_pv' => 'Chưa phỏng vấn']);
+                $uv->update(['trang_thai_pv' => 0]);
             }
             return $uv;
         });
@@ -277,7 +235,7 @@ class UngTuyenController extends Controller
     public function capNhatDiemPhongVan(Request $request, $id)
     {
         $rules = [
-            'trang_thai_pv' => 'required|in:Đã phỏng vấn,Đạt,Không đạt',
+            'trang_thai_pv' => 'required|in:Chưa phỏng vấn,Đã phỏng vấn,Đạt,Không đạt',
             'ghi_chu_phong_van' => 'nullable|string'
         ];
 
@@ -297,7 +255,7 @@ class UngTuyenController extends Controller
         if ($request->trang_thai_pv === 'Đã phỏng vấn') {
             $data['diem_phong_van'] = $request->diem_phong_van;
         } else {
-            $data['diem_phong_van'] = null;
+            $data['diem_phong_van'] = null; // Reset điểm về null khi chuyển sang trạng thái khác
         }
 
         $ungVien = UngTuyen::findOrFail($id);
@@ -307,10 +265,41 @@ class UngTuyenController extends Controller
     }
 
 
+    public function show($id)
+    {
+        $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
+        $matchingPercentage = $ungVien->tinhDiemDanhGia();
+
+        // Get matching details
+        $matchingDetails = [
+            'skills' => [
+                'candidate' => array_map('trim', explode(',', strtolower($ungVien->ky_nang))),
+                'required' => array_map('strtolower', $ungVien->tinTuyenDung->ky_nang_yeu_cau)
+            ],
+            'experience' => [
+                'candidate' => (int) filter_var($ungVien->kinh_nghiem, FILTER_SANITIZE_NUMBER_INT),
+                'required' => [
+                    'min' => $ungVien->tinTuyenDung->kinh_nghiem_toi_thieu,
+                    'max' => $ungVien->tinTuyenDung->kinh_nghiem_toi_da
+                ]
+            ]
+        ];
+
+        return view('admin.ungtuyen.show', compact('ungVien', 'matchingPercentage', 'matchingDetails'));
+    }
 
 
-    // Gửi Email Phỏng Vấn N8N
-    public function guiEmailAll(Request $request)
+
+    // Export danh sách ứng tuyển
+    public function exportExcel()
+    {
+        return Excel::download(new UngTuyenExport, 'ung_tuyen.xlsx');
+    }
+
+
+
+    // Gửi email thông báo phỏng vấn
+    public function guiemailAll(Request $request)
     {
         $request->validate([
             'dat_lich' => 'required|date|after:now'
@@ -322,8 +311,9 @@ class UngTuyenController extends Controller
 
         $ungviens = UngTuyen::all();
 
+        // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
-            Http::post('https://workflow.aichatbot360.io.vn/webhook/send-email', [
+            Http::post('https://workflow.aichatbot360.io.vn/webhook-test/send-email', [
                 'email' => $ungvien->email,
                 'name' => $ungvien->ten_ung_vien,
                 'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
@@ -331,14 +321,6 @@ class UngTuyenController extends Controller
             ]);
         }
 
-        return redirect('/ungvien/phong-van')->with('success', 'Đã gửi email cho tất cả ứng viên.');
-    }
-
-
-
-    // Xuất Excel
-    public function exportExcel()
-    {
-        return Excel::download(new UngTuyenExport, 'danh_sach_phong_van.xlsx');
+        return redirect('/ungvien')->with('success', 'Đã đặt lịch gửi email cho tất cả ứng viên.');
     }
 }

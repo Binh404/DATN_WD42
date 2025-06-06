@@ -49,7 +49,7 @@
 
                 <div class="form-group">
                     <label for="kinh_nghiem">Kinh Nghiệm</label>
-                    <select id="kinh_nghiem" name="kinh_nghiem">
+                    <select id="kinh_nghiem" name="kinh_nghiem" value="{{ old('kinh_nghiem') }}">
                         <option value="">Chọn mức kinh nghiệm</option>
                         <option value="0-1">0-1 năm</option>
                         <option value="1-3">1-3 năm</option>
