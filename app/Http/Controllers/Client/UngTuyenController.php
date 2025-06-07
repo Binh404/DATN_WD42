@@ -187,10 +187,15 @@ class UngTuyenController extends Controller
                     'ngay_cap_nhat' => now()
                 ]);
 
-            return redirect()->route('ungvien.tiem-nang')
+            if ($request->trang_thai === 'phe_duyet') {
+                return redirect()->route('ungvien.phong-van')
+                    ->with('success', 'Phê duyệt ứng viên thành công');
+            }
+
+            return redirect()->back()
                 ->with('success', 'Cập nhật trạng thái thành công');
         } catch (\Exception $e) {
-            return redirect()->route('ungvien.tiem-nang')
+            return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái');
         }
     }
@@ -330,5 +335,36 @@ class UngTuyenController extends Controller
         }
 
         return redirect('/ungvien')->with('success', 'Đã đặt lịch gửi email cho tất cả ứng viên.');
+    }
+
+    public function danhSachLuuTru(Request $request)
+    {
+        $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
+        $ungVienQuery = UngTuyen::with(['tinTuyenDung', 'nguoiCapNhatTrangThai'])
+            ->where(function($query) {
+                $query->where('trang_thai', 'tu_choi')
+                      ->orWhere('trang_thai_pv', 'fail');
+            })
+            ->orderBy('ngay_cap_nhat', 'desc');
+
+        if ($request->filled('ten_ung_vien')) {
+            $ungVienQuery->where('ten_ung_vien', 'like', '%' . $request->ten_ung_vien . '%');
+        }
+
+        if ($request->filled('ky_nang')) {
+            $ungVienQuery->where('ky_nang', 'like', '%' . $request->ky_nang . '%');
+        }
+
+        if ($request->filled('kinh_nghiem')) {
+            $ungVienQuery->where('kinh_nghiem', $request->kinh_nghiem);
+        }
+
+        if ($request->filled('vi_tri')) {
+            $ungVienQuery->where('tin_tuyen_dung_id', $request->vi_tri);
+        }
+
+        $ungViens = $ungVienQuery->get();
+
+        return view('admin.ungtuyen.luu-tru', compact('ungViens', 'viTriList'));
     }
 }

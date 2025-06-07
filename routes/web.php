@@ -54,6 +54,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
     // Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
     // Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
+    Route::delete('/vaitro/delete/{id}', [RoleController::class, 'destroy']);
 
     //Admin Profile
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -85,6 +86,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Admin Ứng Tuyển
     Route::get('/ungvien', [UngTuyenController::class, 'index'])->name('ungvien.index');
     Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');
+    Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
+    Route::get('/ungvien/luu-tru', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
     Route::post('/ungvien/phe-duyet', [UngTuyenController::class, 'pheDuyet'])->name('ungvien.phe-duyet');
     Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
     Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
@@ -95,7 +98,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Admin Vai Trò
     Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
-    Route::post('/vaitro/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::post('/vaitro/store', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/vaitro/edit/{id}', [CongViecController::class, 'edit']);
 
     // HR Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

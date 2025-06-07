@@ -121,7 +121,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($ungViens as $key => $uv)
+                        @foreach($ungViens->where('trang_thai', '!=', 'tu_choi') as $key => $uv)
                         <tr>
                             <td>
                                 <div class="form-check">
@@ -181,10 +181,10 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-sm btn-primary" 
+                                    <!-- <button type="button" class="btn btn-sm btn-primary" 
                                             onclick="showPheDuyetModal({{ $uv->id }})">
                                         <i class="fas fa-check-circle"></i>
-                                    </button>
+                                    </button> -->
                                     <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i>
                                     </a>

@@ -15,40 +15,40 @@ class VaiTroQuyenSeeder extends Seeder
     {
          DB::table('vai_tro_quyen')->insert([
             // Admin có tất cả quyền
-            ['vai_tro_id' => 1, 'quyen_id' => 1, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 2, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 3, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 4, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 5, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 6, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 7, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 8, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 9, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 10, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 11, 'created_at' => now()],
-            ['vai_tro_id' => 1, 'quyen_id' => 12, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 1, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 2, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 3, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 4, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 5, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 6, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 7, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 8, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 9, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 10, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 11, 'created_at' => now()],
+            ['role_id' => 1, 'permission_id' => 12, 'created_at' => now()],
 
             // HR Manager
-            ['vai_tro_id' => 2, 'quyen_id' => 1, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 5, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 6, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 7, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 8, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 9, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 11, 'created_at' => now()],
-            ['vai_tro_id' => 2, 'quyen_id' => 12, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 1, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 5, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 6, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 7, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 8, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 9, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 11, 'created_at' => now()],
+            ['role_id' => 2, 'permission_id' => 12, 'created_at' => now()],
 
             // Team Leader
-            ['vai_tro_id' => 3, 'quyen_id' => 1, 'created_at' => now()],
-            ['vai_tro_id' => 3, 'quyen_id' => 5, 'created_at' => now()],
-            ['vai_tro_id' => 3, 'quyen_id' => 8, 'created_at' => now()],
-            ['vai_tro_id' => 3, 'quyen_id' => 9, 'created_at' => now()],
-            ['vai_tro_id' => 3, 'quyen_id' => 10, 'created_at' => now()],
+            ['role_id' => 3, 'permission_id' => 1, 'created_at' => now()],
+            ['role_id' => 3, 'permission_id' => 5, 'created_at' => now()],
+            ['role_id' => 3, 'permission_id' => 8, 'created_at' => now()],
+            ['role_id' => 3, 'permission_id' => 9, 'created_at' => now()],
+            ['role_id' => 3, 'permission_id' => 10, 'created_at' => now()],
 
             // Employee
-            ['vai_tro_id' => 4, 'quyen_id' => 8, 'created_at' => now()],
-            ['vai_tro_id' => 4, 'quyen_id' => 10, 'created_at' => now()],
-            ['vai_tro_id' => 4, 'quyen_id' => 11, 'created_at' => now()],
+            ['role_id' => 4, 'permission_id' => 8, 'created_at' => now()],
+            ['role_id' => 4, 'permission_id' => 10, 'created_at' => now()],
+            ['role_id' => 4, 'permission_id' => 11, 'created_at' => now()],
         ]);
     }
 }

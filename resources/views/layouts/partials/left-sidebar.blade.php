@@ -4,8 +4,8 @@
             {{route('admin.dashboard')}}
           @elseif(auth()->user()->role === 'hr')
             {{route('hr.dashboard')}}
-          @else
-            {{route('employee.dashboard')}}
+          {{-- @else
+            {{route('hr.dashboard')}} --}}
           @endif" class="brand-link">
     <div class="d-flex">
       <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
@@ -323,6 +323,10 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>Ứng viên phỏng vấn</p>
               </a>
+              <a href="/ungvien/luu-tru" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lưu trữ</p>
+              </a>
             </li>
           </ul>
         </li>
@@ -368,7 +372,7 @@
                 <p>Xin nghỉ việc</p>
               </a>
             </li>
-            
+
           </ul>
         </li>
 
