@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Employee;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +23,29 @@ class HoSoController extends Controller
         // Nếu chưa có hồ sơ thì hiển thị form trống
         $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $user->id)->first();
 
-        return view('employee.complete-profile', compact('hoSo'));
+        return view('employe.complete-profile', compact('hoSo'));
     }
 
     /**
      * Lưu thông tin hồ sơ
      */
+    protected function generateMaNhanVien()
+    {
+        // Lấy mã lớn nhất hiện tại
+        $last = HoSoNguoiDung::orderByDesc('id')->first();
+
+        $so = 1;
+        if ($last && preg_match('/HR(\d+)/', $last->ma_nhan_vien, $matches)) {
+            $so = intval($matches[1]) + 1;
+        }
+
+        return 'HR' . str_pad($so, 6, '0', STR_PAD_LEFT); // HR000001
+    }
     public function store(Request $request)
     {
         $user = Auth::user();
 
     $validated = $request->validate([
-        'ma_nhan_vien' => 'required|unique:ho_so_nguoi_dung,ma_nhan_vien,' . $user->id . ',nguoi_dung_id',
         'ho' => 'required|string|max:50',
         'ten' => 'required|string|max:50',
         'email_cong_ty' => 'nullable|email|unique:ho_so_nguoi_dung,email_cong_ty,' . $user->id . ',nguoi_dung_id',
@@ -50,6 +62,9 @@ class HoSoController extends Controller
         'sdt_khan_cap' => 'nullable|string|max:20',
         'quan_he_khan_cap' => 'nullable|string|max:50',
     ]);
+
+    // Tự động tạo mã nhân viên
+    $validated['ma_nhan_vien'] = $this->generateMaNhanVien();
 
     // Upload ảnh nếu có
     if ($request->hasFile('anh_dai_dien')) {

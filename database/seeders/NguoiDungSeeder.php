@@ -30,6 +30,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 1,
                 'chuc_vu_id' => 1,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -46,6 +48,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 2,
                 'chuc_vu_id' => 2,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -62,6 +66,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 2,
                 'chuc_vu_id' => 3,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -78,6 +84,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 4,
                 'chuc_vu_id' => 4,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -94,6 +102,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 4,
                 'chuc_vu_id' => 5,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -110,6 +120,8 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 4,
                 'chuc_vu_id' => 6,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -126,26 +138,12 @@ class NguoiDungSeeder extends Seeder
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
                 'phong_ban_id' => 3,
                 'chuc_vu_id' => 7,
+                'dang_nhap_lan_dau' => 1,
+                'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'ten_dang_nhap' => 'test.nhanvien',
-                'email' => 'test.nhanvien@company.com',
-                'password' => Hash::make('matkhau123'),
-                'vai_tro_id' => 3, // tùy theo hệ thống: 3 có thể là nhân viên?
-                'email_verified_at' => true,
-                'remember_token' => Str::random(10),
-                'trang_thai' => 1,
-                'lan_dang_nhap_cuoi' => now(),
-                'ip_dang_nhap_cuoi' => '127.0.0.1',
-                'phong_ban_id' => 2, // phòng ban bạn muốn test
-                'chuc_vu_id' => 5, // chức vụ bạn muốn test
-                'da_hoan_thanh_ho_so' => 0,
-                'dang_nhap_lan_dau' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
+            
         ]);
     }
 }

@@ -1,11 +1,15 @@
 <nav class="sidebar" id="sidebar">
-    <div class="user-profile">
-        <div class="user-avatar">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="user-name">Nguyễn Văn A</div>
-        <div class="user-position">Nhân viên IT</div>
+    <div class="user-profile d-flex flex-column align-items-center text-white">
+    <div class="user-avatar mb-3">
+        @if(!empty($hoSo->anh_dai_dien))
+            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" width="120" class="rounded-circle border border-2 border-white shadow">
+        @else
+            <i class="bi bi-person-circle fs-1 text-secondary"></i>
+        @endif
     </div>
+    <div class="user-name fw-bold text-dark fs-5">{{ $hoSo->ho }} {{ $hoSo->ten }}</div>
+    <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div>
+</div>
 
     <ul class="nav-menu">
         <li class="nav-item">

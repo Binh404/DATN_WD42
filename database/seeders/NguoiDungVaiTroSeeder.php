@@ -44,6 +44,12 @@ class NguoiDungVaiTroSeeder extends Seeder
                 'created_at' => now(),
 
             ],
+            [
+                'nguoi_dung_id' => 7,
+                'vai_tro_id' => 3, // Employee
+                'created_at' => now(),
+
+            ],
         ]);
     }
 }

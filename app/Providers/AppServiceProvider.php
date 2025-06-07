@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\HoSoNguoiDung;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('layoutsEmploye.*', function ($view) {
+        $nguoiDung = Auth::user();
+
+        if ($nguoiDung) {
+            $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $nguoiDung->id)->first();
+            $view->with('nguoiDung', $nguoiDung)->with('hoSo', $hoSo);
+        }
+    });
     }
 }

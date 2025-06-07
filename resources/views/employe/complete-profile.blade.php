@@ -6,9 +6,9 @@
 
     <form action="{{ route('employee.complete-profile.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-
+        
         @foreach ([
-            'ma_nhan_vien' => 'Mã nhân viên',
+            
             'ho' => 'Họ',
             'ten' => 'Tên',
             'email_cong_ty' => 'Email công ty',
@@ -21,7 +21,8 @@
             'lien_he_khan_cap' => 'Người liên hệ khẩn cấp',
             'sdt_khan_cap' => 'SĐT khẩn cấp',
             'quan_he_khan_cap' => 'Quan hệ với người khẩn cấp'
-        ] as $field => $label)
+            ] as $field => $label)
+            
             <div class="mb-3">
                 <label for="{{ $field }}" class="form-label">{{ $label }}</label>
                 <input type="text" name="{{ $field }}" id="{{ $field }}" class="form-control" value="{{ old($field, $hoSo->$field ?? '') }}">

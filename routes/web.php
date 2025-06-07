@@ -5,11 +5,12 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ChucVuController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\HoSoNhanVienController;
 use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
@@ -98,6 +99,16 @@ Route::middleware(['auth',PreventBackHistory::class,  CheckRole::class . ':admin
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Admin HR - Hồ sơ nhân viên
+Route::prefix('/hoso')->group(function () {
+    Route::get('/', [HoSoNhanVienController::class, 'index'])->name('hoso.index');
+    Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
+    Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
+    Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+    Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
+    Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
+});
 });
 
 // Employee routes
@@ -138,9 +149,9 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
     });
 
     // EM Profile , đặt tên khác để không bị trùng
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('employee.profile.edit');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('employee.profile.destroy');
+    
     });
 });
 
