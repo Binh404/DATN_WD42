@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">
             <i class="fas fa-user-tie me-2"></i>Danh sách Ứng Viên Tiềm Năng
-            <small class="text-muted fs-6">(Điểm đánh giá ≥ 70)</small>
+            <small class="text-muted fs-6">(Điểm đánh giá ≥ 60)</small>
         </h2>
         <div class="d-flex gap-2">
             <form action="{{ route('ungvien.phe-duyet') }}" method="POST" id="formUngVien">
@@ -145,7 +145,7 @@
                             <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
                             <td>
                                 <div class="progress" style="height: 25px;">
-                                    <div class="progress-bar {{ $uv->diem_danh_gia >= 70 ? 'bg-success' : 'bg-warning' }}" 
+                                    <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : 'bg-warning' }}" 
                                          role="progressbar" 
                                          style="width: {{ $uv->diem_danh_gia }}%"
                                          aria-valuenow="{{ $uv->diem_danh_gia }}" 
@@ -154,7 +154,7 @@
                                         {{ $uv->diem_danh_gia }}%
                                     </div>
                                 </div>
-                                @if($uv->diem_danh_gia >= 70)
+                                @if($uv->diem_danh_gia >= 60)
                                     <div class="text-success small mt-1">
                                         <i class="fas fa-check-circle"></i> Đạt yêu cầu
                                     </div>

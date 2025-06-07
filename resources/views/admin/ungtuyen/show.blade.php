@@ -76,14 +76,14 @@
                 @csrf
                 <div class="form-group mb-3">
                     <label for="diem_phong_van">Điều chỉnh điểm đánh giá (nếu cần)</label>
-                    <input type="number" class="form-control" id="diem_phong_van" name="diem_phong_van" 
-                        min="0" max="100" step="1" value="{{ old('diem_phong_van', $ungVien->diem_danh_gia) }}" required>
+                    <input type="number" class="form-control" id="diem_danh_gia" name="diem_danh_gia" 
+                        min="0" max="100" step="1" value="{{ old('diem_danh_gia', $ungVien->diem_danh_gia) }}" required>
                     <small class="text-muted">Nhập điểm từ 0 đến 100</small>
                 </div>
                 <div class="form-group mb-3">
                     <label for="ghi_chu_phong_van">Ghi chú đánh giá bổ sung</label>
                     <textarea class="form-control" id="ghi_chu_phong_van" name="ghi_chu_phong_van" 
-                        rows="3">{{ old('ghi_chu_phong_van', $ungVien->ghi_chu) }}</textarea>
+                        rows="3">{{ old('ghi_chu_danh_gia_cv', $ungVien->ghi_chu_danh_gia_cv) }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
             </form>

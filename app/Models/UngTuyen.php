@@ -39,7 +39,7 @@ class UngTuyen extends Model
 
         static::creating(function ($ungTuyen) {
             $ungTuyen->diem_danh_gia = $ungTuyen->tinhDiemDanhGia();
-            $ungTuyen->trang_thai_pv = 'Chưa phỏng vấn'; // Mặc định là chưa phỏng vấn
+            $ungTuyen->trang_thai_pv = 'chưa phỏng vấn'; // Sửa lại chữ thường để khớp với enum
         });
     }
 

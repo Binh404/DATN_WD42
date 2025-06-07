@@ -145,20 +145,31 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                @switch($uv->trang_thai_pv)
-                                @case('đã phỏng vấnvấn')
-                                <span class="badge bg-success">Đã phỏng vấn</span>
-                                @break
-                                @case('pass')
-                                <span class="badge bg-success">Pass</span>
-                                @break
-                                @case('fail')
-                                <span class="badge bg-danger">Fail</span>
-                                @break
-                                @default
-                                <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
-                                @endswitch
-                            </td>
+    <!-- Hiển thị đúng chuỗi lưu trong DB -->
+  
+
+    @php
+        $trangThai = strtolower(trim($uv->trang_thai_pv));
+    @endphp
+
+    @switch($trangThai)
+        @case('chưa phỏng vấn')
+            <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
+            @break
+        @case('đã phỏng vấn')
+            <span class="badge bg-info">Đã phỏng vấn</span>
+            @break
+        @case('pass')
+            <span class="badge bg-success">Pass</span>
+            @break
+        @case('fail')
+            <span class="badge bg-danger">Fail</span>
+            @break
+        @default
+            <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
+    @endswitch
+</td>
+
                             <td class="text-center">
                                 @if($uv->diem_phong_van !== null)
                                 <span class="fw-bold {{ $uv->diem_phong_van >= 5 ? 'text-success' : 'text-danger' }}">
@@ -180,6 +191,9 @@
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- Modal Phỏng Vấn -->
+                       
                         @endforeach
                     </tbody>
                 </table>
@@ -202,6 +216,7 @@
                     <div class="mb-3">
                         <label for="trang_thai_pv" class="form-label">Trạng thái phỏng vấn</label>
                         <select class="form-select" id="trang_thai_pv" name="trang_thai_pv" required onchange="handleStatusChange(this.value)">
+                            <option value="chưa phỏng vấn">Chưa phỏng vấn</option>
                             <option value="đã phỏng vấn">Đã phỏng vấn</option>
                             <option value="pass">Pass</option>
                             <option value="fail">Fail</option>
@@ -215,9 +230,10 @@
                         <div class="form-text">Điểm tối đa là 10, có thể nhập số lẻ (0.5)</div>
                     </div>
                     <div class="mb-3">
-                        <label for="ghi_chu_phong_van" class="form-label">Ghi chú</label>
-                        <textarea class="form-control" id="ghi_chu_phong_van"
-                            name="ghi_chu_phong_van" rows="3"></textarea>
+                        <label for="ghi_chu" class="form-label">Ghi chú phỏng vấn</label>
+                        <textarea class="form-control" id="ghi_chu"
+                            name="ghi_chu" rows="3"
+                            placeholder="Nhập ghi chú về buổi phỏng vấn"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -244,7 +260,7 @@
         const diemInput = document.getElementById('diem_phong_van');
         const diemGroup = document.getElementById('diemPhongVanGroup');
 
-        if (status === 'đã phỏng vấn') {
+        if (['đã phỏng vấn', 'pass', 'fail'].includes(status)) {
             diemGroup.style.display = 'block';
             diemInput.required = true;
         } else {
@@ -276,3 +292,105 @@
         vertical-align: middle;
     }
 </style>
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Xử lý form submit
+        $('#formDiemPhongVan').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const submitBtn = form.find('button[type="submit"]');
+            const ungVienId = form.attr('action').split('/').pop();
+            
+            submitBtn.prop('disabled', true);
+            
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Lấy giá trị từ form
+                        const trangThai = $('#trang_thai_pv').val();
+                        const diemPV = $('#diem_phong_van').val();
+                        
+                        // Cập nhật trạng thái
+                        let badgeHtml = '';
+                        switch(trangThai) {
+                            case 'đã phỏng vấn':
+                                badgeHtml = '<span class="badge bg-info">Đã phỏng vấn</span>';
+                                break;
+                            case 'pass':
+                                badgeHtml = '<span class="badge bg-success">Pass</span>';
+                                break;
+                            case 'fail':
+                                badgeHtml = '<span class="badge bg-danger">Fail</span>';
+                                break;
+                            default:
+                                badgeHtml = '<span class="badge bg-warning text-dark">Chưa phỏng vấn</span>';
+                        }
+                        
+                        // Cập nhật điểm
+                        let diemHtml = '';
+                        if (diemPV) {
+                            const formattedDiem = parseFloat(diemPV).toFixed(1);
+                            const textClass = parseFloat(diemPV) >= 5 ? 'text-success' : 'text-danger';
+                            diemHtml = `<span class="fw-bold ${textClass}">${formattedDiem}/10</span>`;
+                        } else {
+                            diemHtml = '<span class="text-muted">Chưa có</span>';
+                        }
+
+                        // Tìm row cần cập nhật
+                        const row = $(`button[onclick="showDiemPhongVanModal(${ungVienId})"]`).closest('tr');
+                        
+                        // Cập nhật UI
+                        row.find('td:eq(8)').html(`
+                            <div class="small text-muted mb-1">Debug: '${trangThai}'</div>
+                            ${badgeHtml}
+                        `); // Cột trạng thái (index 8)
+                        row.find('td:eq(9)').html(diemHtml); // Cột điểm (index 9)
+
+                        // Đóng modal và hiển thị thông báo
+                        $('#modalDiemPhongVan').modal('hide');
+                        
+                        // Reset form
+                        form[0].reset();
+                        handleStatusChange('chưa phỏng vấn');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    const response = xhr.responseJSON;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: response?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.'
+                    });
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false);
+                }
+            });
+        });
+
+        // Xử lý hiển thị/ẩn trường điểm phỏng vấn
+        $('#trang_thai_pv').on('change', function() {
+            handleStatusChange(this.value);
+        });
+    });
+</script>
+@endsection

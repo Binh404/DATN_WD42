@@ -22,7 +22,7 @@
     </div>
     @endif
 
-    <form method="GET" action="/ungvien" class="filter-form mb-4">
+    <form method="GET" action="{{ route('ungvien.index') }}" class="filter-form mb-4" id="filterForm">
         <div class="row g-3 align-items-center">
             <div class="col-auto">
                 <input type="text" name="ten_ung_vien" class="form-control" placeholder="Tên ứng viên" value="{{ request('ten_ung_vien') }}">
@@ -92,7 +92,7 @@
                     <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
                     <td class="text-center">
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar {{ $uv->diem_danh_gia >= 70 ? 'bg-success' : ($uv->diem_danh_gia >= 40 ? 'bg-warning' : 'bg-danger') }}"
+                            <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : ($uv->diem_danh_gia >= 30 ? 'bg-warning' : 'bg-danger') }}"
                                 role="progressbar" 
                                 style="width: {{ $uv->diem_danh_gia }}%"
                                 aria-valuenow="{{ $uv->diem_danh_gia }}" 
@@ -116,6 +116,15 @@
         </table>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.getElementById('sort_by_score').addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
+</script>
+@endpush
+
 <style>
     .table tr:hover {
         background-color: #f0f8ff !important;
