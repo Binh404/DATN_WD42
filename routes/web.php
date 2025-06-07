@@ -76,12 +76,12 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
 
     // Admin Công Việc
-    Route::get('/congviec', [CongViecController::class, 'index']);
-    Route::get('/congviec/create', [CongViecController::class, 'create']);
-    Route::post('/congviec/store', [CongViecController::class, 'store']);
-    Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
-    Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
-    Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
+    // Route::get('/congviec', [CongViecController::class, 'index']);
+    // Route::get('/congviec/create', [CongViecController::class, 'create']);
+    // Route::post('/congviec/store', [CongViecController::class, 'store']);
+    // Route::get('/congviec/show/{id}', [CongViecController::class, 'show']);
+    // Route::get('/congviec/edit/{id}', [CongViecController::class, 'edit']);
+    // Route::put('/congviec/update/{id}', [CongViecController::class, 'update']);
 
     // Admin Ứng Tuyển
     Route::get('/ungvien', [UngTuyenController::class, 'index'])->name('ungvien.index');

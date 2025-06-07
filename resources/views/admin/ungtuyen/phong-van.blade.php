@@ -32,7 +32,7 @@
 
 
     <!-- Gửi email và đặt lịch -->
-    <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;">
+    <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
         @csrf
         <div class="row align-items-center">
             <div class="col-auto">
