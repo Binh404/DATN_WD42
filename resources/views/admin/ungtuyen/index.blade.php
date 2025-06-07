@@ -94,7 +94,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($ungViens->where('trang_thai', '=', 'cho_xu_ly') as $key => $uv)
+                @foreach($ungViens->where('trang_thai', '=', 'cho_xu_ly') as $uv)
                 <tr>
                     <td>
                         <div class="form-check">
@@ -106,7 +106,7 @@
                                    {{ in_array($uv->id, request()->get('selected_ids', [])) ? 'checked' : '' }}>
                         </div>
                     </td>
-                    <td class="text-center">{{ $key + 1 }}</td>
+                    <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $uv->ma_ung_tuyen }}</td>
                     <td>{{ $uv->ten_ung_vien }}</td>
                     <td>{{ $uv->email }}</td>

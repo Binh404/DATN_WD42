@@ -120,9 +120,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($ungViens as $key => $uv)
+                        @foreach($ungViens->where('trang_thai_pv', '!=', 'fail') as $key => $uv)
                         <tr>
-                            <td>{{ $key + 1 }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
                                 {{ $uv->ten_ung_vien }}
                                 <span class="badge bg-success ms-2">Đã phê duyệt</span>

@@ -133,7 +133,7 @@
                                            {{ in_array($uv->id, request()->get('selected_ids', [])) ? 'checked' : '' }}>
                                 </div>
                             </td>
-                            <td>{{ $key + 1 }}</td>
+                            <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
                                 {{ $uv->ten_ung_vien }}
                                 <span class="badge bg-success ms-2">Tiềm năng</span>

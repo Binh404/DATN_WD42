@@ -134,9 +134,7 @@
                             <td>{{ $uv->ngay_cap_nhat ? \Carbon\Carbon::parse($uv->ngay_cap_nhat)->format('d/m/Y H:i') : 'N/A' }}</td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                                   
                                     <form action="/ungvien/delete/{{ $uv->id }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ứng viên này không?');">
                                         @csrf
                                         @method('DELETE')
