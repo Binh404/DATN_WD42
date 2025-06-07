@@ -51,7 +51,7 @@ class ChamCongController extends Controller
     {
         try {
             $user = Auth::user();
-            $today = now()->format('Y-m-d');
+            $today = now();
             $currentTime = now();
 
             // Kiểm tra đã chấm công chưa
@@ -63,6 +63,12 @@ class ChamCongController extends Controller
                     'message' => 'Bạn đã chấm công vào hôm nay rồi!'
                 ]);
             }
+            if ($today->isWeekend()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hôm nay là cuối tuần!'
+                ]);
+            }
             // dd($chamCong);
             DB::beginTransaction();
 
@@ -70,7 +76,7 @@ class ChamCongController extends Controller
             $chamCong = ChamCong::updateOrCreate(
                 [
                     'nguoi_dung_id' => $user->id,
-                    'ngay_cham_cong' => $today
+                    'ngay_cham_cong' => $today->format('Y-m-d'),
                 ],
                 [
                     'gio_vao' => $currentTime,
@@ -243,9 +249,18 @@ class ChamCongController extends Controller
         for ($ngay = 1; $ngay <= $soNgayTrongThang; $ngay++) {
             $ngayHienTai = Carbon::create($year, $month, $ngay);
             $chamCong = $chamCongThang->where('ngay_cham_cong', $ngayHienTai->toDate())->first();
-            // dd( $chamCong);
-            $trangThai = 'chua_cham_cong';
-            $class = 'day-normal';
+            // dd( $ngayHienTai);
+            if($ngayHienTai->lessThan(now())){
+                $trangThai = 'vang_mat';
+                $class = 'day-absent';
+            }else{
+                $trangThai = 'chua_cham_cong';
+                $class = 'day-normal';
+            }
+            // if($chamCong){
+
+            // }
+
 
             if ($ngayHienTai->isWeekend()) {
                 $trangThai = 'cuoi_tuan';

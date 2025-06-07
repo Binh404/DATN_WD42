@@ -955,6 +955,7 @@ function loadCalendarData() {
             console.error('Lỗi khi gọi API:', error);
         });
 }
+// render lich cham cong
 function renderCalendar(lichChamCong) {
     let gridHTML = `
         <div class="day-cell day-header">T2</div>
