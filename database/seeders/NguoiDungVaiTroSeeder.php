@@ -17,38 +17,33 @@ class NguoiDungVaiTroSeeder extends Seeder
          DB::table('nguoi_dung_vai_tro')->insert([
             [
                 'nguoi_dung_id' => 1,
-                'role_id' => 1, // Admin
+                'vai_tro_id' => 1, // Admin
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-
             ],
             [
                 'nguoi_dung_id' => 2,
-                'role_id' => 2, // HR Manager
+                'vai_tro_id' => 2, // HR Manager
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-
             ],
             [
                 'nguoi_dung_id' => 3,
-                'role_id' => 3, // Team Leader
+                'vai_tro_id' => 3, // Team Leader
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-
             ],
             [
                 'nguoi_dung_id' => 4,
-                'role_id' => 4, // Employee
+                'vai_tro_id' => 4, // Employee
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-
             ],
             [
                 'nguoi_dung_id' => 8,
-                'role_id' => 3, // Employee
+                'vai_tro_id' => 3, // Employee
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-
             ],
         ]);
     }

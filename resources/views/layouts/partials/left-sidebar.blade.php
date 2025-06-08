@@ -292,12 +292,12 @@
                 <p>Quản lý phòng ban</p>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="/congviec" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Quản lý công việc</p>
               </a>
-            </li>
+            </li> -->
             <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -321,7 +321,19 @@
               </a>
               <a href="/ungvien/phong-van" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Ứng viên phỏng vấn</p>
+                <p>Gửi email phỏng vấn</p>
+              </a>
+              <a href="/ungvien/emaildagui" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách email đã gửi</p>
+              </a>
+              <a href="/ungvien/trung-tuyen" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Trúng tuyển</p>
+              </a>
+              <a href="/ungvien/luu-tru" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lưu trữ</p>
               </a>
             </li>
           </ul>

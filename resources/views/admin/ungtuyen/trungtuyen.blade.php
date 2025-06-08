@@ -1,12 +1,12 @@
 @extends('layouts.master')
-@section('title', 'Danh Sách Ứng Viên Phỏng Vấn')
+@section('title', 'Danh Sách Ứng Viên Trúng tuyển')
 
 @section('content')
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">
-            <i class="fas fa-users me-2"></i>Danh Sách Ứng Viên Phỏng Vấn
+            <i class="fas fa-users me-2"></i>Danh Sách Ứng Viên Trúng Tuyển
         </h2>
         <!-- <div class="d-flex gap-2">
             <a href="{{ route('ungvien.index') }}" class="btn btn-outline-primary">
@@ -31,25 +31,25 @@
     @endif
 
 
-    <!-- Gửi email và đặt lịch -->
-    <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
+    Gửi email và đặt lịch
+    <form action="/ungvien/dilam" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
         @csrf
         <div class="row align-items-center">
             <div class="col-auto">
-                <label for="dat_lich" class="form-label mb-0">Đặt lịch phỏng vấn</label>
+                <label for="dat_lich" class="form-label mb-0">Đặt lịch đi làm</label>
                 <input type="datetime-local" name="dat_lich" id="dat_lich" class="form-control">
                 @error('dat_lich')
                 <div class="text-danger mt-1">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-envelope-open-text me-2"></i>Gửi Email Phỏng Vấn</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-envelope-open-text me-2"></i>Gửi Email Đi Làm</button>
             </div>
         </div>
     </form>
 
     <!-- Xuất Excel -->
-    <a href="/ungvien/export" class="btn btn-success mb-3">
+    <a href="/ungvien/trungtuyen/export" class="btn btn-success mb-3">
         📥 Xuất Excel
     </a>
 
@@ -125,7 +125,7 @@
                         @foreach($ungViens as $key => $uv)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td class="text-center">{{ $uv->ma_ung_tuyen }}</td>
+                            <td>{{ $uv->ma_ung_tuyen }}</td>
                             <td>
                                 {{ $uv->ten_ung_vien }}
                                 <span class="badge bg-success ms-2">Đã phê duyệt</span>
@@ -148,12 +148,13 @@
                                 </div>
                             </td>
                             <td>
-                                @if($uv->trang_thai_email === 'Đã gửi')
+                                @if($uv->trang_thai_email_trungtuyen === 'Đã gửi')
                                 <span class="badge bg-success">Đã gửi</span>
                                 @else
                                 <span class="badge bg-danger">Chưa gửi</span>
                                 @endif
                             </td>
+
                             <!-- <td class="text-center"> -->
                                 <!-- Hiển thị đúng chuỗi lưu trong DB -->
 
@@ -191,7 +192,7 @@
                             </td> -->
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
+                                    <a href="/ungvien/show/{{ $uv->id }}?from=trung-tuyen" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <!-- <button type="button" class="btn btn-sm btn-primary"
@@ -225,7 +226,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="trang_thai_pv" class="form-label">Trạng thái phỏng vấn</label>
-                        <select class="form-select" id="trang_thai_pv" name="trang_thai_pv" onchange="handleStatusChange(this.value)">
+                        <select class="form-select" id="trang_thai_pv" name="trang_thai_pv" required onchange="handleStatusChange(this.value)">
                             <option value="chưa phỏng vấn">Chưa phỏng vấn</option>
                             <option value="đã phỏng vấn">Đã phỏng vấn</option>
                             <option value="pass">Pass</option>

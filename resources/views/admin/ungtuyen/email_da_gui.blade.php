@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">
-            <i class="fas fa-users me-2"></i>Danh Sách Ứng Viên Phỏng Vấn
+            <i class="fas fa-users me-2"></i>Danh Sách Đã Gửi Email Phỏng Vấn
         </h2>
         <!-- <div class="d-flex gap-2">
             <a href="{{ route('ungvien.index') }}" class="btn btn-outline-primary">
@@ -32,7 +32,7 @@
 
 
     <!-- Gửi email và đặt lịch -->
-    <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
+    <!-- <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
         @csrf
         <div class="row align-items-center">
             <div class="col-auto">
@@ -46,12 +46,12 @@
                 <button type="submit" class="btn btn-primary"><i class="fas fa-envelope-open-text me-2"></i>Gửi Email Phỏng Vấn</button>
             </div>
         </div>
-    </form>
+    </form> -->
 
-    <!-- Xuất Excel -->
+    <!-- Xuất Excel
     <a href="/ungvien/export" class="btn btn-success mb-3">
         📥 Xuất Excel
-    </a>
+    </a> -->
 
 
     <!-- Filter Section -->
@@ -107,7 +107,6 @@
                     <thead class="table-light">
                         <tr>
                             <th>STT</th>
-                            <th>Mã Ứng Viên</th>
                             <th>Tên Ứng Viên</th>
                             <th>Email</th>
                             <th>Số Điện Thoại</th>
@@ -115,9 +114,9 @@
                             <th>Kỹ Năng</th>
                             <th>Vị Trí</th>
                             <th>Điểm Đánh Giá</th>
-                            <th>Trạng Thái Email</th>
-                            <!-- <th>Trạng Thái PV</th>
-                            <th>Điểm PV</th> -->
+                            <!-- <th>Trạng Thái Email</th> -->
+                            <th>Trạng Thái PV</th>
+                            <th>Điểm PV</th>
                             <th>Hành Động</th>
                         </tr>
                     </thead>
@@ -125,7 +124,6 @@
                         @foreach($ungViens as $key => $uv)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td class="text-center">{{ $uv->ma_ung_tuyen }}</td>
                             <td>
                                 {{ $uv->ten_ung_vien }}
                                 <span class="badge bg-success ms-2">Đã phê duyệt</span>
@@ -147,18 +145,18 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <!-- <td>
                                 @if($uv->trang_thai_email === 'Đã gửi')
                                 <span class="badge bg-success">Đã gửi</span>
                                 @else
                                 <span class="badge bg-danger">Chưa gửi</span>
                                 @endif
-                            </td>
-                            <!-- <td class="text-center"> -->
+                            </td> -->
+                            <td class="text-center">
                                 <!-- Hiển thị đúng chuỗi lưu trong DB -->
 
 
-                                <!-- @php
+                                @php
                                 $trangThai = strtolower(trim($uv->trang_thai_pv));
                                 @endphp
 
@@ -178,8 +176,8 @@
                                 @default
                                 <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
                                 @endswitch
-                            </td> -->
-<!-- 
+                            </td>
+
                             <td class="text-center">
                                 @if($uv->diem_phong_van !== null)
                                 <span class="fw-bold {{ $uv->diem_phong_van >= 5 ? 'text-success' : 'text-danger' }}">
@@ -188,16 +186,16 @@
                                 @else
                                 <span class="text-muted">Chưa có</span>
                                 @endif
-                            </td> -->
+                            </td>
                             <td>
                                 <div class="d-flex gap-1">
                                     <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <!-- <button type="button" class="btn btn-sm btn-primary"
+                                    <button type="button" class="btn btn-sm btn-primary"
                                         onclick="showDiemPhongVanModal({{ $uv->id }})">
                                         <i class="fas fa-edit"></i>
-                                    </button> -->
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -226,10 +224,9 @@
                     <div class="mb-3">
                         <label for="trang_thai_pv" class="form-label">Trạng thái phỏng vấn</label>
                         <select class="form-select" id="trang_thai_pv" name="trang_thai_pv" onchange="handleStatusChange(this.value)">
-                            <option value="chưa phỏng vấn">Chưa phỏng vấn</option>
-                            <option value="đã phỏng vấn">Đã phỏng vấn</option>
-                            <option value="pass">Pass</option>
-                            <option value="fail">Fail</option>
+                            <option value="chưa phỏng vấn" id="chua">Chưa phỏng vấn</option>
+                            <option value="pass" id="pass">Pass</option>
+                            <option value="fail" id="fail">Fail</option>
                         </select>
                     </div>
                     <div class="mb-3" id="diemPhongVanGroup">

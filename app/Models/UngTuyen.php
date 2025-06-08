@@ -22,6 +22,8 @@ class UngTuyen extends Model
         'thu_gioi_thieu',
         'tai_cv',
         'diem_danh_gia',
+        'trang_thai_email',
+        'trang_thai_email_trungtuyen',
         'trang_thai_pv',
         'diem_phong_van',
         'ghi_chu',
@@ -39,7 +41,7 @@ class UngTuyen extends Model
 
         static::creating(function ($ungTuyen) {
             $ungTuyen->diem_danh_gia = $ungTuyen->tinhDiemDanhGia();
-            $ungTuyen->trang_thai_pv = 'Chưa phỏng vấn'; // Mặc định là chưa phỏng vấn
+            $ungTuyen->trang_thai_pv = 'chưa phỏng vấn'; // Sửa lại chữ thường để khớp với enum
         });
     }
 
@@ -77,23 +79,31 @@ class UngTuyen extends Model
         }
 
         // Đánh giá kinh nghiệm (30 điểm)
-        if ($this->kinh_nghiem && $tinTuyenDung->kinh_nghiem_toi_thieu !== null) {
-            $expYears = (int) filter_var($this->kinh_nghiem, FILTER_SANITIZE_NUMBER_INT);
-            if ($expYears >= $tinTuyenDung->kinh_nghiem_toi_thieu) {
-                if ($expYears <= $tinTuyenDung->kinh_nghiem_toi_da) {
-                    $totalScore += 100 * $weights['kinh_nghiem']; // Điểm tối đa
-                } else {
-                    $totalScore += 80 * $weights['kinh_nghiem']; // Điểm cho overqualified
-                }
-            } else {
-                $totalScore += 50 * $weights['kinh_nghiem']; // Điểm cho underqualified
-            }
-        }
+       // Đánh giá kinh nghiệm (30 điểm)
+if ($this->kinh_nghiem && $tinTuyenDung->kinh_nghiem_toi_thieu !== null) {
+    preg_match_all('/\d+/', $this->kinh_nghiem, $matches);
+    $numbers = array_map('intval', $matches[0]);
+    $expYears = count($numbers) == 2 ? array_sum($numbers) / 2 : $numbers[0];
 
+    $minExp = $tinTuyenDung->kinh_nghiem_toi_thieu;
+    $maxExp = $tinTuyenDung->kinh_nghiem_toi_da;
+
+    if ($expYears >= $minExp) {
+        // Nếu nằm trong khoảng hoặc vượt quá tối đa vẫn cộng 100%
+        $totalScore += 100 * $weights['kinh_nghiem'];
+    } else {
+        // Không đủ kinh nghiệm
+        $totalScore += 0;
+    }
+}
+
+        
+        
+        
         // Đánh giá độ phù hợp từ thư giới thiệu (30 điểm)
         if ($this->thu_gioi_thieu && $tinTuyenDung->mo_ta_cong_viec) {
             $keywordsToMatch = [
-                strtolower($tinTuyenDung->tieu_de),
+                
                 strtolower($tinTuyenDung->mo_ta_cong_viec)
             ];
             
