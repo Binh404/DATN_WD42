@@ -19,6 +19,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
         'ten_dang_nhap',
         'email',
         'password',
+        'vai_tro_id',
         'email_verified_at',
         'token_ghi_nho',
         'trang_thai',
