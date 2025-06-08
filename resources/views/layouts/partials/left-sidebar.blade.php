@@ -104,7 +104,7 @@
         </li>
 
         <!-- Attendance Section -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
             <p>Sự tham gia <i class="right fas fa-angle-left"></i></p>
@@ -141,10 +141,10 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> --}}
 
         <!-- Payments Section -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-database"></i>
             <p>Thanh toán <i class="fas fa-angle-left right"></i></p>
@@ -175,10 +175,10 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> --}}
 
         <!-- Settings Section -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-cog"></i>
             <p>Cài đặt <i class="fas fa-angle-left right"></i></p>
@@ -233,10 +233,10 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> --}}
 
         <!-- Help Section -->
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-calendar-alt"></i>
             <p>Trợ giúp <i class="right fas fa-angle-left"></i></p>
@@ -255,27 +255,27 @@
               </a>
             </li>
              </ul>
-        </li>
+        </li> --}}
 
             <!-- Phân quyền Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-calendar-alt"></i>
-            <p>Quản lí vai trò <i class="right fas fa-angle-left"></i></p>
+            <p>Vai trò <i class="right fas fa-angle-left"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href="{{route("roles.index")}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Vai trò và quyền hạn</p>
+                <p>Vai trò và quyền</p>
               </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>FAQ's</p>
               </a>
-            </li>
+            </li> --}}
           </ul>
         </li>
 
