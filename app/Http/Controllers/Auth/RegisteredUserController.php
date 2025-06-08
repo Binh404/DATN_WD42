@@ -60,6 +60,6 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('/', absolute: false));
     }
 }

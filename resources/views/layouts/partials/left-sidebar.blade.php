@@ -1,6 +1,12 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="" class="brand-link">
+  <a href="@if(auth()->user()->role === 'admin')
+            {{route('admin.dashboard')}}
+          @elseif(auth()->user()->role === 'hr')
+            {{route('hr.dashboard')}}
+          {{-- @else
+            {{route('hr.dashboard')}} --}}
+          @endif" class="brand-link">
     <div class="d-flex">
       <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
       <span class="brand-text font-weight-light">DV TECH</span>
@@ -15,14 +21,20 @@
         <img src="{{asset('assets/images/user.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
       </div>
       <div class="info">
-        <a href="#" class="d-block">User Name</a>
+        <a href="#" class="d-block">{{ auth()->user()->name }}</a>
       </div>
     </div>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="" class="nav-link">
+          <a href="@if(auth()->user()->role === 'admin')
+                    {{route('admin.dashboard')}}
+                  @elseif(auth()->user()->role === 'hr')
+                    {{route('hr.dashboard')}}
+                  @else
+                    {{route('employee.dashboard')}}
+                  @endif" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -253,7 +265,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="" class="nav-link">
+              <a href="{{route("roles.index")}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền hạn</p>
               </a>
@@ -286,10 +298,119 @@
                 <p>Quản lý công việc</p>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Báo cáo phòng ban</p>
+              </a>
+            </li> -->
+          </ul>
+        </li>
+
+         <!-- Ứng tuyển Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt"></i>
+            <p>Ứng tuyển<i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/ungvien" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Ứng viên</p>
+              </a>
+              <a href="/ungvien/phong-van" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Ứng viên phỏng vấn</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Gửi đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Đơn từ <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('department.yeucautuyendung.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Yêu cầu tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Duyệt đơn yêu cầu Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Duyệt đơn <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('admin.duyetdon.tuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Xin nghỉ việc</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- Cấp trên thông báo Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Cấp trên thông báo <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('hr.captrenthongbao.tuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tuyển dụng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gửi báo cáo</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tăng lương</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Tin tuyển dụng Section -->
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Tin tuyển dụng <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('hr.tintuyendung.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tin đã đăng</p>
               </a>
             </li>
           </ul>

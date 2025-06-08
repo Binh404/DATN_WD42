@@ -26,8 +26,8 @@ return new class extends Migration
             $table->decimal('luong_toi_da', 12, 2)->nullable();
             $table->smallInteger('so_vi_tri')->default(1);
             $table->longText('mo_ta_cong_viec');
-            $table->longText('yeu_cau');
-            $table->text('phuc_loi')->nullable();
+            $table->json('yeu_cau')->nullable();
+            $table->json('phuc_loi')->nullable();
             $table->json('ky_nang_yeu_cau')->nullable();
             $table->string('trinh_do_hoc_van')->nullable();
             $table->date('han_nop_ho_so');

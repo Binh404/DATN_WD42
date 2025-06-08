@@ -8,10 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class NguoiDung extends Authenticatable  implements CanResetPassword
 {
-    use  HasFactory, Notifiable, CanResetPasswordTrait;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasRoles;
+
 
     protected $table = 'nguoi_dung';
 
@@ -68,10 +71,16 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
+    public function chamCong(){
+        return $this->hasMany(ChamCong::class, 'nguoi_dung_id');
+    }
+    public function soDuNghiPhepNhanVien(){
+        return $this->hasMany(SoDuNghiPhepNhanVien::class, 'nguoi_dung_id');
+    }
 
-    public function vaiTro()
+    public function vaiTros()
     {
-        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
+        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'role_id')
             ->withTimestamps();
     }
 
@@ -79,5 +88,31 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->belongsToMany(Quyen::class, 'nguoi_dung_quyen', 'nguoi_dung_id', 'quyen_id')
             ->withTimestamps();
+    }
+    //bảng đơn xin nghi
+    public function donXinNghi()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_dung_id');
+    }
+
+    public function donXinNghiDuocDuyet()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_duyet_id');
+    }
+
+    public function donXinNghiBanGiao()
+    {
+        return $this->hasMany(DonXinNghi::class, 'ban_giao_cho_id');
+    }
+
+
+    public function coVaiTro($tenVaiTro)
+    {
+        return $this->vaiTros()->where('ten', $tenVaiTro)->exists();
+    }
+
+    public function coBatKyVaiTro(array $dsTenVaiTro)
+    {
+        return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
     }
 }

@@ -9,7 +9,7 @@
 
     <ul class="nav-menu">
         <li class="nav-item">
-            <a href="{{url('employee/dashboard')}}" class="nav-link active" data-section="dashboard">
+            <a href="{{url('employee')}}" class="nav-link active" data-section="dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span>Tổng quan</span>
             </a>
@@ -57,5 +57,18 @@
                 <span>Công việc phòng ban</span>
             </a>
         </li>
+        <li class="nav-item">
+
+            <form method="POST" action="{{ route('logout') }}" id="logout-form">
+          @csrf
+          <button type="submit" class="dropdown-item d-flex align-items-center"
+            style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+            <i class="fas fa-sign-out-alt mr-2"></i>
+            <span>Đăng xuất</span>
+          </button>
+        </form>
+        </li>
+
+
     </ul>
 </nav>

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 1,
                 'ten_dang_nhap' => 'admin',
                 'email' => 'admin@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 1,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -34,8 +36,9 @@ class NguoiDungSeeder extends Seeder
             [
                 'id' => 2,
                 'ten_dang_nhap' => 'hr.manager',
-                'email' => 'hr.manager@company.com',
-                'password' => Hash::make('password123'),
+                'email' => 'hr@company.com',
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 2,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -48,9 +51,10 @@ class NguoiDungSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'ten_dang_nhap' => 'hr.staff',
-                'email' => 'hr.staff@company.com',
-                'password' => Hash::make('password123'),
+                'ten_dang_nhap' => 'employee',
+                'email' => 'employee@company.com',
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 3,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -65,7 +69,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 4,
                 'ten_dang_nhap' => 'it.manager',
                 'email' => 'it.manager@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -80,7 +85,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 5,
                 'ten_dang_nhap' => 'dev.senior',
                 'email' => 'dev.senior@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -95,7 +101,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 6,
                 'ten_dang_nhap' => 'dev.junior',
                 'email' => 'dev.junior@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -110,7 +117,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 7,
                 'ten_dang_nhap' => 'acc.manager',
                 'email' => 'acc.manager@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -123,19 +131,20 @@ class NguoiDungSeeder extends Seeder
             ],
             [
                 'id' => 8,
-                'ten_dang_nhap' => 'acc.staff',
-                'email' => 'acc.staff@company.com',
-                'password' => Hash::make('password123'),
+                'ten_dang_nhap' => 'acc',
+                'email' => 'acc@company.com',
+                'password' => Hash::make('111'),
+                'vai_tro_id' => 3,
                 'email_verified_at' => true,
-                'remember_token' => null,
+                'remember_token' => Str::random(10),
                 'trang_thai' => 1,
                 'lan_dang_nhap_cuoi' => now(),
                 'ip_dang_nhap_cuoi' => '127.0.0.1',
-                'phong_ban_id' => 3,
+                'phong_ban_id' => 4,
                 'chuc_vu_id' => 8,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ]
         ]);
     }
 }
