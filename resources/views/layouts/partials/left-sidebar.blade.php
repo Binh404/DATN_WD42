@@ -21,20 +21,19 @@
         <img src="{{asset('assets/images/user.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
       </div>
       <div class="info">
-        <a href="#" class="d-block">{{ auth()->user()->name }}</a>
+        <a href="#" class="d-block">{{ auth()->user()->ten_dang_nhap }}</a>
+</a>
       </div>
     </div>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="@if(auth()->user()->role === 'admin')
-                    {{route('admin.dashboard')}}
-                  @elseif(auth()->user()->role === 'hr')
+          <a href="
                     {{route('hr.dashboard')}}
-                  @else
-                    {{route('employee.dashboard')}}
-                  @endif" class="nav-link">
+                  {{-- @else
+                    {{route('employee.dashboard')}} --}}
+                  " class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -77,12 +76,12 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="/hoso" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Employees</p>
+                <p>Nhân viên</p>
               </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Org Chart</p>
@@ -99,7 +98,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vendors</p>
               </a>
-            </li>
+            </li> --}}
           </ul>
         </li>
 

@@ -2,20 +2,23 @@
 
 use App\Http\Middleware\CheckRole;
 
-use App\Http\Controllers\employee\BangLuongController;
-
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\ChucVuController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\employee\ProfileController;
+use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\HoSoNhanVienController;
+use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\DonTuController;
 use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
+use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
@@ -120,11 +123,28 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Admin HR - Hồ sơ nhân viên
+Route::prefix('/hoso')->group(function () {
+    Route::get('/', [HoSoNhanVienController::class, 'index'])->name('hoso.index');
+    Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
+    Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
+    Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+    Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
+    Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
+});
 });
 
 // Employee routes
 Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
+     // ✅ Route cho điền hồ sơ lần đầu
+    Route::get('/complete-profile', [HoSoController::class, 'form'])
+        ->name('employee.complete-profile');
+    Route::post('/complete-profile', [HoSoController::class, 'store'])
+        ->name('employee.complete-profile.store');
+
+        Route::middleware([CheckHoSoNguoiDung::class])->group(function () {
     Route::get('/dashboard', function () {
         return view('employe.dashboard');
     })->name('employee.dashboard');
@@ -152,9 +172,10 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
     });
 
     // EM Profile , đặt tên khác để không bị trùng
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('employee.profile.edit');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('employee.profile.destroy');
+
+    });
 });
 
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
