@@ -22,6 +22,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
         'ten_dang_nhap',
         'email',
         'password',
+        'vai_tro_id',
         'email_verified_at',
         'token_ghi_nho',
         'trang_thai',
@@ -79,7 +80,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
 
     public function vaiTros()
     {
-        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'role_id')
+        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
             ->withTimestamps();
     }
 

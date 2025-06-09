@@ -16,6 +16,7 @@ class NguoiDungVaiTro extends Model
     protected $fillable = [
         'nguoi_dung_id',
         'vai_tro_id',
+        'model_type',
     ];
 
     public $timestamps = false;

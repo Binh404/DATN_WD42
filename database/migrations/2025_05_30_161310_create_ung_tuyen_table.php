@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->decimal('diem_danh_gia', 5, 2)->nullable()->comment('Điểm đánh giá tự động khi ứng tuyển');
 
-            $table->enum('trang_thai_pv', ['Chưa phỏng vấn', 'Đã phỏng vấn', 'Đạt', 'Khó'])->default('Chưa phỏng vấn');
+            $table->enum('trang_thai_pv', ['chưa phỏng vấn', 'đã phỏng vấn', 'pass','fail'])->default('chưa phỏng vấn');
             $table->decimal('diem_phong_van', 5, 2)->nullable()->comment('Điểm phỏng vấn do người phỏng vấn chấm');
             $table->text('ghi_chu')->nullable()->comment('Ghi chú của người phỏng vấn');
 
