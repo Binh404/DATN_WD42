@@ -106,6 +106,20 @@ class UngTuyenController extends Controller
         $maUngTuyen = UngTuyen::max('id') ?? 0;
         $validated['ma_ung_tuyen'] = 'UT' . str_pad($maUngTuyen + 1, 5, '0', STR_PAD_LEFT);
 
+
+
+
+
+        // Lấy thông tin từ tin tuyển dụng để gán ID liên quan
+        $tinTuyenDung = TinTuyenDung::find($validated['tin_tuyen_dung_id']);
+        if ($tinTuyenDung) {
+            $validated['phong_ban_id'] = $tinTuyenDung->phong_ban_id ?? null;
+            $validated['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id ?? null;
+            $validated['vai_tro_id'] = $tinTuyenDung->vai_tro_id ?? null;
+        }
+
+
+
         // Tạo đơn ứng tuyển
         $application = UngTuyen::create($validated);
 
@@ -113,11 +127,11 @@ class UngTuyenController extends Controller
     }
 
     // Admin xóa đơn ứng tuyển
-    public function destroy($id)
-    {
-        $ungVien = UngTuyen::findOrFail($id)->delete();
-        return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
-    }
+    // public function destroy($id)
+    // {
+    //     $ungVien = UngTuyen::findOrFail($id)->delete();
+    //     return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
+    // }
 
     public function luuDiemDanhGia(Request $request, $id)
     {
@@ -369,14 +383,17 @@ class UngTuyenController extends Controller
             'dat_lich.after' => 'Thời gian gửi phải sau thời điểm hiện tại'
         ]);
 
+
         // Lọc các ứng viên chưa gửi email
-        $ungviens = UngTuyen::where('trang_thai_pv', 'pass')
+        $ungviens = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro'])
+            ->where('trang_thai_pv', 'pass')
             ->where('trang_thai_email_trungtuyen', 'chua_gui')->get();
 
         // Kiểm tra nếu không có ứng viên nào cần gửi
         if ($ungviens->isEmpty()) {
             return redirect('/ungvien/trung-tuyen')->with('error', 'Không có ứng viên nào cần gửi email.');
         }
+
 
         // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
@@ -385,18 +402,7 @@ class UngTuyenController extends Controller
             $maSo = substr($ungvien->ma_ung_tuyen, 2); // bỏ 'ut'
             $email = strtolower($emailPrefix . 'dv' . $maSo . '@gmail.com');
             $password = Str::random(10);
-            $tenDangNhap = Str::slug($ungvien->ten_ung_vien);
-
-            // Gửi thông tin đến webhook
-            Http::post('https://workflow.aichatbot360.io.vn/webhook/email-di-lam', [
-                'ma_ung_vien' => $ungvien->ma_ung_tuyen,
-                'ten_dang_nhap' => $email,
-                'email' => $ungvien->email,
-                'name' => $ungvien->ten_ung_vien,
-                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
-                'lich' => $request->dat_lich,
-                'mat_khau' => $password // nếu muốn gửi mật khẩu cho webhook
-            ]);
+            $tenDangNhap = Str::slug($ungvien->ten_ung_vien) . strtolower($ungvien->ma_ung_tuyen);
 
             // Tạo tài khoản nhân viên mới
             $nguoiDung = NguoiDung::create([
@@ -405,16 +411,35 @@ class UngTuyenController extends Controller
                 'email' => $email,
                 'password' => Hash::make($password),
                 'ma_ung_tuyen' => $ungvien->ma_ung_tuyen,
-                'vai_tro_id' => 3,
+                'vai_tro_id' => $ungvien->vai_tro_id,
             ]);
+
+            $phongBan = $ungvien->phongBan->ten_phong_ban ?? 'Chưa rõ';
+            $chucVu = $ungvien->chucVu->ten ?? 'Chưa rõ';
+            $vaiTro = $ungvien->vaiTro->ten ?? 'Chưa rõ';
+
 
             // Gán vai trò cho người dùng
             $nguoiDungVT = NguoiDungVaiTro::create([
                 'nguoi_dung_id' => $nguoiDung->id,
-                'vai_tro_id' => 3,
+                'vai_tro_id' => $ungvien->vai_tro_id,
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
                 'updated_at' => now()
+            ]);
+
+            // Gửi thông tin đến webhook
+            Http::post('https://workflow.aichatbot360.io.vn/webhook-test/email-di-lam', [
+                'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                'ten_dang_nhap' => $email,
+                'email' => $ungvien->email,
+                'name' => $ungvien->ten_ung_vien,
+                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
+                'lich' => $request->dat_lich,
+                'mat_khau' => $password,
+                'phong_ban' => $phongBan,
+                'chuc_vu' => $chucVu,
+                'vai_tro' => $vaiTro,
             ]);
 
             $ungvien->trang_thai_email_trungtuyen = 'Đã gửi';
