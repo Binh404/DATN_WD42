@@ -67,7 +67,7 @@
 
                 <div class="form-group">
                     <label for="ky_nang">Kỹ Năng</label>
-                    <input type="text" id="ky_nang" name="ky_nang" placeholder="VD: JavaScript, React, Node.js, Python..." value="{{ old('ky_nang') }}">
+                    <input type="text" id="ky_nang" name="ky_nang" placeholder="VD: JavaScript, React, Node.js, Python...">
                     @error('ky_nang')
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle me-1"></i>
