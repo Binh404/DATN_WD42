@@ -19,10 +19,17 @@ use App\Http\Middleware\PreventLoginCacheMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
+use App\Http\Controllers\Auth\PasswordOTPController;
 
 
 
-
+Route::middleware(['auth'])->group(function () {
+    Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
+    Route::get('/verify-otp', function () {
+        return view('profile.password-otp');
+    })->name('password.otp-form');
+    Route::post('/verify-otp', [PasswordOTPController::class, 'verifyOtp'])->name('password.verify-otp');
+});
 
 // Admin routes
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
