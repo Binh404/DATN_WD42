@@ -12,11 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->unsignedBigInteger('tin_tuyen_dung_id')->after('id')->nullable();
-
-            $table->foreign('tin_tuyen_dung_id')
-                ->references('id')->on('tin_tuyen_dung')
-                ->onDelete('cascade');
+            $table->string('trang_thai_email_trungtuyen')->default('chua_gui')->after('trang_thai_email');
         });
     }
 
@@ -26,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->dropForeign(['tin_tuyen_dung_id']);
-            $table->dropColumn('tin_tuyen_dung_id');
+            $table->dropColumn('trang_thai_email_trungtuyen');
         });
     }
 };

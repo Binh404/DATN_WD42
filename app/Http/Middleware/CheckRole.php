@@ -15,28 +15,26 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-public function handle($request, Closure $next, ...$vaiTro)
-{
+    public function handle($request, Closure $next, ...$vaiTro)
+    {
 
-    if (!Auth::check()) {
-        return redirect()->route('login');
-    }
-
-    $user = Auth::user();
-    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-
-    Log::info('Đang kiểm tra role cho route: ' . $request->path());
-    Log::info('User Roles: ' . json_encode($userRoles));
-
-
-    foreach ($vaiTro as $role) {
-        if (in_array($role, $userRoles)) {
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
+
+        $user = Auth::user();
+        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+
+        Log::info('Đang kiểm tra role cho route: ' . $request->path());
+        Log::info('User Roles: ' . json_encode($userRoles));
+
+
+        foreach ($vaiTro as $role) {
+            if (in_array($role, $userRoles)) {
+                return $next($request);
+            }
+        }
+
+        return abort(403, 'Bạn không có quyền truy cập.');
     }
-
-    return abort(403, 'Bạn không có quyền truy cập.');
-}
-
-
 }

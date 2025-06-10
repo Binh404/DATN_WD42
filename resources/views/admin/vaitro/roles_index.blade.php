@@ -1,7 +1,11 @@
 @extends('layouts.master')
 
 @section('content')
-
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="container">
     <h2>Danh sách vai trò</h2>
     <a href="{{ route('roles.create') }}" class="btn btn-primary mb-3">Thêm vai trò</a>
@@ -28,7 +32,13 @@
                     <td>{{ $role->trang_thai ? '✔' : '' }}</td>
                     <td>
                         <a href="#" class="btn btn-warning btn-sm">Sửa</a>
-                        <a href="#" class="btn btn-danger btn-sm">Xóa</a>
+                         <form action="/vaitro/delete/{{$role->id}}" method="post" class="d-inline">
+                                        @csrf
+                                        @method('delete')
+                                        <button class="btn btn-outline-danger btn-sm rounded-pill delete-btn" onclick="return confirm('Bạn có muốn xóa không?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                     </td>
                 </tr>
             @endforeach

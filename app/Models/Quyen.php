@@ -1,24 +1,32 @@
 <?php
 
 namespace App\Models;
+use Spatie\Permission\Models\Permission as SpatiePermission;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Quyen extends Model
+class Quyen extends SpatiePermission
 {
-    use HasFactory;
-
     protected $table = 'quyen';
 
     protected $fillable = [
-        'ten',
+        'ten', // cột bạn đang dùng để lưu tên quyền
         'ten_hien_thi',
         'mo_ta',
         'nhom_quyen_id',
         'phan_he',
         'hanh_dong',
+        'guard_name',
     ];
+
+    // Map thuộc tính name cho Spatie
+    public function getNameAttribute()
+    {
+        return $this->attributes['ten'];
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['ten'] = $value;
+    }
 
     // Relationships
     public function nhomQuyen()

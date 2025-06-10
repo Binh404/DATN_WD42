@@ -75,7 +75,7 @@ class NguoiDungSeeder extends Seeder
                 'id' => 4,
                 'ten_dang_nhap' => 'it.manager',
                 'email' => 'it.manager@company.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('123'),
                 'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
@@ -93,8 +93,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 5,
                 'ten_dang_nhap' => 'dev.senior',
                 'email' => 'dev.senior@company.com',
-                'password' => Hash::make('password123'),
-                'vai_tro_id' => 5,
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -111,8 +111,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 6,
                 'ten_dang_nhap' => 'dev.junior',
                 'email' => 'dev.junior@company.com',
-                'password' => Hash::make('password123'),
-                'vai_tro_id' => 6,
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -129,8 +129,8 @@ class NguoiDungSeeder extends Seeder
                 'id' => 7,
                 'ten_dang_nhap' => 'acc.manager',
                 'email' => 'acc.manager@company.com',
-                'password' => Hash::make('password123'),
-                'vai_tro_id' => 7,
+                'password' => Hash::make('123'),
+                'vai_tro_id' => 4,
                 'email_verified_at' => true,
                 'remember_token' => null,
                 'trang_thai' => 1,
@@ -142,8 +142,7 @@ class NguoiDungSeeder extends Seeder
                 'da_hoan_thanh_ho_so' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            
+            ]
         ]);
     }
 }
