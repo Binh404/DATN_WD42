@@ -27,6 +27,7 @@ class ChamCong extends Model
         'vi_tri_check_out',
         'dia_chi_ip',
         'ghi_chu',
+        'trang_thai_duyet',
         'nguoi_phe_duyet_id',
         'thoi_gian_phe_duyet',
     ];
@@ -113,7 +114,7 @@ class ChamCong extends Model
         $gioRa = Carbon::parse($this->gio_ra);
 
         // Tính số giờ làm việc (trừ giờ nghỉ trưa)
-        $soGio = $gioRa->diffInMinutes($gioVao) / 60;
+        $soGio = $gioVao->diffInMinutes($gioRa) / 60;
 
         // Trừ 1 giờ nghỉ trưa nếu làm trên 6 giờ
         if ($soGio > 6) {
@@ -157,12 +158,12 @@ class ChamCong extends Model
 
         if ($this->kiemTraDiMuon()) {
             $trangThai = 'di_muon';
-            $this->phut_di_muon = Carbon::parse($this->gio_vao)->diffInMinutes(Carbon::parse('08:30'));
+            $this->phut_di_muon = Carbon::parse('8:30')->diffInMinutes(Carbon::parse($this->gio_vao));
         }
 
         if ($this->kiemTraVeSom()) {
             $trangThai = $trangThai === 'di_muon' ? 'di_muon' : 've_som';
-            $this->phut_ve_som = Carbon::parse('17:30')->diffInMinutes(Carbon::parse($this->gio_ra));
+            $this->phut_ve_som = Carbon::parse($this->gio_ra)->diffInMinutes(Carbon::parse('17:30'));
         }
 
         $this->trang_thai = $trangThai;
@@ -171,6 +172,7 @@ class ChamCong extends Model
 
         return $this;
     }
+
 
     // Static methods
     public static function layBangChamCongThang($userId, $month = null, $year = null)
@@ -198,6 +200,12 @@ class ChamCong extends Model
     {
         return self::where('nguoi_dung_id', $userId)
                    ->where('ngay_cham_cong', now()->format('Y-m-d'))
+                   ->first();
+    }
+    public static function layBanGhiTheoNgay($userId, $date)
+    {
+        return self::where('nguoi_dung_id', $userId)
+                   ->where('ngay_cham_cong', $date)
                    ->first();
     }
 

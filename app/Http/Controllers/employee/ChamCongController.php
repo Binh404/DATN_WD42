@@ -38,13 +38,13 @@ class ChamCongController extends Controller
         // dd('adsa');
 
         // // Thống kê tháng hiện tại
-        $thongKe = $this->layThongKeThang($user->id);
+        // $thongKe = $this->layThongKeThang($user->id);
         // dd($thongKe);
 
         return view('employe.cham-cong.index', compact(
             'chamCongHomNay',
             'lichChamCong',
-            'thongKe'
+            // 'thongKe'
         ));
     }
      public function chamCongVao(Request $request)
@@ -81,13 +81,16 @@ class ChamCongController extends Controller
                 [
                     'gio_vao' => $currentTime,
                     'vi_tri_check_in' => $this->layViTri($request),
+                    'ghi_chu' => $this->layLyDo($request),
                     'dia_chi_ip' => $request->ip(),
+                    'trang_thai_duyet' => $request->trang_thai_duyet
                 ]
             );
 
             // Cập nhật trạng thái nếu đi muộn
             $chamCong->capNhatTrangThai();
             // dd($chamCong);
+            // $a = $chamCong->trag_thai_duyet;
             $chamCong->save();
 
             DB::commit();
@@ -99,6 +102,7 @@ class ChamCongController extends Controller
                     'gio_vao' => $currentTime->format('H:i'),
                     'trang_thai' => $chamCong->trang_thai,
                     'trang_thai_text' => $chamCong->trang_thai_text,
+                    'trang_thai_duyet' => $chamCong->trang_thai_duyet,
                     'di_muon' => $chamCong->phut_di_muon > 0 ? $chamCong->phut_di_muon : 0
                 ]
             ]);
@@ -134,6 +138,9 @@ class ChamCongController extends Controller
                     'message' => 'Bạn đã chấm công ra hôm nay rồi!'
                 ]);
             }
+             $trangThaiDuyet = ($chamCong->trang_thai_duyet == 0)
+            ? 0  // Chấm công vào chờ duyệt → chấm công ra cũng chờ duyệt
+            : $request->trang_thai_duyet; // Chấm công vào đã duyệt → theo request
 
             DB::beginTransaction();
 
@@ -141,6 +148,7 @@ class ChamCongController extends Controller
             $chamCong->update([
                 'gio_ra' => $currentTime,
                 'vi_tri_check_out' => $this->layViTri($request),
+                'trang_thai_duyet' => $trangThaiDuyet
             ]);
 
             // Cập nhật trạng thái và tính toán
@@ -157,6 +165,7 @@ class ChamCongController extends Controller
                     'so_gio_lam' => $chamCong->so_gio_lam,
                     'so_cong' => $chamCong->so_cong,
                     'trang_thai' => $chamCong->trang_thai,
+                    'trang_thai_duyet' => $request->trang_thai_duyet,
                     'trang_thai_text' => $chamCong->trang_thai_text
                 ]
             ]);
@@ -187,6 +196,70 @@ class ChamCongController extends Controller
             ]
         ]);
     }
+    public function getChamCongByDay(Request $request, $dayId)
+{
+    try {
+        // Tìm dữ liệu chấm công theo ID hoặc ngày
+        $chamCong = ChamCong::where('id', $dayId)
+            // ->orWhere('ngay_cham_cong', $dayId)
+            // ->where('nguoi_dung_id', auth()->id()) // Chỉ lấy của user hiện tại
+            ->first();
+        // dd($chamCong);
+        if ($chamCong) {
+            $data = [
+                'gio_vao_format' => $chamCong->gio_vao ? Carbon::parse($chamCong->gio_vao)->format('H:i') : null,
+                'gio_ra_format' => $chamCong->gio_ra ? Carbon::parse($chamCong->gio_ra)->format('H:i') : null,
+                'so_gio_lam' => $chamCong->so_gio_lam,
+                'trang_thai_text' => $chamCong->trang_thai_text,
+                'ngay' => Carbon::parse($chamCong->ngay_cham_cong)->format('Y-m-d'), // Chuyển đổi ngày đi$chamCong->ngay_cham_cong,
+                'trang_thai_duyet' => $chamCong->trang_thai_duyet
+            ];
+        } else {
+            // Nếu không có dữ liệu chấm công cho ngày đó
+            $data = [
+                'gio_vao_format' => null,
+                'gio_ra_format' => null,
+                'so_gio_lam' => 0,
+                'trang_thai_text' => 'Chưa chấm công',
+                'ngay' => $dayId,
+                // 'trang_thai' => null
+                'trang_thai_duyet' => 0
+            ];
+        }
+
+        return response()->json($data);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Có lỗi xảy ra khi lấy dữ liệu',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+public function updateTrangThai(Request $request){
+    try {
+        $user = Auth::user();
+        $chamCong = ChamCong::layBanGhiTheoNgay($user->id, $request->ngay_cham_cong);
+        $chamCong->update([
+            'ghi_chu' => $request->reason_detail,
+            'trang_thai_duyet' => 0,
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cập nhật trạng thái thành công',
+            'data' => [
+                'ghi_chu' => $chamCong->reason_detail,
+                // 'trang_thai_text' => $chamCong->trang_thai_text
+            ]
+        ]);
+
+    }catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Có lỗi xảy ra khi lý dụ liệu',
+            'message' => $e->getMessage()
+        ],500);
+    }
+}
      public function trangThaiChamCong()
     {
         $user = Auth::user();
@@ -224,6 +297,11 @@ class ChamCongController extends Controller
 
         return null;
     }
+    private function layLyDo($request)
+    {
+        $lyDo = $request->input('reason_detail');
+        return $lyDo ? $lyDo : null;
+    }
     private function taoLichChamCong($chamCongThang, $month = null, $year = null)
     {
         $month = $month ?? now()->month;
@@ -239,6 +317,7 @@ class ChamCongController extends Controller
 
         for ($i = 1; $i < $thuTrongTuan; $i++) {
             $lich[] = [
+                'id' => '',
                 'ngay' => '',
                 'trang_thai' => 'trong',
                 'class' => 'day-normal'
@@ -249,7 +328,7 @@ class ChamCongController extends Controller
         for ($ngay = 1; $ngay <= $soNgayTrongThang; $ngay++) {
             $ngayHienTai = Carbon::create($year, $month, $ngay);
             $chamCong = $chamCongThang->where('ngay_cham_cong', $ngayHienTai->toDate())->first();
-            // dd( $ngayHienTai);
+            // dd( $chamCong);
             if($ngayHienTai->lessThan(now())){
                 $trangThai = 'vang_mat';
                 $class = 'day-absent';
@@ -257,9 +336,7 @@ class ChamCongController extends Controller
                 $trangThai = 'chua_cham_cong';
                 $class = 'day-normal';
             }
-            // if($chamCong){
 
-            // }
 
 
             if ($ngayHienTai->isWeekend()) {
@@ -291,6 +368,7 @@ class ChamCongController extends Controller
             }
 
             $lich[] = [
+                'id' => $chamCong ? $chamCong->id : '',
                 'ngay' => $ngay,
                 'trang_thai' => $trangThai,
                 'class' => $class,

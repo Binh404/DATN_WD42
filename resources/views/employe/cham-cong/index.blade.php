@@ -46,6 +46,175 @@
     text-align: center;
 }
 
+/* Modal styles for reason form */
+.reason-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.reason-modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 0;
+    border: none;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.reason-modal-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reason-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.reason-close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+}
+
+.reason-close:hover {
+    opacity: 0.7;
+}
+
+.reason-modal-body {
+    padding: 30px;
+}
+
+.reason-form-group {
+    margin-bottom: 20px;
+}
+
+.reason-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.reason-form-group select,
+.reason-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.reason-form-group select:focus,
+.reason-form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.reason-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.reason-warning {
+    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #721c24;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reason-warning i {
+    font-size: 18px;
+}
+
+.reason-modal-footer {
+    padding: 0 30px 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.reason-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.reason-btn-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.reason-btn-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.reason-btn-submit {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.reason-btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.reason-btn-submit:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
 @media (max-width: 768px) {
     .calendar-header {
         flex-direction: column;
@@ -54,6 +223,23 @@
 
     .calendar-nav {
         order: -1;
+    }
+    reason-modal-content {
+        margin: 5% auto;
+        width: 95%;
+    }
+
+    .reason-modal-body {
+        padding: 20px;
+    }
+
+    .reason-modal-footer {
+        padding: 0 20px 20px;
+        flex-direction: column;
+    }
+
+    .reason-btn {
+        width: 100%;
     }
 }
 </style>
@@ -72,14 +258,55 @@
         <button class="notification-close">×</button>
     </div>
 </div>
+
+<!-- Modal nhập lý do -->
+<div id="reasonModal" class="reason-modal">
+    <div class="reason-modal-content">
+        <div class="reason-modal-header">
+            <h3 id="reasonModalTitle">Nhập lý do</h3>
+            <button class="reason-close" onclick="closeReasonModal()">&times;</button>
+        </div>
+        <div class="reason-modal-body">
+            <div class="reason-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="reasonWarningText">Bạn cần nhập lý do cho việc này</span>
+            </div>
+            <form id="reasonForm">
+                <div class="reason-form-group">
+                    <label for="reasonDetail">Chi tiết lý do <span style="color: red;">*</span></label>
+                    <textarea id="reasonDetail" placeholder="Vui lòng mô tả chi tiết lý do..." required></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="reason-modal-footer">
+            <button type="button" class="reason-btn reason-btn-cancel" onclick="closeReasonModal()">
+                Hủy bỏ
+            </button>
+            <button type="button" class="reason-btn reason-btn-submit" id="reasonBtnSubmit" onclick="submitReason()" style="display: none">
+                Xác nhận
+            </button>
+            <button type="button" class="reason-btn reason-btn-submit" id="reasonBtnSubmitNgay" onclick="submitReasonNgay()" style="display: none">
+                Xác nhận
+            </button>
+        </div>
+    </div>
+</div>
 <section class="content-section" id="attendance">
 
      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2>Chấm công</h2>
-        <button class="btn btn-primary checkin-btn" onclick="checkInOut()" id="checkinBtn" style="display: none">
-            <i class="fas fa-fingerprint"></i>
-            <span id="btnText">Chấm công</span>
-        </button>
+        <div>
+            <button class="btn btn-primary checkin-btn" onclick="checkInOut()" id="checkinBtn" style="display: none">
+                <i class="fas fa-fingerprint"></i>
+                <span id="btnText">Chấm công</span>
+            </button>
+            {{-- @if($chamCongHomNay->ngay_cham_cong == now()->format('Y-m-d')) --}}
+            <button class="btn btn-warning " id="reasonBtn" onclick="openReasonModal()" data-ngay="{{ now()->format('Y-m-d') }}" style="display: none">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span >Gửi lý do</span>
+            </button>
+            {{-- @endif --}}
+        </div>
     </div>
 
    <!-- Thống kê ngày hôm nay -->
@@ -151,7 +378,7 @@
 
                      @if($chamCong instanceof \App\Models\ChamCong)
                         title="Vào: {{ $ngay['cham_cong']->gio_vao_format }} - Ra: {{ $ngay['cham_cong']->gio_ra_format }} - {{ $ngay['cham_cong']->trang_thai_text }}"
-                     @endif>
+                     @endif data-id="{{ $ngay['id'] }}">
                     {{ $ngay['ngay'] }}
                 </div>
             @endforeach
@@ -168,13 +395,40 @@
     let currentYear = {{ $year ?? now()->year }};
     // CẤU HÌNH VỊ TRÍ CÔNG TY
     const COMPANY_LOCATION = {
-        latitude: 21.0305024,    // Thay bằng tọa độ thực tế của công ty
-        longitude: 105.7685504,  // Thay bằng tọa độ thực tế của công ty
-        // latitude: 21.0305,    // Thay bằng tọa độ thực tế của công ty
-        // longitude: 105.5684,  // Thay bằng tọa độ thực tế của công ty
-        allowedRadius: 5000   // 5km = 5000 mét
+        // latitude: 21.0305024,    // Thay bằng tọa độ thực tế của công ty
+        // longitude: 105.7685504,  // Thay bằng tọa độ thực tế của công ty
+        latitude:  21.1303,    // Thay bằng tọa độ thực tế của công ty
+        longitude: 105.7656,  // Thay bằng tọa độ thực tế của công ty
+        allowedRadius: 1000   // 5km = 5000 mét
     };
+    const WORK_SCHEDULE = {
+        startTime: '08:30',
+        endTime: '17:00',
+        lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
+        earlyThreshold: 15  // Số phút được phép về sớm mà không cần lý do
+    }
+    function needsReason(type)  {
+        const now = new Date();
+        const timeString = now.toTimeString().slice(0, 5); // HH:MM
 
+        if (type === 'in') {
+            // Kiểm tra đi muộn
+            const [startHour, startMin] = WORK_SCHEDULE.startTime.split(':');
+            const startTimeMs = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMin).getTime();
+            const lateThresholdMs = startTimeMs + (WORK_SCHEDULE.lateThreshold * 60 * 1000);
+            console.log(lateThresholdMs);
+            return now.getTime() > lateThresholdMs;
+        } else if (type === 'out') {
+            // Kiểm tra về sớm
+            const [endHour, endMin] = WORK_SCHEDULE.endTime.split(':');
+            const endTimeMs = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMin).getTime();
+            const earlyThresholdMs = endTimeMs - (WORK_SCHEDULE.earlyThreshold * 60 * 1000);
+
+            return now.getTime() < earlyThresholdMs;
+        }
+
+        return false;
+    }
     // Khởi tạo trạng thái khi load trang
     document.addEventListener('DOMContentLoaded', async function() {
         await checkAttendanceStatus();
@@ -290,6 +544,190 @@
             maxDistance: COMPANY_LOCATION.allowedRadius
         };
     }
+    function openReasonModal(){
+    const modal = document.getElementById('reasonModal');
+    const title = document.getElementById('reasonModalTitle');
+    const reasonBtn = document.getElementById('reasonBtn');
+
+    // Validate required elements exist
+    if (!modal || !title || !reasonBtn) {
+        console.error('Required modal elements not found');
+        return;
+    }
+
+    // Show modal and prevent body scroll
+    modal.style.display = 'block';
+
+    // Show submit button
+    const submitBtn = document.getElementById('reasonBtnSubmitNgay');
+    if (submitBtn) {
+        submitBtn.style.display = 'block';
+    }
+
+    // Get and format date
+    ngay_cham_cong = reasonBtn.dataset.ngay;
+    if (ngay_cham_cong) {
+        ngay_cham_cong_format = ngay_cham_cong.split('T')[0];
+        title.innerHTML = 'Lý do chấm công ngày ' + ngay_cham_cong_format;
+    }
+
+    // Clear previous input
+    const reasonDetail = document.getElementById('reasonDetail');
+    if (reasonDetail) {
+        reasonDetail.value = '';
+        reasonDetail.focus(); // Focus on input for better UX
+    }
+        // console.log(ngay_cham_cong);
+    }
+function submitReasonNgay() {
+    const detail = document.getElementById('reasonDetail').value.trim();
+    const btn = document.getElementById('checkinBtn');
+
+    // if (detail.length < 10) {
+    //     showNotification('Lý do phải ít nhất 10 ký tự', 'error');
+    //     return;
+    // }
+
+    // Vô hiệu hóa button submit
+    const submitBtn = document.querySelector('.reason-btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Đang xử lý...';
+
+    // Thêm thông tin lý do vào dữ liệu chấm công
+    // Prepare attendance data
+    const attendanceData = {
+        // ...pendingAttendanceData,
+        reason_detail: detail,
+        ngay_cham_cong: ngay_cham_cong_format,
+        timestamp: new Date().toISOString()
+    };
+
+    // console.log(attendanceData);
+
+    // Ẩn modal ngay sau khi submit
+
+    // // Reset form
+    document.getElementById('reasonForm').reset();
+
+    // // Thực hiện lý do
+    upDateTrangThai(attendanceData);
+
+    const modal = document.getElementById('reasonModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('reasonForm').reset();
+
+    // Reset variables
+    pendingAttendanceData = null;
+    currentAttendanceType = null;
+    // Reset button về trạng thái ban đầu
+    setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Xác nhận';
+    }, 500);
+}
+    // Hiển thị modal nhập lý do
+    function showReasonModal(type, location) {
+        const modal = document.getElementById('reasonModal');
+        const title = document.getElementById('reasonModalTitle');
+        const warning = document.getElementById('reasonWarningText');
+        modal.style.display = 'block';
+
+        document.getElementById('reasonBtnSubmit').style.display = 'block';
+
+        if (type === 'in') {
+            title.textContent = 'Lý do đi muộn';
+            warning.textContent = 'Bạn đang đi muộn so với giờ quy định. Vui lòng nhập lý do.';
+        } else {
+            title.textContent = 'Lý do về sớm';
+            warning.textContent = 'Bạn đang về sớm so với giờ quy định. Vui lòng nhập lý do.';
+        }
+        setPendingAttendanceData({
+            type: type,
+            location: location
+
+        })
+        // Reset form
+        document.getElementById('reasonForm').reset();
+
+        // document.body.style.overflow = 'hidden';
+    }
+    // Đóng modal
+    function closeReasonModal() {
+    const modal = document.getElementById('reasonModal');
+    modal.style.display = 'none';
+    modal.classList.remove('show', 'active');
+
+    document.body.style.overflow = 'auto';
+    document.getElementById('reasonForm').reset();
+
+    // Reset variables
+    pendingAttendanceData = null;
+    currentAttendanceType = null;
+
+    // Reset buttons
+    // document.getElementById('checkinBtn').disabled = false;
+    document.querySelector('.reason-btn-submit').disabled = false;
+    document.querySelector('.reason-btn-submit').textContent = 'Xác nhận';
+
+    updateButtonState();
+}
+// Function để set dữ liệu pending
+function setPendingAttendanceData(data) {
+    pendingAttendanceData = data;
+}
+    // Xử lý submit lý do
+   function submitReason() {
+    const detail = document.getElementById('reasonDetail').value.trim();
+    const btn = document.getElementById('checkinBtn');
+
+    // if (detail.length < 10) {
+    //     showNotification('Lý do phải ít nhất 10 ký tự', 'error');
+    //     return;
+    // }
+
+    // Vô hiệu hóa button submit
+    const submitBtn = document.querySelector('.reason-btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Đang xử lý...';
+
+    // Thêm thông tin lý do vào dữ liệu chấm công
+    const attendanceData = {
+        ...(pendingAttendanceData || {}),
+        reason_detail: detail
+    };
+
+    console.log(attendanceData);
+
+    // Ẩn modal ngay sau khi submit
+
+    // Reset form
+    document.getElementById('reasonForm').reset();
+
+    // Thực hiện chấm công với lý do
+    if (attendanceData.type === 'in') {
+        // console.log('Chấm công với lý do');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
+        chamCongVao(attendanceData,false);
+    } else {
+        btn.disabled = true;
+        chamCongRa(attendanceData, false);
+    }
+    const modal = document.getElementById('reasonModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('reasonForm').reset();
+
+    // Reset variables
+    pendingAttendanceData = null;
+    currentAttendanceType = null;
+    // Reset button về trạng thái ban đầu
+    setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Xác nhận';
+    }, 500);
+}
 
     // Xử lý chấm công
     async function checkInOut() {
@@ -302,11 +740,11 @@
         }, 100);
 
         // Lấy vị trí hiện tại trước khi chấm công
-        // showNotification('Đang lấy vị trí hiện tại...', 'info');
+        showNotification('Đang lấy vị trí hiện tại...', 'info');
 
         try {
             const location = await getCurrentLocation();
-            // console.log(location);
+            console.log(location);
             if (!location || location.error) {
                 showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
                 return;
@@ -324,34 +762,80 @@
                 );
                 return;
             }
-
+            console.log(location);
+            const type = (attendanceStatus === 'out' ? 'in' : 'out');
+            const requiresReason = needsReason(type);
+            console.log(requiresReason);
             // Nếu vị trí hợp lệ, tiến hành chấm công
-            if (attendanceStatus === 'out') {
+             if (requiresReason) {
+                // console.log(parseFloat(location.latitude.toFixed(8)));
+                btn.disabled = true;
+                // console.log( btn.disabled);
+                showReasonModal(type, location);
+             }else{
+                if (attendanceStatus === 'out') {
                 btn.disabled = true;
                 btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
-                chamCongVao(location);
-            } else if (attendanceStatus === 'in') {
-                chamCongRa(location);
-            }
+                    chamCongVao(location, true);
+                } else if (attendanceStatus === 'in') {
+                    chamCongRa(location, true);
+                }
+             }
+
 
         } catch (error) {
             console.error('Lỗi khi kiểm tra vị trí:', error);
             showNotification('Có lỗi xảy ra khi kiểm tra vị trí', 'error');
         }
     }
-
-    // Chấm công vào
-    function chamCongVao(location) {
+    function upDateTrangThai(attendanceData){
         const requestData = {
-            latitude: parseFloat(location.latitude.toFixed(8)),
-            longitude: parseFloat(location.longitude.toFixed(8)),
-            address: location.address || "Không xác định được địa chỉ chi tiết",
+            reason_detail: attendanceData.reason_detail,
+            ngay_cham_cong: attendanceData.ngay_cham_cong,
+            timestamp: new Date().toISOString()
+        };
+        fetch('/employee/cham-cong/update-trang-thai', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.status === 'success') {
+                showNotification(data.message, 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi khi cập nhật trang thai:', error);
+            showNotification('Có lỗi xảy ra khi cập nhật trang thai', 'error');
+        })
+
+    }
+    // Chấm công vào
+    function chamCongVao(location, isNormalAttendance = true) {
+        // console.log(location.location);
+        const latitude = location?.latitude !== undefined
+            ? parseFloat(location.latitude.toFixed(8))
+            : parseFloat(location.location.latitude.toFixed(8));
+
+            const longitude = location?.longitude !== undefined
+            ? parseFloat(location.longitude.toFixed(8))
+            : parseFloat(location.location.longitude.toFixed(8));
+        const requestData = {
+            latitude: latitude,
+            longitude: longitude,
             accuracy: location.accuracy || null,
+            trang_thai_duyet: isNormalAttendance ? 1 : 0,
             timestamp: location.timestamp || new Date().toISOString(),
             // Thêm thông tin bổ sung nếu có
             ...(location.heading && { heading: location.heading }),
             ...(location.speed && { speed: location.speed }),
-            ...(location.altitude && { altitude: location.altitude })
+            ...(location.altitude && { altitude: location.altitude }),
+            ...(location.reason_detail && { reason_detail: location.reason_detail })
         };
 
         console.log("Dữ liệu vị trí:", requestData);
@@ -376,7 +860,7 @@
                 });
 
                 showNotification(data.message, 'success');
-                console.log(data.success);
+                console.log(data);
 
                 // Disable button trong 1 phút để tránh spam
                 disableButtonTemporarily(60);
@@ -392,11 +876,13 @@
     }
 
     // Chấm công ra
-    function chamCongRa(location) {
+    function chamCongRa(location, isNormalAttendance = true) {
         const requestData = {
             latitude: location.latitude,
             longitude: location.longitude,
-            address: location.address || "Không xác định được địa chỉ chi tiết"
+            address: location.address || "Không xác định được địa chỉ chi tiết",
+            trang_thai_duyet: isNormalAttendance ? 1 : 0,
+             ...(location.reason_detail && { reason_detail: location.reason_detail })
         };
 
         console.log("Dữ liệu vị trí:", requestData);
@@ -433,187 +919,6 @@
         });
     }
 
-    // // Lấy vị trí hiện tại với độ chính xác cao
-    // async function getCurrentLocation() {
-    //     return new Promise((resolve) => {
-    //         if (!navigator.geolocation) {
-    //             console.log("Trình duyệt không hỗ trợ Geolocation");
-    //             resolve(null);
-    //             return;
-    //         }
-
-    //         const highAccuracyOptions = {
-    //             enableHighAccuracy: true,
-    //             timeout: 45000, // Tăng thời gian chờ lên 45 giây
-    //             maximumAge: 0  // Luôn lấy vị trí mới nhất
-    //         };
-
-    //         // Thử lấy vị trí với độ chính xác cao trước
-    //         navigator.geolocation.getCurrentPosition(
-    //             async (position) => {
-    //                 try {
-    //                     const { latitude, longitude, accuracy, heading, speed, altitude } = position.coords;
-    //                     console.log('Vị trí:', latitude, longitude, accuracy, heading, speed, altitude);
-    //                     // Lấy địa chỉ chi tiết
-    //                     const address = await getVietnameseAddress(latitude, longitude);
-    //                     console.log('Địa chỉ:', address);
-    //                     resolve({
-    //                         latitude,
-    //                         longitude,
-    //                         accuracy: Math.round(accuracy), // Độ chính xác tính bằng mét
-    //                         heading: heading || null, // Hướng di chuyển
-    //                         speed: speed || null, // Tốc độ
-    //                         altitude: altitude || null, // Độ cao
-    //                         address: address || `Vị trí tại: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-    //                         timestamp: new Date().toISOString()
-    //                     });
-    //                 } catch (error) {
-    //                     console.log('Lỗi khi lấy địa chỉ:', error);
-    //                     resolve({
-    //                         latitude: position.coords.latitude,
-    //                         longitude: position.coords.longitude,
-    //                         accuracy: Math.round(position.coords.accuracy),
-    //                         address: null,
-    //                         timestamp: new Date().toISOString()
-    //                     });
-    //                 }
-    //             },
-    //             (error) => {
-    //                 // Nếu lỗi, thử lại với cài đặt thấp hơn
-    //                 console.log('Lỗi với cài đặt độ chính xác cao, thử lại...');
-
-    //                 const fallbackOptions = {
-    //                     enableHighAccuracy: false,
-    //                     timeout: 30000,
-    //                     maximumAge: 300000 // Chấp nhận cache 5 phút
-    //                 };
-
-    //                 navigator.geolocation.getCurrentPosition(
-    //                     async (position) => {
-    //                         try {
-    //                             const { latitude, longitude, accuracy } = position.coords;
-    //                             const address = await getVietnameseAddress(latitude, longitude);
-
-    //                             resolve({
-    //                                 latitude,
-    //                                 longitude,
-    //                                 accuracy: Math.round(accuracy),
-    //                                 address: address || `Vị trí tại: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-    //                                 timestamp: new Date().toISOString(),
-    //                                 note: "Sử dụng cài đặt dự phòng"
-    //                             });
-    //                         } catch (err) {
-    //                             resolve({
-    //                                 latitude: position.coords.latitude,
-    //                                 longitude: position.coords.longitude,
-    //                                 accuracy: Math.round(position.coords.accuracy),
-    //                                 address: null,
-    //                                 timestamp: new Date().toISOString(),
-    //                                 note: "Sử dụng cài đặt dự phòng"
-    //                             });
-    //                         }
-    //                     },
-    //                     (fallbackError) => {
-    //                         let errorMessage = "Không thể lấy vị trí";
-    //                         switch(fallbackError.code) {
-    //                             case fallbackError.PERMISSION_DENIED:
-    //                                 errorMessage = "Người dùng từ chối cho phép truy cập vị trí";
-    //                                 break;
-    //                             case fallbackError.POSITION_UNAVAILABLE:
-    //                                 errorMessage = "Thông tin vị trí không khả dụng";
-    //                                 break;
-    //                             case fallbackError.TIMEOUT:
-    //                                 errorMessage = "Hết thời gian chờ lấy vị trí";
-    //                                 break;
-    //                             default:
-    //                                 errorMessage = "Lỗi không xác định khi lấy vị trí";
-    //                                 break;
-    //                         }
-    //                         console.log(errorMessage);
-    //                         resolve({ error: errorMessage });
-    //                     },
-    //                     fallbackOptions
-    //                 );
-    //             },
-    //             highAccuracyOptions
-    //         );
-    //     });
-    // }
-
-    // // Hàm lấy địa chỉ tiếng Việt từ tọa độ với nhiều nguồn dữ liệu
-    // async function getVietnameseAddress(lat, lng) {
-    //     const services = [
-    //         {
-    //             name: 'OpenStreetMap',
-    //             url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=vi`,
-    //             parser: (data) => {
-    //                 if (data.error) return null;
-
-    //                 const address = data.address;
-    //                 let parts = [];
-
-    //                 // Số nhà
-    //                 if (address.house_number) parts.push(address.house_number);
-
-    //                 // Đường
-    //                 if (address.road) parts.push(address.road);
-    //                 else if (address.pedestrian) parts.push(address.pedestrian);
-    //                 else if (address.footway) parts.push(address.footway);
-
-    //                 // Khu vực nhỏ
-    //                 if (address.suburb) parts.push(address.suburb);
-    //                 else if (address.neighbourhood) parts.push(address.neighbourhood);
-    //                 else if (address.hamlet) parts.push(address.hamlet);
-
-    //                 // Quận/huyện
-    //                 if (address.city_district) parts.push(address.city_district);
-    //                 else if (address.county) parts.push(address.county);
-    //                 else if (address.district) parts.push(address.district);
-
-    //                 // Thành phố/tỉnh
-    //                 if (address.city) parts.push(address.city);
-    //                 else if (address.town) parts.push(address.town);
-    //                 else if (address.village) parts.push(address.village);
-    //                 else if (address.municipality) parts.push(address.municipality);
-
-    //                 // Tỉnh/bang
-    //                 if (address.state) parts.push(address.state);
-
-    //                 return parts.length > 0 ? parts.join(', ') : null;
-    //             }
-    //         }
-    //     ];
-
-    //     for (let service of services) {
-    //         try {
-    //             console.log(`Đang thử lấy địa chỉ từ ${service.name}...`);
-
-    //             const response = await fetch(service.url, {
-    //                 headers: {
-    //                     'User-Agent': 'LocationApp/1.0'
-    //                 }
-    //             });
-
-    //             if (!response.ok) {
-    //                 console.log(`${service.name} trả về lỗi: ${response.status}`);
-    //                 continue;
-    //             }
-
-    //             const data = await response.json();
-    //             const address = service.parser(data);
-
-    //             if (address) {
-    //                 console.log(`Lấy địa chỉ thành công từ ${service.name}`);
-    //                 return address;
-    //             }
-    //         } catch (error) {
-    //             console.error(`Lỗi khi lấy địa chỉ từ ${service.name}:`, error);
-    //         }
-    //     }
-
-    //     // Nếu không lấy được địa chỉ từ dịch vụ nào
-    //     return `Tọa độ: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    // }
 
     // Hàm lấy vị trí hiện tại được cải thiện
 async function getCurrentLocation() {
@@ -650,7 +955,7 @@ async function getCurrentLocation() {
             timeout: 15000, // 15 giây
             maximumAge: 300000 // Cache 5 phút
         };
-        showNotification('Đang lấy vị trí...', 'info');
+        // showNotification('Đang lấy vị trí...', 'info');
         // Hàm xử lý khi lấy vị trí thành công
         const handleSuccess = async (position, isFallback = false) => {
             if (locationObtained) return; // Tránh xử lý nhiều lần
@@ -684,13 +989,13 @@ async function getCurrentLocation() {
                 };
 
                 // Hiển thị thông báo tùy theo độ chính xác
-                if (accuracy > 100) {
-                    showNotification(`Vị trí có độ chính xác thấp (±${Math.round(accuracy)}m)`, 'warning');
-                } else if (accuracy > 50) {
-                    showNotification(`Vị trí có độ chính xác trung bình (±${Math.round(accuracy)}m)`, 'info');
-                } else {
-                    showNotification(`Vị trí có độ chính xác cao (±${Math.round(accuracy)}m)`, 'success');
-                }
+                // if (accuracy > 100) {
+                //     showNotification(`Vị trí có độ chính xác thấp (±${Math.round(accuracy)}m)`, 'warning');
+                // } else if (accuracy > 50) {
+                //     showNotification(`Vị trí có độ chính xác trung bình (±${Math.round(accuracy)}m)`, 'info');
+                // } else {
+                //     showNotification(`Vị trí có độ chính xác cao (±${Math.round(accuracy)}m)`, 'success');
+                // }
 
                 resolve(result);
             } catch (error) {
@@ -973,7 +1278,7 @@ function renderCalendar(lichChamCong) {
             titleAttr = `title="Vào: ${ngay.cham_cong.gio_vao_format} - Ra: ${ngay.cham_cong.gio_ra_format} - ${ngay.cham_cong.trang_thai_text}"`;
         }
 
-        gridHTML += `<div class="day-cell ${ngay.class}" ${titleAttr}>${ngay.ngay}</div>`;
+        gridHTML += `<div class="day-cell ${ngay.class}" data-id="${ngay.id}" ${titleAttr}>${ngay.ngay}</div>`;
     });
 
     document.getElementById('attendanceGrid').innerHTML = gridHTML;
@@ -1025,6 +1330,155 @@ function renderCalendar(lichChamCong) {
             }
         }, 300);
     });
+}
+
+// Thêm event listener cho các ngày trong lịch
+// Sử dụng Event Delegation - Gán event listener cho parent container
+document.addEventListener('DOMContentLoaded', function() {
+    const attendanceGrid = document.getElementById('attendanceGrid');
+
+    // Gán event listener cho container cha
+    attendanceGrid.addEventListener('click', function(e) {
+        // Kiểm tra xem element được click có phải là day-cell không (và không phải header)
+        if (e.target.classList.contains('day-cell') && !e.target.classList.contains('day-header')) {
+            // Xóa class active khỏi tất cả các ô
+            attendanceGrid.querySelectorAll('.day-cell:not(.day-header)').forEach(c => {
+                c.classList.remove('day-active');
+            });
+
+            // Thêm class active cho ô được click
+            e.target.classList.add('day-active');
+
+            // Lấy ID của ngày được click
+            const dayId = e.target.getAttribute('data-id');
+            if (!dayId) {
+                return;
+            }
+            // Gọi AJAX để lấy dữ liệu chấm công của ngày đó
+            fetchAttendanceData(dayId);
+        }
+    });
+});
+
+// Hàm gọi AJAX để lấy dữ liệu
+function fetchAttendanceData(dayId) {
+    // Hiển thị loading
+    showLoading();
+
+    fetch(`/employee/cham-cong/ngay/${dayId}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateStatsDisplay(data);
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+        // Hiển thị thông báo lỗi nếu cần
+    })
+    .finally(() => {
+        hideLoading();
+    });
+}
+
+// Hàm cập nhật hiển thị thống kê
+function updateStatsDisplay(data) {
+    // Cập nhật giờ vào
+    document.getElementById('gioVaoHomNay').textContent = data.gio_vao_format || '--:--';
+
+    // Cập nhật giờ ra
+    document.getElementById('gioRaHomNay').textContent = data.gio_ra_format || '--:--';
+
+    // Cập nhật số giờ làm
+    document.getElementById('soGioLamHomNay').textContent = data.so_gio_lam ? data.so_gio_lam + 'h' : '0h';
+
+    // Cập nhật trạng thái
+    document.getElementById('trangThaiHomNay').textContent = data.trang_thai_text || 'Chưa chấm công';
+    console.log(data.trang_thai_duyet);
+    if(data.trang_thai_duyet == 0){
+        btnReason = document.getElementById('reasonBtn');
+        btnReason.style.display = 'inline-block';
+        const isoDate = data.ngay;
+        const date = new Date(isoDate);
+
+        // Lấy phần ngày/tháng/năm theo giờ UTC (để không bị lệch)
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const year = date.getUTCFullYear();
+        // Tạo chuỗi định dạng dd-mm-yyyy
+        const formattedDate = `${year}-${month}-${day}`;
+        btnReason.setAttribute('data-ngay', formattedDate);
+    }else{
+        btnReason = document.getElementById('reasonBtn');
+        btnReason.style.display = 'none';
+    }
+
+
+
+    //cập nhật id ngày
+    // Cập nhật label để hiển thị ngày được chọn
+    updateDateLabel(data.ngay);
+}
+
+// Hàm cập nhật label ngày
+function updateDateLabel(selectedDate) {
+    const statLabels = document.querySelectorAll('.stat-label');
+    const dateText = selectedDate ? ` (${formatDate(selectedDate)})` : ' hôm nay';
+    console.log(dateText);
+    statLabels[0].textContent = `Giờ vào${dateText}`;
+    statLabels[1].textContent = `Giờ ra${dateText}`;
+    statLabels[2].textContent = `Tổng giờ làm${dateText}`;
+    statLabels[3].textContent = `Trạng thái${dateText}`;
+}
+
+// Hàm format ngày
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+// Hàm hiển thị loading
+function showLoading() {
+    document.querySelectorAll('.stat-value').forEach(el => {
+        el.style.opacity = '0.5';
+    });
+}
+
+// Hàm ẩn loading
+function hideLoading() {
+    document.querySelectorAll('.stat-value').forEach(el => {
+        el.style.opacity = '1';
+    });
+}
+
+// Hàm reset về ngày hôm nay
+function resetToToday() {
+    // Xóa class active khỏi tất cả các ô
+    document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('day-active'));
+
+    // Tìm và highlight ngày hôm nay
+    const today = new Date().getDate();
+    const todayCell = Array.from(document.querySelectorAll('.day-cell:not(.day-header)')).find(cell => {
+        return parseInt(cell.textContent) === today;
+    });
+
+    if (todayCell) {
+        todayCell.classList.add('day-active');
+    }
+
+    // Reset label về "hôm nay"
+    updateDateLabel(null);
+
+    // Có thể gọi lại API để lấy dữ liệu hôm nay
+    // fetchTodayData();
 }
 </script>
 @endsection
