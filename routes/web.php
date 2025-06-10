@@ -126,7 +126,11 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
 
         // Báo cáo chấm công
         Route::get('/bao-cao', [ChamCongController::class, 'baoCaoChamCong'])->name('bao-cao');
+        // Route để lấy dữ liệu chấm công theo ngày
+        Route::get('/ngay/{dayId}', [ChamCongController::class, 'getChamCongByDay'])
+            ->name('cham-cong.get-by-day');
 
+        Route::post('/update-trang-thai', [ChamCongController::class, 'updateTrangThai'])->name('update-trang-thai');
         // Xuất báo cáo Excel
         Route::get('/xuat-excel', [ChamCongController::class, 'xuatExcel'])->name('xuat-excel');
     });
