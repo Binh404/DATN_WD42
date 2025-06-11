@@ -115,7 +115,7 @@ class UngTuyenController extends Controller
         if ($tinTuyenDung) {
             $validated['phong_ban_id'] = $tinTuyenDung->phong_ban_id ?? null;
             $validated['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id ?? null;
-            $validated['vai_tro_id'] = $tinTuyenDung->vai_tro_id ?? null;
+            $validated['vai_tro_id'] = $tinTuyenDung->vai_tro_id ?? 3;
         }
 
 
