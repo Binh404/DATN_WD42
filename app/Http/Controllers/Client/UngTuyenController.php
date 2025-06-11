@@ -127,11 +127,11 @@ class UngTuyenController extends Controller
     }
 
     // Admin xóa đơn ứng tuyển
-    // public function destroy($id)
-    // {
-    //     $ungVien = UngTuyen::findOrFail($id)->delete();
-    //     return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
-    // }
+    public function destroy($id)
+    {
+        $ungVien = UngTuyen::findOrFail($id)->delete();
+        return redirect('/ungvien')->with('success', 'Đơn ứng tuyển đã được xóa thành công!');
+    }
 
     public function luuDiemDanhGia(Request $request, $id)
     {
@@ -402,7 +402,7 @@ class UngTuyenController extends Controller
             $maSo = substr($ungvien->ma_ung_tuyen, 2); // bỏ 'ut'
             $email = strtolower($emailPrefix . 'dv' . $maSo . '@gmail.com');
             $password = Str::random(10);
-            $tenDangNhap = Str::slug($ungvien->ten_ung_vien) . strtolower($ungvien->ma_ung_tuyen);
+            $tenDangNhap = Str::slug($ungvien->ten_ung_vien);
 
             // Tạo tài khoản nhân viên mới
             $nguoiDung = NguoiDung::create([
@@ -439,7 +439,6 @@ class UngTuyenController extends Controller
                 'mat_khau' => $password,
                 'phong_ban' => $phongBan,
                 'chuc_vu' => $chucVu,
-                'vai_tro' => $vaiTro,
             ]);
 
             $ungvien->trang_thai_email_trungtuyen = 'Đã gửi';
