@@ -339,6 +339,37 @@
           </ul>
         </li>
 
+         <!-- Hợp đồng Section -->
+         <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-file-contract"></i>
+            <p>Hợp đồng<i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('hopdong.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý hợp đồng</p>
+              </a>
+              <!-- <a href="/ungvien/phong-van" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gửi email phỏng vấn</p>
+              </a>
+              <a href="/ungvien/emaildagui" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách email đã gửi</p>
+              </a>
+              <a href="/ungvien/trung-tuyen" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Trúng tuyển</p>
+              </a>
+              <a href="/ungvien/luu-tru" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lưu trữ</p>
+              </a> -->
+            </li>
+          </ul>
+        </li>
         <!-- Gửi đơn yêu cầu Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">

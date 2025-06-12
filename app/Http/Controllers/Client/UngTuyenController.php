@@ -291,8 +291,6 @@ class UngTuyenController extends Controller
     {
         $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
 
-        $matchingPercentage = $ungVien->tinhDiemDanhGia();
-
         // Get matching details
         $matchingDetails = [
             'skills' => [
@@ -308,7 +306,7 @@ class UngTuyenController extends Controller
             ]
         ];
 
-        return view('admin.ungtuyen.show', compact('ungVien', 'matchingPercentage', 'matchingDetails'));
+        return view('admin.ungtuyen.show', compact('ungVien', 'matchingDetails'));
     }
 
     // Export danh sách ứng tuyển
@@ -462,7 +460,7 @@ class UngTuyenController extends Controller
         $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
         $ungVienQuery = UngTuyen::with('tinTuyenDung')
             ->where('trang_thai', 'phe_duyet')
-            ->where('trang_thai_email', 'Đã gửi')
+            ->where('trang_thai_email', 'da_gui')
             ->orderBy('diem_danh_gia', 'desc');
 
         if ($request->filled('ten_ung_vien')) {

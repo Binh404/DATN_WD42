@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->string('trang_thai_email')->default('chua_gui')->after('email');
+            $table->enum('trang_thai_email', ['chua_gui', 'da_gui'])->default('chua_gui')->after('email');
         });
     }
 
