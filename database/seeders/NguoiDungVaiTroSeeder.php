@@ -44,7 +44,7 @@ class NguoiDungVaiTroSeeder extends Seeder
                 'vai_tro_id' => 3, // Employee
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
-            ],
+            ]
         ]);
     }
 }
