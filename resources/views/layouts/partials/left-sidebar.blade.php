@@ -426,6 +426,13 @@
             </li>
           </ul>
         </li>
+
+        <li class="nav-item">
+          <a href="{{route('hr.loainghiphep.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Loại nghỉ phép</p>
+          </a>
+        </li>
       </ul>
     </nav>
   </div>

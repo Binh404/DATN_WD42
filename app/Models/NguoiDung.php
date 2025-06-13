@@ -115,4 +115,9 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
     }
+
+    public function duyetDonNghi()
+    {
+        return $this->hasMany(LichSuDuyetDonNghi::class, 'nguoi_duyet_id');
+    }
 }

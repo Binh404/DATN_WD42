@@ -15,6 +15,7 @@ use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\DonTuController;
 use App\Http\Controllers\Admin\DuyetDonTuController;
+use App\Http\Controllers\Admin\LoaiNghiPhepController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
@@ -224,6 +225,10 @@ Route::prefix('hr')->name('hr.')->group(function () {
     Route::get('captrenthongbao/tuyendung/{id}', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
     Route::get('tintuyendung/create-from-request/{id}', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
+
+    // nghỉ phép
+    Route::resource('loainghiphep', LoaiNghiPhepController::class)->names('loainghiphep');
+    
 });
 
 
