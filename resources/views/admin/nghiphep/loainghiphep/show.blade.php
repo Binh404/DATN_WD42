@@ -338,7 +338,7 @@
                 ✓ Đang hoạt động
             </div>
             <h1>🏖️ Chi Tiết Loại Nghỉ Phép</h1>
-            <p id="leaveTypeName">Nghỉ Phép Năm</p>
+            <p id="leaveTypeName">{{ $loaiNghiPhep->ten }}</p>
         </div>
 
         <div class="detail-container">
@@ -349,7 +349,7 @@
                     Mô tả
                 </div>
                 <div class="description-content" id="description">
-                    Nghỉ phép hàng năm dành cho nhân viên để nghỉ ngơi, thư giãn và dành thời gian cho gia đình. Được tính theo năm làm việc và có thể chuyển một phần sang năm tiếp theo nếu không sử dụng hết.
+                    {{ $loaiNghiPhep->mo_ta }}
                 </div>
             </div>
 
@@ -362,16 +362,16 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Mã loại nghỉ phép:</span>
-                        <span class="info-value highlight-value" id="code">NPN</span>
+                        <span class="info-value highlight-value" id="code">{{ $loaiNghiPhep->ma }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Tên loại nghỉ phép:</span>
-                        <span class="info-value" id="name">Nghỉ Phép Năm</span>
+                        <span class="info-value" id="name">{{ $loaiNghiPhep->ten }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Giới tính áp dụng:</span>
                         <span class="info-value">
-                            <span class="gender-badge gender-all" id="genderApply">Tất cả</span>
+                            <span class="gender-badge gender-all" id="genderApply">{{ ($loaiNghiPhep->gioi_tinh_ap_dung === 'tat_ca' ? 'Tất cả' : ($loaiNghiPhep->gioi_tinh_ap_dung === 'nam' ? 'Nam' : 'Nữ')) }}</span>
                         </span>
                     </div>
                 </div>
@@ -384,19 +384,19 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Số ngày/năm:</span>
-                        <span class="info-value highlight-value" id="daysPerYear">12 ngày</span>
+                        <span class="info-value highlight-value" id="daysPerYear">{{ $loaiNghiPhep->so_ngay_nam }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Tối đa ngày liên tiếp:</span>
-                        <span class="info-value" id="maxConsecutiveDays">5 ngày</span>
+                        <span class="info-value" id="maxConsecutiveDays">{{ $loaiNghiPhep->toi_da_ngay_lien_tiep }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Số ngày báo trước:</span>
-                        <span class="info-value" id="advanceNoticeDays">3 ngày</span>
+                        <span class="info-value" id="advanceNoticeDays">{{ $loaiNghiPhep->so_ngay_bao_truoc }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Tối đa ngày chuyển:</span>
-                        <span class="info-value" id="maxCarryoverDays">5 ngày</span>
+                        <span class="info-value" id="maxCarryoverDays">{{ $loaiNghiPhep->toi_da_ngay_chuyen }}</span>
                     </div>
                 </div>
 
@@ -411,7 +411,7 @@
                         <span class="info-value">
                             <div class="checkbox-display">
                                 <div class="checkbox-icon checkbox-true" id="carryoverIcon">✓</div>
-                                <span id="carryoverText">Có</span>
+                                <span id="carryoverText">{{ $loaiNghiPhep->cho_phep_chuyen_nam == 1 ? 'Có' : 'Không' }}</span>
                             </div>
                         </span>
                     </div>
@@ -420,7 +420,7 @@
                         <span class="info-value">
                             <div class="checkbox-display">
                                 <div class="checkbox-icon checkbox-false" id="documentsIcon">✗</div>
-                                <span id="documentsText">Không</span>
+                                <span id="documentsText">{{ $loaiNghiPhep->yeu_cau_giay_to == 1 ? 'Có' : 'Không' }}</span>
                             </div>
                         </span>
                     </div>
@@ -429,7 +429,7 @@
                         <span class="info-value">
                             <div class="checkbox-display">
                                 <div class="checkbox-icon checkbox-true" id="paidIcon">✓</div>
-                                <span id="paidText">Có</span>
+                                <span id="paidText">{{ $loaiNghiPhep->co_luong == 1 ? 'Có' : 'Không' }}</span>
                             </div>
                         </span>
                     </div>
@@ -446,191 +446,38 @@
                         <span class="info-value">
                             <div class="checkbox-display">
                                 <div class="checkbox-icon checkbox-true" id="statusIcon">✓</div>
-                                <span id="statusText">Hoạt động</span>
+                                <span id="statusText">{{ $loaiNghiPhep->trang_thai == 1 ? 'Hoạt động' : 'Không hoạt động' }}</span>
                             </div>
                         </span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Ngày tạo:</span>
-                        <span class="info-value" id="createdDate">15/01/2024</span>
+                        <span class="info-value" id="createdDate">{{ $loaiNghiPhep->created_at }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Lần cập nhật cuối:</span>
-                        <span class="info-value" id="updatedDate">13/06/2025 14:30</span>
+                        <span class="info-value" id="updatedDate">{{ $loaiNghiPhep->updated_at }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="button-group">
-                <button class="btn btn-primary" onclick="editLeaveType()">✏️ Chỉnh sửa</button>
-                <button class="btn btn-warning" onclick="toggleStatus()">🔄 Đổi trạng thái</button>
-                <button class="btn btn-secondary" onclick="goBack()">⬅️ Quay lại</button>
+                <a href="{{ route('hr.loainghiphep.edit', $loaiNghiPhep->id) }}">
+                    <button class="btn btn-primary">✏️ Chỉnh sửa</button>
+                </a>
+                <a href="{{ route('hr.loainghiphep.edit', $loaiNghiPhep->id) }}">
+                    <button class="btn btn-warning">🔄 Đổi trạng thái</button>
+                </a>
+                <a href="{{ route('hr.loainghiphep.index', $loaiNghiPhep->id) }}">
+                    <button class="btn btn-secondary">⬅️ Quay lại</button>
+                </a>
                 <button class="btn btn-danger" onclick="deleteLeaveType()">🗑️ Xóa</button>
             </div>
 
             <div class="metadata">
-                <strong>ID:</strong> #LT001 | <strong>Người tạo:</strong> Admin | <strong>Phiên bản:</strong> 1.2
+                <strong>Công ty:</strong> DV_TECH | <strong>Ngày:</strong> Admin
             </div>
         </div>
     </div>
-
-    <script>
-        // Sample data - in real application, this would come from API
-        const leaveTypeData = {
-            id: 'LT001',
-            ten: 'Nghỉ Phép Năm',
-            ma: 'NPN',
-            mo_ta: 'Nghỉ phép hàng năm dành cho nhân viên để nghỉ ngơi, thư giãn và dành thời gian cho gia đình. Được tính theo năm làm việc và có thể chuyển một phần sang năm tiếp theo nếu không sử dụng hết.',
-            so_ngay_nam: 12,
-            toi_da_ngay_lien_tiep: 5,
-            so_ngay_bao_truoc: 3,
-            cho_phep_chuyen_nam: 1,
-            toi_da_ngay_chuyen: 5,
-            gioi_tinh_ap_dung: 'tat_ca',
-            yeu_cau_giay_to: 0,
-            co_luong: 1,
-            trang_thai: 1,
-            created_at: '2024-01-15T09:00:00',
-            updated_at: '2025-06-13T14:30:00'
-        };
-
-        // Function to populate data
-        function populateData(data) {
-            document.getElementById('leaveTypeName').textContent = data.ten;
-            document.getElementById('name').textContent = data.ten;
-            document.getElementById('code').textContent = data.ma;
-            document.getElementById('description').textContent = data.mo_ta || 'Chưa có mô tả';
-            
-            // Days configuration
-            document.getElementById('daysPerYear').textContent = data.so_ngay_nam ? `${data.so_ngay_nam} ngày` : 'Không giới hạn';
-            document.getElementById('maxConsecutiveDays').textContent = data.toi_da_ngay_lien_tiep ? `${data.toi_da_ngay_lien_tiep} ngày` : 'Không giới hạn';
-            document.getElementById('advanceNoticeDays').textContent = data.so_ngay_bao_truoc ? `${data.so_ngay_bao_truoc} ngày` : 'Không yêu cầu';
-            document.getElementById('maxCarryoverDays').textContent = data.toi_da_ngay_chuyen ? `${data.toi_da_ngay_chuyen} ngày` : 'Không cho phép';
-            
-            // Gender
-            const genderMap = {
-                'tat_ca': { text: 'Tất cả', class: 'gender-all' },
-                'nam': { text: 'Nam', class: 'gender-male' },
-                'nu': { text: 'Nữ', class: 'gender-female' }
-            };
-            const gender = genderMap[data.gioi_tinh_ap_dung] || genderMap['tat_ca'];
-            const genderElement = document.getElementById('genderApply');
-            genderElement.textContent = gender.text;
-            genderElement.className = `gender-badge ${gender.class}`;
-            
-            // Checkboxes
-            updateCheckbox('carryover', data.cho_phep_chuyen_nam);
-            updateCheckbox('documents', data.yeu_cau_giay_to);
-            updateCheckbox('paid', data.co_luong);
-            updateCheckbox('status', data.trang_thai);
-            
-            // Status badge
-            const statusBadge = document.getElementById('statusBadge');
-            if (data.trang_thai) {
-                statusBadge.className = 'status-badge status-active';
-                statusBadge.innerHTML = '✓ Đang hoạt động';
-            } else {
-                statusBadge.className = 'status-badge status-inactive';
-                statusBadge.innerHTML = '✗ Không hoạt động';
-            }
-            
-            // Dates
-            document.getElementById('createdDate').textContent = formatDate(data.created_at);
-            document.getElementById('updatedDate').textContent = formatDateTime(data.updated_at);
-        }
-
-        function updateCheckbox(type, value) {
-            const icon = document.getElementById(`${type}Icon`);
-            const text = document.getElementById(`${type}Text`);
-            
-            if (value) {
-                icon.className = 'checkbox-icon checkbox-true';
-                icon.textContent = '✓';
-                text.textContent = getYesText(type);
-            } else {
-                icon.className = 'checkbox-icon checkbox-false';
-                icon.textContent = '✗';
-                text.textContent = getNoText(type);
-            }
-        }
-
-        function getYesText(type) {
-            const map = {
-                'carryover': 'Có',
-                'documents': 'Yêu cầu',
-                'paid': 'Có lương',
-                'status': 'Hoạt động'
-            };
-            return map[type] || 'Có';
-        }
-
-        function getNoText(type) {
-            const map = {
-                'carryover': 'Không',
-                'documents': 'Không yêu cầu',
-                'paid': 'Không lương',
-                'status': 'Không hoạt động'
-            };
-            return map[type] || 'Không';
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN');
-        }
-
-        function formatDateTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleString('vi-VN');
-        }
-
-        // Button actions
-        function editLeaveType() {
-            alert('Chuyển đến trang chỉnh sửa loại nghỉ phép');
-            // window.location.href = `/leave-types/edit/${leaveTypeData.id}`;
-        }
-
-        function toggleStatus() {
-            const currentStatus = leaveTypeData.trang_thai;
-            const newStatus = currentStatus ? 0 : 1;
-            const action = newStatus ? 'kích hoạt' : 'vô hiệu hóa';
-            
-            if (confirm(`Bạn có chắc chắn muốn ${action} loại nghỉ phép này không?`)) {
-                leaveTypeData.trang_thai = newStatus;
-                leaveTypeData.updated_at = new Date().toISOString();
-                populateData(leaveTypeData);
-                alert(`Đã ${action} loại nghỉ phép thành công!`);
-            }
-        }
-
-        function deleteLeaveType() {
-            if (confirm('⚠️ Bạn có chắc chắn muốn xóa loại nghỉ phép này không?\n\nHành động này không thể hoàn tác!')) {
-                alert('Đã xóa loại nghỉ phép thành công!');
-                // In real app: API call to delete and redirect
-                goBack();
-            }
-        }
-
-        function goBack() {
-            alert('Quay lại danh sách loại nghỉ phép');
-            // window.history.back() or window.location.href = '/leave-types';
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            populateData(leaveTypeData);
-        });
-
-        // Add some interactive effects
-        document.querySelectorAll('.info-section').forEach(section => {
-            section.addEventListener('mouseenter', function() {
-                this.style.borderLeftColor = '#00f2fe';
-            });
-            
-            section.addEventListener('mouseleave', function() {
-                this.style.borderLeftColor = '#4facfe';
-            });
-        });
-    </script>
 
 @endsection

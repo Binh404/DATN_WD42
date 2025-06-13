@@ -8,9 +8,15 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             animation: slideUp 0.6s ease-out;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
         }
 
         @keyframes slideUp {
@@ -18,6 +24,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -119,7 +126,7 @@
 
         .color-input:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .button-group {
@@ -203,20 +210,20 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .container {
                 margin: 10px;
                 border-radius: 15px;
             }
-            
+
             .form-container {
                 padding: 20px;
             }
-            
+
             .header {
                 padding: 20px;
             }
-            
+
             .header h1 {
                 font-size: 1.8em;
             }
@@ -244,7 +251,10 @@
                 ✅ Thêm loại nghỉ phép thành công!
             </div>
 
-            <form id="leaveTypeForm">
+            <form id="leaveTypeForm" action="{{ route('hr.loainghiphep.update', $loaiNghiPhep->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
                 <!-- Thông tin cơ bản -->
                 <div class="form-section">
                     <div class="section-title">
@@ -254,15 +264,29 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="ten">Tên loại nghỉ phép <span class="required">*</span></label>
-                            <input type="text" id="ten" name="ten" required placeholder="VD: Nghỉ phép năm">
+                            <input type="text" id="ten" name="ten" value="{{ $loaiNghiPhep->ten }}"
+                                placeholder="VD: Nghỉ phép năm">
+
+                            @error('ten')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+
                         </div>
                         <div class="form-group">
                             <label for="ma">Mã loại nghỉ phép <span class="required">*</span></label>
-                            <input type="text" id="ma" name="ma" required placeholder="VD: NPN" maxlength="10">
+                            <input type="text" id="ma" name="ma" value="{{ $loaiNghiPhep->ma }}"
+                                placeholder="VD: NPN" maxlength="10">
+                            @error('ma')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group full-width">
                             <label for="mo_ta">Mô tả</label>
-                            <textarea id="mo_ta" name="mo_ta" placeholder="Mô tả chi tiết về loại nghỉ phép này..."></textarea>
+                            <textarea id="mo_ta" name="mo_ta" 
+                                placeholder="Mô tả chi tiết về loại nghỉ phép này...">{{ $loaiNghiPhep->mo_ta }}</textarea>
+                            @error('mo_ta')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -276,19 +300,42 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="so_ngay_nam">Số ngày/năm</label>
-                            <input type="number" id="so_ngay_nam" name="so_ngay_nam" min="0" max="365" placeholder="12">
+                            <input type="number" id="so_ngay_nam" name="so_ngay_nam"
+                                value="{{ $loaiNghiPhep->so_ngay_nam }}" min="0" max="365" placeholder="12">
+
+                            @error('so_ngay_nam')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="toi_da_ngay_lien_tiep">Tối đa ngày liên tiếp</label>
-                            <input type="number" id="toi_da_ngay_lien_tiep" name="toi_da_ngay_lien_tiep" min="0" max="365" placeholder="5">
+                            <input type="number" id="toi_da_ngay_lien_tiep" name="toi_da_ngay_lien_tiep"
+                                value="{{ $loaiNghiPhep->toi_da_ngay_lien_tiep }}" min="0" max="365"
+                                placeholder="5">
+
+                            @error('toi_da_ngay_lien_tiep')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="so_ngay_bao_truoc">Số ngày báo trước tối thiểu</label>
-                            <input type="number" id="so_ngay_bao_truoc" name="so_ngay_bao_truoc" min="0" max="30" placeholder="3">
+                            <input type="number" id="so_ngay_bao_truoc" name="so_ngay_bao_truoc"
+                                value="{{ $loaiNghiPhep->so_ngay_bao_truoc }}" min="0" max="30"
+                                placeholder="3">
+
+                            @error('so_ngay_bao_truoc')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="toi_da_ngay_chuyen">Tối đa ngày chuyển</label>
-                            <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen" min="0" max="365" placeholder="5">
+                            <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen"
+                                value="{{ $loaiNghiPhep->toi_da_ngay_chuyen }}" min="0" max="365"
+                                placeholder="5">
+
+                            @error('toi_da_ngay_chuyen')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -303,10 +350,15 @@
                         <div class="form-group">
                             <label for="gioi_tinh_ap_dung">Giới tính áp dụng</label>
                             <select id="gioi_tinh_ap_dung" name="gioi_tinh_ap_dung">
-                                <option value="tat_ca">Tất cả</option>
-                                <option value="nam">Nam</option>
-                                <option value="nu">Nữ</option>
+                                <option {{ $loaiNghiPhep->ten === 'tat_ca' ? 'selected' : '' }} value="tat_ca">Tất cả
+                                </option>
+                                <option {{ $loaiNghiPhep->ten === 'nam' ? 'selected' : '' }} value="nam">Nam</option>
+                                <option {{ $loaiNghiPhep->ten === 'nu' ? 'selected' : '' }} value="nu">Nữ</option>
                             </select>
+
+                            @error('gioi_tinh_ap_dung')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -320,26 +372,50 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam" value="1">
+                                <input type="hidden" name="cho_phep_chuyen_nam" value="0">
+                                <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam"
+                                    value="1" {{ $loaiNghiPhep->cho_phep_chuyen_nam == 1 ? 'checked' : '' }} >
                                 <label for="cho_phep_chuyen_nam">Cho phép chuyển năm</label>
+
+                                @error('cho_phep_chuyen_nam')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="yeu_cau_giay_to" name="yeu_cau_giay_to" value="1">
+                                <input type="hidden" name="yeu_cau_giay_to" value="0">
+                                <input type="checkbox" id="yeu_cau_giay_to" name="yeu_cau_giay_to" value="1"
+                                    {{ $loaiNghiPhep->yeu_cau_giay_to == 1 ? 'checked' : '' }}>
                                 <label for="yeu_cau_giay_to">Yêu cầu giấy tờ</label>
+
+                                @error('yeu_cau_giay_to')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="co_luong" name="co_luong" value="1" checked>
+                                <input type="hidden" name="co_luong" value="0">
+                                <input type="checkbox" id="co_luong" name="co_luong" value="1"
+                                    {{ $loaiNghiPhep->co_luong == 1 ? 'checked' : '' }}>
                                 <label for="co_luong">Có lương</label>
+
+                                @error('co_luong')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="checkbox-group">
-                                <input type="checkbox" id="trang_thai" name="trang_thai" value="1" checked>
+                                <input type="hidden" name="trang_thai" value="0">
+                                <input type="checkbox" id="trang_thai" name="trang_thai" value="1"
+                                    {{ $loaiNghiPhep->trang_thai == 1 ? 'checked' : '' }}>
                                 <label for="trang_thai">Trạng thái hoạt động</label>
+
+                                @error('trang_thai')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -354,59 +430,7 @@
     </div>
 
     <script>
-        // Auto-generate mã from tên
-        document.getElementById('ten').addEventListener('input', function() {
-            const ten = this.value;
-            const ma = ten
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/đ/g, 'd')
-                .replace(/[^a-z0-9\s]/g, '')
-                .split(' ')
-                .map(word => word.charAt(0))
-                .join('')
-                .toUpperCase()
-                .substring(0, 10);
-            
-            document.getElementById('ma').value = ma;
-        });
-
-        // Form submission
-        document.getElementById('leaveTypeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulate form submission
-            const formData = new FormData(this);
-            const data = {};
-            
-            // Process regular fields
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-            
-            // Process checkboxes
-            const checkboxes = ['cho_phep_chuyen_nam', 'yeu_cau_giay_to', 'co_luong', 'trang_thai'];
-            checkboxes.forEach(field => {
-                data[field] = document.getElementById(field).checked ? 1 : 0;
-            });
-            
-            // Add timestamp
-            data['updated_at'] = new Date().toISOString();
-            
-            console.log('Dữ liệu form:', data);
-            
-            // Show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-            successMessage.scrollIntoView({ behavior: 'smooth' });
-            
-            // Hide success message after 3 seconds
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
-        });
-
+    
         function resetForm() {
             document.getElementById('leaveTypeForm').reset();
             document.getElementById('co_luong').checked = true;
@@ -414,18 +438,6 @@
             document.getElementById('mau_sac').value = '#4facfe';
             document.getElementById('successMessage').style.display = 'none';
         }
-
-        // Add some interactive animations
-        document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(element => {
-            element.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-                this.parentElement.style.transition = 'transform 0.2s ease';
-            });
-            
-            element.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
     </script>
 
 @endsection
