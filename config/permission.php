@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\VaiTro;
+
 return [
 
     'models' => [
@@ -24,7 +26,7 @@ return [
          * `Spatie\Permission\Contracts\Role` contract.
          */
 
-        'role' => Spatie\Permission\Models\Role::class,
+        'role' => Vaitro::class,
 
     ],
 
@@ -36,7 +38,7 @@ return [
          * default value but you may easily change it to any table you like.
          */
 
-        'roles' => 'roles',
+        'roles' => 'vai_tro',
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -44,7 +46,7 @@ return [
          * default value but you may easily change it to any table you like.
          */
 
-        'permissions' => 'permissions',
+        'permissions' => 'quyen',
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -52,7 +54,7 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'model_has_permissions' => 'model_has_permissions',
+        'model_has_permissions' => 'nguoi_dung_quyen',
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -60,7 +62,7 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'model_has_roles' => 'model_has_roles',
+        'model_has_roles' => 'nguoi_dung_vai_tro',
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -68,7 +70,7 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'role_has_permissions' => 'role_has_permissions',
+        'role_has_permissions' => 'vai_tro_quyen',
     ],
 
     'column_names' => [

@@ -27,4 +27,15 @@ class KhauTruLuong extends Model
     {
         return $this->belongsTo(LuongNhanVien::class, 'luong_nhan_vien_id');
     }
+   public function getLoaiKhauTruLabelAttribute()
+{
+    return match($this->loai_khau_tru){
+        'bhxh' => 'Bảo hiểm xã hội',
+        'bhyt' => 'Bảo hiểm y tế',
+        'bhtn' => 'Bảo hiểm thất nghiệp',
+        'thue_tncn' => 'Thuế thu nhập cá nhân',
+        default => 'Khấu trừ khác',
+    };
+}
+
 }

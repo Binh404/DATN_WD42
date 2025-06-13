@@ -2,8 +2,6 @@
 @section('title', 'Danh Sách Công Việc')
 
 @section('content')
-@include('layouts.partials.statistics')
-
 <div class="container-fluid px-4">
     <!-- Header Section -->
     <div class="row align-items-center mb-4">
@@ -70,31 +68,37 @@
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clipboard-list me-1"></i>Tên Công Việc
                             </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-align-left me-1"></i>Mô Tả
-                            </th>
+                            </th> -->
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-building me-1"></i>Phòng Ban
+                            </th> -->
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-info-circle me-1"></i>Trạng Thái
                             </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-star me-1"></i>Độ Ưu Tiên
                             </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
+                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-calendar-alt me-1"></i>Ngày Bắt Đầu
-                            </th>
+                            </th>   
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clock me-1"></i>Thời Hạn
                             </th>
+                            <th class="px-4 py-3 fw-semibold text-muted">
+                                <i class="fas fa-clock me-1"></i>Ngày hoàn thành
+                            </th> -->
                             <th class="px-4 py-3 fw-semibold text-muted text-center">
                                 <i class="fas fa-cogs me-1"></i>Hành Động
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($congviecs as $congviec)
+                        @foreach($congviecs as $index => $congviec)
                         <tr class="align-middle border-bottom">
                             <td class="px-4 py-3">
-                                <span class="badge bg-light text-dark">#{{ $congviec->id }}</span>
+                                <span class="badge bg-light text-dark">#{{ $index + 1 }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="d-flex align-items-center">
@@ -112,19 +116,22 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
+                            <!-- <td class="px-4 py-3">
                                 <span class="text-muted text-truncate d-inline-block" style="max-width: 200px;">
                                     {{ $congviec->mo_ta ?: 'Chưa có mô tả' }}
                                 </span>
-                            </td>
+                            </td> -->
+                            <!-- <td class="px-4 py-3">
+                                <span class="text-muted text-truncate d-inline-block" style="max-width: 200px;">
+                                    {{ $congviec->phongban->ten_phong_ban ?? 'Không có phòng ban!' }}
+                                </span>
+                            </td> -->
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass = [
-                                        'Chưa bắt đầu' => 'secondary',
-                                        'Đang thực hiện' => 'primary',
-                                        'Hoàn thành' => 'success',
-                                        'Tạm dừng' => 'warning',
-                                        'Hủy bỏ' => 'danger'
+                                        'Chưa bắt đầu' => 'danger',
+                                        'Đang làm' => 'warning',
+                                        'Hoàn thành' => 'success'
                                     ][$congviec->trang_thai] ?? 'secondary';
                                 @endphp
                                 <span class="badge bg-{{ $statusClass }}-subtle text-{{ $statusClass }} border border-{{ $statusClass }}-subtle px-3 py-2">
@@ -149,7 +156,7 @@
                                     <i class="fas fa-{{ $priorityIcon }} me-1"></i>{{ $congviec->do_uu_tien }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3">
+                            <!-- <td class="px-4 py-3">
                                 <div class="text-muted small">
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     {{ date('d/m/Y', strtotime($congviec->ngay_bat_dau)) }}
@@ -179,6 +186,16 @@
                                     <i class="fas fa-clock me-1"></i>{{ $timeStatus }}
                                 </span>
                             </td>
+                            <td class="px-4 py-3">
+                                @if($congviec->ngay_hoan_thanh)
+                                    <div class="text-muted small">
+                                        <i class="fas fa-calendar-check me-1"></i>
+                                        {{ date('d/m/Y', strtotime($congviec->ngay_hoan_thanh)) }}
+                                    </div>
+                                @else
+                                    <span class="text-muted">Chưa hoàn thành</span>
+                                @endif
+                            </td> -->
                             <td class="px-4 py-3">
                                 <div class="d-flex gap-2 justify-content-center">
                                     <a href="/congviec/show/{{ $congviec->id }}" 

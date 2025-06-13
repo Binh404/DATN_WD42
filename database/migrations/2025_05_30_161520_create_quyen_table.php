@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('nhom_quyen_id')->constrained('nhom_quyen');
             $table->string('phan_he');
             $table->string('hanh_dong');
+            $table->string('guard_name')->default('web');
             $table->timestamps();
 
             $table->index(['phan_he', 'hanh_dong']);

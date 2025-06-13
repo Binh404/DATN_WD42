@@ -36,6 +36,7 @@ class BangLuong extends Model
 
     public function luongNhanVien()
     {
+        // hehe
         return $this->hasMany(LuongNhanVien::class, 'bang_luong_id');
     }
 
@@ -48,5 +49,14 @@ class BangLuong extends Model
     {
         return $this->belongsTo(NguoiDung::class, 'nguoi_phe_duyet_id');
     }
-
+    public function getTrangThaiLabelAttribute()
+    {
+        return match ($this->trang_thai) {
+            'dang_xu_ly' => ['text' => 'Đang xử lý', 'class' => 'status-processing'],
+            'cho_duyet'  => ['text' => 'Chờ duyệt', 'class' => 'status-pending'],
+            'da_duyet'   => ['text' => 'Đã duyệt', 'class' => 'status-approved'],
+            'da_tra'     => ['text' => 'Đã thanh toán', 'class' => 'status-paid'],
+            default      => ['text' => 'Không rõ', 'class' => 'status-unknown'],
+        };
+    }
 }

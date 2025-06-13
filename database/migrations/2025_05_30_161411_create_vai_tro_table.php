@@ -18,9 +18,9 @@ return new class extends Migration
             $table->text('mo_ta')->nullable();
             $table->boolean('la_vai_tro_he_thong')->default(false);
             $table->boolean('trang_thai')->default(true);
+            $table->string('guard_name')->default('web');
             $table->timestamps();
-
-            $table->index('trang_thai');
+            // $table->index('trang_thai');
         });
     }
 

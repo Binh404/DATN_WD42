@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-class NguoiDung extends Authenticatable
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Spatie\Permission\Traits\HasRoles;
+
+
+class NguoiDung extends Authenticatable  implements CanResetPassword
 {
-    use  HasFactory, Notifiable;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasRoles;
+
 
     protected $table = 'nguoi_dung';
 
@@ -16,7 +22,8 @@ class NguoiDung extends Authenticatable
         'ten_dang_nhap',
         'email',
         'password',
-        'email_da_xac_minh',
+        'vai_tro_id',
+        'email_verified_at',
         'token_ghi_nho',
         'trang_thai',
         'lan_dang_nhap_cuoi',
@@ -31,7 +38,7 @@ class NguoiDung extends Authenticatable
     ];
 
     protected $casts = [
-        'email_da_xac_minh' => 'boolean',
+        'email_verified_at' => 'boolean',
         'trang_thai' => 'integer',
         'lan_dang_nhap_cuoi' => 'datetime',
         'ip_dang_nhap_cuoi' => 'string',
@@ -64,16 +71,48 @@ class NguoiDung extends Authenticatable
     {
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
+    public function chamCong(){
+        return $this->hasMany(ChamCong::class, 'nguoi_dung_id');
+    }
+    public function soDuNghiPhepNhanVien(){
+        return $this->hasMany(SoDuNghiPhepNhanVien::class, 'nguoi_dung_id');
+    }
 
-    public function vaiTro()
+    public function vaiTros()
     {
         return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function quyenTrucTiep()
     {
         return $this->belongsToMany(Quyen::class, 'nguoi_dung_quyen', 'nguoi_dung_id', 'quyen_id')
-                    ->withTimestamps();
+            ->withTimestamps();
+    }
+    //bảng đơn xin nghi
+    public function donXinNghi()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_dung_id');
+    }
+
+    public function donXinNghiDuocDuyet()
+    {
+        return $this->hasMany(DonXinNghi::class, 'nguoi_duyet_id');
+    }
+
+    public function donXinNghiBanGiao()
+    {
+        return $this->hasMany(DonXinNghi::class, 'ban_giao_cho_id');
+    }
+
+
+    public function coVaiTro($tenVaiTro)
+    {
+        return $this->vaiTros()->where('ten', $tenVaiTro)->exists();
+    }
+
+    public function coBatKyVaiTro(array $dsTenVaiTro)
+    {
+        return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
     }
 }

@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use Spatie\Permission\Models\Role;
+use App\Models\Quyen;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 // use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
@@ -14,30 +16,74 @@ class RoleController extends Controller
     {
         // Lấy permission và group theo group_id (hoặc group_name nếu có)
         // $permissions = Permission::all()->groupBy('group_id');
-        $permissions = Permission::join('permission_groups', 'permissions.group_id', '=', 'permission_groups.id')
-            ->select('permissions.*', 'permission_groups.name as group_name')
+        $permissions = Permission::join('nhom_quyen', 'quyen.nhom_quyen_id', '=', 'nhom_quyen.id')
+            ->select('quyen.*', 'nhom_quyen.ten as ten_nhom')
             ->get()
-            ->groupBy('group_name');
+            ->groupBy('ten_nhom');
         return view('admin.vaitro.roles_create', compact('permissions'));
     }
 
-    public function store(Request $request)
-    {
-        $role = Role::create([
-            'name' => $request->name,
-            'display_name' => $request->display_name,
-            'description' => $request->description,
-            'level' => $request->level ?? 0,
-            'is_system' => $request->is_system ?? false,
-            'guard_name' => 'web',
-        ]);
-        $role->syncPermissions($request->permissions ?? []);
-        return redirect()->route('roles.create')->with('success', 'Tạo vai trò thành công!');
+
+public function store(Request $request)
+{
+    $role = Role::create([
+        'ten' => $request->ten,
+        'ten_hien_thi' => $request->ten_hien_thi,
+        'mo_ta' => $request->mo_ta,
+        'la_vai_tro_he_thong' => $request->la_vai_tro_he_thong ?? 0,
+        'trang_thai' => $request->trang_thai ?? false,
+    ]);
+
+    // ✅ Gán quyền bằng ID
+    if (!empty($request->permissions)) {
+        // Lấy model Quyen theo ID
+        $permissions = Quyen::whereIn('id', $request->permissions)->get();
+
+        // Gán bằng model collection
+        $role->syncPermissions($permissions);
     }
+
+    return redirect()->route('roles.index')->with('success', 'Tạo vai trò và quyền thành công!');
+}
+
+
+
 
     public function index()
     {
-        $roles = \Spatie\Permission\Models\Role::all();
+        $roles = Role::all();
         return view('admin.vaitro.roles_index', compact('roles'));
     }
+    public function edit(string $id)
+    {
+       $role = Role::findOrFail($id);
+       return view('admin.vaitro.roles_edit', compact('role'));
+    }
+
+
+
+
+
+
+public function destroy(string $id)
+{
+    $role = Role::findOrFail($id);
+
+    // Gỡ quyền và người dùng trước khi xóa
+    $role->permissions()->detach();
+    $role->users()->detach(); // Nếu có định nghĩa quan hệ users()
+
+    $role->delete();
+
+    return redirect()->route('roles.index')->with('success', "Đã xóa vai trò thành công!");
+}
+
+//     public function destroy(string $id)
+// {
+//     $role = Role::findOrFail($id);
+//     $role->delete();  // Xóa vai trò đã tìm thấy
+
+//     return redirect()->route('roles.index')->with('success', "Đã xóa vai trò thành công!");
+// }
+
 }

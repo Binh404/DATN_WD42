@@ -25,7 +25,7 @@
             <form action="/phongban/store" method="POST">
                 @csrf
 
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label for="ma_phong_ban" class="form-label fw-bold">
                         <i class="fas fa-code me-2 text-primary"></i>
                         Mã phòng ban
@@ -42,7 +42,7 @@
                         {{ $message }}
                     </div>
                     @enderror
-                </div>
+                </div> -->
 
                 <div class="mb-4">
                     <label for="ten_phong_ban" class="form-label fw-bold">
@@ -62,9 +62,7 @@
                     </div>
                     @enderror
                 </div>
-
-
-
+                
                 <div class="mb-4">
                     <label for="mo_ta" class="form-label fw-bold">
                         <i class="fas fa-align-left me-2 text-primary"></i>

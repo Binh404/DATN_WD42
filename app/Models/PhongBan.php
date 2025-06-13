@@ -22,12 +22,12 @@ class PhongBan extends Model
         'trang_thai',
     ];
 
-    protected $casts = [
-        'ngan_sach' => 'decimal:2',
-        'trang_thai' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'ngan_sach' => 'decimal:2',
+    //     'trang_thai' => 'boolean',
+    //     'created_at' => 'datetime',
+    //     'updated_at' => 'datetime',
+    // ];
 
     public function chiNhanh()
     {

@@ -126,7 +126,10 @@
     //   e.preventDefault();
     });
   });
+
 </script>
+
+@stack('scripts')
 
   </body>
 </html>

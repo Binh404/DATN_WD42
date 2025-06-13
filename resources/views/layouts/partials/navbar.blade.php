@@ -46,7 +46,7 @@
         {{-- <a href="{{ route('logout') }}" class="dropdown-item"
            onclick="event.preventDefault(); document.getElementById('navbar-logout').submit();">
         </a> --}}
-       
+
         <form method="POST" action="{{ route('logout') }}" id="logout-form">
           @csrf
           <button type="submit" class="dropdown-item d-flex align-items-center"
@@ -55,7 +55,7 @@
             <span>Đăng xuất</span>
           </button>
         </form>
-      
+
       </div>
     </li>
   </ul>
