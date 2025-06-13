@@ -339,6 +339,27 @@
             </div>
             <div class="stat-label">Trạng thái hôm nay</div>
         </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar-check stat-icon"></i>
+            <div class="stat-value" id="trangThaiHomNay">
+                {{ $chamCongHomNay ? $chamCongHomNay->ghi_chu : 'không có ghi chú' }}
+            </div>
+            <div class="stat-label">Ghi chú hôm nay</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar-check stat-icon"></i>
+            <div class="stat-value" id="trangThaiHomNay">
+                {{ $chamCongHomNay ? $chamCongHomNay->ghi_chu_duyet : 'không có ghi chú' }}
+            </div>
+            <div class="stat-label">Ghi chú phản hồi hôm nay</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar-check stat-icon"></i>
+            <div class="stat-value" id="trangThaiHomNay">
+                {{ $chamCongHomNay ? $chamCongHomNay->trang_thai_duyet : 'không có ghi chú' }}
+            </div>
+            <div class="stat-label">Trạng thái phản hồi hôm nay</div>
+        </div>
     </div>
 
     <!-- Lịch chấm công -->
@@ -1412,11 +1433,13 @@ function updateStatsDisplay(data) {
         // Tạo chuỗi định dạng dd-mm-yyyy
         const formattedDate = `${year}-${month}-${day}`;
         btnReason.setAttribute('data-ngay', formattedDate);
+        showNotification('Thống kê ngày ' + formattedDate + ' đã được cập nhật', 'success');
+
     }else{
+        showNotification('Thống kê ngày ' + data.ngay + ' chưa được cập nhật', 'error');
         btnReason = document.getElementById('reasonBtn');
         btnReason.style.display = 'none';
     }
-
 
 
     //cập nhật id ngày
