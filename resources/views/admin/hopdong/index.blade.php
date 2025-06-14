@@ -29,7 +29,8 @@
                                 <th>Loại hợp đồng</th>
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
-                                <th>Trạng thái</th>
+                                <th>Trạng thái ký</th>
+                                <th>Trạng thái hợp đồng</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -64,6 +65,8 @@
                                     <td>
                                         @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                             <span class="badge badge-success">Hiệu lực</span>
+                                        @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
+                                            <span class="badge badge-warning">Chưa hiệu lực</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'het_han')
                                             <span class="badge badge-danger">Hết hạn</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'huy_bo')
@@ -129,20 +132,8 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json'
-            }
-        });
-    });
-
-    function xoaHopDong(id) {
-        $('#deleteForm').attr('action', `/hop-dong/${id}`);
-        $('#deleteModal').modal('show');
-    }
-
-    function kyHopDong(id) {
+   
+   function kyHopDong(id) {
         if (confirm('Bạn có chắc chắn muốn ký hợp đồng này?')) {
             $.ajax({
                 url: `/hop-dong/${id}/ky`,
@@ -166,5 +157,6 @@
             });
         }
     }
+
 </script>
 @endsection 

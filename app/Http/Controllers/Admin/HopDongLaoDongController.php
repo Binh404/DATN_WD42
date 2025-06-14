@@ -21,13 +21,11 @@ class HopDongLaoDongController extends Controller
 
     public function create()
     {
-        // Lấy danh sách nhân viên chưa có hợp đồng lao động
-        $nhanViens = NguoiDung::whereHas('hoSo', function($query) {
-            $query->where('trang_thai', 'dang_lam_viec');
-        })->whereDoesntHave('hopDongLaoDong', function($query) {
-            $query->whereIn('trang_thai_hop_dong', ['hieu_luc'])
-                ->whereIn('trang_thai_ky', ['da_ky']);
-        })->with('hoSo')->get();
+        // Lấy danh sách nhân viên có hồ sơ nhưng chưa có bất kỳ hợp đồng lao động nào
+        $nhanViens = NguoiDung::whereHas('hoSo')
+            ->whereDoesntHave('hopDongLaoDong')
+            ->with('hoSo')
+            ->get();
 
         // Lấy danh sách chức vụ
         $chucVus = ChucVu::all();
@@ -39,7 +37,7 @@ class HopDongLaoDongController extends Controller
     {
         $request->validate([
             'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
-            'chuc_vu' => 'required|string',
+            'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'so_hop_dong' => 'required|string|unique:hop_dong_lao_dong,so_hop_dong',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
@@ -54,8 +52,8 @@ class HopDongLaoDongController extends Controller
 
         $data = $request->except('file_hop_dong');
         $data['nguoi_ky_id'] = Auth::id();
-        $data['trang_thai_hop_dong'] = 'hieu_luc';
-        $data['trang_thai_ky'] = 'cho_ky';
+        $data['trang_thai_hop_dong'] = $request->trang_thai_hop_dong;
+        $data['trang_thai_ky'] = $request->trang_thai_ky;
 
         if ($request->hasFile('file_hop_dong')) {
             $file = $request->file('file_hop_dong');

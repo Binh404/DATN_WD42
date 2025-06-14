@@ -58,12 +58,12 @@
                         <div class="form-group">
                             <label for="loai_hop_dong">Loại hợp đồng <span class="text-danger">*</span></label>
                             <select name="loai_hop_dong" id="loai_hop_dong" class="form-control @error('loai_hop_dong') is-invalid @enderror" required>
-                                <option value="">-- Chọn loại hợp đồng --</option>
-                                <option value="thu_viec" {{ $hopDong->loai_hop_dong == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
-                                <option value="xac_dinh_thoi_han" {{ $hopDong->loai_hop_dong == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
-                                <option value="khong_xac_dinh_thoi_han" {{ $hopDong->loai_hop_dong == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-                                <option value="mua_vu" {{ $hopDong->loai_hop_dong == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option>
-                            </select>
+    <option value="">-- Chọn loại hợp đồng --</option>
+    <option value="thu_viec" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
+    <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
+    <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
+    <option value="mua_vu" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option>
+</select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -87,7 +87,8 @@
                         <div class="form-group">
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror" 
-                                   id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? $hopDong->ngay_ket_thuc->format('Y-m-d') : '') }}">
+    id="ngay_ket_thuc" name="ngay_ket_thuc"
+    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}">
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -146,20 +147,35 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="trang_thai">Trạng thái <span class="text-danger">*</span></label>
-                            <select name="trang_thai" id="trang_thai" class="form-control @error('trang_thai') is-invalid @enderror" required>
-                                <option value="">-- Chọn trạng thái --</option>
-                                <option value="cho_ky" {{ $hopDong->trang_thai == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
-                                <option value="hieu_luc" {{ $hopDong->trang_thai == 'hieu_luc' ? 'selected' : '' }}>Đang hiệu lực</option>
-                                <option value="het_han" {{ $hopDong->trang_thai == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
-                                <option value="huy_bo" {{ $hopDong->trang_thai == 'huy_bo' ? 'selected' : '' }}>Đã hủy</option>
+                            <label for="trang_thai_hop_dong">Trạng thái hợp đồng <span class="text-danger">*</span></label>
+                            <select name="trang_thai_hop_dong" id="trang_thai_hop_dong" class="form-control @error('trang_thai_hop_dong') is-invalid @enderror" required>
+                                <option value="">-- Chọn trạng thái hợp đồng --</option>
+                                <option value="chua_hieu_luc" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
+                                <option value="hieu_luc" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'hieu_luc' ? 'selected' : '' }}>Đang hiệu lực</option>
+                                <option value="het_han" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
+                                <option value="huy_bo" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'huy_bo' ? 'selected' : '' }}>Đã hủy</option>
                             </select>
-                            @error('trang_thai')
+                            @error('trang_thai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="trang_thai_ky">Trạng thái ký <span class="text-danger">*</span></label>
+                            <select name="trang_thai_ky" id="trang_thai_ky" class="form-control @error('trang_thai_ky') is-invalid @enderror" required>
+                                <option value="">-- Chọn trạng thái ký --</option>
+                                <option value="cho_ky" {{ old('trang_thai_ky', $hopDong->trang_thai_ky) == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
+                                <option value="da_ky" {{ old('trang_thai_ky', $hopDong->trang_thai_ky) == 'da_ky' ? 'selected' : '' }}>Đã ký</option>
+                            </select>
+                            @error('trang_thai_ky')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
 
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ghi_chu">Ghi chú</label>

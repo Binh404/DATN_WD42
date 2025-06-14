@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Chi tiết hợp đồng lao động</h3>
                     <div class="card-tools">
-                        <a href="{{ route('admin.hopdong.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('hopdong.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Quay lại
                         </a>
                     </div>
@@ -77,19 +77,33 @@
                                 </tr>
                                 <tr>
                                     <th>Nơi làm việc</th>
-                                    <td>{{ $hopDong->noi_lam_viec }}</td>
+                                    <td>{{ $hopDong->dia_diem_lam_viec }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Trạng thái</th>
+                                    <th>Trạng thái hợp đồng</th>
                                     <td>
-                                        @if($hopDong->trang_thai == 'cho_ky')
-                                            <span class="badge badge-warning">Chờ ký</span>
-                                        @elseif($hopDong->trang_thai == 'hieu_luc')
+                                        @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                             <span class="badge badge-success">Đang hiệu lực</span>
-                                        @elseif($hopDong->trang_thai == 'het_han')
+                                            @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
+                                            <span class="badge badge-danger">Chưa hiệu lực</span>
+                                        @elseif($hopDong->trang_thai_hop_dong == 'het_han')
                                             <span class="badge badge-danger">Hết hạn</span>
-                                        @else
+                                        @elseif($hopDong->trang_thai_hop_dong == 'huy_bo')
                                             <span class="badge badge-secondary">Đã hủy</span>
+                                        @else
+                                            <span class="badge badge-light">Không xác định</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái ký</th>
+                                    <td>
+                                        @if($hopDong->trang_thai_ky == 'cho_ky')
+                                            <span class="badge badge-warning">Chờ ký</span>
+                                        @elseif($hopDong->trang_thai_ky == 'da_ky')
+                                            <span class="badge badge-primary">Đã ký</span>
+                                        @else
+                                            <span class="badge badge-light">Không xác định</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -130,10 +144,10 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="btn-group">
-                                <a href="{{ route('admin.hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
+                                <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
                                 </a>
-                                <form action="{{ route('admin.hopdong.destroy', $hopDong->id) }}" method="POST" class="d-inline">
+                                <form action="{{ route('hopdong.destroy', $hopDong->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hợp đồng này?')">

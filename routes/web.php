@@ -22,6 +22,7 @@ use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
+use App\Http\Controllers\Admin\HopDongLaoDongController;
 
 
 
@@ -70,6 +71,19 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
+
+    // Hợp đồng lao động
+    Route::prefix('hop-dong')->name('hopdong.')->group(function () {
+        Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
+        Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
+        Route::post('/store', [HopDongLaoDongController::class, 'store'])->name('store');
+        Route::get('/{id}', [HopDongLaoDongController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [HopDongLaoDongController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [HopDongLaoDongController::class, 'update'])->name('update');
+        Route::delete('/{id}', [HopDongLaoDongController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('ky');
+    });
+
     // Admin Phòng Ban
     Route::get('/phongban', [PhongBanController::class, 'index']);
     Route::get('/phongban/create', [PhongBanController::class, 'create']);

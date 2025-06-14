@@ -154,6 +154,35 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="trang_thai_hop_dong">Trạng thái hợp đồng <span class="text-danger">*</span></label>
+                            <select name="trang_thai_hop_dong" id="trang_thai_hop_dong" class="form-control @error('trang_thai_hop_dong') is-invalid @enderror" required>
+                                <option value="chua_hieu_luc" {{ old('trang_thai_hop_dong') == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
+                                <option value="hieu_luc" {{ old('trang_thai_hop_dong') == 'hieu_luc' ? 'selected' : '' }}>Đang hiệu lực</option>
+                                <option value="het_han" {{ old('trang_thai_hop_dong') == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
+                                <option value="huy_bo" {{ old('trang_thai_hop_dong') == 'huy_bo' ? 'selected' : '' }}>Đã hủy</option>
+                            </select>
+                            @error('trang_thai_hop_dong')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="trang_thai_ky">Trạng thái ký <span class="text-danger">*</span></label>
+                            <select name="trang_thai_ky" id="trang_thai_ky" class="form-control @error('trang_thai_ky') is-invalid @enderror" required>
+                                <option value="cho_ky" {{ old('trang_thai_ky', 'cho_ky') == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
+                                <option value="da_ky" {{ old('trang_thai_ky') == 'da_ky' ? 'selected' : '' }}>Đã ký</option>
+                            </select>
+                            @error('trang_thai_ky')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="dieu_khoan">Điều khoản <span class="text-danger">*</span></label>
                     <textarea class="form-control @error('dieu_khoan') is-invalid @enderror" 
