@@ -1,31 +1,40 @@
 <?php
 
 use App\Http\Middleware\CheckRole;
-
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ChucVuController;
-use App\Http\Controllers\employee\ProfileController;
+
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\HoSoNhanVienController;
+use App\Http\Controllers\Admin\DonTuController;
 use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
-use App\Http\Controllers\Admin\DonTuController;
-use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
+use App\Http\Controllers\Admin\DuyetDonTuController;
+use App\Http\Controllers\Auth\PasswordOTPController;
+use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
+use App\Http\Controllers\employee\ChamCongController;
+use App\Http\Controllers\Admin\HoSoNhanVienController;
 use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 
 
 
-
+Route::middleware(['auth'])->group(function () {
+    Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
+    Route::get('/verify-otp', function () {
+        return view('profile.password-otp');
+    })->name('password.otp-form');
+    Route::post('/verify-otp', [PasswordOTPController::class, 'verifyOtp'])->name('password.verify-otp');
+});
 
 // Admin routes
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
@@ -126,19 +135,58 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // Admin HR - Hồ sơ nhân viên
 Route::prefix('/hoso')->group(function () {
-    Route::get('/', [HoSoNhanVienController::class, 'index'])->name('hoso.index');
+    Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
+    Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
+    Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
     Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
     Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
     Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
     Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
     Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
+
+
+    // Admin HR - Thêm tk
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->name('register.store');
 });
 });
 
 // Employee routes
+Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+      // Danh sách chấm công
+    // / Chấm công routes
+    Route::prefix('cham-cong')->name('cham-cong.')->group(function () {
+        // Hiển thị trang chấm công
+        Route::get('/', [ChamCongController::class, 'index'])->name('index');
+
+        // API chấm công
+        Route::post('/vao', [ChamCongController::class, 'chamCongVao'])->name('vao');
+        Route::post('/ra', [ChamCongController::class, 'chamCongRa'])->name('ra');
+
+        // Kiểm tra trạng thái chấm công
+        Route::get('/trang-thai', [ChamCongController::class, 'trangThaiChamCong'])->name('trang-thai');
+
+        // Lịch sử chấm công
+        Route::get('/lich-su', [ChamCongController::class, 'lichSuChamCong'])->name('lich-su');
+
+        // Báo cáo chấm công
+        Route::get('/bao-cao', [ChamCongController::class, 'baoCaoChamCong'])->name('bao-cao');
+        // Route để lấy dữ liệu chấm công theo ngày
+        Route::get('/ngay/{dayId}', [ChamCongController::class, 'getChamCongByDay'])
+            ->name('cham-cong.get-by-day');
+
+        Route::post('/update-trang-thai', [ChamCongController::class, 'updateTrangThai'])->name('update-trang-thai');
+        // Xuất báo cáo Excel
+        Route::get('/xuat-excel', [ChamCongController::class, 'xuatExcel'])->name('xuat-excel');
+    });
+});
+
 Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
-     // ✅ Route cho điền hồ sơ lần đầu
+     // Route cho điền hồ sơ lần đầu
     Route::get('/complete-profile', [HoSoController::class, 'form'])
         ->name('employee.complete-profile');
     Route::post('/complete-profile', [HoSoController::class, 'store'])
