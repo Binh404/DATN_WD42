@@ -358,7 +358,8 @@ class UngTuyenController extends Controller
 
         // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
-            Http::post('https://workflow.aichatbot360.io.vn/webhook/send-email', [
+          Http::withOptions(['verify' => false])->post('https://quocbinh1.app.n8n.cloud/webhook/send-email', [
+
                 'email' => $ungvien->email,
                 'name' => $ungvien->ten_ung_vien,
                 'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
@@ -372,7 +373,7 @@ class UngTuyenController extends Controller
     }
 
 
-    // Gửi email thông báo đi làm 
+    // Gửi email thông báo đi làm
     public function guiEmailDiLam(Request $request)
     {
         $request->validate([
@@ -403,6 +404,18 @@ class UngTuyenController extends Controller
             $email = strtolower($emailPrefix . 'dv' . $maSo . '@gmail.com');
             $password = Str::random(10);
             $tenDangNhap = Str::slug($ungvien->ten_ung_vien);
+
+            // Gửi thông tin đến webhook
+
+            Http::withOptions(['verify' => false])->post('https://quocbinh1.app.n8n.cloud/webhook/email-di-lam', [
+                'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                'ten_dang_nhap' => $email,
+                'email' => $ungvien->email,
+                'name' => $ungvien->ten_ung_vien,
+                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
+                'lich' => $request->dat_lich,
+                'mat_khau' => $password // nếu muốn gửi mật khẩu cho webhook
+            ]);
 
             // Tạo tài khoản nhân viên mới
             $nguoiDung = NguoiDung::create([

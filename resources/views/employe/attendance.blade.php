@@ -4,7 +4,7 @@
 <section class="content-section" id="attendance">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2>Chấm công</h2>
-        <button class="btn btn-primary" onclick="checkInOut()">
+        <button class="btn btn-primary checkin-btn" onclick="checkInOut()">
             <i class="fas fa-fingerprint"></i>
             Chấm công
         </button>
@@ -80,5 +80,109 @@
         <div class="day-cell day-normal"></div>
     </div>
 </section>
+@endsection
+@section('javascript')
+<script>
+   function checkInOut() {
+    const btn = document.querySelector('.checkin-btn');
+    const currentTime = new Date().toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    // Hiệu ứng click button
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+    }, 100);
+
+    if (attendanceStatus === 'out') {
+        // CHẤM CÔNG VÀO
+        handleCheckIn(btn, currentTime);
+    } else if (attendanceStatus === 'in') {
+        // CHẤM CÔNG RA
+        handleCheckOut(btn, currentTime);
+    }
+}
+    function handleCheckIn(btn, currentTime) {
+    // Cập nhật trạng thái
+    attendanceStatus = 'in';
+
+    // Lưu thời gian chấm công vào
+    localStorage.setItem('checkinTime', currentTime);
+    localStorage.setItem('checkinDate', new Date().toDateString());
+    localStorage.setItem('attendanceStatus', 'in');
+
+    // Cập nhật giao diện
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Đã chấm công vào';
+    btn.style.background = 'linear-gradient(135deg, #10ac84, #00d2d3)';
+    btn.disabled = true;
+    // Cập nhật thời gian vào trên dashboard
+    const checkinTimeElement = document.querySelector('.stat-card:first-child .stat-value');
+    if (checkinTimeElement) {
+        checkinTimeElement.textContent = currentTime;
+    }
+
+    // Hiển thị thông báo
+    // showNotification('Chấm công vào thành công!', 'success');
+
+    // Disable button trong 5 phút và đếm ngược
+    disableButtonWithCountdown(btn, 3, () => {
+        // Sau 5 phút, cho phép chấm công ra
+        btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Chấm công ra';
+        btn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff9f43)';
+        btn.disabled = false;
+    });
+}
+function handleCheckOut(btn, currentTime) {
+    // Cập nhật trạng thái
+    attendanceStatus = 'completed';
+
+    // Lưu thời gian chấm công ra
+    localStorage.setItem('checkoutTime', currentTime);
+    localStorage.setItem('attendanceStatus', 'completed');
+
+    // Cập nhật giao diện
+    btn.innerHTML = '<i class="fas fa-check-double"></i> Đã chấm công ra hôm nay';
+    btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+
+    // Cập nhật thời gian ra trên dashboard
+    const checkoutTimeElement = document.querySelector('.stat-card:nth-child(2) .stat-value');
+    if (checkoutTimeElement) {
+        checkoutTimeElement.textContent = currentTime;
+    }
+
+    // Tính tổng thời gian làm việc
+    calculateWorkingHours();
+
+    // Hiển thị thông báo
+    showNotification('Chấm công ra thành công! Hẹn gặp lại vào ngày mai.', 'success');
+
+    // Disable button cho đến ngày hôm sau
+    btn.disabled = true;
+
+    // Kiểm tra ngày mới vào lúc 00:00
+    scheduleNextDayReset();
+}
+function disableButtonWithCountdown(btn, seconds, callback) {
+    // btn.disabled = true;
+    let countdown = seconds;
+    const originalHTML = btn.innerHTML;
+
+    const countdownTimer = setInterval(() => {
+        const minutes = Math.floor(countdown / 60);
+        const secs = countdown % 60;
+        countdown--;
+
+        if (countdown < 0) {
+            clearInterval(countdownTimer);
+            if (callback) callback();
+        }
+    }, 1000);
+
+    return countdownTimer;
+}
+
+</script>
 @endsection
 
