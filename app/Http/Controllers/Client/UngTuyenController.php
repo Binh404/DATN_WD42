@@ -106,20 +106,6 @@ class UngTuyenController extends Controller
         $maUngTuyen = UngTuyen::max('id') ?? 0;
         $validated['ma_ung_tuyen'] = 'UT' . str_pad($maUngTuyen + 1, 5, '0', STR_PAD_LEFT);
 
-
-
-
-
-        // Lấy thông tin từ tin tuyển dụng để gán ID liên quan
-        $tinTuyenDung = TinTuyenDung::find($validated['tin_tuyen_dung_id']);
-        if ($tinTuyenDung) {
-            $validated['phong_ban_id'] = $tinTuyenDung->phong_ban_id ?? null;
-            $validated['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id ?? null;
-            $validated['vai_tro_id'] = $tinTuyenDung->vai_tro_id ?? 3;
-        }
-
-
-
         // Tạo đơn ứng tuyển
         $application = UngTuyen::create($validated);
 
