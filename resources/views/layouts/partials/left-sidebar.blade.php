@@ -76,7 +76,19 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/hoso" class="nav-link">
+              <a href="/hoso/giamdoc" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>giám đốc</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/hoso/truongphong" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>trưởng phòng</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/hoso/nhanvien" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Nhân viên</p>
               </a>

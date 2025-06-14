@@ -2,7 +2,7 @@
     <div class="user-profile d-flex flex-column align-items-center text-white">
     <div class="user-avatar mb-3">
         @if(!empty($hoSo->anh_dai_dien))
-            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" width="120" class="rounded-circle border border-2 border-white shadow">
+            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" height="100" width="120" class="rounded-circle border border-2 border-white shadow">
         @else
             <i class="bi bi-person-circle fs-1 text-secondary"></i>
         @endif
