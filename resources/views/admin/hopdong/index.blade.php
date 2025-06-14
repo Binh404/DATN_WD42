@@ -11,6 +11,43 @@
             </a>
         </div>
 
+        <!-- Dashboard Tổng quan hợp đồng -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="text-success" style="font-size: 2rem;">{{ $hieuLuc ?? 0 }}</div>
+                        <div>Đang có hiệu lực</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="text-primary" style="font-size: 2rem;">{{ $chuaCoHopDong ?? 0 }}</div>
+                        <div>Chưa có hợp đồng</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="text-warning" style="font-size: 2rem;">{{ $sapHetHan ?? 0 }}</div>
+                        <div>Sắp hết hạn: 30 ngày</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="text-danger" style="font-size: 2rem;">{{ $hetHanChuaTaiKy ?? 0 }}</div>
+                        <div>Hết hạn chưa tái ký</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Dashboard Tổng quan hợp đồng -->
+
         <!-- Content Row -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HopDongLaoDong;
 use App\Models\NguoiDung;
 use App\Models\ChucVu;
+use App\Models\HoSoNguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,35 @@ class HopDongLaoDongController extends Controller
     public function index()
     {
         $hopDongs = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu'])->latest()->get();
-        return view('admin.hopdong.index', compact('hopDongs'));
+
+        foreach ($hopDongs as $hopDong) {
+            if (
+                $hopDong->ngay_ket_thuc &&
+                \Carbon\Carbon::parse($hopDong->ngay_ket_thuc)->lt(now()) &&
+                $hopDong->trang_thai_hop_dong !== 'het_han'
+            ) {
+                $hopDong->trang_thai_hop_dong = 'het_han';
+                $hopDong->save();
+            }
+        }
+
+        $now = now();
+        $in30days = now()->addDays(30);
+
+        $hieuLuc = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')->count();
+        $chuaCoHopDong = HoSoNguoiDung::whereDoesntHave('hopDongLaoDong')->count();
+        $sapHetHan = HopDongLaoDong::where('ngay_ket_thuc', '>', $now)
+            ->where('ngay_ket_thuc', '<=', $in30days)
+            ->count();
+        $hetHanChuaTaiKy = HopDongLaoDong::where('trang_thai_hop_dong', 'het_han')->count();
+
+        return view('admin.hopdong.index', compact(
+            'hopDongs',
+            'hieuLuc',
+            'chuaCoHopDong',
+            'sapHetHan',
+            'hetHanChuaTaiKy'
+        ));
     }
 
     public function create()
