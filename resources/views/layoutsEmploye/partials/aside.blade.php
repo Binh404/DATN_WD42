@@ -44,7 +44,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/attendance')}}" class="nav-link" data-section="attendance">
+            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
             </a>
@@ -62,15 +62,16 @@
             </a>
         </li>
         <li class="nav-item">
-
             <form method="POST" action="{{ route('logout') }}" id="logout-form">
-          @csrf
-          <button type="submit" class="dropdown-item d-flex align-items-center"
-            style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
-            <i class="fas fa-sign-out-alt mr-2"></i>
-            <span>Đăng xuất</span>
-          </button>
-        </form>
+                @csrf
+
+                <button type="submit" class="dropdown-item d-flex align-items-center"
+                    style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    <span>Đăng xuất</span>
+                </button>
+
+            </form>
         </li>
 
 

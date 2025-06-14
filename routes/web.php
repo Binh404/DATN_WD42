@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Middleware\CheckRole;
 
 use Illuminate\Support\Facades\Route;
@@ -22,11 +23,17 @@ use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
+
 use App\Http\Controllers\Admin\HopDongLaoDongController;
 
 
-
-
+Route::middleware(['auth'])->group(function () {
+    Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
+    Route::get('/verify-otp', function () {
+        return view('profile.password-otp');
+    })->name('password.otp-form');
+    Route::post('/verify-otp', [PasswordOTPController::class, 'verifyOtp'])->name('password.verify-otp');
+});
 
 // Admin routes
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
@@ -150,6 +157,35 @@ Route::prefix('/hoso')->group(function () {
 });
 
 // Employee routes
+Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+      // Danh sách chấm công
+    // / Chấm công routes
+    Route::prefix('cham-cong')->name('cham-cong.')->group(function () {
+        // Hiển thị trang chấm công
+        Route::get('/', [ChamCongController::class, 'index'])->name('index');
+
+        // API chấm công
+        Route::post('/vao', [ChamCongController::class, 'chamCongVao'])->name('vao');
+        Route::post('/ra', [ChamCongController::class, 'chamCongRa'])->name('ra');
+
+        // Kiểm tra trạng thái chấm công
+        Route::get('/trang-thai', [ChamCongController::class, 'trangThaiChamCong'])->name('trang-thai');
+
+        // Lịch sử chấm công
+        Route::get('/lich-su', [ChamCongController::class, 'lichSuChamCong'])->name('lich-su');
+
+        // Báo cáo chấm công
+        Route::get('/bao-cao', [ChamCongController::class, 'baoCaoChamCong'])->name('bao-cao');
+        // Route để lấy dữ liệu chấm công theo ngày
+        Route::get('/ngay/{dayId}', [ChamCongController::class, 'getChamCongByDay'])
+            ->name('cham-cong.get-by-day');
+
+        Route::post('/update-trang-thai', [ChamCongController::class, 'updateTrangThai'])->name('update-trang-thai');
+        // Xuất báo cáo Excel
+        Route::get('/xuat-excel', [ChamCongController::class, 'xuatExcel'])->name('xuat-excel');
+    });
+});
+
 Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
      // ✅ Route cho điền hồ sơ lần đầu

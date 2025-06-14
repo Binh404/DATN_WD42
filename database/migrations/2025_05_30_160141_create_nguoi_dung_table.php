@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('nguoi_dung', function (Blueprint $table) {
             $table->id();
-            $table->string('ten_dang_nhap')->unique();
+            $table->string('ten_dang_nhap');
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('email_verified_at')->default(false);
