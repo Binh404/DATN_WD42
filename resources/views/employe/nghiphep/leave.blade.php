@@ -5,9 +5,12 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Trạng thái đơn</h2>
             <div>
-                <button class="btn btn-danger">
-                    Số dư nghỉ phép
-                </button>
+                <a href="{{ url('/employee/so-du-nghi-phep') }}" style="text-decoration: none;">
+                    <button class="btn btn-danger">
+                        Số dư nghỉ phép
+                    </button>
+                </a>
+
                 <button class="btn btn-success" onclick="showLeaveModal()">
                     <i class="fas fa-plus"></i>
                     Tạo đơn nghỉ phép

@@ -26,8 +26,8 @@ use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
-
-
+use App\Http\Controllers\Client\SoDuNghiPhepController;
+use App\Models\SoDuNghiPhepNhanVien;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -206,8 +206,10 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         return view('employe.attendance');
     });
     Route::get('/leave', function () {
-        return view('employe.leave');
+        return view('employe.nghiphep.leave');
     });
+
+    Route::get('/so-du-nghi-phep', [SoDuNghiPhepController::class, 'index'])->name('sodunghiphep.index');
 
     Route::get('/notification', function () {
         return view('employe.notification');
