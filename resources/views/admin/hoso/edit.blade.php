@@ -119,7 +119,8 @@
 
         {{-- Nút --}}
         <button type="submit" class="btn btn-success">Cập nhật</button>
-        <a href="{{ route('hoso.index') }}" class="btn btn-secondary">Quay lại</a>
+        <a href="{{ $duong_dan_quay_lai }}" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>
+
 @endsection

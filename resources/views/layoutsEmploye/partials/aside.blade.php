@@ -2,7 +2,7 @@
     <div class="user-profile d-flex flex-column align-items-center text-white">
     <div class="user-avatar mb-3">
         @if(!empty($hoSo->anh_dai_dien))
-            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" width="120" class="rounded-circle border border-2 border-white shadow">
+            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" height="100" width="120" class="rounded-circle border border-2 border-white shadow">
         @else
             <i class="bi bi-person-circle fs-1 text-secondary"></i>
         @endif
@@ -44,7 +44,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/attendance')}}" class="nav-link" data-section="attendance">
+            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
             </a>
@@ -62,15 +62,16 @@
             </a>
         </li>
         <li class="nav-item">
-
             <form method="POST" action="{{ route('logout') }}" id="logout-form">
-          @csrf
-          <button type="submit" class="dropdown-item d-flex align-items-center"
-            style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
-            <i class="fas fa-sign-out-alt mr-2"></i>
-            <span>Đăng xuất</span>
-          </button>
-        </form>
+                @csrf
+
+                <button type="submit" class="dropdown-item d-flex align-items-center"
+                    style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    <span>Đăng xuất</span>
+                </button>
+
+            </form>
         </li>
 
 
