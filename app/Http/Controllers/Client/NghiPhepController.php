@@ -104,14 +104,27 @@ class NghiPhepController extends Controller
         return redirect()->route('nghiphep.index')->with('success', 'Tạo đơn xin nghỉ thành công!');
     }
 
-    
+    public function show($id)
+    {
+        $donNghiPhep = DonXinNghi::with('loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->findOrFail($id);
+        $lichSuTruongPhong = $donNghiPhep->lichSuDuyet->firstWhere('cap_duyet', 1);
+
+        return view('employe.nghiphep.show', compact('donNghiPhep', 'lichSuTruongPhong'));
+    }
 
     public function huyDonXinNghi($id){
-        $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id ', $id)->get();
-        if($lichSuDuyet){
-            
+        $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
+        if($lichSuDuyet->isNotEmpty()){
+            return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt không thể hủy!');
         }
+
+        DonXinNghi::where('id', $id)->update([
+            'trang_thai' => 'huy_bo'
+        ]);
+
+        return redirect()->route('nghiphep.index')->with('success', 'Hủy đơn xin nghỉ thành công!');
     }
+
 
 
     public function soDuNghiPhep()
