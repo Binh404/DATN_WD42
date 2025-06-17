@@ -330,22 +330,22 @@
             <div class="cards-grid">
                 <div class="overview-card allocated-card">
                     <div class="card-icon">📅</div>
-                    <div class="card-number" id="totalAllocated">120</div>
+                    <div class="card-number" id="totalAllocated">{{ $soNgayDuocCap }}</div>
                     <div class="card-label">Tổng ngày được cấp</div>
                 </div>
                 <div class="overview-card used-card">
                     <div class="card-icon">✅</div>
-                    <div class="card-number" id="totalUsed">39</div>
+                    <div class="card-number" id="totalUsed">{{ $soNgayDaDung }}</div>
                     <div class="card-label">Đã sử dụng</div>
                 </div>
                 <div class="overview-card pending-card">
                     <div class="card-icon">⏳</div>
-                    <div class="card-number" id="totalPending">3</div>
+                    <div class="card-number" id="totalPending">{{ $soNgayChoDuyet }}</div>
                     <div class="card-label">Chờ duyệt</div>
                 </div>
                 <div class="overview-card remaining-card">
                     <div class="card-icon">💰</div>
-                    <div class="card-number" id="totalRemaining">78</div>
+                    <div class="card-number" id="totalRemaining">{{ $soNgayConLai }}</div>
                     <div class="card-label">Còn lại</div>
                 </div>
             </div>

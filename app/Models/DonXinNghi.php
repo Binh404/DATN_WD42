@@ -55,10 +55,10 @@ class DonXinNghi extends Model
         return $this->belongsTo(NguoiDung::class, 'ban_giao_cho_id');
     }
 
-    public function nguoiDuyet()
-    {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_duyet_id');
-    }
+    // public function nguoiDuyet()
+    // {
+    //     return $this->belongsTo(NguoiDung::class, 'nguoi_duyet_id');
+    // }
 
     public function lichSuDuyet()
     {
