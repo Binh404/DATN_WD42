@@ -21,6 +21,7 @@ use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\Admin\HoSoNhanVienController;
+use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
 use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -301,6 +302,7 @@ Route::prefix('department')->name('department.')->group(function () {
 
     // quản lý đơn xin nghỉ
     Route::get('don-xin-nghi', [NghiPhepController::class, 'donXinNghi'])->name('donxinnghi.danhsach');
+    Route::post('don-xin-nghi/duyet/{id}', [LichSuDuyetDonXinNghiController::class, 'duyetDonXinNghi'])->name('donxinnghi.duyet');
 });
 
 // Client Application

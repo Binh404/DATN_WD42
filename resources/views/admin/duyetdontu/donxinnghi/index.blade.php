@@ -354,6 +354,71 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
     </style>
 
     <div class="container">
@@ -465,14 +530,14 @@
                     </div>
 
                     <div class="actions">
-                        
+
                         @if ($ketQua === 'da_duyet')
                             <button class="btnn btnn-view">👁 Xem chi tiết</button>
                         @elseif ($ketQua === 'tu_choi')
                             <button class="btnn btnn-view">👁 Xem chi tiết</button>
                         @else
                             <button class="btnn btnn-approve">✓ Duyệt</button>
-                            <button class="btnn btnn-reject">✗ Từ chối</button>
+                            <button class="btnn btnn-reject" onclick="clickTuChoi()">✗ Từ chối</button>
                             <button class="btnn btnn-view">👁 Xem chi tiết</button>
                         @endif
 
@@ -481,9 +546,80 @@
             @endforeach
 
         </div>
+
+
+    </div>
+
+    <!-- Modal cho ghi chú từ chối -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Lý do từ chối</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="rejectReason" style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">
+                    Vui lòng nhập lý do từ chối đơn xin nghỉ:
+                </label>
+                <textarea id="rejectReason"
+                    placeholder="Ví dụ: Thời gian nghỉ trùng với dự án quan trọng, cần sắp xếp lại công việc..."></textarea>
+            </div>
+            <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn" style="background: #95a5a6; color: white;" onclick="closeRejectModal()">Hủy</button>
+                <button class="btnn btnn-reject" onclick="confirmReject()">Xác nhận từ chối</button>
+            </div>
+        </div>
     </div>
 
     <script>
+
+        function clickTuChoi() {
+            document.getElementById('rejectModal').style.display = 'block';
+            document.getElementById('rejectReason').value = '';
+            document.getElementById('rejectReason').focus();
+        }
+
+        // Đóng modal khi click vào nút X
+        document.querySelector('.close').addEventListener('click', function() {
+            closeRejectModal();
+        });
+
+        // Đóng modal khi click ra ngoài
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('rejectModal');
+            if (e.target === modal) {
+                closeRejectModal();
+            }
+        });
+
+        // Hàm đóng modal
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+            currentRejectEmployee = '';
+        }
+
+        // Hàm xác nhận từ chối
+        function confirmReject() {
+            const reason = document.getElementById('rejectReason').value.trim();
+            if (!reason) {
+                alert('Vui lòng nhập lý do từ chối!');
+                return;
+            }
+
+            if (confirm(`Bạn có chắc chắn muốn từ chối đơn xin nghỉ này không?`)) {
+                alert(`Đã từ chối đơn xin nghỉ này`);
+                closeRejectModal();
+                // Có thể chuyển trạng thái card ở đây
+            }
+        }
+
+        // Xử lý phím Enter trong textarea
+        document.getElementById('rejectReason').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                confirmReject();
+            }
+        });
+
         // Hiệu ứng hover cho cards
         document.querySelectorAll('.request-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
