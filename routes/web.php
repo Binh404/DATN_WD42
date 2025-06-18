@@ -302,7 +302,8 @@ Route::prefix('department')->name('department.')->group(function () {
 
     // quản lý đơn xin nghỉ
     Route::get('don-xin-nghi', [NghiPhepController::class, 'donXinNghi'])->name('donxinnghi.danhsach');
-    Route::post('don-xin-nghi/duyet/{id}', [LichSuDuyetDonXinNghiController::class, 'duyetDonXinNghi'])->name('donxinnghi.duyet');
+    Route::get('don-xin-nghi/duyet/{id}', [LichSuDuyetDonXinNghiController::class, 'duyetDonXinNghi'])->name('donxinnghi.duyet');
+    Route::post('don-xin-nghi/tuchoi', [LichSuDuyetDonXinNghiController::class, 'tuChoi'])->name('donxinnghi.tuchoi');
 });
 
 // Client Application

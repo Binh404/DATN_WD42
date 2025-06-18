@@ -423,7 +423,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>🏢 HR Dashboard</h1>
+            <h1>🏢 Duyệt đơn</h1>
             <p>Quản lý đơn xin nghỉ phép</p>
         </div>
 
@@ -468,6 +468,16 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="requests-list">
             @foreach ($donXinNghis as $item)
                 <div class="request-card approved">
@@ -475,7 +485,7 @@
                         <div class="employee-info">
                             <div class="avatar">NVA</div>
                             <div class="employee-details">
-                                <h3>{{ $item->nguoiDung->hoSo->ho . $item->nguoiDung->hoSo->ten }}</h3>
+                                <h3>{{ $item->nguoiDung->hoSo->ho .' '. $item->nguoiDung->hoSo->ten }}</h3>
                                 <p>{{ $item->nguoiDung->phongBan->ten_phong_ban . ' - ' . $item->nguoiDung->hoSo->ma_nhan_vien }}
                                 </p>
                             </div>
@@ -536,15 +546,17 @@
                         @elseif ($ketQua === 'tu_choi')
                             <button class="btnn btnn-view">👁 Xem chi tiết</button>
                         @else
-                            <button class="btnn btnn-approve">✓ Duyệt</button>
-                            <button class="btnn btnn-reject" onclick="clickTuChoi()">✗ Từ chối</button>
+                            <a href="{{ route('department.donxinnghi.duyet', $item->id) }}">
+                                <button class="btnn btnn-approve">✓ Duyệt</button>
+                            </a>
+
+                            <button class="btnn btnn-reject" onclick="clickTuChoi({{ $item->id }})">✗ Từ chối</button>
                             <button class="btnn btnn-view">👁 Xem chi tiết</button>
                         @endif
 
                     </div>
                 </div>
             @endforeach
-
         </div>
 
 
@@ -553,30 +565,37 @@
     <!-- Modal cho ghi chú từ chối -->
     <div id="rejectModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>Lý do từ chối</h3>
-                <span class="close">&times;</span>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label for="rejectReason" style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">
-                    Vui lòng nhập lý do từ chối đơn xin nghỉ:
-                </label>
-                <textarea id="rejectReason"
-                    placeholder="Ví dụ: Thời gian nghỉ trùng với dự án quan trọng, cần sắp xếp lại công việc..."></textarea>
-            </div>
-            <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="btn" style="background: #95a5a6; color: white;" onclick="closeRejectModal()">Hủy</button>
-                <button class="btnn btnn-reject" onclick="confirmReject()">Xác nhận từ chối</button>
-            </div>
+            <form action="{{ route('department.donxinnghi.tuchoi') }}" id="frmTuChoiDonXinNghi" method="POST">
+                @csrf
+
+                <div class="modal-header">
+                    <h3>Lý do từ chối</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <input type="hidden" id="don_xin_nghi_id" name="don_xin_nghi_id">
+                    <label for="rejectReason" style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">
+                        Vui lòng nhập lý do từ chối đơn xin nghỉ:
+                    </label>
+                    <textarea id="rejectReason" name="ghi_chu"
+                        placeholder="Ví dụ: Thời gian nghỉ trùng với dự án quan trọng, cần sắp xếp lại công việc..."></textarea>
+                </div>
+                <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn" type="button" style="background: #95a5a6; color: white;"
+                        onclick="closeRejectModal()">Hủy</button>
+                    <button type="submit" class="btnn btnn-reject" onclick="return confirmReject()">Xác nhận từ chối</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
     <script>
-
-        function clickTuChoi() {
+        function clickTuChoi(id) {            
             document.getElementById('rejectModal').style.display = 'block';
             document.getElementById('rejectReason').value = '';
             document.getElementById('rejectReason').focus();
+            document.getElementById('don_xin_nghi_id').value = id;
         }
 
         // Đóng modal khi click vào nút X
@@ -603,14 +622,10 @@
             const reason = document.getElementById('rejectReason').value.trim();
             if (!reason) {
                 alert('Vui lòng nhập lý do từ chối!');
-                return;
+                 return false;
             }
 
-            if (confirm(`Bạn có chắc chắn muốn từ chối đơn xin nghỉ này không?`)) {
-                alert(`Đã từ chối đơn xin nghỉ này`);
-                closeRejectModal();
-                // Có thể chuyển trạng thái card ở đây
-            }
+            return confirm('Bạn có chắc chắn muốn từ chối đơn xin nghỉ này không?');
         }
 
         // Xử lý phím Enter trong textarea
