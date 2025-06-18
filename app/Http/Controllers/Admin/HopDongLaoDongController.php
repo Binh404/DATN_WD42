@@ -16,7 +16,37 @@ class HopDongLaoDongController extends Controller
 {
     public function index()
     {
-        $hopDongs = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu'])->latest()->get();
+        $query = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu']);
+
+        // Tìm kiếm theo từ khóa
+        if (request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('so_hop_dong', 'like', "%{$search}%")
+                  ->orWhereHas('hoSoNguoiDung', function($q) use ($search) {
+                      $q->where('ma_nhan_vien', 'like', "%{$search}%")
+                        ->orWhere('ho', 'like', "%{$search}%")
+                        ->orWhere('ten', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Lọc theo loại hợp đồng
+        if (request('loai_hop_dong')) {
+            $query->where('loai_hop_dong', request('loai_hop_dong'));
+        }
+
+        // Lọc theo trạng thái hợp đồng
+        if (request('trang_thai_hop_dong')) {
+            $query->where('trang_thai_hop_dong', request('trang_thai_hop_dong'));
+        }
+
+        // Lọc theo trạng thái ký
+        if (request('trang_thai_ky')) {
+            $query->where('trang_thai_ky', request('trang_thai_ky'));
+        }
+
+        $hopDongs = $query->latest()->get();
 
         foreach ($hopDongs as $hopDong) {
             if (
