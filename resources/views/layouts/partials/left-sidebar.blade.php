@@ -386,9 +386,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('department.donxinnghi.danhsach') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Xin nghỉ việc</p>
+                <p>Xin nghỉ phép</p>
               </a>
             </li>
 

@@ -64,4 +64,9 @@ class DonXinNghi extends Model
     {
         return $this->hasMany(LichSuDuyetDonNghi::class, 'don_xin_nghi_id');
     }
+
+    public function ketQuaDuyetTheoCap($cap)
+    {
+        return $this->lichSuDuyet->firstWhere('cap_duyet', $cap)?->ket_qua;
+    }
 }

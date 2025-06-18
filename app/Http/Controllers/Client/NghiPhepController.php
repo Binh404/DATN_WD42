@@ -8,6 +8,7 @@ use App\Models\LichSuDuyetDonNghi;
 use App\Models\LoaiNghiPhep;
 use App\Models\NguoiDung;
 use App\Models\SoDuNghiPhepNhanVien;
+use App\Models\VaiTro;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,7 +80,7 @@ class NghiPhepController extends Controller
         $khoangCachNgayBao = $ngayHienTai->diffInDays($ngayBatDau, false);
 
         if ($soNgayBaoTruoc && $khoangCachNgayBao < $soNgayBaoTruoc) {
-            return redirect()->route('nghiphep.create')->with('error', 'Số ngày báo trước phải là '. $soNgayBaoTruoc .' ngày!' );
+            return redirect()->route('nghiphep.create')->with('error', 'Số ngày báo trước phải là ' . $soNgayBaoTruoc . ' ngày!');
         }
 
         // Gán dữ liệu mặc định
@@ -112,9 +113,10 @@ class NghiPhepController extends Controller
         return view('employe.nghiphep.show', compact('donNghiPhep', 'lichSuTruongPhong'));
     }
 
-    public function huyDonXinNghi($id){
+    public function huyDonXinNghi($id)
+    {
         $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
-        if($lichSuDuyet->isNotEmpty()){
+        if ($lichSuDuyet->isNotEmpty()) {
             return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt không thể hủy!');
         }
 
@@ -162,5 +164,25 @@ class NghiPhepController extends Controller
             ->sum('so_ngay_con_lai');
 
         return view('employe.nghiphep.soDuNghiPhep', compact('soDuNghiPhep', 'soNgayDuocCap', 'soNgayDaDung', 'soNgayChoDuyet', 'soNgayConLai'));
+    }
+
+    // hr và trưởng phòng
+    public function donXinNghi()
+    {
+        $user = auth()->user();
+        $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
+
+        if ($vaiTro->ten == 'department') {
+            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
+                ->where('cap_duyet_hien_tai', 1)
+                ->whereHas('nguoiDung', function ($query) use ($user) {
+                    $query->where('phong_ban_id', $user->phong_ban_id);
+                })
+                ->get();
+
+        } elseif($vaiTro->ten == 'hr') {
+            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->where('cap_duyet_hien_tai', 2)->get();
+        }
+        return view('admin.duyetdontu.donxinnghi.index', compact('donXinNghis', 'vaiTro'));
     }
 }
