@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\ChucVu;
+use App\Models\VaiTro;
 use App\Models\PhongBan;
+use App\Models\NguoiDung;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Models\NguoiDungVaiTro;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
-use App\Models\ChucVu;
-use App\Models\NguoiDung;
-use App\Models\VaiTro;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -44,7 +45,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'vai_tro_id' => ['required', 'exists:vai_tro,id'],
             'phong_ban_id' => ['required', 'exists:phong_ban,id'],
-            'chuc_vu_id' => ['required', 'exists:chuc_vu,id'], 
+            'chuc_vu_id' => ['required', 'exists:chuc_vu,id'],
         ]);
 
 
@@ -56,10 +57,17 @@ class RegisteredUserController extends Controller
             'chuc_vu_id' => $request->chuc_vu_id,
             'password' => Hash::make($request->password),
         ]);
-
+        // Gán vai trò cho người dùng
+            $nguoiDungVT = NguoiDungVaiTro::create([
+                'nguoi_dung_id' => $user->id,
+                'vai_tro_id' => 3,
+                'model_type' => NguoiDung::class,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
         event(new Registered($user));
 
 
-        return redirect(route('/', absolute: false));
+        return redirect(route('hr.dashboard', absolute: false));
     }
 }

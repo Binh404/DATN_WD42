@@ -1,26 +1,28 @@
 <?php
 
-use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Middleware\CheckRole;
-
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ChucVuController;
-use App\Http\Controllers\employee\ProfileController;
+
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\HoSoNhanVienController;
+use App\Http\Controllers\Admin\DonTuController;
 use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
-use App\Http\Controllers\Admin\DonTuController;
-use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
+use App\Http\Controllers\Admin\DuyetDonTuController;
+use App\Http\Controllers\Auth\PasswordOTPController;
+use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
+use App\Http\Controllers\employee\ChamCongController;
+use App\Http\Controllers\Admin\HoSoNhanVienController;
 use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 
@@ -147,12 +149,22 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // Admin HR - Hồ sơ nhân viên
 Route::prefix('/hoso')->group(function () {
-    Route::get('/', [HoSoNhanVienController::class, 'index'])->name('hoso.index');
+    Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
+    Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
+    Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
     Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
     Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
     Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
     Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
     Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
+
+
+    // Admin HR - Thêm tk
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->name('register.store');
 });
 });
 
@@ -188,7 +200,7 @@ Route::prefix('employee')->middleware(['auth',PreventBackHistory::class, CheckRo
 
 Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
 
-     // ✅ Route cho điền hồ sơ lần đầu
+     // Route cho điền hồ sơ lần đầu
     Route::get('/complete-profile', [HoSoController::class, 'form'])
         ->name('employee.complete-profile');
     Route::post('/complete-profile', [HoSoController::class, 'store'])
@@ -335,4 +347,8 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])
     Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
+
 });
+
+});
+

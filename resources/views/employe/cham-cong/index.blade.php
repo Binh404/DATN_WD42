@@ -397,8 +397,8 @@
     const COMPANY_LOCATION = {
         // latitude: 21.0305024,    // Thay bằng tọa độ thực tế của công ty
         // longitude: 105.7685504,  // Thay bằng tọa độ thực tế của công ty
-        latitude: 21.037056,    // Thay bằng tọa độ thực tế của công ty
-        longitude: 105.7357824,  // Thay bằng tọa độ thực tế của công ty
+        latitude:  21.1303,    // Thay bằng tọa độ thực tế của công ty
+        longitude: 105.7656,  // Thay bằng tọa độ thực tế của công ty
         allowedRadius: 1000   // 5km = 5000 mét
     };
     const WORK_SCHEDULE = {
