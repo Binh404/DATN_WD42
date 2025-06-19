@@ -131,9 +131,16 @@ class ChamCong extends Model
     public function tinhSoCong()
     {
         $soGioLam = $this->so_gio_lam;
-        $soChamCong = config('chamcong.calculation.hours_per_workday', 8);
+        if($soGioLam < 3.5) {
+            return 0;
+        }else if($soGioLam < 7) {
+            return 0.5;
+        }else {
+            return 1;
+        }
+        // $soChamCong = config('chamcong.calculation.hours_per_workday', 8);
         // Quy đổi số công: 8 giờ = 1 công
-        return round($soGioLam / $soChamCong, 1);
+        // return round($soGioLam / $soChamCong, 1);
     }
 
     public function kiemTraDiMuon()

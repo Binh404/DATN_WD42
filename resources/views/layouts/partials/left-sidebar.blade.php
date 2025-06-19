@@ -121,6 +121,12 @@
                 <p>Phê duyệt</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phê duyệt tăng ca</p>
+              </a>
+            </li>
             {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
+use App\Models\DangKyTangCa;
+use App\Models\thucHienTangCa;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -40,6 +42,10 @@ class ChamCongController extends Controller
         // // Thống kê tháng hiện tại
         // $thongKe = $this->layThongKeThang($user->id);
         // dd($thongKe);
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'success',
+        // ]);
 
         return view('employe.cham-cong.index', compact(
             'chamCongHomNay',
@@ -47,65 +53,126 @@ class ChamCongController extends Controller
             // 'thongKe'
         ));
     }
+
     public function chamCongVao(Request $request)
     {
         try {
             $user = Auth::user();
             $today = now();
             $currentTime = now();
+            // dd($today->format('Y-m-d'));
+            $isOvertime = false;
+            $overtimeStartTime = now()->setTime(18, 45); // 18:45
+            $isWeekend = $today->isWeekend();
+            $isHoliday = $this->kiemTraNgayLe($today);
+            //kiểm tra xem có đã duyệt đơn tăng ca chưa
+            $donTangCa = DangKyTangCa::where('ngay_tang_ca', $today->format('Y-m-d'))
+            ->where('nguoi_dung_id', $user->id)
+            ->where('trang_thai', 'da_duyet')
+            ->first();
+            // dd($donTangCa);
+            if ($isWeekend || $isHoliday || ($donTangCa && $currentTime->greaterThanOrEqualTo($overtimeStartTime))) {
+                $isOvertime = true;
+            }
+            // dd( $isOvertime);
+            if($isOvertime){
+                if (!$donTangCa) {
+                     return response()->json([
+                        'success' => false,
+                        'message' => 'Không thể chấm công, nếu không có đơn tăng ca được duyệt!'
+                    ]);
+                }
+                // dd($donTangCa->id);
+                $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
+                // dd($chamCongTangCa->gio_bat_dau_thuc_te);
+                if ($chamCongTangCa && $chamCongTangCa->gio_bat_dau_thuc_te) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn đã chấm công vào tăng ca hôm nay rồi!'
+                    ]);
+                }
+                // dd($chamCongTangCa);
+                DB::beginTransaction();
+                $chamCongTangCa = thucHienTangCa::updateOrCreate(
+                    [
+                        'dang_ky_tang_ca_id' => $donTangCa->id
+                    ],
+                    [
+                        'gio_bat_dau_thuc_te' => $currentTime,
+                        'vi_tri_check_in' => $this->layViTri($request),
+                        'ghi_chu' => $this->layLyDo($request),
+                        'trang_thai' => 'dang_lam'
+                    ]
+                    );
+                DB::commit();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Chấm công tăng ca vào thành công!',
+                        'data' => [
+                            'gio_bat_dau_thuc_te' => $chamCongTangCa->gio_bat_dau_thuc_te
 
-            // Kiểm tra đã chấm công chưa
-            $chamCong = ChamCong::layBanGhiHomNay($user->id);
+                        ]
+                    ]);
+            }else {
+                // Kiểm tra đã chấm công chưa
+                if (!$isWeekend && !$isHoliday && !$donTangCa && $currentTime->greaterThanOrEqualTo($overtimeStartTime)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Không thể chấm công tăng ca nếu không có đơn tăng ca được duyệt!'
+                    ]);
+                }
+                $chamCong = ChamCong::layBanGhiHomNay($user->id);
 
-            if ($chamCong && $chamCong->gio_vao) {
+                if ($chamCong && $chamCong->gio_vao) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn đã chấm công vào hôm nay rồi!'
+                    ]);
+                };
+
+
+                // Kiểm tra có phải ngày lễ/nghỉ không
+                // $isNgayLe = $this->kiemTraNgayLe($today);
+                // $isWeekend = $today->isWeekend();
+                // dd($isNgayLe, $isWeekend);
+                DB::beginTransaction();
+
+                // Tạo hoặc cập nhật bản ghi chấm công
+                $chamCong = ChamCong::updateOrCreate(
+                    [
+                        'nguoi_dung_id' => $user->id,
+                        'ngay_cham_cong' => $today->format('Y-m-d'),
+                    ],
+                    [
+                        'gio_vao' => $currentTime,
+                        'vi_tri_check_in' => $this->layViTri($request),
+                        'ghi_chu' => $this->layLyDo($request),
+                        'dia_chi_ip' => $request->ip(),
+                        'trang_thai_duyet' => $request->trang_thai_duyet
+                    ]
+                );
+
+                // Cập nhật trạng thái nếu đi muộn
+                $chamCong->capNhatTrangThai();
+                // dd($chamCong);
+                // $a = $chamCong->trag_thai_duyet;
+                $chamCong->save();
+
+                DB::commit();
+
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Bạn đã chấm công vào hôm nay rồi!'
+                    'success' => true,
+                    'message' => 'Chấm công vào thành công!',
+                    'data' => [
+                        'gio_vao' => $currentTime->format('H:i'),
+                        'trang_thai' => $chamCong->trang_thai,
+                        'trang_thai_text' => $chamCong->trang_thai_text,
+                        'trang_thai_duyet' => $chamCong->trang_thai_duyet,
+                        'di_muon' => $chamCong->phut_di_muon > 0 ? $chamCong->phut_di_muon : 0
+                    ]
                 ]);
             }
-            if ($today->isWeekend()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Hôm nay là cuối tuần!'
-                ]);
-            }
-            // dd($chamCong);
-            DB::beginTransaction();
 
-            // Tạo hoặc cập nhật bản ghi chấm công
-            $chamCong = ChamCong::updateOrCreate(
-                [
-                    'nguoi_dung_id' => $user->id,
-                    'ngay_cham_cong' => $today->format('Y-m-d'),
-                ],
-                [
-                    'gio_vao' => $currentTime,
-                    'vi_tri_check_in' => $this->layViTri($request),
-                    'ghi_chu' => $this->layLyDo($request),
-                    'dia_chi_ip' => $request->ip(),
-                    'trang_thai_duyet' => $request->trang_thai_duyet
-                ]
-            );
-
-            // Cập nhật trạng thái nếu đi muộn
-            $chamCong->capNhatTrangThai();
-            // dd($chamCong);
-            // $a = $chamCong->trag_thai_duyet;
-            $chamCong->save();
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Chấm công vào thành công!',
-                'data' => [
-                    'gio_vao' => $currentTime->format('H:i'),
-                    'trang_thai' => $chamCong->trang_thai,
-                    'trang_thai_text' => $chamCong->trang_thai_text,
-                    'trang_thai_duyet' => $chamCong->trang_thai_duyet,
-                    'di_muon' => $chamCong->phut_di_muon > 0 ? $chamCong->phut_di_muon : 0
-                ]
-            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -119,56 +186,113 @@ class ChamCongController extends Controller
     {
         try {
             $user = Auth::user();
-            $today = now()->format('Y-m-d');
+            $today = now();
             $currentTime = now();
+            $isOvertime = false;
+            $overtimeStartTime = now()->setTime(18, 45); // 18:45
+            $isWeekend = $today->isWeekend();
+            $isHoliday = $this->kiemTraNgayLe($today);
+            //kiểm tra xem có đã duyệt đơn tăng ca chưa
+            $donTangCa = DangKyTangCa::where('ngay_tang_ca', $today->format('Y-m-d'))
+            ->where('nguoi_dung_id', $user->id)
+            ->where('trang_thai', 'da_duyet')
+            ->first();
+            // dd($donTangCa);
+            if ($isWeekend || $isHoliday || ($donTangCa && $currentTime->greaterThanOrEqualTo($overtimeStartTime))) {
+                $isOvertime = true;
+            }
+            if($isOvertime){
+                if (!$donTangCa) {
+                     return response()->json([
+                        'success' => false,
+                        'message' => 'Không thể chấm công, nếu không có đơn tăng ca được duyệt!'
+                    ]);
+                }
+                // dd($donTangCa->id);
+                $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
+                // dd($chamCongTangCa->gio_bat_dau_thuc_te);
+                if (!$chamCongTangCa && !$chamCongTangCa->gio_bat_dau_thuc_te) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn chưa chấm công vào tăng ca hôm nay rồi!'
+                    ]);
+                }elseif ($chamCongTangCa && $chamCongTangCa->gio_ket_thuc_thuc_te) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn đã chấm công ra tăng ca hôm nay rồi!'
+                    ]);
+                }
 
-            // Kiểm tra đã chấm công vào chưa
-            $chamCong = ChamCong::layBanGhiHomNay($user->id);
 
-            if (!$chamCong || !$chamCong->gio_vao) {
+                // dd($chamCongTangCa);
+                DB::beginTransaction();
+                $chamCongTangCa ->update([
+                    'gio_ket_thuc_thuc_te' => $currentTime,
+                    'vi_tri_check_out' => $this->layViTri($request),
+                    'so_gio_tang_ca_thuc_te' => $chamCongTangCa->capNhatSoGio(),
+                    'trang_thai' => $chamCongTangCa->capNhatTrangThai($donTangCa->so_gio_tang_ca),
+                    'so_cong_tang_ca' => $chamCongTangCa->capNhapSoCong($donTangCa->loai_tang_ca, $donTangCa->so_gio_tang_ca),
+                ]);
+                $chamCongTangCa->save();
+                DB::commit();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Hoàn thành tăng ca thành công!',
+                        'data' => [
+                            'gio_ra' => $chamCongTangCa->gio_ket_thuc_thuc_te->format('H:i'),
+
+                        ]
+                    ]);
+            }else {
+                // Kiểm tra đã chấm công vào chưa
+                $chamCong = ChamCong::layBanGhiHomNay($user->id);
+
+                if (!$chamCong || !$chamCong->gio_vao) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn chưa chấm công vào hôm nay!'
+                    ]);
+                }
+
+                if ($chamCong->gio_ra) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn đã chấm công ra hôm nay rồi!'
+                    ]);
+                }
+                $trangThaiDuyet = ($chamCong->trang_thai_duyet == 0)
+                    ? 0  // Chấm công vào chờ duyệt → chấm công ra cũng chờ duyệt
+                    : $request->trang_thai_duyet; // Chấm công vào đã duyệt → theo request
+
+                DB::beginTransaction();
+
+                // Cập nhật giờ ra
+                $chamCong->update([
+                    'gio_ra' => $currentTime,
+                    'vi_tri_check_out' => $this->layViTri($request),
+                    'trang_thai_duyet' => $trangThaiDuyet
+                ]);
+
+                // Cập nhật trạng thái và tính toán
+                $chamCong->capNhatTrangThai();
+                $chamCong->save();
+
+                DB::commit();
+
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Bạn chưa chấm công vào hôm nay!'
+                    'success' => true,
+                    'message' => 'Chấm công ra thành công! Hẹn gặp lại vào ngày mai.',
+                    'data' => [
+                        'gio_ra' => $currentTime->format('H:i'),
+                        'so_gio_lam' => $chamCong->so_gio_lam,
+                        'so_cong' => $chamCong->so_cong,
+                        'trang_thai' => $chamCong->trang_thai,
+                        'trang_thai_duyet' => $request->trang_thai_duyet,
+                        'trang_thai_text' => $chamCong->trang_thai_text
+                    ]
                 ]);
             }
 
-            if ($chamCong->gio_ra) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Bạn đã chấm công ra hôm nay rồi!'
-                ]);
-            }
-            $trangThaiDuyet = ($chamCong->trang_thai_duyet == 0)
-                ? 0  // Chấm công vào chờ duyệt → chấm công ra cũng chờ duyệt
-                : $request->trang_thai_duyet; // Chấm công vào đã duyệt → theo request
-
-            DB::beginTransaction();
-
-            // Cập nhật giờ ra
-            $chamCong->update([
-                'gio_ra' => $currentTime,
-                'vi_tri_check_out' => $this->layViTri($request),
-                'trang_thai_duyet' => $trangThaiDuyet
-            ]);
-
-            // Cập nhật trạng thái và tính toán
-            $chamCong->capNhatTrangThai();
-            $chamCong->save();
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Chấm công ra thành công! Hẹn gặp lại vào ngày mai.',
-                'data' => [
-                    'gio_ra' => $currentTime->format('H:i'),
-                    'so_gio_lam' => $chamCong->so_gio_lam,
-                    'so_cong' => $chamCong->so_cong,
-                    'trang_thai' => $chamCong->trang_thai,
-                    'trang_thai_duyet' => $request->trang_thai_duyet,
-                    'trang_thai_text' => $chamCong->trang_thai_text
-                ]
-            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -263,29 +387,82 @@ class ChamCongController extends Controller
     }
     public function trangThaiChamCong()
     {
-        $user = Auth::user();
-        $chamCong = ChamCong::layBanGhiHomNay($user->id);
+        try {
+            $user = Auth::user();
+            $today = now();
+            $currentTime = now();
+            $overtimeStartTime = now()->setTime(18, 30); // 18:30
+            $isWeekend = $today->isWeekend();
+            $isHoliday = $this->kiemTraNgayLe($today);
 
-        $trangThai = 'chua_cham_cong';
+            // Kiểm tra đơn tăng ca được duyệt
+            $donTangCa = DangKyTangCa::where('ngay_tang_ca', $today->format('Y-m-d'))
+                ->where('nguoi_dung_id', $user->id)
+                ->where('trang_thai', 'da_duyet')
+                ->first();
 
-        if ($chamCong) {
-            if ($chamCong->gio_vao && $chamCong->gio_ra) {
-                $trangThai = 'da_hoan_thanh';
-            } elseif ($chamCong->gio_vao) {
-                $trangThai = 'da_cham_cong_vao';
+            // Lấy thông tin chấm công thường
+            $chamCongThuong = ChamCong::layBanGhiHomNay($user->id);
+
+            // Lấy thông tin chấm công tăng ca
+            $chamCongTangCa = null;
+            if ($donTangCa) {
+                $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'trang_thai' => $trangThai,
-            'data' => $chamCong ? [
-                'gio_vao' => $chamCong->gio_vao_format,
-                'gio_ra' => $chamCong->gio_ra_format,
-                'so_gio_lam' => $chamCong->so_gio_lam ?? 0,
-                'trang_thai_text' => $chamCong->trang_thai_text
-            ] : null
-        ]);
+            // Xác định loại chấm công hiện tại
+            $isOvertimeTime = $currentTime->greaterThanOrEqualTo($overtimeStartTime);
+            $shouldUseOvertime = $isWeekend || $isHoliday || ($donTangCa && $isOvertimeTime);
+
+            $response = [
+                'success' => true,
+                'is_weekend' => $isWeekend,
+                'is_holiday' => $isHoliday,
+                'has_approved_overtime' => $donTangCa ? true : false,
+                'current_time' => $currentTime->format('H:i'),
+                'should_use_overtime' => $shouldUseOvertime,
+                'normal_data' => null,
+                'overtime_data' => null
+            ];
+
+            // Thêm thông tin chấm công thường
+            if ($chamCongThuong) {
+                $response['normal_data'] = [
+                    'gio_vao' => $chamCongThuong->gio_vao ? $chamCongThuong->gio_vao->format('H:i') : null,
+                    'gio_ra' => $chamCongThuong->gio_ra ? $chamCongThuong->gio_ra->format('H:i') : null,
+                    'so_gio_lam' => $chamCongThuong->so_gio_lam,
+                    'ghi_chu' => $chamCongThuong->ghi_chu,
+                    // 'trang_thai' => $chamCongThuong->trang_thai,
+                    'ghi_chu_duyet' => $chamCongThuong->ghi_chu_duyet,
+                    'trang_thai_text' => $chamCongThuong->trang_thai_text,
+                    'trang_thai_duyet' => $chamCongThuong->trang_thai_duyet
+                ];
+            }
+
+            // Thêm thông tin chấm công tăng ca
+            if ($chamCongTangCa) {
+                $response['overtime_data'] = [
+                    'gio_bat_dau_thuc_te' => $chamCongTangCa->gio_bat_dau_thuc_te
+                        ? Carbon::parse($chamCongTangCa->gio_bat_dau_thuc_te)->format('H:i')
+                        : null,
+
+                    'gio_ket_thuc_thuc_te' => $chamCongTangCa->gio_ket_thuc_thuc_te
+                        ? Carbon::parse($chamCongTangCa->gio_ket_thuc_thuc_te)->format('H:i')
+                        : null,
+                    'so_gio_tang_ca_thuc_te' => $chamCongTangCa->so_gio_tang_ca_thuc_te,
+                    'so_cong_tang_ca' => $chamCongTangCa->so_cong_tang_ca,
+                    'trang_thai' => $chamCongTangCa->trang_thai_text
+                ];
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ]);
+        }
     }
     private function layViTri($request)
     {
@@ -398,5 +575,22 @@ class ChamCongController extends Controller
             'so_ngay_vang' => $chamCongThang->where('trang_thai', 'vang_mat')->count(),
             'so_ngay_nghi_phep' => $chamCongThang->where('trang_thai', 'nghi_phep')->count(),
         ];
+    }
+    /**
+     * Kiểm tra ngày lễ
+     */
+    private function kiemTraNgayLe($ngay)
+    {
+        // Danh sách ngày lễ (có thể lưu trong database hoặc config)
+        $ngayLe = [
+            '01-01', // Tết Dương lịch
+            '30-04', // 30/4
+            '01-05', // 1/5
+            '02-09', // Quốc khánh
+            // Thêm các ngày lễ khác...
+        ];
+
+        $ngayHienTai = $ngay->format('d-m');
+        return in_array($ngayHienTai, $ngayLe);
     }
 }
