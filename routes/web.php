@@ -85,12 +85,19 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
-        Route::post('/store', [HopDongLaoDongController::class, 'store'])->name('store');
+        Route::post('/', [HopDongLaoDongController::class, 'store'])->name('store');
         Route::get('/{id}', [HopDongLaoDongController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [HopDongLaoDongController::class, 'edit'])->name('edit');
         Route::put('/{id}', [HopDongLaoDongController::class, 'update'])->name('update');
         Route::delete('/{id}', [HopDongLaoDongController::class, 'destroy'])->name('destroy');
         Route::post('/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('ky');
+        Route::post('/{id}/huy', [HopDongLaoDongController::class, 'huyHopDong'])->name('huy');
+        Route::get('/{hopDong}/phu-luc/create', [HopDongLaoDongController::class, 'createPhuLuc'])->name('phuluc.create');
+        Route::post('/{hopDong}/phu-luc', [HopDongLaoDongController::class, 'storePhuLuc'])->name('phuluc.store');
+    });
+
+    Route::prefix('phu-luc')->name('phuluc.')->group(function () {
+        Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
     });
 
     // Admin Phòng Ban
@@ -127,6 +134,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Route::post('/ungvien/guiemailall', [UngTuyenController::class, 'guiEmailAll']);
     // // Route Gửi Email Đi Làm N8N
     // Route::post('/ungvien/dilam', [UngTuyenController::class, 'guiEmailDiLam']);
+
 
 
     // // Route xuất file excel phỏng vấn
@@ -347,8 +355,4 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])
     Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
-
 });
-
-});
-

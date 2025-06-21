@@ -24,7 +24,7 @@
                             <select name="nguoi_dung_id" id="nguoi_dung_id" class="form-control @error('nguoi_dung_id') is-invalid @enderror" required>
                                 <option value="">-- Chọn nhân viên --</option>
                                 @foreach($nhanViens as $nhanVien)
-                                    <option value="{{ $nhanVien->id }}" {{ old('nguoi_dung_id') == $nhanVien->id ? 'selected' : '' }}>
+                                    <option value="{{ $nhanVien->id }}" {{ (old('nguoi_dung_id') == $nhanVien->id || (isset($selectedNhanVienId) && $selectedNhanVienId == $nhanVien->id)) ? 'selected' : '' }}>
                                         {{ $nhanVien->hoSo->ho . ' ' . $nhanVien->hoSo->ten }} ({{ $nhanVien->hoSo->ma_nhan_vien }})
                                     </option>
                                 @endforeach

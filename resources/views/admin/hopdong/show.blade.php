@@ -4,6 +4,26 @@
 
 @section('content')
 <div class="container-fluid">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i>
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -141,19 +161,132 @@
                     </div>
                     @endif
 
+                    @if($hopDong->trang_thai_hop_dong === 'huy_bo')
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h4>Thông tin hủy hợp đồng</h4>
+                            <div class="card">
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th style="width: 200px;">Lý do hủy</th>
+                                            <td>{{ $hopDong->ly_do_huy }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Người hủy</th>
+                                            <td>
+                                                @if($hopDong->nguoiHuy && $hopDong->nguoiHuy->hoSo)
+                                                    {{ $hopDong->nguoiHuy->hoSo->ho . ' ' . $hopDong->nguoiHuy->hoSo->ten }}
+                                                @elseif($hopDong->nguoiHuy)
+                                                    {{ $hopDong->nguoiHuy->email ?? 'Không xác định' }}
+                                                @else
+                                                    Không xác định
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Thời gian hủy</th>
+                                            <td>{{ $hopDong->thoi_gian_huy ? $hopDong->thoi_gian_huy->format('d/m/Y H:i:s') : 'Không xác định' }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($hopDong->phuLucs->isNotEmpty())
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h4>Phụ lục hợp đồng</h4>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Số phụ lục</th>
+                                                    <th>Tên phụ lục</th>
+                                                    <th>Ngày ký</th>
+                                                    <th>Ngày có hiệu lực PL</th>
+                                                    <th>Trạng thái ký</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($hopDong->phuLucs as $phuLuc)
+                                                <tr>
+                                                    <td>{{ $phuLuc->so_phu_luc }}</td>
+                                                    <td>{{ $phuLuc->ten_phu_luc ?? '-' }}</td>
+                                                    <td>{{ $phuLuc->ngay_ky->format('d/m/Y') }}</td>
+                                                    <td>{{ $phuLuc->ngay_hieu_luc->format('d/m/Y') }}</td>
+                                                    <td>
+                                                        @if($phuLuc->trang_thai_ky == 'da_ky')
+                                                            <span class="badge badge-success">Đã ký</span>
+                                                        @else
+                                                            <span class="badge badge-warning">Chờ ký</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        {{-- TODO: Add actions like view details for appendix --}}
+                                                        <a href="{{ route('phuluc.show', $phuLuc->id) }}" class="btn btn-info btn-sm">Xem</a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="btn-group">
+                                @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
                                 <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
                                 </a>
-                                <form action="{{ route('hopdong.destroy', $hopDong->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hợp đồng này?')">
-                                        <i class="fas fa-trash"></i> Xóa
-                                    </button>
-                                </form>
+                                @php
+                                    $user = Auth::user();
+                                    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+                                    $canCancel = in_array('admin', $userRoles) || in_array('hr', $userRoles);
+                                    
+                                    // Kiểm tra điều kiện hủy hợp đồng
+                                    $canCancelContract = $canCancel && 
+                                        $hopDong->trang_thai_hop_dong !== 'het_han' && 
+                                        (!$hopDong->ngay_bat_dau || $hopDong->ngay_bat_dau->lte(now()));
+                                @endphp
+                                @if($canCancel)
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#huyHopDongModal" 
+                                        {{ !$canCancelContract ? 'disabled' : '' }}>
+                                    <i class="fas fa-times"></i> Hủy hợp đồng
+                                </button>
+                                @if(!$canCancelContract)
+                                <div class="alert alert-warning mt-2">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Lưu ý:</strong> Hợp đồng này không thể được hủy.
+                                </div>
+                                @endif
+                                @else
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Lưu ý:</strong> Bạn không có quyền hủy hợp đồng này.
+                                </div>
+                                @endif
+                                @else
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Lưu ý:</strong> 
+                                    @if($hopDong->trang_thai_hop_dong == 'huy_bo')
+                                        Hợp đồng này đã được hủy và không thể chỉnh sửa.
+                                    @elseif($hopDong->trang_thai_hop_dong == 'het_han')
+                                        Hợp đồng này đã hết hạn và không thể chỉnh sửa.
+                                    @endif
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -162,4 +295,95 @@
         </div>
     </div>
 </div>
-@endsection 
+
+<!-- Modal Hủy hợp đồng -->
+@if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han' && isset($canCancelContract) && $canCancelContract)
+<div class="modal fade" id="huyHopDongModal" tabindex="-1" role="dialog" aria-labelledby="huyHopDongModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="huyHopDongModalLabel">Hủy hợp đồng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('hopdong.huy', $hopDong->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <div class="form-group">
+                        <label for="ly_do_huy">Lý do hủy <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('ly_do_huy') is-invalid @enderror" 
+                                  id="ly_do_huy" 
+                                  name="ly_do_huy" 
+                                  rows="4" 
+                                  placeholder="Nhập lý do hủy hợp đồng..." 
+                                  required>{{ old('ly_do_huy') }}</textarea>
+                        @error('ly_do_huy')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Lưu ý:</strong> Hành động này sẽ chuyển trạng thái hợp đồng thành "Đã hủy" và không thể hoàn tác.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Xác nhận hủy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+@endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Tự động mở modal nếu có validation errors
+    @if($errors->any())
+        $('#huyHopDongModal').modal('show');
+    @endif
+    
+    // Xử lý form hủy hợp đồng
+    $('#huyHopDongModal form').on('submit', function(e) {
+        var lyDoHuy = $('#ly_do_huy').val().trim();
+        
+        if (!lyDoHuy) {
+            e.preventDefault();
+            $('#ly_do_huy').addClass('is-invalid');
+            $('#ly_do_huy').focus();
+            return false;
+        }
+        
+        // Hiển thị loading khi submit
+        $(this).find('button[type="submit"]').html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...').prop('disabled', true);
+    });
+    
+    // Xóa lỗi validation khi user nhập
+    $('#ly_do_huy').on('input', function() {
+        if ($(this).val().trim()) {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    
+    // Reset form khi đóng modal
+    $('#huyHopDongModal').on('hidden.bs.modal', function() {
+        $('#ly_do_huy').val('').removeClass('is-invalid');
+        $(this).find('button[type="submit"]').html('<i class="fas fa-times"></i> Xác nhận hủy').prop('disabled', false);
+    });
+});
+</script>
+@endpush 

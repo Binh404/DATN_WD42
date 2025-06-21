@@ -30,6 +30,10 @@ class HopDongLaoDong extends Model
         'nguoi_ky_id',
         'thoi_gian_ky',
         'ghi_chu',
+        'ly_do_huy',
+        'nguoi_huy_id',
+        'thoi_gian_huy',
+        'trang_thai_tai_ky',
     ];
 
     protected $casts = [
@@ -38,6 +42,7 @@ class HopDongLaoDong extends Model
         'luong_co_ban' => 'decimal:2',
         'phu_cap' => 'decimal:2',
         'thoi_gian_ky' => 'datetime',
+        'thoi_gian_huy' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -52,6 +57,11 @@ class HopDongLaoDong extends Model
         return $this->belongsTo(NguoiDung::class, 'nguoi_ky_id');
     }
 
+    public function nguoiHuy()
+    {
+        return $this->belongsTo(NguoiDung::class, 'nguoi_huy_id');
+    }
+
     public function hoSoNguoiDung()
     {
         return $this->belongsTo(HoSoNguoiDung::class, 'nguoi_dung_id', 'nguoi_dung_id');
@@ -60,5 +70,10 @@ class HopDongLaoDong extends Model
     public function chucVu()
     {
         return $this->belongsTo(ChucVu::class, 'chuc_vu_id');
+    }
+
+    public function phuLucs()
+    {
+        return $this->hasMany(PhuLucHopDong::class, 'hop_dong_id');
     }
 }

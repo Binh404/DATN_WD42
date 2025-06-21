@@ -181,12 +181,20 @@
                                                title="Xem chi tiết">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('hopdong.edit', $hopDong->id) }}" 
-                                               class="btn btn-primary btn-sm"
-                                               title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            @if($hopDong->trang_thai_ky == 'cho_ky')
+                                            
+                                            @if($hopDong->trang_thai_hop_dong === 'het_han')
+                                                <a href="{{ route('hopdong.create', ['nguoi_dung_id' => $hopDong->nguoi_dung_id]) }}" class="btn btn-success btn-sm" title="Tái ký hợp đồng">
+                                                    <i class="fas fa-file-signature"></i> Tái ký
+                                                </a>
+                                            @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo')
+                                                <a href="{{ route('hopdong.edit', $hopDong->id) }}" 
+                                                   class="btn btn-primary btn-sm"
+                                                   title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            @endif
+
+                                            @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
                                                 <button type="button" 
                                                         class="btn btn-success btn-sm"
                                                         onclick="kyHopDong({{ $hopDong->id }})"
