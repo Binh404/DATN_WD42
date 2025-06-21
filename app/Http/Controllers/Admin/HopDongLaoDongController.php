@@ -68,10 +68,11 @@ class HopDongLaoDongController extends Controller
 
         $hieuLuc = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')->count();
         $chuaCoHopDong = HoSoNguoiDung::whereDoesntHave('hopDongLaoDong')->count();
-        $sapHetHan = HopDongLaoDong::where('ngay_ket_thuc', '>', $now)
+        $sapHetHan = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')
+            ->where('ngay_ket_thuc', '>', $now)
             ->where('ngay_ket_thuc', '<=', $in30days)
             ->count();
-        $hetHanChuaTaiKy = HopDongLaoDong::where('trang_thai_hop_dong', 'het_han')->count();
+        $hetHanChuaTaiKy = HopDongLaoDong::where('trang_thai_tai_ky', 'cho_tai_ky')->count();
 
         return view('admin.hopdong.index', compact(
             'hopDongs',
