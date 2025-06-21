@@ -182,11 +182,11 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @if($hopDong->trang_thai_hop_dong === 'het_han')
+                                            @if($hopDong->trang_thai_hop_dong === 'het_han' && $hopDong->trang_thai_tai_ky !== 'da_tai_ky')
                                                 <a href="{{ route('hopdong.create', ['nguoi_dung_id' => $hopDong->nguoi_dung_id]) }}" class="btn btn-success btn-sm" title="Tái ký hợp đồng">
                                                     <i class="fas fa-file-signature"></i> Tái ký
                                                 </a>
-                                            @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo')
+                                            @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
                                                 <a href="{{ route('hopdong.edit', $hopDong->id) }}" 
                                                    class="btn btn-primary btn-sm"
                                                    title="Chỉnh sửa">
@@ -194,14 +194,14 @@
                                                 </a>
                                             @endif
 
-                                            @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
+                                            <!-- @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
                                                 <button type="button" 
                                                         class="btn btn-success btn-sm"
                                                         onclick="kyHopDong({{ $hopDong->id }})"
                                                         title="Ký hợp đồng">
                                                     <i class="fas fa-signature"></i>
                                                 </button>
-                                            @endif
+                                            @endif -->
                                         </div>
                                     </td>
                                 </tr>
@@ -214,35 +214,13 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa hợp đồng này không?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <form id="deleteForm" method="POST" style="display: inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 @endsection
 
 @section('scripts')
 <script>
    
-   function kyHopDong(id) {
+  
         if (confirm('Bạn có chắc chắn muốn ký hợp đồng này?')) {
             $.ajax({
                 url: `/hop-dong/${id}/ky`,

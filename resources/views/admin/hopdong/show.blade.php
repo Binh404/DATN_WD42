@@ -256,8 +256,7 @@
                                     
                                     // Kiểm tra điều kiện hủy hợp đồng
                                     $canCancelContract = $canCancel && 
-                                        $hopDong->trang_thai_hop_dong !== 'het_han' && 
-                                        (!$hopDong->ngay_bat_dau || $hopDong->ngay_bat_dau->lte(now()));
+                                        $hopDong->trang_thai_hop_dong !== 'het_han' ;
                                 @endphp
                                 @if($canCancel)
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#huyHopDongModal" 
