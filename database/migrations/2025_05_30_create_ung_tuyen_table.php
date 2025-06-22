@@ -22,15 +22,17 @@ return new class extends Migration
             $table->string('ky_nang')->nullable();
             $table->text('thu_gioi_thieu')->nullable();
             $table->string('tai_cv')->nullable();
-            $table->timestamps(); // created_at + updated_at
+            $table->timestamps();
 
             $table->decimal('diem_danh_gia', 5, 2)->nullable()->comment('Điểm đánh giá tự động khi ứng tuyển');
 
-            $table->enum('trang_thai_pv', ['chưa phỏng vấn', 'đã phỏng vấn', 'pass','fail'])->default('chưa phỏng vấn');
+            $table->enum('trang_thai_pv', ['Chưa phỏng vấn', 'Đã phỏng vấn', 'Đạt', 'Khó'])->default('Chưa phỏng vấn');
             $table->decimal('diem_phong_van', 5, 2)->nullable()->comment('Điểm phỏng vấn do người phỏng vấn chấm');
             $table->text('ghi_chu')->nullable()->comment('Ghi chú của người phỏng vấn');
 
             $table->enum('trang_thai', ['cho_xu_ly', 'phe_duyet', 'tu_choi'])->default('cho_xu_ly');
+            $table->enum('trang_thai_email', ['chua_gui', 'da_gui'])->default('chua_gui');
+            $table->enum('trang_thai_email_trungtuyen', ['chua_gui', 'da_gui'])->default('chua_gui');
 
             $table->text('ly_do')->nullable()->comment('Lý do phê duyệt hoặc từ chối');
             $table->timestamp('ngay_cap_nhat')->nullable()->comment('Thời gian cập nhật trạng thái');
@@ -40,7 +42,6 @@ return new class extends Migration
             $table->unsignedBigInteger('nguoi_cap_nhat_cuoi_id')->nullable();
 
             $table->foreign('tin_tuyen_dung_id')->references('id')->on('tin_tuyen_dung')->onDelete('set null');
-
             $table->foreign('nguoi_cap_nhat')->references('id')->on('nguoi_dung')->onDelete('set null');
             $table->foreign('nguoi_cap_nhat_id')->references('id')->on('nguoi_dung')->onDelete('set null');
             $table->foreign('nguoi_cap_nhat_cuoi_id')->references('id')->on('nguoi_dung')->onDelete('set null');

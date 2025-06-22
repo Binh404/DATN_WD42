@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    @if(request('from') !== 'trung-tuyen')
+    @if(request('from') !== 'trung-tuyen' && request('from') !== 'phong-van')
     <div class="card mt-4">
         <div class="card-header">
             <h5 class="card-title">Đánh giá ứng viên</h5>

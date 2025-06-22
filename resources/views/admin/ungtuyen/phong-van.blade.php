@@ -148,7 +148,7 @@
                                 </div>
                             </td>
                             <td>
-                                @if($uv->trang_thai_email === 'Đã gửi')
+                                @if($uv->trang_thai_email === 'da_gui')
                                 <span class="badge bg-success">Đã gửi</span>
                                 @else
                                 <span class="badge bg-danger">Chưa gửi</span>
@@ -191,7 +191,7 @@
                             </td> -->
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a href="/ungvien/show/{{ $uv->id }}" class="btn btn-sm btn-info text-white">
+                                    <a href="/ungvien/show/{{ $uv->id }}?from=phong-van" class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <!-- <button type="button" class="btn btn-sm btn-primary"

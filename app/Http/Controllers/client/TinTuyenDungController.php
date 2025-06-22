@@ -5,6 +5,7 @@ namespace App\Http\Controllers\client;
 use App\Http\Controllers\Controller;
 use App\Models\PhongBan;
 use App\Models\TinTuyenDung;
+use App\Models\VaiTro;
 use App\Models\YeuCauTuyenDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,8 @@ class TinTuyenDungController extends Controller
     {
         $yeuCau = YeuCauTuyenDung::with('phongBan', 'chucVu')->findOrFail($id);
         $phongBans = PhongBan::all();
-        return view("admin.tintuyendung.create", compact('yeuCau', 'phongBans'));
+        $vaiTros = VaiTro::whereRaw('LOWER(ten) != ?', ['admin'])->get();
+        return view("admin.tintuyendung.create", compact('yeuCau', 'phongBans', 'vaiTros'));
     }
 
     public function store(Request $request)
@@ -43,6 +45,7 @@ class TinTuyenDungController extends Controller
             'ma' => 'required|string|max:255|unique:tin_tuyen_dung,ma',
             'phong_ban_id' => 'required|integer|exists:phong_ban,id',
             'chuc_vu_id' => 'required|integer|exists:chuc_vu,id',
+            'vai_tro_id' => 'required|integer|exists:vai_tro,id',
             'chi_nhanh_id' => 'nullable|integer|exists:chi_nhanh,id',
             'loai_hop_dong' => 'required|in:thu_viec,xac_dinh_thoi_han,khong_xac_dinh_thoi_han',
             'cap_do_kinh_nghiem' => 'required|in:intern,fresher,junior,middle,senior',
