@@ -1,30 +1,41 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="@if(auth()->user()->role === 'admin')
+  <a style="text-decoration: none;" href="@if(auth()->user()->role === 'admin')
             {{route('admin.dashboard')}}
           @elseif(auth()->user()->role === 'hr')
             {{route('hr.dashboard')}}
           {{-- @else
             {{route('hr.dashboard')}} --}}
           @endif" class="brand-link">
-    <div class="d-flex">
-      <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
-      <span class="brand-text font-weight-light">DV TECH</span>
-    </div>
+    <div class="d-flex align-items-center px-3 py-2">
+    <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="img-fluid bg-white rounded-circle shadow-sm me-2" style="width: 40px; height: 40px;">
+    <span class="text-white fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
+</div>
+
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <div class="image">
-        <img src="{{asset('assets/images/user.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
-      </div>
-      <div class="info">
-        <a href="#" class="d-block">{{ auth()->user()->ten_dang_nhap }}</a>
-</a>
-      </div>
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+    <div class="image">
+        <img src="{{ asset('assets/images/user.png') }}" alt="user" class="img-circle elevation-2 bg-white" style="width: 35px; height: 35px;">
     </div>
+    <div class="info ms-2">
+        <span class="d-block text-white fw-semibold">{{ auth()->user()->ten_dang_nhap }}</span>
+    </div>
+</div>
+<style>
+    .user-panel {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        transition: 0.3s ease;
+            height: 54px;
+    padding-left: 25px;
+    padding-top: 15px;
+    }
+</style>
+
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
