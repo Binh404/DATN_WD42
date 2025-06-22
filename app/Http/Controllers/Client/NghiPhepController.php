@@ -113,6 +113,14 @@ class NghiPhepController extends Controller
         return view('employe.nghiphep.show', compact('donNghiPhep', 'lichSuTruongPhong'));
     }
 
+    public function chiTiet($id)
+    {
+        $donNghiPhep = DonXinNghi::with('loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->findOrFail($id);
+        $lichSuTruongPhong = $donNghiPhep->lichSuDuyet->firstWhere('cap_duyet', 1);
+
+        return view('admin.duyetdontu.donxinnghi.show', compact('donNghiPhep', 'lichSuTruongPhong'));
+    }
+
     public function huyDonXinNghi($id)
     {
         $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
@@ -174,15 +182,34 @@ class NghiPhepController extends Controller
 
         if ($vaiTro->ten == 'department') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
-                ->where('cap_duyet_hien_tai', 1)
                 ->whereHas('nguoiDung', function ($query) use ($user) {
                     $query->where('phong_ban_id', $user->phong_ban_id);
                 })
                 ->get();
 
-        } elseif($vaiTro->ten == 'hr') {
-            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->where('cap_duyet_hien_tai', 2)->get();
+            $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
+                ->where('cap_duyet', 1)
+                ->groupBy('ket_qua')
+                ->pluck('tong', 'ket_qua');
+
+            $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
+                $query->where('cap_duyet', 1);
+            })->count();
+
+        } elseif ($vaiTro->ten == 'hr') {
+            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
+                ->where('cap_duyet_hien_tai', 2)->get();
+
+            $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
+                ->where('cap_duyet', 1)
+                ->groupBy('ket_qua')
+                ->pluck('tong', 'ket_qua');
+
+            $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
+                $query->where('cap_duyet', 2);
+            })
+                ->count();
         }
-        return view('admin.duyetdontu.donxinnghi.index', compact('donXinNghis', 'vaiTro'));
+        return view('admin.duyetdontu.donxinnghi.index', compact('donXinNghis', 'vaiTro', 'thongKe', 'soDonChuaDuyet'));
     }
 }

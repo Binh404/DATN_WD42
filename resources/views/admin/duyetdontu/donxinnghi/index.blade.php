@@ -429,15 +429,15 @@
 
         <div class="stats">
             <div class="stat-card pending">
-                <div class="stat-number">3</div>
+                <div class="stat-number">{{ $soDonChuaDuyet }}</div>
                 <div class="stat-label">Chờ duyệt</div>
             </div>
             <div class="stat-card approved">
-                <div class="stat-number">2</div>
+                <div class="stat-number">{{ $thongKe['da_duyet'] ?? 0 }}</div>
                 <div class="stat-label">Đã duyệt</div>
             </div>
             <div class="stat-card rejected">
-                <div class="stat-number">1</div>
+                <div class="stat-number">{{ $thongKe['tu_choi'] ?? 0 }}</div>
                 <div class="stat-label">Từ chối</div>
             </div>
         </div>
@@ -485,7 +485,7 @@
                         <div class="employee-info">
                             <div class="avatar">NVA</div>
                             <div class="employee-details">
-                                <h3>{{ $item->nguoiDung->hoSo->ho .' '. $item->nguoiDung->hoSo->ten }}</h3>
+                                <h3>{{ $item->nguoiDung->hoSo->ho . ' ' . $item->nguoiDung->hoSo->ten }}</h3>
                                 <p>{{ $item->nguoiDung->phongBan->ten_phong_ban . ' - ' . $item->nguoiDung->hoSo->ma_nhan_vien }}
                                 </p>
                             </div>
@@ -542,9 +542,13 @@
                     <div class="actions">
 
                         @if ($ketQua === 'da_duyet')
-                            <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            </a>
                         @elseif ($ketQua === 'tu_choi')
-                            <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            </a>
                         @else
                             <a href="{{ route('department.donxinnghi.duyet', $item->id) }}">
                                 <button class="btnn btnn-approve">✓ Duyệt</button>
@@ -583,7 +587,8 @@
                 <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
                     <button class="btn" type="button" style="background: #95a5a6; color: white;"
                         onclick="closeRejectModal()">Hủy</button>
-                    <button type="submit" class="btnn btnn-reject" onclick="return confirmReject()">Xác nhận từ chối</button>
+                    <button type="submit" class="btnn btnn-reject" onclick="return confirmReject()">Xác nhận từ
+                        chối</button>
                 </div>
             </form>
 
@@ -591,7 +596,7 @@
     </div>
 
     <script>
-        function clickTuChoi(id) {            
+        function clickTuChoi(id) {
             document.getElementById('rejectModal').style.display = 'block';
             document.getElementById('rejectReason').value = '';
             document.getElementById('rejectReason').focus();
@@ -622,7 +627,7 @@
             const reason = document.getElementById('rejectReason').value.trim();
             if (!reason) {
                 alert('Vui lòng nhập lý do từ chối!');
-                 return false;
+                return false;
             }
 
             return confirm('Bạn có chắc chắn muốn từ chối đơn xin nghỉ này không?');
