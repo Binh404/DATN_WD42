@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
+use App\Models\SoDuNghiPhepNhanVien;
 use App\Models\VaiTro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LichSuDuyetDonXinNghiController extends Controller
 {
@@ -90,6 +92,14 @@ class LichSuDuyetDonXinNghiController extends Controller
         DonXinNghi::where('id', $donXinNghi->id)->update([
             'trang_thai' => 'tu_choi',
         ]);
+
+        // cập nhật số dư nghỉ phép
+        SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+            ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+            ->update([
+                'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
+            ]);
 
         return redirect()->route('department.donxinnghi.danhsach')->with('success', 'Từ chối đơn thành công.');
     }

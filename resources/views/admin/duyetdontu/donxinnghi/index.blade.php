@@ -555,7 +555,9 @@
                             </a>
 
                             <button class="btnn btnn-reject" onclick="clickTuChoi({{ $item->id }})">✗ Từ chối</button>
-                            <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
+                            </a>
                         @endif
 
                     </div>
