@@ -32,6 +32,12 @@ class thucHienTangCa extends Model
         return self::where('dang_ky_tang_ca_id', $donTangCaId)
         ->first();
     }
+    public static function layBanGhiTheoDonTangCaById($donTangCaId)
+    {
+        return self::where('id', $donTangCaId)
+        ->first();
+    }
+
     public function capNhatSoGio(){
         $gioBatDauThucTe = Carbon::parse($this->gio_bat_dau_thuc_te);
         $gioKetThucThucTe = Carbon::parse($this->gio_ket_thuc_thuc_te);
@@ -87,3 +93,4 @@ class thucHienTangCa extends Model
     }
 
 }
+

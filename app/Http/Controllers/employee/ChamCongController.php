@@ -35,6 +35,7 @@ class ChamCongController extends Controller
         //     if ($chamCong instanceof \App\Models\ChamCong) {
         //         echo $chamCong->gio_vao;  // ví dụ: in giờ vào
         //         echo $chamCong->gio_ra;   // hoặc các cột khác trong bảng
+        //         echo $chamCong->ngay_cham_cong;
         //     }
         // }
         // dd('adsa');
@@ -62,7 +63,7 @@ class ChamCongController extends Controller
             $currentTime = now();
             // dd($today->format('Y-m-d'));
             $isOvertime = false;
-            $overtimeStartTime = now()->setTime(18, 45); // 18:45
+            $overtimeStartTime = now()->setTime(18, 30); // 18:45
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
             //kiểm tra xem có đã duyệt đơn tăng ca chưa
@@ -74,7 +75,7 @@ class ChamCongController extends Controller
             if ($isWeekend || $isHoliday || ($donTangCa && $currentTime->greaterThanOrEqualTo($overtimeStartTime))) {
                 $isOvertime = true;
             }
-            // dd( $isOvertime);
+            // dd( $currentTime->greaterThanOrEqualTo($overtimeStartTime));
             if($isOvertime){
                 if (!$donTangCa) {
                      return response()->json([
@@ -109,7 +110,9 @@ class ChamCongController extends Controller
                         'success' => true,
                         'message' => 'Chấm công tăng ca vào thành công!',
                         'data' => [
-                            'gio_bat_dau_thuc_te' => $chamCongTangCa->gio_bat_dau_thuc_te
+                            'is_overtime' => true,
+                            'gio_bat_dau_thuc_te' => $chamCongTangCa->gio_bat_dau_thuc_te->format('H:i'),
+                            'trang_thai' => $chamCongTangCa->trang_thai_text
 
                         ]
                     ]);
@@ -165,7 +168,7 @@ class ChamCongController extends Controller
                     'message' => 'Chấm công vào thành công!',
                     'data' => [
                         'gio_vao' => $currentTime->format('H:i'),
-                        'trang_thai' => $chamCong->trang_thai,
+                        // 'trang_thai' => $chamCong->trang_thai,
                         'trang_thai_text' => $chamCong->trang_thai_text,
                         'trang_thai_duyet' => $chamCong->trang_thai_duyet,
                         'di_muon' => $chamCong->phut_di_muon > 0 ? $chamCong->phut_di_muon : 0
@@ -239,8 +242,10 @@ class ChamCongController extends Controller
                         'success' => true,
                         'message' => 'Hoàn thành tăng ca thành công!',
                         'data' => [
-                            'gio_ra' => $chamCongTangCa->gio_ket_thuc_thuc_te->format('H:i'),
-
+                            'is_overtime' => true,
+                            'gio_ket_thuc_thuc_te' => $chamCongTangCa->gio_ket_thuc_thuc_te->format('H:i'),
+                            'so_gio_tang_ca_thuc_te' => round($chamCongTangCa->so_gio_tang_ca_thuc_te, 2),
+                            'trang_thai' => $chamCongTangCa->trang_thai_text
                         ]
                     ]);
             }else {
@@ -286,7 +291,7 @@ class ChamCongController extends Controller
                         'gio_ra' => $currentTime->format('H:i'),
                         'so_gio_lam' => $chamCong->so_gio_lam,
                         'so_cong' => $chamCong->so_cong,
-                        'trang_thai' => $chamCong->trang_thai,
+                        // 'trang_thai' => $chamCong->trang_thai,
                         'trang_thai_duyet' => $request->trang_thai_duyet,
                         'trang_thai_text' => $chamCong->trang_thai_text
                     ]
@@ -323,40 +328,78 @@ class ChamCongController extends Controller
     public function getChamCongByDay(Request $request, $dayId)
     {
         try {
-            // Tìm dữ liệu chấm công theo ID hoặc ngày
-            $chamCong = ChamCong::where('id', $dayId)
-                // ->orWhere('ngay_cham_cong', $dayId)
-                // ->where('nguoi_dung_id', auth()->id()) // Chỉ lấy của user hiện tại
-                ->first();
-            // dd($chamCong);
-            if ($chamCong) {
-                $data = [
-                    'gio_vao_format' => $chamCong->gio_vao ? Carbon::parse($chamCong->gio_vao)->format('H:i') : null,
-                    'gio_ra_format' => $chamCong->gio_ra ? Carbon::parse($chamCong->gio_ra)->format('H:i') : null,
-                    'so_gio_lam' => $chamCong->so_gio_lam,
-                    'trang_thai_text' => $chamCong->trang_thai_text,
-                    'ngay' => Carbon::parse($chamCong->ngay_cham_cong)->format('Y-m-d'), // Chuyển đổi ngày đi$chamCong->ngay_cham_cong,
-                    'trang_thai_duyet' => $chamCong->trang_thai_duyet
-                ];
-            } else {
-                // Nếu không có dữ liệu chấm công cho ngày đó
-                $data = [
-                    'gio_vao_format' => null,
-                    'gio_ra_format' => null,
-                    'so_gio_lam' => 0,
-                    'trang_thai_text' => 'Chưa chấm công',
-                    'ngay' => $dayId,
-                    // 'trang_thai' => null
-                    'trang_thai_duyet' => 0
-                ];
+            $dayNgay = Carbon::parse($dayId)->format('Y-m-d');
+            // Validate input
+            if ( !Carbon::hasFormat($dayNgay, 'Y-m-d')) {
+                return response()->json(['error' => 'Ngày không hợp lệ'], 400);
             }
+
+            // Fetch attendance data
+            $chamCong = ChamCong::where('id', $dayNgay)
+                ->orWhere('ngay_cham_cong', $dayNgay)
+                ->where('nguoi_dung_id', auth()->id())
+                ->first();
+
+            // Initialize default response data
+            $data = [
+                'kiem_tra' => null,
+                'gio_vao' => null,
+                'gio_ra' => null,
+                'so_gio_lam' => 0,
+                'ghi_chu' => null,
+                'ngay' => $dayNgay,
+                'ghi_chu_duyet' => null,
+                'trang_thai_text' => 'Chưa chấm công',
+                'trang_thai_duyet' => 0,
+            ];
+
+            if ($chamCong) {
+                // Update data with attendance information
+                $data = array_merge($data, [
+                    'kiem_tra' => true,
+                    'gio_vao' => $chamCong->gio_vao ? Carbon::parse($chamCong->gio_vao)->format('H:i') : null,
+                    'gio_ra' => $chamCong->gio_ra ? Carbon::parse($chamCong->gio_ra)->format('H:i') : null,
+                    'so_gio_lam' => $chamCong->so_gio_lam ?? 0,
+                    'trang_thai_text' => $chamCong->trang_thai_text,
+                    'ngay' => Carbon::parse($chamCong->ngay_cham_cong)->format('Y-m-d'),
+                    'ghi_chu' => $chamCong->ghi_chu ?? null,
+                    'ghi_chu_duyet' => $chamCong->ghi_chu_duyet ?? null,
+                    'trang_thai_duyet' => $chamCong->trang_thai_duyet ?? 0,
+                ]);
+
+                }
+                 // Fetch overtime data if applicable
+                $dangKyChamCongTangCa = DangKyTangCa::where('ngay_tang_ca', $dayNgay)
+                    ->where('trang_thai', 'da_duyet')
+                    ->first();
+
+                if ($dangKyChamCongTangCa) {
+                    $chamCongTangCa = ThucHienTangCa::where('dang_ky_tang_ca_id', $dangKyChamCongTangCa->id)->first();
+
+                    if ($chamCongTangCa) {
+                        $data = array_merge($data, [
+                            'is_overtime' => true,
+                            'ngay' => $dayNgay,
+                            'gio_bat_dau_thuc_te' => $chamCongTangCa->gio_bat_dau_thuc_te
+                                ? Carbon::parse($chamCongTangCa->gio_bat_dau_thuc_te)->format('H:i')
+                                : null,
+                            'gio_ket_thuc_thuc_te' => $chamCongTangCa->gio_ket_thuc_thuc_te
+                                ? Carbon::parse($chamCongTangCa->gio_ket_thuc_thuc_te)->format('H:i')
+                                : null,
+                            'so_gio_tang_ca_thuc_te' => $chamCongTangCa->so_gio_tang_ca_thuc_te ?? 0,
+                            'trang_thai' => $chamCongTangCa->trang_thai_text ?? 'Chưa thực hiện',
+                        ]);
+                    }
+                }
+
 
             return response()->json($data);
 
         } catch (\Exception $e) {
+            \Log::error('Error fetching attendance data: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Có lỗi xảy ra khi lấy dữ liệu',
-                'message' => $e->getMessage()
+                'message' => config('app.debug') ? $e->getMessage() : 'Lỗi hệ thống'
             ], 500);
         }
     }
@@ -481,81 +524,101 @@ class ChamCongController extends Controller
         return $lyDo ? $lyDo : null;
     }
     private function taoLichChamCong($chamCongThang, $month = null, $year = null)
-    {
-        $month = $month ?? now()->month;
-        $year = $year ?? now()->year;
-        $soNgayTrongThang = Carbon::create($year, $month)->daysInMonth;
-        $ngayDauThang = Carbon::create($year, $month, 1);
+{
+    $month = $month ?? now()->month;
+    $year = $year ?? now()->year;
+    $soNgayTrongThang = Carbon::create($year, $month)->daysInMonth;
+    $ngayDauThang = Carbon::create($year, $month, 1);
 
-        $lich = [];
+    $lich = [];
 
-        // Tạo các ô trống cho những ngày trước ngày đầu tháng
-        $thuTrongTuan = $ngayDauThang->dayOfWeek; // 0 = Chủ nhật, 1 = Thứ 2, ...
-        $thuTrongTuan = $thuTrongTuan == 0 ? 7 : $thuTrongTuan; // Chuyển Chủ nhật thành 7
+    // Tạo các ô trống cho những ngày trước ngày đầu tháng
+    $thuTrongTuan = $ngayDauThang->dayOfWeek; // 0 = Chủ nhật, 1 = Thứ 2, ...
+    $thuTrongTuan = $thuTrongTuan == 0 ? 7 : $thuTrongTuan; // Chuyển Chủ nhật thành 7
 
-        for ($i = 1; $i < $thuTrongTuan; $i++) {
-            $lich[] = [
-                'id' => '',
-                'ngay' => '',
-                'trang_thai' => 'trong',
-                'class' => 'day-normal'
-            ];
+    for ($i = 1; $i < $thuTrongTuan; $i++) {
+        $lich[] = [
+            'id' => '',
+            'ngay' => '',
+            'trang_thai' => 'trong',
+            'class' => 'day-normal'
+        ];
+    }
+
+    // Lấy thông tin người dùng hiện tại
+    $user = Auth::user();
+
+    // Tạo các ngày trong tháng
+    for ($ngay = 1; $ngay <= $soNgayTrongThang; $ngay++) {
+        $ngayHienTai = Carbon::create($year, $month, $ngay);
+        $chamCong = $chamCongThang->where('ngay_cham_cong', $ngayHienTai->toDate())->first();
+
+        // Kiểm tra đơn tăng ca được duyệt cho ngày hiện tại
+        $donTangCa = DangKyTangCa::where('ngay_tang_ca', $ngayHienTai->toDateString())
+            ->where('nguoi_dung_id', $user->id)
+            ->where('trang_thai', 'da_duyet')
+            ->first();
+
+        // Mặc định trạng thái và class
+        if ($ngayHienTai->lessThan(now())) {
+            $trangThai = 'vang_mat';
+            $class = 'day-absent';
+        } else {
+            $trangThai = 'chua_cham_cong';
+            $class = 'day-normal';
         }
 
-        // Tạo các ngày trong tháng
-        for ($ngay = 1; $ngay <= $soNgayTrongThang; $ngay++) {
-            $ngayHienTai = Carbon::create($year, $month, $ngay);
-            $chamCong = $chamCongThang->where('ngay_cham_cong', $ngayHienTai->toDate())->first();
-            // dd( $chamCong);
-            if ($ngayHienTai->lessThan(now())) {
-                $trangThai = 'vang_mat';
-                $class = 'day-absent';
-            } else {
-                $trangThai = 'chua_cham_cong';
-                $class = 'day-normal';
-            }
+        // Kiểm tra nếu là cuối tuần
+        if ($ngayHienTai->isWeekend()) {
+            $trangThai = 'cuoi_tuan';
+            $class = 'day-weekend';
 
-
-
-            if ($ngayHienTai->isWeekend()) {
-                $trangThai = 'cuoi_tuan';
-                $class = 'day-weekend';
-            } elseif ($chamCong) {
-                switch ($chamCong->trang_thai) {
-                    case 'binh_thuong':
-                        $trangThai = 'binh_thuong';
-                        $class = 'day-present';
-                        break;
-                    case 'di_muon':
-                        $trangThai = 'di_muon';
-                        $class = 'day-late';
-                        break;
-                    case 've_som':
-                        $trangThai = 've_som';
-                        $class = 'day-early';
-                        break;
-                    case 'nghi_phep':
-                        $trangThai = 'nghi_phep';
-                        $class = 'day-leave';
-                        break;
-                    case 'vang_mat':
-                        $trangThai = 'vang_mat';
-                        $class = 'day-absent';
-                        break;
+            // Nếu có đơn tăng ca được duyệt
+            if ($donTangCa) {
+                $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
+                if ($chamCongTangCa) {
+                    $trangThai = 'tang_ca';
+                    $class = 'day-overtime';
                 }
             }
-
-            $lich[] = [
-                'id' => $chamCong ? $chamCong->id : '',
-                'ngay' => $ngay,
-                'trang_thai' => $trangThai,
-                'class' => $class,
-                'cham_cong' => $chamCong
-            ];
+        } elseif ($chamCong) {
+            // Xử lý các trạng thái chấm công thường
+            switch ($chamCong->trang_thai) {
+                case 'binh_thuong':
+                    $trangThai = 'binh_thuong';
+                    $class = 'day-present';
+                    break;
+                case 'di_muon':
+                    $trangThai = 'di_muon';
+                    $class = 'day-late';
+                    break;
+                case 've_som':
+                    $trangThai = 've_som';
+                    $class = 'day-early';
+                    break;
+                case 'nghi_phep':
+                    $trangThai = 'nghi_phep';
+                    $class = 'day-leave';
+                    break;
+                case 'vang_mat':
+                    $trangThai = 'vang_mat';
+                    $class = 'day-absent';
+                    break;
+            }
         }
 
-        return $lich;
+        $lich[] = [
+            'id' => $chamCong ? $chamCong->ngay_cham_cong : ($donTangCa ? $donTangCa->ngay_tang_ca : ''),
+            'ngay' => $ngay,
+            'trang_thai' => $trangThai,
+            'class' => $class,
+            'cham_cong' => $chamCong,
+            'tang_ca' => $donTangCa ? true : false
+        ];
     }
+
+    return $lich;
+}
     private function layThongKeThang($userId, $month = null, $year = null)
     {
         $month = $month ?? now()->month;

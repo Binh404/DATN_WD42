@@ -116,6 +116,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="{{ route('admin.chamcong.danhSachTangCa')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách tăng ca</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="{{ route('admin.chamcong.xemPheDuyet')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Phê duyệt</p>

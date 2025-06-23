@@ -95,7 +95,7 @@ class DangKyTangCaAdminController extends Controller
             //     return back()->with('error', 'Bạn không có quyền xem đăng ký này');
             // }
 
-            return view('admin.cham-cong.showTangCa', compact('dangKyTangCa'));
+            return view('admin.cham-cong.showDonTangCa', compact('dangKyTangCa'));
 
         } catch (\Exception $e) {
             Log::error('Error in DangKyTangCaController@show: ' . $e->getMessage());

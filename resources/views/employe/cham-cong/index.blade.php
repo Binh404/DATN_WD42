@@ -317,7 +317,7 @@
     </div>
 
    <!-- Thống kê ngày hôm nay -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div class="stat-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;" >
         <div class="stat-card">
             <i class="fas fa-clock stat-icon"></i>
             <div class="stat-value" id="gioVaoHomNay">--:--</div>
@@ -364,7 +364,7 @@
     <!-- Thông tin tăng ca -->
     <div id="overtimeSection" class="overtime-section hidden">
         <div class="overtime-title">
-            <i class="fas fa-clock"></i> Thông tin tăng ca hôm nay
+            <i class="fas fa-clock"></i> <span id="overtime-title-text">Thông tin tăng ca hôm nay</span>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
@@ -431,7 +431,9 @@
 
                      @if($chamCong instanceof \App\Models\ChamCong)
                         title="Vào: {{ $ngay['cham_cong']->gio_vao_format }} - Ra: {{ $ngay['cham_cong']->gio_ra_format }} - {{ $ngay['cham_cong']->trang_thai_text }}"
-                     @endif data-id="{{ $ngay['id'] }}">
+
+                     @endif
+                      data-ngayXem="{{ $ngay['id'] }}">
                     {{ $ngay['ngay'] }}
                 </div>
             @endforeach
@@ -480,6 +482,7 @@
             const [startHour, startMin] = WORK_SCHEDULE.startTime.split(':');
             const startTimeMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, startMin).getTime();
             const lateThresholdMs = startTimeMs + (WORK_SCHEDULE.lateThreshold * 60 * 1000);
+            console.log(date.getTime(), lateThresholdMs);
             return date.getTime() > lateThresholdMs; // Đi muộn cần lý do
         } else if (type === 'out') {
             // Kiểm tra về sớm
@@ -521,7 +524,7 @@ async function checkAttendanceStatus() {
 
             // Kiểm tra có phải chấm công tăng ca không
             const isOvertimeAttendance = isWeekend || data.is_holiday || (data.has_approved_overtime && isAfter1830);
-
+            console.log('isOvertimeAttendance', data.has_approved_overtime);
             if (isOvertimeAttendance) {
                 // Xử lý trạng thái chấm công tăng ca
                 if (data.overtime_data) {
@@ -664,7 +667,7 @@ function updateNormalDisplayData(data) {
         }
     }
 
-
+    showAttendanceInfo();
 
     // Ẩn thông tin tăng ca nếu có
     hideOvertimeInfo();
@@ -747,6 +750,18 @@ function showOvertimeInfo() {
         overtimeSection.style.display = 'block';
     }
 }
+function hideAttendanceInfo() {
+    const attendanceSection = document.querySelector('.stat-cards');
+    if (attendanceSection) {
+        attendanceSection.style.display = 'none';
+    }
+}
+function showAttendanceInfo() {
+    const attendanceSection = document.querySelector('.stat-cards');
+    if (attendanceSection) {
+        attendanceSection.style.display = 'grid';
+    }
+}
 
 // Ẩn thông tin tăng ca
 function hideOvertimeInfo() {
@@ -792,7 +807,7 @@ let attendanceType = 'normal'; // 'normal' hoặc 'overtime'
             maxDistance: COMPANY_LOCATION.allowedRadius
         };
     }
-    function openReasonModal(){
+function openReasonModal(){
     const modal = document.getElementById('reasonModal');
     const title = document.getElementById('reasonModalTitle');
     const reasonBtn = document.getElementById('reasonBtn');
@@ -991,33 +1006,34 @@ function submitReasonNgay() {
         showNotification('Đang lấy vị trí hiện tại...', 'info');
 
         try {
-            // const location = await getCurrentLocation();
-            // console.log(location);
-            // if (!location || location.error) {
-            //     showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
-            //     return;
-            // }
+            const location = await getCurrentLocation();
+            console.log(location);
+            if (!location || location.error) {
+                showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
+                return;
+            }
 
-            // // Kiểm tra vị trí có trong phạm vi cho phép không
-            // const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
+            // Kiểm tra vị trí có trong phạm vi cho phép không
+            const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
 
-            // if (!locationCheck.isValid) {
-            //     const distanceKm = (locationCheck.distance / 1000).toFixed(1);
-            //     const maxDistanceKm = (locationCheck.maxDistance / 1000).toFixed(1);
-            //     showNotification(
-            //         `Bạn đang ở cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`,
-            //         'error'
-            //     );
-            //     return;
-            // }
+            if (!locationCheck.isValid) {
+                const distanceKm = (locationCheck.distance / 1000).toFixed(1);
+                const maxDistanceKm = (locationCheck.maxDistance / 1000).toFixed(1);
+                showNotification(
+                    `Bạn đang ở cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`,
+                    'error'
+                );
+                return;
+            }
             // console.log(location);
             const type = (attendanceStatus === 'out' ? 'in' : 'out');
             const requiresReason = checkAttendance(type);
-            console.log(type, location, attendanceStatus, btn);
+            // console.log(type, location, attendanceStatus, btn);
+            console.log(requiresReason.reasonRequired);
 
 
             // Nếu vị trí hợp lệ, tiến hành chấm công
-             if (!requiresReason) {
+             if (requiresReason.reasonRequired) {
                 // console.log(parseFloat(location.latitude.toFixed(8)));
                 btn.disabled = true;
                 // console.log( btn.disabled);
@@ -1082,15 +1098,15 @@ function submitReasonNgay() {
     // Chấm công vào
     function chamCongVao(location, isNormalAttendance = true) {
         // console.log(location.location);
-        // const latitude = location?.latitude !== undefined
-        //     ? parseFloat(location.latitude.toFixed(8))
-        //     : parseFloat(location.location.latitude.toFixed(8));
+        const latitude = location?.latitude !== undefined
+            ? parseFloat(location.latitude.toFixed(8))
+            : parseFloat(location.location.latitude.toFixed(8));
 
-        //     const longitude = location?.longitude !== undefined
-        //     ? parseFloat(location.longitude.toFixed(8))
-        //     : parseFloat(location.location.longitude.toFixed(8));
-        const latitude = null;
-        const longitude = null;
+            const longitude = location?.longitude !== undefined
+            ? parseFloat(location.longitude.toFixed(8))
+            : parseFloat(location.location.longitude.toFixed(8));
+        // const latitude = null;
+        // const longitude = null;
         const requestData = {
             latitude: latitude,
             longitude: longitude,
@@ -1124,6 +1140,10 @@ function submitReasonNgay() {
                 //     so_gio_lam: 0,
                 //     trang_thai_text: data.data.trang_thai_text
                 // });
+                updateNormalDisplayData(data.data);
+                if(data.data.is_overtime){
+                    updateOvertimeDisplayData(data.data);
+                }
                 updateButtonState();
 
                 showNotification(data.message, 'success');
@@ -1177,6 +1197,10 @@ function submitReasonNgay() {
                 //     so_gio_lam: data.data.so_gio_lam,
                 //     trang_thai_text: data.data.trang_thai_text
                 // });
+                updateNormalDisplayData(data.data);
+                if(data.data.is_overtime){
+                    updateOvertimeDisplayData(data.data);
+                }
 
                 showNotification(data.message, 'success');
 
@@ -1549,7 +1573,7 @@ function renderCalendar(lichChamCong) {
             titleAttr = `title="Vào: ${ngay.cham_cong.gio_vao_format} - Ra: ${ngay.cham_cong.gio_ra_format} - ${ngay.cham_cong.trang_thai_text}"`;
         }
 
-        gridHTML += `<div class="day-cell ${ngay.class}" data-id="${ngay.id}" ${titleAttr}>${ngay.ngay}</div>`;
+        gridHTML += `<div class="day-cell ${ngay.class}" data-ngayXem="${ngay.cham_cong.ngay_cham_cong}" ${titleAttr}>${ngay.ngay}</div>`;
     });
 
     document.getElementById('attendanceGrid').innerHTML = gridHTML;
@@ -1655,7 +1679,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.classList.add('day-active');
 
             // Lấy ID của ngày được click
-            const dayId = e.target.getAttribute('data-id');
+            const dayId = e.target.getAttribute('data-ngayXem');
             if (!dayId) {
                 return;
             }
@@ -1692,19 +1716,16 @@ function fetchAttendanceData(dayId) {
 
 // Hàm cập nhật hiển thị thống kê
 function updateStatsDisplay(data) {
-    // Cập nhật giờ vào
-    document.getElementById('gioVaoHomNay').textContent = data.gio_vao_format || '--:--';
+    hideAttendanceInfo();
+    if(data.kiem_tra){
+        updateNormalDisplayData(data);
+    }
 
-    // Cập nhật giờ ra
-    document.getElementById('gioRaHomNay').textContent = data.gio_ra_format || '--:--';
-
-    // Cập nhật số giờ làm
-    document.getElementById('soGioLamHomNay').textContent = data.so_gio_lam ? data.so_gio_lam + 'h' : '0h';
-
-    // Cập nhật trạng thái
-    document.getElementById('trangThaiHomNay').textContent = data.trang_thai_text || 'Chưa chấm công';
-    console.log(data.trang_thai_duyet);
-    if(data.trang_thai_duyet == 0){
+    if(data.is_overtime){
+        updateOvertimeDisplayData(data);
+    }
+    console.log(data.kiem_tra);
+    if(data.kiem_tra || data.is_overtime){
         btnReason = document.getElementById('reasonBtn');
         btnReason.style.display = 'inline-block';
         const isoDate = data.ngay;
@@ -1740,6 +1761,16 @@ function updateDateLabel(selectedDate) {
     statLabels[1].textContent = `Giờ ra${dateText}`;
     statLabels[2].textContent = `Tổng giờ làm${dateText}`;
     statLabels[3].textContent = `Trạng thái${dateText}`;
+    statLabels[4].textContent = `Ghi chú${dateText}`;
+    statLabels[5].textContent = `Ghi chú phản hồi${dateText}`;
+    statLabels[6].textContent = `Trạng thái duyệt${dateText}`;
+    const overtimeTitle = document.getElementById('overtime-title-text');
+
+    if (selectedDate) {
+        overtimeTitle.textContent = `Thống kê ngày ${formatDate(selectedDate)}`;
+    }
+
+
 }
 
 // Hàm format ngày

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ChamCongAdminController;
 use App\Http\Controllers\Admin\DangKyTangCaAdminController;
+use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\employee\DangKyTangCaController;
 use App\Http\Middleware\CheckRole;
@@ -90,6 +91,12 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     Route::post('chamCongPheDuyetTangCa/{id}/pheDuyet', [DangKyTangCaAdminController::class, 'pheDuyet'])->name('admin.chamcong.pheDuyetTangCaTrangThai');
     // Route::delete('chamCongPheDuyetTangCa/{id}/destroy', [DangKyTangCaAdminController::class, 'destroy'])->name('admin.chamcong.destroyTangCa');
     Route::post('/chamcong/phe-duyet-tang-ca/bulk-action', [DangKyTangCaAdminController::class, 'bulkAction'])->name('admin.phe-duyet-tang-ca.bulk-action');
+    //danh sách tăng ca
+    Route::get('chamCong/danhSachTangCa', [ThucHienTangCaAdminController::class, 'index'])->name('admin.chamcong.danhSachTangCa');
+    Route::get('chamCong/danhSachTangCa/{id}', [ThucHienTangCaAdminController::class, 'show'])->name('admin.chamcong.xemChiTietTangCa');
+    Route::get('danhSachTangCa/{id}/edit', [ThucHienTangCaAdminController::class, 'edit'])->name('admin.chamcong.editTangCa');
+    Route::put('danhSachTangCa/{id}/update', [ThucHienTangCaAdminController::class, 'update'])->name('admin.chamcong.updateTangCa');
+    Route::delete('danhSachTangCa/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('admin.chamcong.destroyTangCa');
 
 });
 
