@@ -1,11 +1,14 @@
+
+
 @extends('layoutsEmploye.master')
 
 @section('content-employee')
-<div class="container py-4">
-
-    @if(session('success'))
+ @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+<div class="container py-4">
+
+
 
     <form action="{{ route('employee.profile.update') }}" method="POST" enctype="multipart/form-data" class="row g-4">
         @csrf
@@ -14,7 +17,7 @@
         <!-- THÔNG TIN CÁ NHÂN -->
         <fieldset class="border p-3 rounded">
             <legend class="float-none w-auto px-3 fw-bold"><i class="bi bi-info-circle me-1"></i>Thông tin cá nhân</legend>
-            
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Mã nhân viên</label>

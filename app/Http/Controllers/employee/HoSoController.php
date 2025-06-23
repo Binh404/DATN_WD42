@@ -71,8 +71,15 @@ class HoSoController extends Controller
     // Upload ảnh nếu có
     if ($request->hasFile('anh_dai_dien')) {
         $file = $request->file('anh_dai_dien');
-        $path = $file->store('avatars', 'public');
-        $validated['anh_dai_dien'] = $path;
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $path = storage_path('app/public/anh_dai_dien/' . $filename);
+
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
+
+        file_put_contents($path, file_get_contents($file));
+        $validated['anh_dai_dien'] = 'storage/anh_dai_dien/' . $filename;
     }
 
     HoSoNguoiDung::updateOrCreate(

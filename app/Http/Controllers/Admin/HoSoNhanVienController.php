@@ -13,13 +13,33 @@ class HoSoNhanVienController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $nhanVien = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])->get();
+   public function indexNhanVien()
+{
+    $nhanVien = NguoiDung::whereHas('chucVu', function ($query) {
+        $query->where('ma', 'like', 'NV_%')
+              ->orWhere('ma', 'like', 'DEV_%');
+    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
 
-        return view('admin.hoso.index', compact('nhanVien'));
-    }
+    return view('admin.hoso.nhanvien', compact('nhanVien'));
+}
 
+public function indexTruongPhong()
+{
+    $truongPhong = NguoiDung::whereHas('chucVu', function ($query) {
+        $query->where('ma', 'like', 'TP_%');
+    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
+
+    return view('admin.hoso.truongphong', compact('truongPhong'));
+}
+
+public function indexGiamDoc()
+{
+    $giamDoc = NguoiDung::whereHas('chucVu', function ($query) {
+        $query->where('ma', 'GD');
+    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
+
+    return view('admin.hoso.giamdoc', compact('giamDoc'));
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -47,26 +67,36 @@ class HoSoNhanVienController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(NguoiDung $nguoiDung, $id)
-    {
-        $hoSo = HoSoNguoiDung::findOrFail($id);
-        return view('admin.hoso.edit', compact('hoSo'));
+   public function edit($id)
+{
+    $hoSo = HoSoNguoiDung::findOrFail($id);
+    $nguoiDung = $hoSo->nguoiDung; // assuming 'nguoiDung' là quan hệ từ HoSoNguoiDung
+
+    // Xác định link quay lại theo mã chức vụ
+    $maChucVu = $nguoiDung->chucVu->ma ?? '';
+    if (str_starts_with($maChucVu, 'NV_') || str_starts_with($maChucVu, 'DEV_')) {
+        $duong_dan_quay_lai = route('hoso.nhanvien');
+    } elseif (str_starts_with($maChucVu, 'TP_')) {
+        $duong_dan_quay_lai = route('hoso.truongphong');
+    } elseif ($maChucVu === 'GD') {
+        $duong_dan_quay_lai = route('hoso.giamdoc');
+    } else {
+        $duong_dan_quay_lai = route('hoso.nhanvien'); // mặc định
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, NguoiDung $nguoiDung, $id)
-    {
-        $hoSo = HoSoNguoiDung::findOrFail($id);
+    return view('admin.hoso.edit', compact('hoSo', 'duong_dan_quay_lai'));
+}
+
+public function update(Request $request, $id)
+{
+    $hoSo = HoSoNguoiDung::findOrFail($id);
 
     $request->validate([
-        // Không cho sửa ma_nhan_vien
         'ho' => 'required|string|max:50',
         'ten' => 'required|string|max:50',
         'email_cong_ty' => [
             'nullable', 'email',
-            Rule::unique('ho_so_nguoi_dung')->ignore($hoSo->id)
+            Rule::unique('ho_so_nguoi_dung', 'email_cong_ty')->ignore($hoSo->id),
         ],
         'so_dien_thoai' => 'nullable|string|max:15',
         'ngay_sinh' => 'nullable|date',
@@ -75,19 +105,42 @@ class HoSoNhanVienController extends Controller
         'dia_chi_thuong_tru' => 'nullable|string',
         'cmnd_cccd' => [
             'nullable', 'string',
-            Rule::unique('ho_so_nguoi_dung')->ignore($hoSo->id)
+            Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
         ],
         'so_ho_chieu' => 'nullable|string|max:20',
         'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
         'lien_he_khan_cap' => 'nullable|string|max:50',
         'sdt_khan_cap' => 'nullable|string|max:15',
         'quan_he_khan_cap' => 'nullable|string|max:50',
+        'anh_dai_dien' => 'nullable|image|max:2048', // THÊM DÒNG NÀY
     ]);
 
-    $hoSo->update($request->except('ma_nhan_vien'));
+    // Cập nhật dữ liệu không bao gồm ảnh
+    $data = $request->except(['ma_nhan_vien', 'nguoi_dung_id', 'anh_dai_dien']);
+    $hoSo->update($data);
 
-    return redirect()->route('hoso.index')->with('success', 'Cập nhật thành công');
+    // Nếu có ảnh thì xử lý
+    if ($request->hasFile('anh_dai_dien')) {
+        $file = $request->file('anh_dai_dien');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $path = storage_path('app/public/anh_dai_dien/' . $filename);
+
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
+
+        file_put_contents($path, file_get_contents($file));
+
+        // Cập nhật đường dẫn trong CSDL
+        $hoSo->anh_dai_dien = 'storage/anh_dai_dien/' . $filename;
+        $hoSo->save();
     }
+
+    // Quay lại trang trước (edit) với thông báo thành công
+    return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
+}
+
+
 
     /**
      * Remove the specified resource from storage.
