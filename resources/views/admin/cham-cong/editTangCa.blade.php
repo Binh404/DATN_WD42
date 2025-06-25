@@ -109,7 +109,9 @@
                                     <label for="gio_vao" class="form-label">Giờ vào <span class="text-danger">*</span></label>
                                     <input type="time" class="form-control @error('gio_vao') is-invalid @enderror"
                                            id="gio_vao" name="gio_vao"
-                                           value="{{ old('gio_vao', $thucHienTangCa->gio_bat_dau_thuc_te) }}">
+                                           {{-- value="{{ old('gio_vao', ($thucHienTangCa->gio_bat_dau_thuc_te)) }}"> --}}
+                                           value="{{ old('gio_vao', optional($thucHienTangCa->gio_bat_dau_thuc_te ? \Carbon\Carbon::parse($thucHienTangCa->gio_bat_dau_thuc_te) : null)->format('H:i')) }}">
+
                                     @error('gio_vao')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -121,7 +123,9 @@
                                     <label for="gio_ra" class="form-label">Giờ ra</label>
                                     <input type="time" class="form-control @error('gio_ra') is-invalid @enderror"
                                            id="gio_ra" name="gio_ra"
-                                           value="{{ old('gio_ra', $thucHienTangCa->gio_bat_dau_thuc_te ? $thucHienTangCa->gio_ket_thuc_thuc_te : '') }}">
+                                           {{-- value="{{ old('gio_ra', $thucHienTangCa->gio_bat_dau_thuc_te ? $thucHienTangCa->gio_ket_thuc_thuc_te : '') }}"> --}}
+                                           value="{{ old('gio_vao', optional($thucHienTangCa->gio_ket_thuc_thuc_te ? \Carbon\Carbon::parse($thucHienTangCa->gio_ket_thuc_thuc_te) : null)->format('H:i')) }}">
+
                                     @error('gio_ra')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

@@ -9,11 +9,11 @@
                         <h1 class="mb-0"><i class="fas fa-clock"></i> Quản Lý Đơn Phê duyệt Chấm Công</h1>
                         <p class="mb-0">Hệ thống quản lý đơn phê duyệt chấm công nhân viên - Trang quản trị</p>
                     </div>
-                    <div>
+                    {{-- <div>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
                             <i class="fas fa-chart-bar"></i> Báo cáo
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

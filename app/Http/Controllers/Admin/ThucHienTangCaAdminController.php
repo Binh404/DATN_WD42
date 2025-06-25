@@ -157,8 +157,8 @@ class ThucHienTangCaAdminController extends Controller
 
         $validated = $request->validate([
             'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
-            'gio_vao' => 'required|date_format:H:i:s',
-            'gio_ra' => 'nullable|date_format:H:i:s',
+            'gio_vao' => 'required|date_format:H:i',
+            'gio_ra' => 'nullable|date_format:H:i',
             'trang_thai' => 'required|in:chua_lam,dang_lam,hoan_thanh,khong_hoan_thanh',
             'ghi_chu' => 'nullable|string|max:1000',
         ], [
@@ -175,8 +175,8 @@ class ThucHienTangCaAdminController extends Controller
         try {
             // Kiểm tra logic giờ vào và giờ ra
             if ($validated['gio_ra']) {
-                $gioVao = Carbon::createFromFormat('H:i:s', $validated['gio_vao']);
-                $gioRa = Carbon::createFromFormat('H:i:s', $validated['gio_ra']);
+                $gioVao = Carbon::createFromFormat('H:i', $validated['gio_vao']);
+                $gioRa = Carbon::createFromFormat('H:i', $validated['gio_ra']);
 
                 if ($gioRa->lessThanOrEqualTo($gioVao)) {
                     $gioRa->addDay(); // Giả sử giờ ra là ngày tiếp theo nếu nhỏ hơn giờ vào
