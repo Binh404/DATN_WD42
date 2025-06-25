@@ -452,8 +452,8 @@
     const COMPANY_LOCATION = {
         // latitude: 21.0305024,    // Thay bằng tọa độ thực tế của công ty
         // longitude: 105.7685504,  // Thay bằng tọa độ thực tế của công ty
-        latitude:  21.0727,    // Thay bằng tọa độ thực tế của công ty
-        longitude: 105.7675,  // Thay bằng tọa độ thực tế của công ty
+        latitude:  21.0356,    // Thay bằng tọa độ thực tế của công ty
+        longitude: 105.765499,  // Thay bằng tọa độ thực tế của công ty
         allowedRadius: 1000   // 5km = 5000 mét
     };
     const WORK_SCHEDULE = {
@@ -1545,6 +1545,7 @@ function loadCalendarData() {
     fetch(`{{ route('cham-cong.lich-su') }}?month=${currentMonth}&year=${currentYear}`)
         .then(response => response.json())
         .then(data => {
+            console.log('Dữ liệu API:', data);
             if (data.success) {
                 renderCalendar(data.data.lich_cham_cong);
             } else {
@@ -1569,15 +1570,17 @@ function renderCalendar(lichChamCong) {
 
     lichChamCong.forEach(ngay => {
         let titleAttr = '';
+        // const date = new Date(ngay.id); // ngay.id phải là chuỗi ngày
+
         if (ngay.cham_cong) {
             titleAttr = `title="Vào: ${ngay.cham_cong.gio_vao_format} - Ra: ${ngay.cham_cong.gio_ra_format} - ${ngay.cham_cong.trang_thai_text}"`;
         }
 
-        gridHTML += `<div class="day-cell ${ngay.class}" data-ngayXem="${ngay.cham_cong.ngay_cham_cong}" ${titleAttr}>${ngay.ngay}</div>`;
-    });
+                gridHTML += `<div class="day-cell ${ngay.class}" data-ngayXem="${ngay.id}" ${titleAttr}>${ngay.ngay}</div>`;
+        });
 
-    document.getElementById('attendanceGrid').innerHTML = gridHTML;
-}
+        document.getElementById('attendanceGrid').innerHTML = gridHTML;
+    }
     // // Hiển thị thông báo
 
     function showNotification(message, type = 'success', callback = null) {

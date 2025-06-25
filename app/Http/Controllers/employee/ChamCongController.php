@@ -333,7 +333,7 @@ class ChamCongController extends Controller
             if ( !Carbon::hasFormat($dayNgay, 'Y-m-d')) {
                 return response()->json(['error' => 'Ngày không hợp lệ'], 400);
             }
-
+            // dd($dayNgay);
             // Fetch attendance data
             $chamCong = ChamCong::where('id', $dayNgay)
                 ->orWhere('ngay_cham_cong', $dayNgay)
@@ -352,7 +352,7 @@ class ChamCongController extends Controller
                 'trang_thai_text' => 'Chưa chấm công',
                 'trang_thai_duyet' => 0,
             ];
-
+            // dd($chamCong);
             if ($chamCong) {
                 // Update data with attendance information
                 $data = array_merge($data, [
@@ -551,6 +551,7 @@ class ChamCongController extends Controller
     // Tạo các ngày trong tháng
     for ($ngay = 1; $ngay <= $soNgayTrongThang; $ngay++) {
         $ngayHienTai = Carbon::create($year, $month, $ngay);
+
         $chamCong = $chamCongThang->where('ngay_cham_cong', $ngayHienTai->toDate())->first();
 
         // Kiểm tra đơn tăng ca được duyệt cho ngày hiện tại
@@ -606,9 +607,8 @@ class ChamCongController extends Controller
                     break;
             }
         }
-
         $lich[] = [
-            'id' => $chamCong ? $chamCong->ngay_cham_cong : ($donTangCa ? $donTangCa->ngay_tang_ca : ''),
+            'id' => $chamCong ? \Carbon\Carbon::parse($chamCong->ngay_cham_cong)->format('Y-m-d') : ($donTangCa ? \Carbon\Carbon::parse($donTangCa->ngay_tang_ca)->format('Y-m-d') : ''),
             'ngay' => $ngay,
             'trang_thai' => $trangThai,
             'class' => $class,
