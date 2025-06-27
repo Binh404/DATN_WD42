@@ -126,25 +126,37 @@
         </li>
 
         <!-- Attendance Section -->
-        {{-- <li class="nav-item">
+        <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
-            <p>Sự tham gia <i class="right fas fa-angle-left"></i></p>
+            <p>Chấm công <i class="right fas fa-angle-left"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('admin.chamcong.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Today</p>
+                <p>Danh sách chấm công</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('admin.chamcong.danhSachTangCa')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>My Attendance</p>
+                <p>Danh sách tăng ca</p>
               </a>
             </li>
             <li class="nav-item">
+              <a href="{{ route('admin.chamcong.xemPheDuyet')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phê duyệt</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phê duyệt tăng ca</p>
+              </a>
+            </li>
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Timeline</p>
@@ -161,9 +173,9 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>My Leaves</p>
               </a>
-            </li>
+            </li> --}}
           </ul>
-        </li> --}}
+        </li>
 
         <!-- Payments Section -->
         {{-- <li class="nav-item">

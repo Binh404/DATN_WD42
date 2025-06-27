@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cham_cong', function (Blueprint $table) {
-            $table->boolean('trang_thai_duyet')->after('nguoi_phe_duyet_id')->default(0);
+            $table->string('ghi_chu_duyet')->after('trang_thai_duyet')->nullable();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('cham_cong', function (Blueprint $table) {
-            $table->dropColumn('trang_thai_duyet');
+            $table->dropColumn('ghi_chu_duyet');
         });
     }
 };

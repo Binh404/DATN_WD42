@@ -50,7 +50,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/nghi-phep')}}" class="nav-link" data-section="leave">
+            <a href="{{ route('cham-cong.tao-don-xin-tang-ca') }}" class="nav-link" data-section="leave">
+                <i class="fas fa-calendar-times"></i>
+                <span>Đơn tăng ca</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{url('employee/leave')}}" class="nav-link" data-section="leave">
                 <i class="fas fa-calendar-times"></i>
                 <span>Đơn nghỉ phép</span>
             </a>
