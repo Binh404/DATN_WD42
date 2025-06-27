@@ -214,7 +214,7 @@ td {
 }
 
 th {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: rgb(22, 147, 225);
     color: white;
     font-weight: 600;
 }

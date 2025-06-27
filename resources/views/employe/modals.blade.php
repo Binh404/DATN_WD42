@@ -32,48 +32,7 @@
     </div>
 </div>
 
-<div id="leaveModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">Tạo đơn nghỉ phép</h3>
-            <button class="close" onclick="closeModal('leaveModal')">&times;</button>
-        </div>
-        <form onsubmit="submitLeave(event)">
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Loại nghỉ</label>
-                    <select class="form-control" required>
-                        <option value="">Chọn loại nghỉ</option>
-                        <option value="paid">Nghỉ có lương</option>
-                        <option value="unpaid">Nghỉ không lương</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Số ngày nghỉ</label>
-                    <input type="number" class="form-control" required min="1" placeholder="Số ngày">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Lý do nghỉ</label>
-                <textarea class="form-control" rows="4" required placeholder="Mô tả lý do nghỉ phép"></textarea>
-            </div>
-            <div style="text-align: right;">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('leaveModal')">Hủy</button>
-                <button type="submit" class="btn btn-primary">Gửi đơn</button>
-            </div>
-        </form>
-    </div>
-</div>
+
 
 <div id="salaryDetailModal" class="modal">
     <div class="modal-content">
