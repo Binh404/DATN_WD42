@@ -69,28 +69,16 @@
         </li>
 
         <!-- People Management Section -->
-        <li class="nav-item">
+        <li class="nav-item ">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>Hồ sơ <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/hoso/giamdoc" class="nav-link">
+              <a href="/hoso/admin/hoso" class="nav-link ">
                 <i class="far fa-circle nav-icon"></i>
-                <p>giám đốc</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/hoso/truongphong" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>trưởng phòng</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/hoso/nhanvien" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Nhân viên</p>
+                <p>Hồ sơ</p>
               </a>
             </li>
             {{-- <li class="nav-item">

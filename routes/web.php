@@ -135,9 +135,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // Admin HR - Hồ sơ nhân viên
 Route::prefix('/hoso')->group(function () {
-    Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
-    Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
-    Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
+    Route::get('/admin/hoso', [HoSoNhanVienController::class, 'indexAll'])->name('hoso.all');
     Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
     Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
     Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');

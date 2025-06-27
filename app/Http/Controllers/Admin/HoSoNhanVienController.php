@@ -13,32 +13,13 @@ class HoSoNhanVienController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function indexNhanVien()
+   public function indexAll()
 {
-    $nhanVien = NguoiDung::whereHas('chucVu', function ($query) {
-        $query->where('ma', 'like', 'NV_%')
-              ->orWhere('ma', 'like', 'DEV_%');
-    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
+    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        ->orderByDesc('created_at') // Nhân viên mới nhất sẽ nằm trên
+        ->get();
 
-    return view('admin.hoso.nhanvien', compact('nhanVien'));
-}
-
-public function indexTruongPhong()
-{
-    $truongPhong = NguoiDung::whereHas('chucVu', function ($query) {
-        $query->where('ma', 'like', 'TP_%');
-    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
-
-    return view('admin.hoso.truongphong', compact('truongPhong'));
-}
-
-public function indexGiamDoc()
-{
-    $giamDoc = NguoiDung::whereHas('chucVu', function ($query) {
-        $query->where('ma', 'GD');
-    })->with(['hoSo', 'phongBan', 'chucVu'])->get();
-
-    return view('admin.hoso.giamdoc', compact('giamDoc'));
+    return view('admin.hoso.index', compact('nguoiDungs'));
 }
     /**
      * Show the form for creating a new resource.
@@ -67,53 +48,54 @@ public function indexGiamDoc()
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit($id)
-{
-    $hoSo = HoSoNguoiDung::findOrFail($id);
-    $nguoiDung = $hoSo->nguoiDung; // assuming 'nguoiDung' là quan hệ từ HoSoNguoiDung
+    public function edit($id)
+    {
+        $hoSo = HoSoNguoiDung::findOrFail($id);
+        $duong_dan_quay_lai = route('hoso.all'); // trở về view duy nhất
 
-    // Xác định link quay lại theo mã chức vụ
-    $maChucVu = $nguoiDung->chucVu->ma ?? '';
-    if (str_starts_with($maChucVu, 'NV_') || str_starts_with($maChucVu, 'DEV_')) {
-        $duong_dan_quay_lai = route('hoso.nhanvien');
-    } elseif (str_starts_with($maChucVu, 'TP_')) {
-        $duong_dan_quay_lai = route('hoso.truongphong');
-    } elseif ($maChucVu === 'GD') {
-        $duong_dan_quay_lai = route('hoso.giamdoc');
-    } else {
-        $duong_dan_quay_lai = route('hoso.nhanvien'); // mặc định
+        return view('admin.hoso.edit', compact('hoSo', 'duong_dan_quay_lai'));
     }
 
-    return view('admin.hoso.edit', compact('hoSo', 'duong_dan_quay_lai'));
-}
 
 public function update(Request $request, $id)
 {
     $hoSo = HoSoNguoiDung::findOrFail($id);
 
     $request->validate([
-        'ho' => 'required|string|max:50',
-        'ten' => 'required|string|max:50',
-        'email_cong_ty' => [
-            'nullable', 'email',
-            Rule::unique('ho_so_nguoi_dung', 'email_cong_ty')->ignore($hoSo->id),
-        ],
-        'so_dien_thoai' => 'nullable|string|max:15',
-        'ngay_sinh' => 'nullable|date',
-        'gioi_tinh' => 'nullable|in:nam,nu,khac',
-        'dia_chi_hien_tai' => 'nullable|string',
-        'dia_chi_thuong_tru' => 'nullable|string',
-        'cmnd_cccd' => [
-            'nullable', 'string',
-            Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
-        ],
-        'so_ho_chieu' => 'nullable|string|max:20',
-        'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
-        'lien_he_khan_cap' => 'nullable|string|max:50',
-        'sdt_khan_cap' => 'nullable|string|max:15',
-        'quan_he_khan_cap' => 'nullable|string|max:50',
-        'anh_dai_dien' => 'nullable|image|max:2048', // THÊM DÒNG NÀY
-    ]);
+    'ho' => 'required|string|max:50',
+    'ten' => 'required|string|max:50',
+    'email_cong_ty' => [
+        'nullable', 'email',
+        Rule::unique('ho_so_nguoi_dung', 'email_cong_ty')->ignore($hoSo->id),
+    ],
+    'so_dien_thoai' => 'nullable|string|max:15',
+    'ngay_sinh' => 'nullable|date',
+    'gioi_tinh' => 'nullable|in:nam,nu,khac',
+    'dia_chi_hien_tai' => 'nullable|string',
+    'dia_chi_thuong_tru' => 'nullable|string',
+    'cmnd_cccd' => [
+        'nullable', 'string',
+        Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
+    ],
+    'so_ho_chieu' => 'nullable|string|max:20',
+    'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
+    'lien_he_khan_cap' => 'nullable|string|max:50',
+    'sdt_khan_cap' => 'nullable|string|max:15',
+    'quan_he_khan_cap' => 'nullable|string|max:50',
+    'anh_dai_dien' => 'nullable|image|max:2048',
+], [
+    'ho.required' => 'Vui lòng nhập họ.',
+    'ten.required' => 'Vui lòng nhập tên.',
+    'email_cong_ty.email' => 'Email công ty không đúng định dạng.',
+    'email_cong_ty.unique' => 'Email công ty đã tồn tại.',
+    'so_dien_thoai.max' => 'Số điện thoại không quá 15 ký tự.',
+    'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
+    'gioi_tinh.in' => 'Giới tính không hợp lệ.',
+    'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại.',
+    'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
+    'anh_dai_dien.max' => 'Ảnh đại diện không được vượt quá 2MB.',
+]);
+
 
     // Cập nhật dữ liệu không bao gồm ảnh
     $data = $request->except(['ma_nhan_vien', 'nguoi_dung_id', 'anh_dai_dien']);
