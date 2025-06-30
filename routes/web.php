@@ -20,7 +20,9 @@ use App\Http\Controllers\client\TinTuyenDungController;
 
 
 
-
+Route::get('/testcatlayout', function () {
+    return view('layoutsAdmin.master');
+});
 // Admin routes
 Route::middleware(['auth',PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
