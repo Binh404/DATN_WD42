@@ -955,6 +955,11 @@
 
             document.body.style.overflow = 'auto';
             document.getElementById('reasonForm').reset();
+            const submitBtn = document.getElementById('reasonBtnSubmitNgay');
+            if (submitBtn) {
+                submitBtn.style.display = 'none';
+            }
+            document.getElementById('reasonBtnSubmit').style.display = 'none';
 
             // Reset variables
             pendingAttendanceData = null;
@@ -1817,17 +1822,21 @@
                 updateOvertimeDisplayData(data);
             }
             console.log(data.kiem_tra);
-            if (data.kiem_tra || data.is_overtime) {
-                btnReason = document.getElementById('reasonBtn');
-                btnReason.style.display = 'inline-block';
+            if ((data.kiem_tra || data.is_overtime) ) {
+                if(data.kiem_tra_trang_thai_duyet){
+                    btnReason = document.getElementById('reasonBtn');
+                    btnReason.style.display = 'inline-block';
+                }else{
+                    btnReason = document.getElementById('reasonBtn');
+                    btnReason.style.display = 'none';
+                }
                 const isoDate = data.ngay;
                 const date = new Date(isoDate);
-
-                // Lấy phần ngày/tháng/năm theo giờ UTC (để không bị lệch)
+                 // Lấy phần ngày/tháng/năm theo giờ UTC (để không bị lệch)
                 const day = String(date.getUTCDate()).padStart(2, '0');
                 const month = String(date.getUTCMonth() + 1).padStart(2, '0');
                 const year = date.getUTCFullYear();
-                // Tạo chuỗi định dạng dd-mm-yyyy
+                 // Tạo chuỗi định dạng dd-mm-yyyy
                 const formattedDate = `${year}-${month}-${day}`;
                 btnReason.setAttribute('data-ngay', formattedDate);
                 showNotification('Thống kê ngày ' + formattedDate + ' đã được cập nhật', 'success');

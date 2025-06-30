@@ -339,9 +339,16 @@ class ChamCongController extends Controller
                 ->orWhere('ngay_cham_cong', $dayNgay)
                 ->where('nguoi_dung_id', auth()->id())
                 ->first();
+            $kiemTraTrangThaiDuyet = false;
 
+            if ($chamCong !== null) {
+                if ($chamCong->trang_thai_duyet != 0) {
+                    $kiemTraTrangThaiDuyet = true;
+                }
+            }
             // Initialize default response data
             $data = [
+                'kiem_tra_trang_thai_duyet' => $kiemTraTrangThaiDuyet,
                 'kiem_tra' => null,
                 'gio_vao' => null,
                 'gio_ra' => null,
