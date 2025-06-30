@@ -13,13 +13,22 @@ class HoSoNhanVienController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function indexAll()
+  public function indexAll(Request $request)
 {
-    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-        ->orderByDesc('created_at') // Nhân viên mới nhất sẽ nằm trên
-        ->get();
+    $keyword = $request->input('search');
 
-    return view('admin.hoso.index', compact('nguoiDungs'));
+    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
+                $subQuery->where('ho', 'like', "%$keyword%")
+                         ->orWhere('ten', 'like', "%$keyword%")
+                         ->orWhere('email_cong_ty', 'like', "%$keyword%");
+            });
+        })
+        ->orderByDesc('created_at')
+        ->paginate(10);
+
+    return view('admin.hoso.index', compact('nguoiDungs', 'keyword'));
 }
     /**
      * Show the form for creating a new resource.
