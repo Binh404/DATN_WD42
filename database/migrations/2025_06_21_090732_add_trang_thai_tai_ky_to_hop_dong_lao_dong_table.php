@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->dateTime('dat_lich')->nullable()->after('tai_cv');
+        Schema::table('hop_dong_lao_dong', function (Blueprint $table) {
+            $table->string('trang_thai_tai_ky')->nullable()->after('trang_thai_ky');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->dropColumn('dat_lich');
+        Schema::table('hop_dong_lao_dong', function (Blueprint $table) {
+            $table->dropColumn('trang_thai_tai_ky');
         });
     }
 };

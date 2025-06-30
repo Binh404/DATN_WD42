@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as FakerFactory;
 
 class HoSoNguoiDungSeeder extends Seeder
 {
@@ -125,5 +126,7 @@ class HoSoNguoiDungSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
+
+       
     }
 }

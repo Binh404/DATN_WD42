@@ -1,30 +1,41 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="@if(auth()->user()->role === 'admin')
+  <a style="text-decoration: none;" href="@if(auth()->user()->role === 'admin')
             {{route('admin.dashboard')}}
           @elseif(auth()->user()->role === 'hr')
             {{route('hr.dashboard')}}
           {{-- @else
             {{route('hr.dashboard')}} --}}
           @endif" class="brand-link">
-    <div class="d-flex">
-      <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="brand-image elevation-3 bg-white">
-      <span class="brand-text font-weight-light">DV TECH</span>
-    </div>
+    <div class="d-flex align-items-center px-3 py-2">
+    <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="img-fluid bg-white rounded-circle shadow-sm me-2" style="width: 40px; height: 40px;">
+    <span class="text-white fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
+</div>
+
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <div class="image">
-        <img src="{{asset('assets/images/user.png')}}" alt="user" class="img-circle elevation-3 bg-white"/>
-      </div>
-      <div class="info">
-        <a href="#" class="d-block">{{ auth()->user()->ten_dang_nhap }}</a>
-</a>
-      </div>
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+    <div class="image">
+        <img src="{{ asset('assets/images/user.png') }}" alt="user" class="img-circle elevation-2 bg-white" style="width: 35px; height: 35px;">
     </div>
+    <div class="info ms-2">
+        <span class="d-block text-white fw-semibold">{{ auth()->user()->ten_dang_nhap }}</span>
+    </div>
+</div>
+<style>
+    .user-panel {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        transition: 0.3s ease;
+            height: 54px;
+    padding-left: 25px;
+    padding-top: 15px;
+    }
+</style>
+
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -115,25 +126,37 @@
         </li>
 
         <!-- Attendance Section -->
-        {{-- <li class="nav-item">
+        <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
-            <p>Sự tham gia <i class="right fas fa-angle-left"></i></p>
+            <p>Chấm công <i class="right fas fa-angle-left"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('admin.chamcong.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Today</p>
+                <p>Danh sách chấm công</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('admin.chamcong.danhSachTangCa')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>My Attendance</p>
+                <p>Danh sách tăng ca</p>
               </a>
             </li>
             <li class="nav-item">
+              <a href="{{ route('admin.chamcong.xemPheDuyet')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phê duyệt</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phê duyệt tăng ca</p>
+              </a>
+            </li>
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Timeline</p>
@@ -150,9 +173,9 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>My Leaves</p>
               </a>
-            </li>
+            </li> --}}
           </ul>
-        </li> --}}
+        </li>
 
         <!-- Payments Section -->
         {{-- <li class="nav-item">
@@ -350,6 +373,37 @@
           </ul>
         </li>
 
+         <!-- Hợp đồng Section -->
+         <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-file-contract"></i>
+            <p>Hợp đồng<i class="right fas fa-angle-left"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('hopdong.index') }}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý hợp đồng</p>
+              </a>
+              <!-- <a href="/ungvien/phong-van" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gửi email phỏng vấn</p>
+              </a>
+              <a href="/ungvien/emaildagui" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách email đã gửi</p>
+              </a>
+              <a href="/ungvien/trung-tuyen" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Trúng tuyển</p>
+              </a>
+              <a href="/ungvien/luu-tru" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lưu trữ</p>
+              </a> -->
+            </li>
+          </ul>
+        </li>
         <!-- Gửi đơn yêu cầu Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
@@ -386,9 +440,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('department.donxinnghi.danhsach') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Xin nghỉ việc</p>
+                <p>Xin nghỉ phép</p>
               </a>
             </li>
 
@@ -437,6 +491,13 @@
               </a>
             </li>
           </ul>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{route('hr.loainghiphep.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Loại nghỉ phép</p>
+          </a>
         </li>
       </ul>
     </nav>

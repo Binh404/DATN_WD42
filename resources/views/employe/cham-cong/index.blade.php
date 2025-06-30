@@ -215,6 +215,12 @@
     transform: none;
     box-shadow: none;
 }
+.overtime-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 20px;
+}
 @media (max-width: 768px) {
     .calendar-header {
         flex-direction: column;
@@ -241,6 +247,7 @@
     .reason-btn {
         width: 100%;
     }
+
 }
 </style>
 @endsection
@@ -310,34 +317,80 @@
     </div>
 
    <!-- Thống kê ngày hôm nay -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div class="stat-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;" >
         <div class="stat-card">
             <i class="fas fa-clock stat-icon"></i>
-            <div class="stat-value" id="gioVaoHomNay">
-                {{ $chamCongHomNay ? $chamCongHomNay->gio_vao_format : '--:--' }}
-            </div>
+            <div class="stat-value" id="gioVaoHomNay">--:--</div>
             <div class="stat-label">Giờ vào hôm nay</div>
         </div>
+
         <div class="stat-card">
             <i class="fas fa-clock stat-icon"></i>
-            <div class="stat-value" id="gioRaHomNay">
-                {{ $chamCongHomNay ? $chamCongHomNay->gio_ra_format : '--:--' }}
-            </div>
+            <div class="stat-value" id="gioRaHomNay">--:--</div>
             <div class="stat-label">Giờ ra hôm nay</div>
         </div>
+
         <div class="stat-card">
             <i class="fas fa-stopwatch stat-icon"></i>
-            <div class="stat-value" id="soGioLamHomNay">
-                {{ $chamCongHomNay ? $chamCongHomNay->so_gio_lam . 'h' : '0h' }}
-            </div>
+            <div class="stat-value" id="soGioLamHomNay">0h</div>
             <div class="stat-label">Tổng giờ làm hôm nay</div>
         </div>
+
         <div class="stat-card">
-            <i class="fas fa-calendar-check stat-icon"></i>
-            <div class="stat-value" id="trangThaiHomNay">
-                {{ $chamCongHomNay ? $chamCongHomNay->trang_thai_text : 'Chưa chấm công' }}
-            </div>
+            <i class="fas fa-info-circle stat-icon"></i>
+            <div class="stat-value" id="trangThaiHomNay">Chưa chấm công</div>
             <div class="stat-label">Trạng thái hôm nay</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-comment stat-icon"></i>
+            <div class="stat-value" id="ghiChuHomNay">Không có ghi chú</div>
+            <div class="stat-label">Ghi chú hôm nay</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-reply stat-icon"></i>
+            <div class="stat-value" id="ghiChuDuyetHomNay">Không có ghi chú</div>
+            <div class="stat-label">Ghi chú phản hồi hôm nay</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-check-circle stat-icon"></i>
+            <div class="stat-value" id="trangThaiDuyetHomNay">Chưa duyệt</div>
+            <div class="stat-label">Trạng thái duyệt hôm nay</div>
+        </div>
+    </div>
+
+    <!-- Thông tin tăng ca -->
+    <div id="overtimeSection" class="overtime-section hidden">
+        <div class="overtime-title">
+            <i class="fas fa-clock"></i> <span id="overtime-title-text">Thông tin tăng ca hôm nay</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div class="stat-card">
+                <i class="fas fa-clock stat-icon"></i>
+                <div class="stat-value" id="gioVaoTangCa">--:--</div>
+                <div class="stat-label">Giờ vào tăng ca</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-clock stat-icon"></i>
+                <div class="stat-value" id="gioRaTangCa">--:--</div>
+                <div class="stat-label">Giờ ra tăng ca</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-stopwatch stat-icon"></i>
+                <div class="stat-value" id="soGioTangCa">0h</div>
+                <div class="stat-label">Tổng giờ tăng ca</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-info-circle stat-icon"></i>
+                <div class="stat-value" id="trangThaiTangCa">Chưa bắt đầu</div>
+                <div class="stat-label">Trạng thái tăng ca</div>
+            </div>
         </div>
     </div>
 
@@ -378,7 +431,9 @@
 
                      @if($chamCong instanceof \App\Models\ChamCong)
                         title="Vào: {{ $ngay['cham_cong']->gio_vao_format }} - Ra: {{ $ngay['cham_cong']->gio_ra_format }} - {{ $ngay['cham_cong']->trang_thai_text }}"
-                     @endif data-id="{{ $ngay['id'] }}">
+
+                     @endif
+                      data-ngayXem="{{ $ngay['id'] }}">
                     {{ $ngay['ngay'] }}
                 </div>
             @endforeach
@@ -397,119 +452,327 @@
     const COMPANY_LOCATION = {
         // latitude: 21.0305024,    // Thay bằng tọa độ thực tế của công ty
         // longitude: 105.7685504,  // Thay bằng tọa độ thực tế của công ty
-        latitude:  21.0266474,    // Thay bằng tọa độ thực tế của công ty
-        longitude: 105.7637375,  // Thay bằng tọa độ thực tế của công ty
+        latitude:  20.5815808,    // Thay bằng tọa độ thực tế của công ty
+        longitude: 105.8701312,  // Thay bằng tọa độ thực tế của công ty
         allowedRadius: 1000   // 5km = 5000 mét
     };
     const WORK_SCHEDULE = {
         startTime: '08:30',
-        endTime: '17:00',
+        endTime: '17:30',
         lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
-        earlyThreshold: 15  // Số phút được phép về sớm mà không cần lý do
-    }
-    function needsReason(type)  {
-        const now = new Date();
-        const timeString = now.toTimeString().slice(0, 5); // HH:MM
+        earlyThreshold: 15, // Số phút được phép về sớm mà không cần lý do
+        overtimeThreshold: '18:30' // Giờ bắt đầu chấm công tăng ca
+    };
 
+    function needsReason(type, isDayOff = false, date = new Date()) {
+        const timeString = date.toTimeString().slice(0, 5); // HH:MM
+        console.log(isDayOff, date, timeString);
+        // Kiểm tra nếu là ngày nghỉ hoặc sau giờ tăng ca (18:30), không cần lý do
+        const [overtimeHour, overtimeMin] = WORK_SCHEDULE.overtimeThreshold.split(':');
+        const overtimeThresholdMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), overtimeHour, overtimeMin).getTime();
+        if (isDayOff || date.getTime() >= overtimeThresholdMs) {
+            console.log(isDayOff, date, timeString);
+            return false; // Ngày nghỉ hoặc sau 18:30 không cần lý do
+        }
+
+        // Ngày làm việc bình thường, trước 18:30
         if (type === 'in') {
             // Kiểm tra đi muộn
+            // console.log('adsa')
             const [startHour, startMin] = WORK_SCHEDULE.startTime.split(':');
-            const startTimeMs = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMin).getTime();
+            const startTimeMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, startMin).getTime();
             const lateThresholdMs = startTimeMs + (WORK_SCHEDULE.lateThreshold * 60 * 1000);
-            console.log(lateThresholdMs);
-            return now.getTime() > lateThresholdMs;
+            console.log(date.getTime(), lateThresholdMs);
+            return date.getTime() > lateThresholdMs; // Đi muộn cần lý do
         } else if (type === 'out') {
             // Kiểm tra về sớm
             const [endHour, endMin] = WORK_SCHEDULE.endTime.split(':');
-            const endTimeMs = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMin).getTime();
+            const endTimeMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMin).getTime();
             const earlyThresholdMs = endTimeMs - (WORK_SCHEDULE.earlyThreshold * 60 * 1000);
-
-            return now.getTime() < earlyThresholdMs;
+            return date.getTime() < earlyThresholdMs; // Về sớm cần lý do
         }
 
-        return false;
+        return false; // Mặc định không cần lý do nếu không phải in/out
     }
-    // Khởi tạo trạng thái khi load trang
-    document.addEventListener('DOMContentLoaded', async function() {
-        await checkAttendanceStatus();
-        await updateButtonState();
-    });
 
-    // Kiểm tra trạng thái chấm công hiện tại
-    async function checkAttendanceStatus() {
-        console.log(document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-        fetch('/employee/cham-cong/trang-thai', {
+    // Khởi tạo trạng thái khi load trang
+document.addEventListener('DOMContentLoaded', async function() {
+    // Ẩn nút ban đầu
+    document.getElementById("checkinBtn").style.display = "none";
+
+    await checkAttendanceStatus();
+});
+
+// Kiểm tra trạng thái chấm công hiện tại (cả 2 bảng)
+async function checkAttendanceStatus() {
+    try {
+        const response = await fetch('/employee/cham-cong/trang-thai-full', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
-        })
-        .then(response => response.json())
-        .then(async data => {
-            if (data.success) {
-                switch(data.trang_thai) {
-                    case 'chua_cham_cong':
-                        attendanceStatus = 'out';
-                        break;
-                    case 'da_cham_cong_vao':
-                        attendanceStatus = 'in';
-                        break;
-                    case 'da_hoan_thanh':
-                        attendanceStatus = 'completed';
-                        break;
-                }
-
-                if (data.data) {
-                    console.log(data.data);
-                    updateDisplayData(data.data);
-                }
-
-                await updateButtonState();
-                document.getElementById("checkinBtn").style.display = "inline-block";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Có lỗi khi kiểm tra trạng thái chấm công', 'error');
         });
-    }
 
-    // Cập nhật dữ liệu hiển thị
-    function updateDisplayData(data) {
+        const data = await response.json();
+
+        if (data.success) {
+            // Xác định loại chấm công dựa vào thời gian và ngày
+            const currentTime = new Date();
+            const isAfter1830 = currentTime.getHours() > 18 || (currentTime.getHours() === 18 && currentTime.getMinutes() >= 30);
+            const isWeekend = currentTime.getDay() === 0 || currentTime.getDay() === 6; // 0 = Chủ nhật, 6 = Thứ 7
+
+            // Kiểm tra có phải chấm công tăng ca không
+            const isOvertimeAttendance = isWeekend || data.is_holiday || (data.has_approved_overtime && isAfter1830);
+            console.log('isOvertimeAttendance', data.has_approved_overtime);
+            if (isOvertimeAttendance) {
+                // Xử lý trạng thái chấm công tăng ca
+                if (data.overtime_data) {
+                    if (data.overtime_data.gio_bat_dau_thuc_te && data.overtime_data.gio_ket_thuc_thuc_te) {
+                        attendanceStatus = 'completed';
+                        attendanceType = 'overtime';
+                    } else if (data.overtime_data.gio_bat_dau_thuc_te) {
+                        attendanceStatus = 'in';
+                        attendanceType = 'overtime';
+                    } else {
+                        attendanceStatus = 'out';
+                        attendanceType = 'overtime';
+                    }
+                    updateNormalDisplayData(data.normal_data)
+                    updateOvertimeDisplayData(data.overtime_data);
+
+                } else {
+                    // Chưa có bản ghi tăng ca hoặc chưa được duyệt
+                    attendanceStatus = 'out';
+                    attendanceType = 'overtime';
+                    if (!data.has_approved_overtime) {
+                        attendanceStatus = 'no_overtime_approval';
+                    }
+                    updateNormalDisplayData(data.normal_data)
+
+                }
+            } else {
+                // Xử lý trạng thái chấm công thường
+                if (data.normal_data) {
+                    if (data.normal_data.gio_vao && data.normal_data.gio_ra) {
+                        attendanceStatus = 'completed';
+                        attendanceType = 'normal';
+                    } else if (data.normal_data.gio_vao) {
+                        attendanceStatus = 'in';
+                        attendanceType = 'normal';
+                    } else {
+                        attendanceStatus = 'out';
+                        attendanceType = 'normal';
+                    }
+                    updateNormalDisplayData(data.normal_data);
+                } else {
+                    attendanceStatus = 'out';
+                    attendanceType = 'normal';
+                }
+            }
+
+            // Cập nhật trạng thái nút và hiển thị
+            updateButtonState();
+            document.getElementById("checkinBtn").style.display = "inline-block";
+
+        } else {
+            // Nếu có lỗi, vẫn hiển thị nút với trạng thái mặc định
+            attendanceStatus = 'out';
+            attendanceType = 'normal';
+            updateButtonState();
+            document.getElementById("checkinBtn").style.display = "inline-block";
+
+            showNotification(data.message || 'Có lỗi khi kiểm tra trạng thái', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+
+        // Nếu có lỗi network, vẫn hiển thị nút với trạng thái mặc định
+        attendanceStatus = 'out';
+        attendanceType = 'normal';
+        updateButtonState();
         document.getElementById("checkinBtn").style.display = "inline-block";
-        document.getElementById('gioVaoHomNay').textContent = data.gio_vao;
-        document.getElementById('gioRaHomNay').textContent = data.gio_ra;
-        document.getElementById('soGioLamHomNay').textContent = data.so_gio_lam + 'h';
-        document.getElementById('trangThaiHomNay').textContent = data.trang_thai_text;
+
+        showNotification('Có lỗi khi kiểm tra trạng thái chấm công', 'error');
     }
+}
 
-    // Cập nhật trạng thái button
-    function updateButtonState() {
-        const btn = document.getElementById('checkinBtn');
-        const btnText = document.getElementById('btnText');
-
-        switch(attendanceStatus) {
-            case 'out':
-                btn.innerHTML = '<i class="fas fa-fingerprint"></i> <span>Chấm công vào</span>';
-                btn.style.background = 'linear-gradient(135deg, #007bff, #0056b3)';
-                btn.disabled = false;
-                break;
-
-            case 'in':
-                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> <span>Chấm công ra</span>';
-                btn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff9f43)';
-                btn.disabled = false;
-                break;
-
-            case 'completed':
-                btn.innerHTML = '<i class="fas fa-check-double"></i> <span>Đã hoàn thành</span>';
-                btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-                btn.disabled = true;
-                break;
+// Cập nhật dữ liệu hiển thị cho chấm công thường
+function updateNormalDisplayData(data) {
+    // Cập nhật giờ vào
+    if (data.gio_vao) {
+        const gioVaoEl = document.getElementById('gioVaoHomNay');
+        if (gioVaoEl) {
+            gioVaoEl.textContent = data.gio_vao;
         }
     }
 
+    // Cập nhật giờ ra
+    if (data.gio_ra) {
+        const gioRaEl = document.getElementById('gioRaHomNay');
+        if (gioRaEl) {
+            gioRaEl.textContent = data.gio_ra;
+        }
+    }
+
+    // Cập nhật số giờ làm
+    if (data.so_gio_lam) {
+        const soGioLamEl = document.getElementById('soGioLamHomNay');
+        if (soGioLamEl) {
+            soGioLamEl.textContent = data.so_gio_lam + 'h';
+        }
+    }
+     // Cập nhật trạng thái
+    if (data.trang_thai_text) {
+        const trangThaiEl = document.getElementById('trangThaiHomNay');
+        if (trangThaiEl) {
+            trangThaiEl.textContent = data.trang_thai_text;
+        }
+    }
+    // Cập nhật ghi chú
+    if (data.ghi_chu) {
+        const ghiChuEl = document.getElementById('ghiChuHomNay');
+        if (ghiChuEl) {
+            ghiChuEl.textContent = data.ghi_chu;
+        }
+    }
+
+    // Cập nhật ghi chú duyệt
+    if (data.ghi_chu_duyet) {
+        const ghiChuDuyetEl = document.getElementById('ghiChuDuyetHomNay');
+        if (ghiChuDuyetEl) {
+            ghiChuDuyetEl.textContent = data.ghi_chu_duyet;
+        }
+    }
+    // Cập nhật trạng thái duyệt
+    if (data.trang_thai_duyet !== undefined) {
+        const trangThaiDuyetEl = document.getElementById('trangThaiDuyetHomNay');
+        if (trangThaiDuyetEl) {
+            let trangThaiDuyetText = '';
+            switch(data.trang_thai_duyet) {
+                case 0:
+                    trangThaiDuyetText = 'Chờ duyệt';
+                    break;
+                case 1:
+                    trangThaiDuyetText = 'Đã duyệt';
+                    break;
+                case 2:
+                    trangThaiDuyetText = 'Từ chối';
+                    break;
+                default:
+                    trangThaiDuyetText = 'Không xác định';
+            }
+            trangThaiDuyetEl.textContent = trangThaiDuyetText;
+        }
+    }
+
+    showAttendanceInfo();
+
+    // Ẩn thông tin tăng ca nếu có
+    hideOvertimeInfo();
+}
+
+// Cập nhật dữ liệu hiển thị cho chấm công tăng ca
+function updateOvertimeDisplayData(data) {
+    const gioVaoEl = document.getElementById('gioVaoTangCa');
+    if (gioVaoEl && data.gio_bat_dau_thuc_te) {
+        gioVaoEl.textContent = data.gio_bat_dau_thuc_te;
+    }
+
+    const gioRaEl = document.getElementById('gioRaTangCa');
+    if (gioRaEl && data.gio_ket_thuc_thuc_te) {
+        gioRaEl.textContent = data.gio_ket_thuc_thuc_te;
+    }
+
+    const soGioEl = document.getElementById('soGioTangCa');
+    if (soGioEl && data.so_gio_tang_ca_thuc_te) {
+        soGioEl.textContent = data.so_gio_tang_ca_thuc_te + 'h';
+    }
+
+    const trangThaiEl = document.getElementById('trangThaiTangCa');
+    if (trangThaiEl && data.trang_thai) {
+        trangThaiEl.textContent = data.trang_thai;
+    }
+
+    // Hiển thị thông tin tăng ca
+    showOvertimeInfo();
+}
+
+
+// Hàm cập nhật trạng thái nút
+function updateButtonState() {
+    const checkinBtn = document.getElementById("checkinBtn");
+
+    if (!checkinBtn) return;
+
+    // Xử lý trạng thái đặc biệt
+    if (attendanceStatus === 'no_overtime_approval') {
+        checkinBtn.textContent = 'Chưa có đơn tăng ca được duyệt';
+        checkinBtn.className = 'btn btn-secondary';
+        checkinBtn.disabled = true;
+        return;
+    }
+
+    // Cập nhật nút dựa vào loại chấm công
+    const isOvertime = attendanceType === 'overtime';
+
+    switch(attendanceStatus) {
+        case 'out':
+            checkinBtn.textContent = isOvertime ? 'Chấm công vào (Tăng ca)' : 'Chấm công vào';
+            checkinBtn.className = 'btn btn-primary';
+            checkinBtn.disabled = false;
+            break;
+
+        case 'in':
+            checkinBtn.textContent = isOvertime ? 'Chấm công ra (Tăng ca)' : 'Chấm công ra';
+            checkinBtn.className = 'btn btn-warning';
+            checkinBtn.disabled = false;
+            break;
+
+        case 'completed':
+            checkinBtn.textContent = isOvertime ? 'Đã hoàn thành tăng ca' : 'Đã hoàn thành';
+            checkinBtn.className = 'btn btn-success';
+            checkinBtn.disabled = true;
+            break;
+
+        default:
+            checkinBtn.textContent = 'Chấm công vào';
+            checkinBtn.className = 'btn btn-primary';
+            checkinBtn.disabled = false;
+    }
+}
+
+// Hiển thị thông tin tăng ca
+function showOvertimeInfo() {
+    const overtimeSection = document.getElementById('overtimeSection');
+    if (overtimeSection) {
+        overtimeSection.style.display = 'block';
+    }
+}
+function hideAttendanceInfo() {
+    const attendanceSection = document.querySelector('.stat-cards');
+    if (attendanceSection) {
+        attendanceSection.style.display = 'none';
+    }
+}
+function showAttendanceInfo() {
+    const attendanceSection = document.querySelector('.stat-cards');
+    if (attendanceSection) {
+        attendanceSection.style.display = 'grid';
+    }
+}
+
+// Ẩn thông tin tăng ca
+function hideOvertimeInfo() {
+    const overtimeSection = document.getElementById('overtimeSection');
+    if (overtimeSection) {
+        overtimeSection.style.display = 'none';
+    }
+}
+
+// Biến global để lưu loại chấm công
+let attendanceType = 'normal'; // 'normal' hoặc 'overtime'
     // Tính khoảng cách giữa 2 điểm GPS (công thức Haversine)
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371e3; // Bán kính trái đất tính bằng mét
@@ -544,7 +807,7 @@
             maxDistance: COMPANY_LOCATION.allowedRadius
         };
     }
-    function openReasonModal(){
+function openReasonModal(){
     const modal = document.getElementById('reasonModal');
     const title = document.getElementById('reasonModalTitle');
     const reasonBtn = document.getElementById('reasonBtn');
@@ -590,42 +853,42 @@ function submitReasonNgay() {
 
     // Vô hiệu hóa button submit
     const submitBtn = document.querySelector('.reason-btn-submit');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Đang xử lý...';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xử lý...';
 
-    // Thêm thông tin lý do vào dữ liệu chấm công
-    // Prepare attendance data
-    const attendanceData = {
-        // ...pendingAttendanceData,
-        reason_detail: detail,
-        ngay_cham_cong: ngay_cham_cong_format,
-        timestamp: new Date().toISOString()
-    };
+        // Thêm thông tin lý do vào dữ liệu chấm công
+        // Prepare attendance data
+        const attendanceData = {
+            // ...pendingAttendanceData,
+            reason_detail: detail,
+            ngay_cham_cong: ngay_cham_cong_format,
+            timestamp: new Date().toISOString()
+        };
 
-    // console.log(attendanceData);
+        // console.log(attendanceData);
 
-    // Ẩn modal ngay sau khi submit
+        // Ẩn modal ngay sau khi submit
 
-    // // Reset form
-    document.getElementById('reasonForm').reset();
+        // // Reset form
+        document.getElementById('reasonForm').reset();
 
-    // // Thực hiện lý do
-    upDateTrangThai(attendanceData);
+        // // Thực hiện lý do
+        upDateTrangThai(attendanceData);
 
-    const modal = document.getElementById('reasonModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    document.getElementById('reasonForm').reset();
+        const modal = document.getElementById('reasonModal');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('reasonForm').reset();
 
-    // Reset variables
-    pendingAttendanceData = null;
-    currentAttendanceType = null;
-    // Reset button về trạng thái ban đầu
-    setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Xác nhận';
-    }, 500);
-}
+        // Reset variables
+        pendingAttendanceData = null;
+        currentAttendanceType = null;
+        // Reset button về trạng thái ban đầu
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Xác nhận';
+        }, 500);
+    }
     // Hiển thị modal nhập lý do
     function showReasonModal(type, location) {
         const modal = document.getElementById('reasonModal');
@@ -654,80 +917,80 @@ function submitReasonNgay() {
     }
     // Đóng modal
     function closeReasonModal() {
-    const modal = document.getElementById('reasonModal');
-    modal.style.display = 'none';
-    modal.classList.remove('show', 'active');
+        const modal = document.getElementById('reasonModal');
+        modal.style.display = 'none';
+        modal.classList.remove('show', 'active');
 
-    document.body.style.overflow = 'auto';
-    document.getElementById('reasonForm').reset();
+        document.body.style.overflow = 'auto';
+        document.getElementById('reasonForm').reset();
 
-    // Reset variables
-    pendingAttendanceData = null;
-    currentAttendanceType = null;
+        // Reset variables
+        pendingAttendanceData = null;
+        currentAttendanceType = null;
 
-    // Reset buttons
-    // document.getElementById('checkinBtn').disabled = false;
-    document.querySelector('.reason-btn-submit').disabled = false;
-    document.querySelector('.reason-btn-submit').textContent = 'Xác nhận';
+        // Reset buttons
+        // document.getElementById('checkinBtn').disabled = false;
+        document.querySelector('.reason-btn-submit').disabled = false;
+        document.querySelector('.reason-btn-submit').textContent = 'Xác nhận';
 
-    updateButtonState();
-}
+        updateButtonState();
+    }
 // Function để set dữ liệu pending
-function setPendingAttendanceData(data) {
-    pendingAttendanceData = data;
-}
+    function setPendingAttendanceData(data) {
+        pendingAttendanceData = data;
+    }
     // Xử lý submit lý do
    function submitReason() {
-    const detail = document.getElementById('reasonDetail').value.trim();
-    const btn = document.getElementById('checkinBtn');
+        const detail = document.getElementById('reasonDetail').value.trim();
+        const btn = document.getElementById('checkinBtn');
 
-    // if (detail.length < 10) {
-    //     showNotification('Lý do phải ít nhất 10 ký tự', 'error');
-    //     return;
-    // }
+        // if (detail.length < 10) {
+        //     showNotification('Lý do phải ít nhất 10 ký tự', 'error');
+        //     return;
+        // }
 
-    // Vô hiệu hóa button submit
-    const submitBtn = document.querySelector('.reason-btn-submit');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Đang xử lý...';
+        // Vô hiệu hóa button submit
+        const submitBtn = document.querySelector('.reason-btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xử lý...';
 
-    // Thêm thông tin lý do vào dữ liệu chấm công
-    const attendanceData = {
-        ...(pendingAttendanceData || {}),
-        reason_detail: detail
-    };
+        // Thêm thông tin lý do vào dữ liệu chấm công
+        const attendanceData = {
+            ...(pendingAttendanceData || {}),
+            reason_detail: detail
+        };
 
-    console.log(attendanceData);
+        console.log(attendanceData);
 
-    // Ẩn modal ngay sau khi submit
+        // Ẩn modal ngay sau khi submit
 
-    // Reset form
-    document.getElementById('reasonForm').reset();
+        // Reset form
+        document.getElementById('reasonForm').reset();
 
-    // Thực hiện chấm công với lý do
-    if (attendanceData.type === 'in') {
-        // console.log('Chấm công với lý do');
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
-        chamCongVao(attendanceData,false);
-    } else {
-        btn.disabled = true;
-        chamCongRa(attendanceData, false);
+        // Thực hiện chấm công với lý do
+        if (attendanceData.type === 'in') {
+            // console.log('Chấm công với lý do');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
+            chamCongVao(attendanceData,false);
+        } else {
+            btn.disabled = true;
+            chamCongRa(attendanceData, false);
+        }
+        const modal = document.getElementById('reasonModal');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('reasonForm').reset();
+
+        // Reset variables
+        pendingAttendanceData = null;
+        currentAttendanceType = null;
+        // Reset button về trạng thái ban đầu
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Xác nhận';
+        }, 500);
     }
-    const modal = document.getElementById('reasonModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    document.getElementById('reasonForm').reset();
-
-    // Reset variables
-    pendingAttendanceData = null;
-    currentAttendanceType = null;
-    // Reset button về trạng thái ban đầu
-    setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Xác nhận';
-    }, 500);
-}
 
     // Xử lý chấm công
     async function checkInOut() {
@@ -762,24 +1025,28 @@ function setPendingAttendanceData(data) {
                 );
                 return;
             }
-            console.log(location);
+            // console.log(location);
             const type = (attendanceStatus === 'out' ? 'in' : 'out');
-            const requiresReason = needsReason(type);
-            console.log(requiresReason);
+            const requiresReason = checkAttendance(type);
+            // console.log(type, location, attendanceStatus, btn);
+            console.log(requiresReason.reasonRequired);
+
+
             // Nếu vị trí hợp lệ, tiến hành chấm công
-             if (requiresReason) {
+             if (requiresReason.reasonRequired) {
                 // console.log(parseFloat(location.latitude.toFixed(8)));
                 btn.disabled = true;
                 // console.log( btn.disabled);
                 showReasonModal(type, location);
              }else{
-                if (attendanceStatus === 'out') {
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
-                    chamCongVao(location, true);
-                } else if (attendanceStatus === 'in') {
-                    chamCongRa(location, true);
-                }
+                // if (attendanceStatus === 'out') {
+                // // btn.disabled = true;
+                // // btn.innerHTML = `<i class="fas fa-check-circle"></i> Đã chấm công thành công`;
+                //     chamCongVao(location, true);
+                // } else if (attendanceStatus === 'in') {
+                //     chamCongRa(location, true);
+                // }
+                handleAttendance(type, location, attendanceStatus, btn, requiresReason);
              }
 
 
@@ -787,6 +1054,19 @@ function setPendingAttendanceData(data) {
             console.error('Lỗi khi kiểm tra vị trí:', error);
             showNotification('Có lỗi xảy ra khi kiểm tra vị trí', 'error');
         }
+    }
+    function checkAttendance(type, date = new Date()) {
+        const dayOfWeek = date.getDay(); // 0: Chủ Nhật, 6: Thứ Bảy
+        const isDayOff = dayOfWeek === 0 || dayOfWeek === 6; // Ngày nghỉ là thứ Bảy hoặc Chủ Nhật
+
+        const reasonRequired = needsReason(type, isDayOff, date);
+
+        return {
+            type,
+            time: date.toTimeString().slice(0, 5),
+            isDayOff,
+            reasonRequired
+        };
     }
     function upDateTrangThai(attendanceData){
         const requestData = {
@@ -825,6 +1105,8 @@ function setPendingAttendanceData(data) {
             const longitude = location?.longitude !== undefined
             ? parseFloat(location.longitude.toFixed(8))
             : parseFloat(location.location.longitude.toFixed(8));
+        // const latitude = null;
+        // const longitude = null;
         const requestData = {
             latitude: latitude,
             longitude: longitude,
@@ -838,7 +1120,7 @@ function setPendingAttendanceData(data) {
             ...(location.reason_detail && { reason_detail: location.reason_detail })
         };
 
-        console.log("Dữ liệu vị trí:", requestData);
+        // console.log("Dữ liệu vị trí:", requestData);
 
         fetch('/employee/cham-cong/vao', {
             method: 'POST',
@@ -852,20 +1134,29 @@ function setPendingAttendanceData(data) {
         .then(data => {
             if (data.success) {
                 attendanceStatus = 'in';
-                updateDisplayData({
-                    gio_vao: data.data.gio_vao,
-                    gio_ra: '--:--',
-                    so_gio_lam: 0,
-                    trang_thai_text: data.data.trang_thai_text
-                });
+                // updateDisplayData({
+                //     gio_vao: data.data.gio_vao,
+                //     gio_ra: '--:--',
+                //     so_gio_lam: 0,
+                //     trang_thai_text: data.data.trang_thai_text
+                // });
+                updateNormalDisplayData(data.data);
+                if(data.data.is_overtime){
+                    updateOvertimeDisplayData(data.data);
+                }
+                updateButtonState();
 
                 showNotification(data.message, 'success');
-                console.log(data);
+                // console.log(data);
 
                 // Disable button trong 1 phút để tránh spam
-                disableButtonTemporarily(60);
+                // disableButtonTemporarily(60);
 
             } else {
+                // document.getElementById("checkinBtn").style.display = false;
+                attendanceStatus = 'in';
+                updateButtonState();
+
                 showNotification(data.message, 'error');
             }
         })
@@ -878,8 +1169,8 @@ function setPendingAttendanceData(data) {
     // Chấm công ra
     function chamCongRa(location, isNormalAttendance = true) {
         const requestData = {
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: location.latitude || null,
+            longitude: location.longitude || null,
             address: location.address || "Không xác định được địa chỉ chi tiết",
             trang_thai_duyet: isNormalAttendance ? 1 : 0,
              ...(location.reason_detail && { reason_detail: location.reason_detail })
@@ -900,12 +1191,16 @@ function setPendingAttendanceData(data) {
             if (data.success) {
                 attendanceStatus = 'completed';
                 updateButtonState();
-                updateDisplayData({
-                    gio_vao: document.getElementById('gioVaoHomNay').textContent,
-                    gio_ra: data.data.gio_ra,
-                    so_gio_lam: data.data.so_gio_lam,
-                    trang_thai_text: data.data.trang_thai_text
-                });
+                // updateDisplayData({
+                //     gio_vao: document.getElementById('gioVaoHomNay').textContent,
+                //     gio_ra: data.data.gio_ra,
+                //     so_gio_lam: data.data.so_gio_lam,
+                //     trang_thai_text: data.data.trang_thai_text
+                // });
+                updateNormalDisplayData(data.data);
+                if(data.data.is_overtime){
+                    updateOvertimeDisplayData(data.data);
+                }
 
                 showNotification(data.message, 'success');
 
@@ -1001,8 +1296,8 @@ async function getCurrentLocation() {
             } catch (error) {
                 console.error('Lỗi khi xử lý vị trí:', error);
                 resolve({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
+                    latitude: position.coords.latitude || null,
+                    longitude: position.coords.longitude || null,
                     accuracy: Math.round(position.coords.accuracy),
                     address: null,
                     timestamp: new Date().toISOString(),
@@ -1250,6 +1545,7 @@ function loadCalendarData() {
     fetch(`{{ route('cham-cong.lich-su') }}?month=${currentMonth}&year=${currentYear}`)
         .then(response => response.json())
         .then(data => {
+            console.log('Dữ liệu API:', data);
             if (data.success) {
                 renderCalendar(data.data.lich_cham_cong);
             } else {
@@ -1274,18 +1570,20 @@ function renderCalendar(lichChamCong) {
 
     lichChamCong.forEach(ngay => {
         let titleAttr = '';
+        // const date = new Date(ngay.id); // ngay.id phải là chuỗi ngày
+
         if (ngay.cham_cong) {
             titleAttr = `title="Vào: ${ngay.cham_cong.gio_vao_format} - Ra: ${ngay.cham_cong.gio_ra_format} - ${ngay.cham_cong.trang_thai_text}"`;
         }
 
-        gridHTML += `<div class="day-cell ${ngay.class}" data-id="${ngay.id}" ${titleAttr}>${ngay.ngay}</div>`;
-    });
+                gridHTML += `<div class="day-cell ${ngay.class}" data-ngayXem="${ngay.id}" ${titleAttr}>${ngay.ngay}</div>`;
+        });
 
-    document.getElementById('attendanceGrid').innerHTML = gridHTML;
-}
+        document.getElementById('attendanceGrid').innerHTML = gridHTML;
+    }
     // // Hiển thị thông báo
 
-    function showNotification(message, type = 'success') {
+    function showNotification(message, type = 'success', callback = null) {
     const notificationContainer = document.getElementById('notification');
     const notificationItem = document.createElement('div');
     notificationItem.className = `notification-item ${type}`;
@@ -1297,10 +1595,11 @@ function renderCalendar(lichChamCong) {
             <span class="notification-time">${new Date().toLocaleTimeString()}</span>
         </div>
         <div class="notification-content">${message}</div>
+        ${callback ? '<button class="notification-confirm">Xác nhận</button>' : ''}
         <button class="notification-close">×</button>
     `;
 
-    // Thêm thông báo vào container
+    // Thêm thông báo vào container và hiển thị container
     notificationContainer.appendChild(notificationItem);
     notificationContainer.style.display = 'block';
 
@@ -1309,7 +1608,21 @@ function renderCalendar(lichChamCong) {
         notificationItem.classList.add('show');
     }, 100);
 
-    // Tự động ẩn sau 5 giây
+    // Xử lý sự kiện nút xác nhận
+    if (callback) {
+        notificationItem.querySelector('.notification-confirm').addEventListener('click', () => {
+            callback(); // Thực hiện hành động chấm công
+            notificationItem.classList.remove('show');
+            setTimeout(() => {
+                notificationItem.remove();
+                if (!notificationContainer.hasChildNodes()) {
+                    notificationContainer.style.display = 'none';
+                }
+            }, 300);
+        });
+    }
+
+    // Tự động ẩn sau 5 giây nếu không có xác nhận
     setTimeout(() => {
         notificationItem.classList.remove('show');
         setTimeout(() => {
@@ -1332,6 +1645,25 @@ function renderCalendar(lichChamCong) {
     });
 }
 
+function handleAttendance(type, location, attendanceStatus, btn, requiresReason) {
+    if (!requiresReason) {
+        btn.disabled = true;
+        showReasonModal(type, location);
+    } else {
+        if (attendanceStatus === 'out') {
+            // Chấm công vào mà không cần xác nhận
+            chamCongVao(location, true);
+            // showNotification('Chấm công vào thành công', 'success');
+        } else if (attendanceStatus === 'in') {
+            // Yêu cầu xác nhận trước khi chấm công ra
+            showNotification('Bạn có chắc chắn muốn chấm công ra?', 'warning', () => {
+                chamCongRa(location, true);
+                // showNotification('Chấm công ra thành công', 'success');
+            });
+        }
+    }
+}
+
 // Thêm event listener cho các ngày trong lịch
 // Sử dụng Event Delegation - Gán event listener cho parent container
 document.addEventListener('DOMContentLoaded', function() {
@@ -1350,7 +1682,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.classList.add('day-active');
 
             // Lấy ID của ngày được click
-            const dayId = e.target.getAttribute('data-id');
+            const dayId = e.target.getAttribute('data-ngayXem');
             if (!dayId) {
                 return;
             }
@@ -1387,19 +1719,16 @@ function fetchAttendanceData(dayId) {
 
 // Hàm cập nhật hiển thị thống kê
 function updateStatsDisplay(data) {
-    // Cập nhật giờ vào
-    document.getElementById('gioVaoHomNay').textContent = data.gio_vao_format || '--:--';
+    hideAttendanceInfo();
+    if(data.kiem_tra){
+        updateNormalDisplayData(data);
+    }
 
-    // Cập nhật giờ ra
-    document.getElementById('gioRaHomNay').textContent = data.gio_ra_format || '--:--';
-
-    // Cập nhật số giờ làm
-    document.getElementById('soGioLamHomNay').textContent = data.so_gio_lam ? data.so_gio_lam + 'h' : '0h';
-
-    // Cập nhật trạng thái
-    document.getElementById('trangThaiHomNay').textContent = data.trang_thai_text || 'Chưa chấm công';
-    console.log(data.trang_thai_duyet);
-    if(data.trang_thai_duyet == 0){
+    if(data.is_overtime){
+        updateOvertimeDisplayData(data);
+    }
+    console.log(data.kiem_tra);
+    if(data.kiem_tra || data.is_overtime){
         btnReason = document.getElementById('reasonBtn');
         btnReason.style.display = 'inline-block';
         const isoDate = data.ngay;
@@ -1412,11 +1741,13 @@ function updateStatsDisplay(data) {
         // Tạo chuỗi định dạng dd-mm-yyyy
         const formattedDate = `${year}-${month}-${day}`;
         btnReason.setAttribute('data-ngay', formattedDate);
+        showNotification('Thống kê ngày ' + formattedDate + ' đã được cập nhật', 'success');
+
     }else{
+        showNotification('Thống kê ngày ' + data.ngay + ' chưa được cập nhật', 'error');
         btnReason = document.getElementById('reasonBtn');
         btnReason.style.display = 'none';
     }
-
 
 
     //cập nhật id ngày
@@ -1433,6 +1764,16 @@ function updateDateLabel(selectedDate) {
     statLabels[1].textContent = `Giờ ra${dateText}`;
     statLabels[2].textContent = `Tổng giờ làm${dateText}`;
     statLabels[3].textContent = `Trạng thái${dateText}`;
+    statLabels[4].textContent = `Ghi chú${dateText}`;
+    statLabels[5].textContent = `Ghi chú phản hồi${dateText}`;
+    statLabels[6].textContent = `Trạng thái duyệt${dateText}`;
+    const overtimeTitle = document.getElementById('overtime-title-text');
+
+    if (selectedDate) {
+        overtimeTitle.textContent = `Thống kê ngày ${formatDate(selectedDate)}`;
+    }
+
+
 }
 
 // Hàm format ngày

@@ -136,7 +136,7 @@
                                     </a>
 
                                     <a href="{{ route('department.yeucautuyendung.show', ['id' => $yeuCauTuyenDung->id]) }}" class="btn btn-outline-success btn-sm rounded-pill"
-                                        data-bs-toggle="tooltip" title="Chỉnh sửa">
+                                        data-bs-toggle="tooltip" title="Chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>
 
