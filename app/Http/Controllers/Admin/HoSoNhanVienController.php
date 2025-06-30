@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use App\Models\HoSoNguoiDung;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 
 class HoSoNhanVienController extends Controller
 {
@@ -18,6 +19,7 @@ class HoSoNhanVienController extends Controller
     $keyword = $request->input('search');
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
         ->when($keyword, function ($query) use ($keyword) {
             $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
                 $subQuery->where('ho', 'like', "%$keyword%")
@@ -30,6 +32,54 @@ class HoSoNhanVienController extends Controller
 
     return view('admin.hoso.index', compact('nguoiDungs', 'keyword'));
 }
+// Danh sách đã nghỉ việc
+public function indexResigned(Request $request)
+{
+    $keyword = $request->input('search');
+
+    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        ->where('trang_thai_cong_viec', 'da_nghi') // <-- lọc ở đây mới đúng
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
+                $subQuery->where('ho', 'like', "%$keyword%")
+                         ->orWhere('ten', 'like', "%$keyword%")
+                         ->orWhere('email_cong_ty', 'like', "%$keyword%");
+            });
+        })
+        ->orderByDesc('created_at')
+        ->paginate(10);
+
+    return view('admin.hoso.resigned', compact('nguoiDungs', 'keyword'));
+}
+
+
+// Đánh dấu nghỉ việc
+public function markResigned($id)
+{
+    $hoSo = HoSoNguoiDung::findOrFail($id);
+    $nguoiDung = $hoSo->nguoiDung; // lấy bản ghi liên kết từ bảng nguoi_dung
+
+    if ($nguoiDung) {
+        $nguoiDung->trang_thai_cong_viec = 'da_nghi';
+        $nguoiDung->save();
+    }
+
+    return redirect()->route('hoso.all')->with('success', 'Đã đánh dấu nhân viên nghỉ việc.');
+}
+// Khôi phục nhân viên
+public function restore($id)
+{
+    $hoSo = HoSoNguoiDung::findOrFail($id);
+    $nguoiDung = $hoSo->nguoiDung;
+
+    if ($nguoiDung) {
+        $nguoiDung->trang_thai_cong_viec = 'dang_lam';
+        $nguoiDung->save();
+    }
+
+    return redirect()->route('hoso.resigned')->with('success', 'Đã khôi phục nhân viên về trạng thái đang làm.');
+}
+
     /**
      * Show the form for creating a new resource.
      */
