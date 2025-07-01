@@ -11,38 +11,34 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class LuongController extends Controller
 {
-    public function tongLuong(Request $request)
-    {
-        $query = DB::table('nguoi_dung')
-            ->join('cham_cong', 'nguoi_dung.id', '=', 'cham_cong.nguoi_dung_id')
-            ->join('ho_so_nguoi_dung', 'nguoi_dung.id', '=', 'ho_so_nguoi_dung.nguoi_dung_id')
-            ->leftJoin('chuc_vu', 'nguoi_dung.chuc_vu_id', '=', 'chuc_vu.id');
+   public function tongLuong(Request $request)
+{
+    // Ưu tiên lấy từ request, nếu không có thì mặc định tháng/năm hiện tại
+    $thang = $request->thang ?? now()->month;
+    $nam = $request->nam ?? now()->year;
 
-        if ($request->filled('thang')) {
-            $query->whereMonth('cham_cong.ngay_cham_cong', $request->thang);
-        }
+    $query = DB::table('nguoi_dung')
+        ->join('cham_cong', 'nguoi_dung.id', '=', 'cham_cong.nguoi_dung_id')
+        ->join('ho_so_nguoi_dung', 'nguoi_dung.id', '=', 'ho_so_nguoi_dung.nguoi_dung_id')
+        ->leftJoin('chuc_vu', 'nguoi_dung.chuc_vu_id', '=', 'chuc_vu.id')
+        ->whereMonth('cham_cong.ngay_cham_cong', $thang)
+        ->whereYear('cham_cong.ngay_cham_cong', $nam);
 
-        if ($request->filled('nam')) {
-            $query->whereYear('cham_cong.ngay_cham_cong', $request->nam);
-        }
+    $luongTheoNguoi = $query
+        ->select(
+            'nguoi_dung.id',
+            DB::raw("CONCAT(ho_so_nguoi_dung.ho, ' ', ho_so_nguoi_dung.ten) as ho_ten"),
+            DB::raw('SUM(cham_cong.so_gio_lam) as tong_gio_lam'),
+            DB::raw('SUM(cham_cong.so_cong) as tong_cong'),
+            DB::raw('COALESCE(chuc_vu.luong_toi_thieu, 10400000) / 173 as don_gia_gio'),
+            DB::raw('SUM(cham_cong.so_gio_lam) * (COALESCE(chuc_vu.luong_toi_thieu, 10400000) / 173) as tong_luong')
+        )
+        ->groupBy('nguoi_dung.id', 'ho_so_nguoi_dung.ho', 'ho_so_nguoi_dung.ten', 'chuc_vu.luong_toi_thieu')
+        ->get();
 
-        $luongTheoNguoi = $query
-            ->select(
-                'nguoi_dung.id',
-                DB::raw("CONCAT(ho_so_nguoi_dung.ho, ' ', ho_so_nguoi_dung.ten) as ho_ten"),
-                DB::raw('SUM(cham_cong.so_gio_lam) as tong_gio_lam'),
-                DB::raw('SUM(cham_cong.so_cong) as tong_cong'),
-                DB::raw('COALESCE(chuc_vu.luong_toi_thieu, 10400000) / 173 as don_gia_gio'),
-                DB::raw('SUM(cham_cong.so_gio_lam) * (COALESCE(chuc_vu.luong_toi_thieu, 10400000) / 173) as tong_luong')
-            )
-            ->groupBy('nguoi_dung.id', 'ho_so_nguoi_dung.ho', 'ho_so_nguoi_dung.ten', 'chuc_vu.luong_toi_thieu')
-            ->get();
+    return view('admin.luong.index', compact('luongTheoNguoi', 'thang', 'nam'));
+}
 
-        $thang = $request->thang ?? now()->month;
-        $nam = $request->nam ?? now()->year;
-
-        return view('admin.luong.index', compact('luongTheoNguoi', 'thang', 'nam'));
-    }
 
     public function phieuLuongIndex(Request $request)
     {
