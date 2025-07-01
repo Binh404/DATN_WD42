@@ -8,10 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class NguoiDung extends Authenticatable  implements CanResetPassword
 {
-    use  HasFactory, Notifiable, CanResetPasswordTrait;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasRoles;
+
 
     protected $table = 'nguoi_dung';
 
@@ -19,6 +22,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
         'ten_dang_nhap',
         'email',
         'password',
+        'vai_tro_id',
         'email_verified_at',
         'token_ghi_nho',
         'trang_thai',
@@ -99,5 +103,21 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     public function donXinNghiBanGiao()
     {
         return $this->hasMany(DonXinNghi::class, 'ban_giao_cho_id');
+    }
+
+
+    public function coVaiTro($tenVaiTro)
+    {
+        return $this->vaiTros()->where('ten', $tenVaiTro)->exists();
+    }
+
+    public function coBatKyVaiTro(array $dsTenVaiTro)
+    {
+        return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
+    }
+
+    public function duyetDonNghi()
+    {
+        return $this->hasMany(LichSuDuyetDonNghi::class, 'nguoi_duyet_id');
     }
 }

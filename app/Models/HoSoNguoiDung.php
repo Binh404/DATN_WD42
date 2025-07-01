@@ -41,4 +41,9 @@ class HoSoNguoiDung extends Model
     {
         return $this->belongsTo(NguoiDung::class, 'nguoi_dung_id');
     }
+
+    public function hopDongLaoDong()
+    {
+        return $this->hasMany(HopDongLaoDong::class, 'nguoi_dung_id', 'nguoi_dung_id');
+    }
 }

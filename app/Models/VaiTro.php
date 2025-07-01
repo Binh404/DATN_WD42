@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class VaiTro extends Model
+class VaiTro extends SpatieRole
 {
     use HasFactory;
 

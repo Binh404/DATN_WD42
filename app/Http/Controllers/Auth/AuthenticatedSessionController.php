@@ -26,9 +26,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
+        
 
         $user = Auth::user();
     // Đảm bảo đã load vai trò
+        // dd($request->session()->get('_token'));
 
         $roles = $user->vaiTros->pluck('ten')->toArray();
 
@@ -38,6 +40,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('hr.dashboard');
         } elseif (in_array('employee', $roles)) {
             return redirect()->route('employee.dashboard');
+        } elseif (in_array('department', $roles)) {
+            return redirect()->route('department.yeucautuyendung.index');
         }
 
         // Không có vai trò phù hợp

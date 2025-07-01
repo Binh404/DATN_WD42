@@ -16,6 +16,7 @@ class TinTuyenDung extends Model
         'ma',
         'phong_ban_id',
         'chuc_vu_id',
+        'vai_tro_id',
         'chi_nhanh_id',
         'loai_hop_dong',
         'cap_do_kinh_nghiem',
@@ -54,6 +55,12 @@ class TinTuyenDung extends Model
     {
         return $this->belongsTo(PhongBan::class, 'phong_ban_id');
     }
+
+    public function vaiTro()
+    {
+        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
+    }
+
 
     public function chucVu()
     {

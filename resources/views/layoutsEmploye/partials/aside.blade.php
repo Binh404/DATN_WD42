@@ -1,15 +1,19 @@
 <nav class="sidebar" id="sidebar">
-    <div class="user-profile">
-        <div class="user-avatar">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="user-name">Nguyễn Văn A</div>
-        <div class="user-position">Nhân viên IT</div>
+    <div class="user-profile d-flex flex-column align-items-center text-white">
+    <div class="user-avatar mb-3">
+        @if(!empty($hoSo->anh_dai_dien))
+            <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar" height="100" width="120" class="rounded-circle border border-2 border-white shadow">
+        @else
+            <i class="bi bi-person-circle fs-1 text-secondary"></i>
+        @endif
     </div>
+    <div class="user-name fw-bold text-dark fs-5">{{ $hoSo->ho }} {{ $hoSo->ten }}</div>
+    <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div>
+</div>
 
     <ul class="nav-menu">
         <li class="nav-item">
-            <a href="{{url('employee/dashboard')}}" class="nav-link active" data-section="dashboard">
+            <a href="{{url('employee')}}" class="nav-link active" data-section="dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span>Tổng quan</span>
             </a>
@@ -40,9 +44,15 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/attendance')}}" class="nav-link" data-section="attendance">
+            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('cham-cong.tao-don-xin-tang-ca') }}" class="nav-link" data-section="leave">
+                <i class="fas fa-calendar-times"></i>
+                <span>Đơn tăng ca</span>
             </a>
         </li>
         <li class="nav-item">
@@ -58,15 +68,16 @@
             </a>
         </li>
         <li class="nav-item">
-
             <form method="POST" action="{{ route('logout') }}" id="logout-form">
-          @csrf
-          <button type="submit" class="dropdown-item d-flex align-items-center"
-            style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
-            <i class="fas fa-sign-out-alt mr-2"></i>
-            <span>Đăng xuất</span>
-          </button>
-        </form>
+                @csrf
+
+                <button type="submit" class="dropdown-item d-flex align-items-center"
+                    style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    <span>Đăng xuất</span>
+                </button>
+
+            </form>
         </li>
 
 
