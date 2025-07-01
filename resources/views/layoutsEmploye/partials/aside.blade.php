@@ -13,7 +13,7 @@
 
     <ul class="nav-menu">
         <li class="nav-item">
-            <a href="{{url('employee')}}" class="nav-link active" data-section="dashboard">
+            <a href="{{url('employee/dashboard')}}" class="nav-link active" data-section="dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span>Tổng quan</span>
             </a>

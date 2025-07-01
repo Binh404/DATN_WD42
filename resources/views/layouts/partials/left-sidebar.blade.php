@@ -156,6 +156,12 @@
                 <p>Phê duyệt tăng ca</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.locations.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quản lý vị trí</p>
+              </a>
+            </li>
             {{-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -498,6 +504,28 @@
             <i class="nav-icon fas fa-user"></i>
             <p>Loại nghỉ phép</p>
           </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Lương</p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('luong.index')}} " class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lương</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{route('phieuluong.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phiếu lương</p>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </nav>
