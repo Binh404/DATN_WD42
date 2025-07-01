@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ChamCongAdminController;
 use App\Http\Controllers\Admin\DangKyTangCaAdminController;
 use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
+use App\Http\Controllers\CompanyLocationController;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\employee\DangKyTangCaController;
 use App\Http\Middleware\CheckRole;
@@ -113,7 +114,14 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     Route::get('danhSachTangCa/{id}/edit', [ThucHienTangCaAdminController::class, 'edit'])->name('admin.chamcong.editTangCa');
     Route::put('danhSachTangCa/{id}/update', [ThucHienTangCaAdminController::class, 'update'])->name('admin.chamcong.updateTangCa');
     Route::delete('danhSachTangCa/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('admin.chamcong.destroyTangCa');
-
+    Route::prefix('locations')->name('admin.locations.')->group(function () {
+        Route::get('/', [CompanyLocationController::class, 'index'])->name('index');
+        Route::get('/create', [CompanyLocationController::class, 'create'])->name('create');
+        Route::post('/store', [CompanyLocationController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [CompanyLocationController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [CompanyLocationController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [CompanyLocationController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // HR routes
@@ -241,7 +249,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
 
         // Kiểm tra trạng thái chấm công
         Route::get('/trang-thai-full', [ChamCongController::class, 'trangThaiChamCong'])->name('trang-thai');
-
+        //lấy địa chỉ công ty
+        Route::get('/company-location', [CompanyLocationController::class, 'getLocation'])->name('company-location');
         // Lịch sử chấm công
         Route::get('/lich-su', [ChamCongController::class, 'lichSuChamCong'])->name('lich-su');
 
