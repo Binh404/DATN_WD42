@@ -47,6 +47,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/verify-otp', [PasswordOTPController::class, 'verifyOtp'])->name('password.verify-otp');
 });
 
+
+
+
+
+Route::get('/testcatlayout', function () {
+    return view('layoutsAdmin.master');
+});
 // Admin routes
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
@@ -422,3 +429,4 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
 });
+    Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
