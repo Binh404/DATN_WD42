@@ -17,11 +17,11 @@ class HoSoController extends Controller
 
         // Kiểm tra nếu đã hoàn thành hồ sơ thì chuyển hướng về dashboard
         if ($user->da_hoan_thanh_ho_so) {
-            dd($user);
+            // dd($user);
 
             return redirect()->route('employee.dashboard');
         }
-        dd($user);
+        // dd($user);
         // Nếu chưa có hồ sơ thì hiển thị form trống
         $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $user->id)->first();
 

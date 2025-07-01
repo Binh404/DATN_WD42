@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         LoaiNghiPhepSeeder::class,
         SoDuNghiPhepNhanVienSeeder::class,
         ChamCongSeeder::class,
-        DonXinNghiSeeder::class,
+        // DonXinNghiSeeder::class,
 
         // 7. Công việc
         CongViecSeeder::class,

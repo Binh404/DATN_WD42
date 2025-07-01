@@ -34,7 +34,7 @@ class DonXinNghi extends Model
         'ngay_bat_dau' => 'date',
         'ngay_ket_thuc' => 'date',
         'so_ngay_nghi' => 'decimal:1',
-        'tai_lieu_ho_tro' => 'json',
+        'tai_lieu_ho_tro' => 'array',
         'thoi_gian_duyet' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -55,8 +55,18 @@ class DonXinNghi extends Model
         return $this->belongsTo(NguoiDung::class, 'ban_giao_cho_id');
     }
 
-    public function nguoiDuyet()
+    // public function nguoiDuyet()
+    // {
+    //     return $this->belongsTo(NguoiDung::class, 'nguoi_duyet_id');
+    // }
+
+    public function lichSuDuyet()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_duyet_id');
+        return $this->hasMany(LichSuDuyetDonNghi::class, 'don_xin_nghi_id');
+    }
+
+    public function ketQuaDuyetTheoCap($cap)
+    {
+        return $this->lichSuDuyet->firstWhere('cap_duyet', $cap)?->ket_qua;
     }
 }

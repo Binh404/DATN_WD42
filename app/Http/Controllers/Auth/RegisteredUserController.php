@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Models\NguoiDungVaiTro;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
+use App\Models\LoaiNghiPhep;
+use App\Models\SoDuNghiPhepNhanVien;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -58,15 +60,31 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         // Gán vai trò cho người dùng
-            $nguoiDungVT = NguoiDungVaiTro::create([
+        $nguoiDungVT = NguoiDungVaiTro::create([
+            'nguoi_dung_id' => $user->id,
+            'vai_tro_id' => 3,
+            'model_type' => NguoiDung::class,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        event(new Registered($user));
+
+        // Tạo số dư nghỉ phép cho nhân viên
+        $loaiNghiPhep = LoaiNghiPhep::all();
+        foreach ($loaiNghiPhep as $key => $item) {
+            $soDuNghiPhep = SoDuNghiPhepNhanVien::create([
                 'nguoi_dung_id' => $user->id,
-                'vai_tro_id' => 3,
-                'model_type' => NguoiDung::class,
+                'loai_nghi_phep_id' => $item->id,
+                'nam' => now()->year,
+                'so_ngay_duoc_cap' => $item->so_ngay_nam,
+                'so_ngay_da_dung' => 0,
+                'so_ngay_cho_duyet' => 0,
+                'so_ngay_con_lai' => $item->so_ngay_nam,
+                'so_ngay_chuyen_tu_nam_truoc' => 0,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-        event(new Registered($user));
-
+        }
 
         return redirect(route('hr.dashboard', absolute: false));
     }

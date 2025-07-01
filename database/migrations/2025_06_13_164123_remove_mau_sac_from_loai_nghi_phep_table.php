@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->string('trang_thai_email')->default('chua_gui')->after('email');
+        Schema::table('loai_nghi_phep', function (Blueprint $table) {
+            $table->dropColumn('mau_sac');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('ung_tuyen', function (Blueprint $table) {
-            $table->dropColumn('trang_thai_email');
+        Schema::table('loai_nghi_phep', function (Blueprint $table) {
+            $table->string('mau_sac', 7)->default('#007bff')->collation('utf8mb4_unicode_ci');
         });
     }
 };

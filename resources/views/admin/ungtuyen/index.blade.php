@@ -115,16 +115,16 @@
                     <td>{{ $uv->ky_nang }}</td>
                     <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
                     <td class="text-center">
-                        <div class="progress" style="height: 25px;">
-                            <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : ($uv->diem_danh_gia >= 30 ? 'bg-warning' : 'bg-danger') }}"
-                                role="progressbar" 
-                                style="width: {{ $uv->diem_danh_gia }}%"
-                                aria-valuenow="{{ $uv->diem_danh_gia }}" 
-                                aria-valuemin="0" 
-                                aria-valuemax="100">
-                                {{ $uv->diem_danh_gia }}%
+                        @if($uv->diem_danh_gia !== null)
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : ($uv->diem_danh_gia >= 30 ? 'bg-warning' : 'bg-danger') }}"
+                                    >
+                                    {{ $uv->diem_danh_gia }}%
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <span class="text-muted">Chưa đánh giá CV</span>
+                        @endif
                     </td>
                     <td class="text-center">
                         @if($uv->trang_thai == 'cho_xu_ly')

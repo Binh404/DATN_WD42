@@ -338,6 +338,21 @@
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
                         </div>
+                        <div class="form-group">
+                            <label for="vai_tro_id">Vai Trò <span class="required">*</span></label>
+                            <select id="vai_tro_id" name="vai_tro_id"
+                                class="{{ $errors->has('vai_tro_id') ? 'error' : '' }}">
+                                <option value="">Chọn vai trò</option>
+                                @foreach ($vaiTros as $key => $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->ten }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('vai_tro_id')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
 
                 </div>

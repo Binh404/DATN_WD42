@@ -291,8 +291,6 @@ class UngTuyenController extends Controller
     {
         $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
 
-        $matchingPercentage = $ungVien->tinhDiemDanhGia();
-
         // Get matching details
         $matchingDetails = [
             'skills' => [
@@ -308,7 +306,7 @@ class UngTuyenController extends Controller
             ]
         ];
 
-        return view('admin.ungtuyen.show', compact('ungVien', 'matchingPercentage', 'matchingDetails'));
+        return view('admin.ungtuyen.show', compact('ungVien', 'matchingDetails'));
     }
 
     // Export danh sách ứng tuyển
@@ -370,14 +368,17 @@ class UngTuyenController extends Controller
             'dat_lich.after' => 'Thời gian gửi phải sau thời điểm hiện tại'
         ]);
 
+
         // Lọc các ứng viên chưa gửi email
-        $ungviens = UngTuyen::where('trang_thai_pv', 'pass')
+        $ungviens = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro'])
+            ->where('trang_thai_pv', 'pass')
             ->where('trang_thai_email_trungtuyen', 'chua_gui')->get();
 
         // Kiểm tra nếu không có ứng viên nào cần gửi
         if ($ungviens->isEmpty()) {
             return redirect('/ungvien/trung-tuyen')->with('error', 'Không có ứng viên nào cần gửi email.');
         }
+
 
         // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
@@ -407,16 +408,34 @@ class UngTuyenController extends Controller
                 'email' => $email,
                 'password' => Hash::make($password),
                 'ma_ung_tuyen' => $ungvien->ma_ung_tuyen,
-                'vai_tro_id' => 3,
+                'vai_tro_id' => $ungvien->vai_tro_id,
             ]);
+
+            $phongBan = $ungvien->phongBan->ten_phong_ban ?? 'Chưa rõ';
+            $chucVu = $ungvien->chucVu->ten ?? 'Chưa rõ';
+            $vaiTro = $ungvien->vaiTro->ten ?? 'Chưa rõ';
+
 
             // Gán vai trò cho người dùng
             $nguoiDungVT = NguoiDungVaiTro::create([
                 'nguoi_dung_id' => $nguoiDung->id,
-                'vai_tro_id' => 3,
+                'vai_tro_id' => $ungvien->vai_tro_id,
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
                 'updated_at' => now()
+            ]);
+
+            // Gửi thông tin đến webhook
+            Http::post('https://workflow.aichatbot360.io.vn/webhook-test/email-di-lam', [
+                'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                'ten_dang_nhap' => $email,
+                'email' => $ungvien->email,
+                'name' => $ungvien->ten_ung_vien,
+                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
+                'lich' => $request->dat_lich,
+                'mat_khau' => $password,
+                'phong_ban' => $phongBan,
+                'chuc_vu' => $chucVu,
             ]);
 
             $ungvien->trang_thai_email_trungtuyen = 'Đã gửi';
@@ -464,7 +483,7 @@ class UngTuyenController extends Controller
         $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
         $ungVienQuery = UngTuyen::with('tinTuyenDung')
             ->where('trang_thai', 'phe_duyet')
-            ->where('trang_thai_email', 'Đã gửi')
+            ->where('trang_thai_email', 'da_gui')
             ->orderBy('diem_danh_gia', 'desc');
 
         if ($request->filled('ten_ung_vien')) {
