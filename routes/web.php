@@ -37,6 +37,8 @@ use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 use App\Http\Controllers\Admin\HopDongLaoDongController;
 
 use App\Http\Controllers\Client\NghiPhepController;
+use App\Http\Controllers\Admin\LuongController;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -213,6 +215,16 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('register', [RegisteredUserController::class, 'store'])
             ->name('register.store');
     });
+
+    // Admin HR - Lương
+    Route::get('/luong', [LuongController::class, 'tongLuong'])->name('luong.index');
+    Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
+    Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
+    Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
+
+
+
+
 });
 
 // Employee routes
