@@ -80,7 +80,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
 
     public function vaiTros()
     {
-        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'role_id')
+        return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
             ->withTimestamps();
     }
 
@@ -114,5 +114,10 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     public function coBatKyVaiTro(array $dsTenVaiTro)
     {
         return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
+    }
+
+    public function duyetDonNghi()
+    {
+        return $this->hasMany(LichSuDuyetDonNghi::class, 'nguoi_duyet_id');
     }
 }
