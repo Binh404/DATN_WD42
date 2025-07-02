@@ -2,26 +2,27 @@
 
 use App\Http\Middleware\CheckRole;
 
-use App\Http\Controllers\employee\BangLuongController;
-
 use Illuminate\Support\Facades\Route;
+
+use Illuminate\Routing\RouteRegistrar;
 use App\Http\Controllers\ChucVuController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\DonTuController;
-use App\Http\Controllers\Admin\DuyetDonTuController;
+use App\Http\Controllers\Admin\CongViecController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\Client\UngTuyenController;
+use App\Http\Controllers\Admin\DuyetDonTuController;
+use App\Http\Controllers\Auth\PasswordOTPController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
+use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
-use App\Http\Controllers\Auth\PasswordOTPController;
-
-
+use App\Http\Controllers\Admin\DanhSachNguoiDungController;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -67,6 +68,10 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Admin Taikhoan
+    Route::get('/taikhoan', [DanhSachNguoiDungController::class, 'index'])->name('taikhoan.index');
+    // Route::get('/taikhoan', [DanhSachNguoiDungController::class,'index'] );
 });
 
 // HR routes
@@ -110,6 +115,13 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // HR tk
+
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->name('register.store');
 });
 
 // Employee routes

@@ -33,6 +33,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="{{url('employee/profile')}}" class="nav-link" data-section="profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Tài Khoản</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>
                 <span>Thông báo</span>
