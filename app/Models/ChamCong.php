@@ -131,11 +131,11 @@ class ChamCong extends Model
     public function tinhSoCong()
     {
         $soGioLam = $this->so_gio_lam;
-        if($soGioLam < 3.5) {
+        if ($soGioLam < 3.5) {
             return 0;
-        }else if($soGioLam < 7) {
+        } else if ($soGioLam < 7) {
             return 0.5;
-        }else {
+        } else {
             return 1;
         }
         // $soChamCong = config('chamcong.calculation.hours_per_workday', 8);
@@ -168,7 +168,7 @@ class ChamCong extends Model
 
     public function capNhatTrangThai($trangThai = null)
     {
-        if(!$trangThai) {
+        if (!$trangThai) {
             $trangThai = 'binh_thuong';
             if ($this->kiemTraDiMuon()) {
                 $trangThai = 'di_muon';

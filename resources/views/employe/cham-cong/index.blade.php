@@ -633,52 +633,52 @@
         // Cập nhật dữ liệu hiển thị cho chấm công thường
         function updateNormalDisplayData(data) {
             // Cập nhật giờ vào
-            if (data.gio_vao) {
+            // if (data.gio_vao) {
                 const gioVaoEl = document.getElementById('gioVaoHomNay');
-                if (gioVaoEl) {
-                    gioVaoEl.textContent = data.gio_vao;
-                }
-            }
+                // if (gioVaoEl) {
+                    gioVaoEl.textContent = data.gio_vao ?? '--:--';
+                // }
+            // }
 
             // Cập nhật giờ ra
-            if (data.gio_ra) {
+            // if (data.gio_ra) {
                 const gioRaEl = document.getElementById('gioRaHomNay');
-                if (gioRaEl) {
-                    gioRaEl.textContent = data.gio_ra;
-                }
-            }
+                // if (gioRaEl) {
+                    gioRaEl.textContent = data.gio_ra ?? '--:--';
+                // }
+            // }
 
             // Cập nhật số giờ làm
-            if (data.so_gio_lam) {
+            // if (data.so_gio_lam) {
                 const soGioLamEl = document.getElementById('soGioLamHomNay');
-                if (soGioLamEl) {
-                    soGioLamEl.textContent = data.so_gio_lam + 'h';
-                }
-            }
+                // if (soGioLamEl) {
+                    soGioLamEl.textContent = data.so_gio_lam ?? 0 + 'h';
+            //     }
+            // }
             // Cập nhật trạng thái
-            if (data.trang_thai_text) {
+            // if (data.trang_thai_text) {
                 const trangThaiEl = document.getElementById('trangThaiHomNay');
-                if (trangThaiEl) {
-                    trangThaiEl.textContent = data.trang_thai_text;
-                }
-            }
+                // if (trangThaiEl) {
+                    trangThaiEl.textContent = data.trang_thai_text ?? 'Chưa chấm công';
+            //     }
+            // }
             // Cập nhật ghi chú
-            if (data.ghi_chu) {
+            // if (data.ghi_chu) {
                 const ghiChuEl = document.getElementById('ghiChuHomNay');
-                if (ghiChuEl) {
-                    ghiChuEl.textContent = data.ghi_chu;
-                }
-            }
+                // if (ghiChuEl) {
+                    ghiChuEl.textContent = data.ghi_chu ?? 'Không có ghi chú';
+            //     }
+            // }
 
             // Cập nhật ghi chú duyệt
-            if (data.ghi_chu_duyet) {
+            // if (data.ghi_chu_duyet) {
                 const ghiChuDuyetEl = document.getElementById('ghiChuDuyetHomNay');
-                if (ghiChuDuyetEl) {
-                    ghiChuDuyetEl.textContent = data.ghi_chu_duyet;
-                }
-            }
+                // if (ghiChuDuyetEl) {
+                    ghiChuDuyetEl.textContent = data.ghi_chu_duyet ?? 'Không có ghi chú';
+            //     }
+            // }
             // Cập nhật trạng thái duyệt
-            if (data.trang_thai_duyet !== undefined) {
+            // if (data.trang_thai_duyet !== undefined) {
                 const trangThaiDuyetEl = document.getElementById('trangThaiDuyetHomNay');
                 if (trangThaiDuyetEl) {
                     let trangThaiDuyetText = '';
@@ -697,7 +697,7 @@
                     }
                     trangThaiDuyetEl.textContent = trangThaiDuyetText;
                 }
-            }
+            // }
 
             showAttendanceInfo();
 
@@ -708,24 +708,24 @@
         // Cập nhật dữ liệu hiển thị cho chấm công tăng ca
         function updateOvertimeDisplayData(data) {
             const gioVaoEl = document.getElementById('gioVaoTangCa');
-            if (gioVaoEl && data.gio_bat_dau_thuc_te) {
-                gioVaoEl.textContent = data.gio_bat_dau_thuc_te;
-            }
+            // if (gioVaoEl && data.gio_bat_dau_thuc_te) {
+                gioVaoEl.textContent = data.gio_bat_dau_thuc_te ?? '--:--';
+            // }
 
             const gioRaEl = document.getElementById('gioRaTangCa');
-            if (gioRaEl && data.gio_ket_thuc_thuc_te) {
-                gioRaEl.textContent = data.gio_ket_thuc_thuc_te;
-            }
+            // if (gioRaEl && data.gio_ket_thuc_thuc_te) {
+                gioRaEl.textContent = data.gio_ket_thuc_thuc_te ?? '--:--';
+            // }
 
             const soGioEl = document.getElementById('soGioTangCa');
-            if (soGioEl && data.so_gio_tang_ca_thuc_te) {
-                soGioEl.textContent = data.so_gio_tang_ca_thuc_te + 'h';
-            }
+            // if (soGioEl && data.so_gio_tang_ca_thuc_te) {
+                soGioEl.textContent = (data.so_gio_tang_ca_thuc_te ?? 0) + 'h' ;
+            // }
 
             const trangThaiEl = document.getElementById('trangThaiTangCa');
-            if (trangThaiEl && data.trang_thai) {
-                trangThaiEl.textContent = data.trang_thai;
-            }
+            // if (trangThaiEl && data.trang_thai) {
+                trangThaiEl.textContent = data.trang_thai ?? 'Chưa chấm công';
+            // }
 
             // Hiển thị thông tin tăng ca
             showOvertimeInfo();
