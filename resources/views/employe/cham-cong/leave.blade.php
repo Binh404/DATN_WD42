@@ -83,6 +83,8 @@
                                 <span class="status-badge status-approved">Đã duyệt</span>
                             @elseif ($item->trang_thai == 'tu_choi')
                                 <span class="status-badge status-rejected">Từ chối</span>
+                            @elseif ($item->trang_thai == 'huy')
+                                <span class="status-badge status-denied">Hủy bỏ</span>
                             @else
                                 <span class="status-badge">-</span>
                             @endif
