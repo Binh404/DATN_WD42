@@ -566,7 +566,7 @@ class ChamCongController extends Controller
             ->where('nguoi_dung_id', $user->id)
             ->where('trang_thai', 'da_duyet')
             ->first();
-
+        // dd($donTangCa);
         // Mặc định trạng thái và class
         if ($ngayHienTai->lessThan(now())) {
             $trangThai = 'vang_mat';
