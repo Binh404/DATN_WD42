@@ -8,7 +8,7 @@
         @endif
     </div>
     <div class="user-name fw-bold text-dark fs-5">{{ $hoSo->ho }} {{ $hoSo->ten }}</div>
-    <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div>
+    <!-- <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div> -->
 </div>
 
     <ul class="nav-menu">
