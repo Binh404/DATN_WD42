@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class DangKyTangCaAdminController extends Controller
 {
      public function index(Request $request) {
-        // dd();
+        // dd(request()->all());
         try {
             // Get filter parameters
             $search = $request->get('search');
@@ -41,13 +41,16 @@ class DangKyTangCaAdminController extends Controller
                 });
             }
 
-            // Filter by department
-            if (!empty($phongBan)) {
-                $query->whereHas('nguoiDung', function ($q) use ($phongBan) {
-                    $q->where('phong_ban_id', $phongBan);
+            /// Tìm kiếm theo phòng ban
+            if ($request->filled('phong_ban_id')) {
+                $query->whereHas('nguoiDung', function ($q) use ($request) {
+                    $q->where('phong_ban_id', $request->get('phong_ban_id'));
                 });
             }
-
+            // Tìm kiếm theo ngày cụ thể
+            if ($request->filled('ngay_tang_ca')) {
+                $query->where('ngay_tang_ca', $request->get('ngay_tang_ca'));
+            }
             // Filter by date range
             if (!empty($tuNgay)) {
                 $query->where('ngay_tang_ca', '>=', $tuNgay);
@@ -59,7 +62,7 @@ class DangKyTangCaAdminController extends Controller
             if (!empty($trangThaiDuyet)) {
                 $query->where('trang_thai', $trangThaiDuyet);
             }
-
+            $soLuongDangKyTangCa = $query->count();
             // Order by latest first
             $query->orderBy('ngay_tang_ca', 'desc')
                   ->orderBy('created_at', 'desc');
@@ -69,8 +72,9 @@ class DangKyTangCaAdminController extends Controller
             // dd($pheDuyet);
             // Get departments for filter dropdown
             $phongBans = PhongBan::orderBy('ten_phong_ban')->get();
-
-            return view('admin.cham-cong.pheDuyetTangCa', compact('donTangCa', 'phongBans'));
+            $trangThaiDuyets = DangKyTangCa::TRANG_THAI;
+            // dd($trangThaiDuyets);
+            return view('admin.cham-cong.phe_duyet_tang_ca.index', compact('donTangCa', 'phongBans','soLuongDangKyTangCa','trangThaiDuyets'));
 
         } catch (\Exception $e) {
             Log::error('Error in PheDuyetController@index: ' . $e->getMessage());
@@ -95,7 +99,7 @@ class DangKyTangCaAdminController extends Controller
             //     return back()->with('error', 'Bạn không có quyền xem đăng ký này');
             // }
 
-            return view('admin.cham-cong.showDonTangCa', compact('dangKyTangCa'));
+            return view('admin.cham-cong.phe_duyet_tang_ca.show', compact('dangKyTangCa'));
 
         } catch (\Exception $e) {
             Log::error('Error in DangKyTangCaController@show: ' . $e->getMessage());

@@ -53,14 +53,23 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-                <i class="menu-icon mdi mdi-table"></i>
-                <span class="menu-title">Tables</span>
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                <span class="menu-title">Chấm công</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="tables">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/tables/basic-table.html">Basic table</a>
+
+                    <li class="nav-item"> <a class="nav-link
+                        " href="{{ route('admin.chamcong.index')}}">Danh sách chấm công</a>
                     </li>
+
+                    <li class="nav-item"> <a class="nav-link "
+                            href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}">Phê duyệt tăng ca</a></li>
+                    <li class="nav-item"> <a class="nav-link  "
+                            href="{{ route('admin.chamcong.tangCa.index')}}">Danh sách tăng ca</a></li>
+                    <li class="nav-item"> <a class="nav-link  "
+                            href="{{ route('admin.locations.index')}}">Quản lý vị trí</a></li>
                 </ul>
             </div>
         </li>

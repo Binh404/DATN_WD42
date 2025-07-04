@@ -342,7 +342,7 @@ class ChamCongController extends Controller
             $kiemTraTrangThaiDuyet = false;
 
             if ($chamCong !== null) {
-                if ($chamCong->trang_thai_duyet != 0) {
+                if ($chamCong->trang_thai_duyet == 0) {
                     $kiemTraTrangThaiDuyet = true;
                 }
             }

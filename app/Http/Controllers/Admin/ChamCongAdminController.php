@@ -45,6 +45,10 @@ class ChamCongAdminController extends Controller
         if ($request->filled('trang_thai')) {
             $query->where('trang_thai', $request->get('trang_thai'));
         }
+        // Tìm kiếm theo trạng thái
+        if ($request->filled('trang_thai_duyet')) {
+            $query->where('trang_thai_duyet', $request->get('trang_thai_duyet'));
+        }
 
         // Tìm kiếm theo ngày cụ thể
         if ($request->filled('ngay_cham_cong')) {
@@ -97,6 +101,12 @@ class ChamCongAdminController extends Controller
             'vang_mat' => 'Vắng mặt',
             'nghi_phep' => 'Nghỉ phép'
         ];
+        $trangThaiDuyetList = [
+            3 => 'Chờ duyệt',
+            0 => 'Chưa gửi lý do',
+            1 => 'Đã duyệt',
+            2 => 'Từ chối',
+        ];
 
         // Thống kê tổng quan
         $donDuyet =( clone $query)->where('trang_thai_duyet', 3)->count();
@@ -107,14 +117,15 @@ class ChamCongAdminController extends Controller
             // dd($soDungGio);
         $tyLeDungGio = $tongSoBanGhi > 0 ? round(($soDungGio / $tongSoBanGhi) * 100, 2) : 0;
         // dd($soDungGio);
-        return view('admin.cham-cong.index', compact(
+        return view('admin.cham-cong.quan_ly_cham_cong.index', compact(
             'chamCong',
             'phongBan',
             'trangThaiList',
             'tongSoBanGhi',
             'homNay',
             'tyLeDungGio',
-            'donDuyet'
+            'donDuyet',
+            'trangThaiDuyetList'
         ));
     }
     /**
@@ -142,12 +153,13 @@ class ChamCongAdminController extends Controller
      */
     public function exportReport(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'format' => 'required|in:excel,pdf'
         ]);
-
         $query = ChamCong::with(['nguoiDung.hoSo', 'nguoiDung.phongBan'])
             ->whereBetween('ngay_cham_cong', [$request->start_date, $request->end_date])
             ->orderBy('ngay_cham_cong', 'desc');
@@ -245,66 +257,7 @@ class ChamCongAdminController extends Controller
         ];
     }
 
-    public function xemPheDuyet(Request $request) {
-        try {
-            // Get filter parameters
-            $search = $request->get('search');
-            $phongBan = $request->get('phong_ban');
-            $trangThaiDuyet = $request->get('trang_thai_duyet');
-            $tuNgay = $request->get('tu_ngay');
-            $denNgay = $request->get('den_ngay');
-            $perPage = $request->get('per_page', 15);
 
-            // Build query
-            $query = ChamCong::with([
-                'nguoiDung.hoSo',
-                'nguoiDung.phongBan'
-            ])->where('trang_thai_duyet', 3);
-
-            // Apply search filters
-            if (!empty($search)) {
-                $query->whereHas('nguoiDung', function ($q) use ($search) {
-                    $q->where('email', 'LIKE', "%{$search}%")
-                      ->orWhereHas('hoSo', function ($q2) use ($search) {
-                          $q2->where('ho', 'LIKE', "%{$search}%")
-                             ->orWhere('ten', 'LIKE', "%{$search}%")
-                             ->orWhere(DB::raw("CONCAT(ho, ' ', ten)"), 'LIKE', "%{$search}%");
-                      });
-                });
-            }
-
-            // Filter by department
-            if (!empty($phongBan)) {
-                $query->whereHas('nguoiDung', function ($q) use ($phongBan) {
-                    $q->where('phong_ban_id', $phongBan);
-                });
-            }
-
-            // Filter by date range
-            if (!empty($tuNgay)) {
-                $query->where('ngay_cham_cong', '>=', $tuNgay);
-            }
-            if (!empty($denNgay)) {
-                $query->where('ngay_cham_cong', '<=', $denNgay);
-            }
-
-            // Order by latest first
-            $query->orderBy('ngay_cham_cong', 'desc')
-                  ->orderBy('created_at', 'desc');
-
-            // Paginate results
-            $pheDuyet = $query->paginate($perPage);
-            // dd($pheDuyet);
-            // Get departments for filter dropdown
-            $phongBans = PhongBan::orderBy('ten_phong_ban')->get();
-
-            return view('admin.cham-cong.pheDuyet', compact('pheDuyet', 'phongBans'));
-
-        } catch (\Exception $e) {
-            Log::error('Error in PheDuyetController@index: ' . $e->getMessage());
-            return back()->with('error', 'Có lỗi xảy ra khi tải dữ liệu: ' . $e->getMessage());
-        }
-    }
     /**
      * Bulk actions for multiple records
      */
@@ -437,7 +390,7 @@ class ChamCongAdminController extends Controller
         $chamCong = ChamCong::with(['nguoiDung', 'nguoiPheDuyet'])->findOrFail($id);
         $chamCong->load(['nguoiDung.hoSo', 'nguoiDung.phongBan', 'nguoiPheDuyet.hoSo']);
         // dd($chamCong->nguoiDung);
-        return view('admin.cham-cong.show', compact('chamCong'));
+        return view('admin.cham-cong.quan_ly_cham_cong.show', compact('chamCong'));
     }
 
     // /**
@@ -466,7 +419,7 @@ class ChamCongAdminController extends Controller
             'nghi_phep' => 'Nghỉ phép'
         ];
 
-        return view('admin.cham-cong.edit', compact('chamCong', 'trangThaiList'));
+        return view('admin.cham-cong.quan_ly_cham_cong.edit', compact('chamCong', 'trangThaiList'));
     }
 
     /**
@@ -481,6 +434,10 @@ class ChamCongAdminController extends Controller
             'ngay_cham_cong' => 'required|date',
             'gio_vao' => 'required|date_format:H:i',
             'gio_ra' => 'nullable|date_format:H:i',
+            'phut_di_muon' => 'nullable|integer|min:0|max:600',
+            'phut_ve_som' => 'nullable|integer|min:0|max:600',
+            'so_gio_lam' => 'nullable|numeric|min:0|max:24',
+            'so_cong' => 'nullable|numeric|min:0|max:1',
             'trang_thai' => 'required|in:binh_thuong,di_muon,ve_som,vang_mat,nghi_phep',
             'trang_thai_duyet' => 'nullable|in:0,1,2,3',
             'ghi_chu' => 'nullable|string|max:1000',
@@ -494,6 +451,18 @@ class ChamCongAdminController extends Controller
             'gio_vao.required' => 'Vui lòng nhập giờ vào',
             'gio_vao.date_format' => 'Giờ vào không đúng định dạng (HH:MM)',
             'gio_ra.date_format' => 'Giờ ra không đúng định dạng (HH:MM)',
+            'phut_di_muon.integer' => 'Phút đi muộn phải là số nguyên',
+            'phut_ve_som.integer' => 'Phút về sớm phải là số nguyên',
+            'phut_di_muon.min' => 'Phút đi muộn phải lớn hình 0',
+            'phut_ve_som.min' => 'Phút về sớm phải lớn hình 0',
+            'phut_di_muon.max' => 'Phút đi muộn phải nho hình 600',
+            'phut_ve_som.max' => 'Phút về sớm phải nho hình 600',
+            'so_gio_lam.numeric' => 'Số giờ làm phải lớn hình 0',
+            'so_gio_lam.min' => 'Số giờ làm phải lớn hình 0',
+            'so_gio_lam.max' => 'Số giờ làm phải nho hình 24',
+            'so_cong.numeric' => 'Số công phải lớn hình 0',
+            'so_cong.min' => 'Số công phải lớn hình 0',
+            'so_cong.max' => 'Số công phải nho hình 1',
             'trang_thai.required' => 'Vui lòng chọn trạng thái',
             'trang_thai.in' => 'Trạng thái không hợp lệ',
             'trang_thai_duyet.in' => 'Trạng thái phê duyệt không hợp lệ',
@@ -535,6 +504,10 @@ class ChamCongAdminController extends Controller
                 'gio_vao' => $validated['gio_vao'],
                 'trang_thai' => $validated['trang_thai'],
                 'ghi_chu' => $validated['ghi_chu'],
+                'phut_di_muon' => $validated['phut_di_muon'],
+                'phut_ve_som' => $validated['phut_ve_som'],
+                'so_gio_lam' => $validated['so_gio_lam'],
+                'so_cong' => $validated['so_cong'],
 
             ];
 
@@ -557,7 +530,7 @@ class ChamCongAdminController extends Controller
             // dd($chamCong);
             // Tính toán lại các thông số (số giờ làm, số công, phút đi muộn/về sớm)
             // $chamCong = $this->tinhSoCong($chamCong);
-            $chamCong->capNhatTrangThai($validated['trang_thai']);
+            // $chamCong->capNhatTrangThai($validated['trang_thai']);
             // $chamCong->tinhSoGioLam();
             // $chamCong->tinhSoCong();
             $chamCong->save();
