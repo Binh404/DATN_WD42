@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\HoSoNguoiDung;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive(); // Hiển thị phân trang theo Bootstrap 5
         View::composer('layoutsEmploye.*', function ($view) {
         $nguoiDung = Auth::user();
 

@@ -124,7 +124,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     });
 });
 
-// HR routes
+// HR, ADMIN routes
 Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
@@ -206,6 +206,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // Admin HR - Hồ sơ nhân viên
     Route::prefix('/hoso')->group(function () {
+        Route::get('/', fn() => view('admin.hoso.index'))->name('hoso.index');
         Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
         Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
         Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');

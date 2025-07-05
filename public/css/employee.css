@@ -593,3 +593,34 @@ tbody tr:hover {
         gap: 5px;
     }
 }
+.form-section {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  background: white;
+}
+
+.form-section legend {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333;
+  padding: 0 10px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.text-end {
+  text-align: right;
+}
+.text-danger {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
