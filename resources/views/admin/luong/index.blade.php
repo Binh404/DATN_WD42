@@ -1,9 +1,9 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Lương')
 
 @section('content')
 <!-- Breadcrumbs Start -->
-<div class="content-header">
+{{-- <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
@@ -11,7 +11,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 <!-- Breadcrumbs End -->
 
 @include('layouts.partials.error-message')
@@ -23,7 +23,7 @@
             <div class="card-body">
 
                 <div class="d-flex justify-content-between flex-wrap align-items-center mb-3">
-                    <h4 class="font-weight-bold mb-0">Lương nhân sự</h4>
+                    <h3 class="font-weight-bold mb-0">Lương</h3>
                     <form method="GET" action="{{ route('luong.index') }}" class="d-flex flex-wrap gap-2 align-items-end">
                         <div class="me-2">
                             <label for="thang" class="form-label mb-0">Tháng</label>
@@ -56,8 +56,10 @@
                         <thead>
                             <tr>
                                 <th>Họ và tên</th>
-                                <th>Số giờ làm</th>
-                                <th>Tổng lương</th>
+                                <th>Mã nhân viên</th>
+                                <th>Phòng ban</th>
+                                <th>Chức vụ</th>
+                                <th>Lương cơ bản</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -67,6 +69,8 @@
                                     <td>{{ $nguoi->ho_ten }}</td>
                                     <td>{{ number_format($nguoi->tong_gio_lam) }}</td>
                                     <td>{{ number_format($nguoi->tong_luong) }}</td>
+                                    <td></td>
+                                    <td></td>
                                     <td>
                                         <a href="#" class="btn btn-info btn-sm">
                                             Thưởng

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Chi tiết phụ lục hợp đồng')
 
 @php
@@ -114,4 +114,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

@@ -31,43 +31,66 @@ class HoSoController extends Controller
     /**
      * Lưu thông tin hồ sơ
      */
-    protected function generateMaNhanVien()
-    {
-        // Lấy mã lớn nhất hiện tại
-        $last = HoSoNguoiDung::orderByDesc('id')->first();
+    protected function generateMaNhanVien($prefix)
+{
+    // Tìm hồ sơ có mã nhân viên bắt đầu bằng prefix, sắp xếp theo ID giảm dần
+    $last = HoSoNguoiDung::where('ma_nhan_vien', 'like', $prefix . '%')
+                ->orderByDesc('id')
+                ->first();
 
-        $so = 1;
-        if ($last && preg_match('/HR(\d+)/', $last->ma_nhan_vien, $matches)) {
-            $so = intval($matches[1]) + 1;
-        }
-
-        return 'HR' . str_pad($so, 6, '0', STR_PAD_LEFT); // HR000001
+    $so = 1;
+    if ($last && preg_match('/' . $prefix . '(\d+)/', $last->ma_nhan_vien, $matches)) {
+        $so = intval($matches[1]) + 1;
     }
+
+    return $prefix . str_pad($so, 6, '0', STR_PAD_LEFT);
+}
+
     public function store(Request $request)
     {
         $user = Auth::user();
 
     $validated = $request->validate([
-        'ho' => 'required|string|max:50',
-        'ten' => 'required|string|max:50',
-        'email_cong_ty' => 'nullable|email|unique:ho_so_nguoi_dung,email_cong_ty,' . $user->id . ',nguoi_dung_id',
-        'so_dien_thoai' => 'nullable|string|max:20',
-        'ngay_sinh' => 'nullable|date',
-        'gioi_tinh' => 'nullable|in:nam,nu,khac',
-        'dia_chi_hien_tai' => 'nullable|string|max:255',
-        'dia_chi_thuong_tru' => 'nullable|string|max:255',
-        'cmnd_cccd' => 'nullable|string|max:20|unique:ho_so_nguoi_dung,cmnd_cccd,' . $user->id . ',nguoi_dung_id',
-        'so_ho_chieu' => 'nullable|string|max:20',
-        'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
-        'anh_dai_dien' => 'nullable|image|max:2048',
-        'lien_he_khan_cap' => 'nullable|string|max:100',
-        'sdt_khan_cap' => 'nullable|string|max:20',
-        'quan_he_khan_cap' => 'nullable|string|max:50',
-    ]);
+    'ho' => 'required|string|max:50',
+    'ten' => 'required|string|max:50',
+    'so_dien_thoai' => 'required|string|max:20|regex:/^[0-9]{9,15}$/',
+    'ngay_sinh' => 'required|date',
+    'gioi_tinh' => 'required|in:nam,nu,khac',
+    'dia_chi_hien_tai' => 'required|string|max:255',
+    'dia_chi_thuong_tru' => 'required|string|max:255',
+    'cmnd_cccd' => 'required|string|max:20|regex:/^[0-9]{9,12}$/|unique:ho_so_nguoi_dung,cmnd_cccd,' . $user->id . ',nguoi_dung_id',
+    'so_ho_chieu' => 'nullable|string|max:20',
+    'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
+    'anh_dai_dien' => 'nullable|image|max:2048',
+    'lien_he_khan_cap' => 'nullable|string|max:100',
+    'sdt_khan_cap' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+    'quan_he_khan_cap' => 'nullable|string|max:50',
+    'email_cong_ty' => 'required|email|max:255',
+], [
+    'ho.required' => 'Vui lòng nhập họ.',
+    'ten.required' => 'Vui lòng nhập tên.',
+    'so_dien_thoai.required' => 'Vui lòng nhập số điện thoại.',
+    'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
+    'ngay_sinh.required' => 'Vui lòng chọn ngày sinh.',
+    'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
+    'gioi_tinh.required' => 'Vui lòng chọn giới tính.',
+    'dia_chi_hien_tai.required' => 'Vui lòng nhập địa chỉ hiện tại.',
+    'dia_chi_thuong_tru.required' => 'Vui lòng nhập địa chỉ thường trú.',
+    'cmnd_cccd.required' => 'Vui lòng nhập CMND/CCCD.',
+    'cmnd_cccd.regex' => 'CMND/CCCD không đúng định dạng.',
+    'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại trong hệ thống.',
+    'tinh_trang_hon_nhan.required' => 'Vui lòng chọn tình trạng hôn nhân.',
+    'email_cong_ty.required' => 'Email công ty là bắt buộc.',
+    'email_cong_ty.email' => 'Email công ty không đúng định dạng.',
+    'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
+    'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
+    'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
+]); 
 
+     $prefix = $user->chucVu->ma ?? 'NV'; // fallback là NV nếu không có
     // Tự động tạo mã nhân viên
-    $validated['ma_nhan_vien'] = $this->generateMaNhanVien();
-
+   $validated['ma_nhan_vien'] = $this->generateMaNhanVien($prefix);
+    $validated['email_cong_ty'] = $user->email;
     // Upload ảnh nếu có
     if ($request->hasFile('anh_dai_dien')) {
         $file = $request->file('anh_dai_dien');

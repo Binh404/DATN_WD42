@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ChamCongTangCaExport;
 use App\Http\Controllers\Controller;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class ThucHienTangCaAdminController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($request->all());
         $user = auth()->user();
         if ($user->coVaiTro('admin') || $user->coVaiTro('HR')) {
             $query = thucHienTangCa::with([
@@ -25,7 +28,7 @@ class ThucHienTangCaAdminController extends Controller
                             $q2->select('id', 'email', 'phong_ban_id'); // chọn các cột cần dùng
                             $q2->with([
                                 'phongBan:id,ten_phong_ban',
-                                'hoSo:id,nguoi_dung_id,ma_nhan_vien,ho,ten' // ví dụ: chỉ chọn vài trường từ hồ sơ
+                                'hoSo:id,nguoi_dung_id,ma_nhan_vien,ho,ten,anh_dai_dien' // ví dụ: chỉ chọn vài trường từ hồ sơ
                             ]);
                         }
                     ]);
@@ -79,7 +82,6 @@ class ThucHienTangCaAdminController extends Controller
                 $query->whereHas('dangKyTangCa', function ($q) use ($request) {
                       $q->whereMonth('ngay_tang_ca', $request->get('thang'));
                 });
-
             }
 
             if ($request->filled('nam')) {
@@ -113,7 +115,7 @@ class ThucHienTangCaAdminController extends Controller
             $soGioTangCa = $danhSachTangCa->sum('so_gio_tang_ca_thuc_te');
             // dd($soGioTangCa, $soLuongTangCa, $soLuongChuaHoanThanh, $soLuongHoanThanh);
 
-            return view('admin.cham-cong.indexTangCa',compact(
+            return view('admin.cham-cong.quan_ly_tang_ca.index',compact(
                  'phongBan', 'trangThaiList',
                  'danhSachTangCa', 'soLuongTangCa', 'tyLeChuaHoanThanh',
                  'tyLeHoanThanh', 'soGioTangCa'));
@@ -125,7 +127,7 @@ class ThucHienTangCaAdminController extends Controller
         $chamCongTangCa = thucHienTangCa::with('dangKyTangCa')->find($id);
         $chamCongTangCa->load(['dangKyTangCa.nguoiDung.hoSo', 'dangKyTangCa.nguoiDung.phongBan','dangKyTangCa.nguoiDung']);
         // dd($chamCongTangCa->nguoiDung);
-        return view('admin.cham-cong.showTangCa', compact('chamCongTangCa'));
+        return view('admin.cham-cong.quan_ly_tang_ca.show', compact('chamCongTangCa'));
     }
     public function edit($id)
     {
@@ -145,7 +147,7 @@ class ThucHienTangCaAdminController extends Controller
             'khong_hoan_thanh' => 'Không hoàn thành',
         ];
 
-        return view('admin.cham-cong.editTangCa', compact('thucHienTangCa', 'trangThaiList'));
+        return view('admin.cham-cong.quan_ly_tang_ca.edit', compact('thucHienTangCa', 'trangThaiList'));
     }
     public function update(Request $request, $id)
     {
@@ -229,9 +231,89 @@ class ThucHienTangCaAdminController extends Controller
         }
     }
     public function destroy($id){
+
         $thucHienTangCa = ThucHienTangCa::findOrFail($id);
+        if(!$thucHienTangCa){
+            return redirect()->route('admin.chamcong.tangCa.index')
+            ->with('error', 'Bản ghi chấm công khôn tại!');
+        }
         $thucHienTangCa->delete();
-        return redirect()->route('admin.chamcong.danhSachTangCa')
+        return redirect()->route('admin.chamcong.tangCa.index')
             ->with('success', 'Xóa bản ghi chấm công!');
+    }
+    /**
+     * Xuất dữ liệu chấm công theo yêu cầu
+     */
+    public function export(Request $request)
+    {
+        // dd($request->all());
+        // Lấy dữ liệu theo điều kiện tìm kiếm
+        $query = ThucHienTangCa::with(['dangKyTangCa', 'dangKyTangCa.nguoiDung.hoSo', 'dangKyTangCa.nguoiDung.phongBan','dangKyTangCa.nguoiDung'])
+            ->orderBy('id', 'desc');
+
+        // Áp dụng các filter giống như trong index
+        $this->applyFilters($query, $request);
+
+        $chamCong = $query->get();
+        // dd($chamCong);
+        // Tạo tên file
+        $fileName = 'cham-cong-tang-ca' . date('Y-m-d-H-i-s');
+
+        return Excel::download(new ChamCongTangCaExport($chamCong), $fileName . '.xlsx');
+    }
+    /**
+     * Áp dụng các filter tìm kiếm
+     */
+    private function applyFilters($query, $request)
+    {
+        if ($request->filled('ten_nhan_vien')) {
+            $query->whereHas('dangKyTangCa.nguoiDung.hoSo', function ($q) use ($request) {
+                $q->where('ho', 'like', '%' . $request->ten_nhan_vien . '%')
+                  ->orWhere('ten', 'like', '%' . $request->ten_nhan_vien . '%');
+            });
+        }
+
+        if ($request->filled('phong_ban_id')) {
+            $query->whereHas('dangKyTangCa.nguoiDung', function ($q) use ($request) {
+                $q->where('phong_ban_id', $request->phong_ban_id);
+            });
+        }
+
+        if ($request->filled('trang_thai')) {
+            $query->where('trang_thai', $request->trang_thai);
+        }
+
+        if ($request->filled('ngay_cham_cong')) {
+            $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                    $q->where('ngay_tang_ca', $request->get('ngay_cham_cong'));
+            });
+        }
+
+        if ($request->filled('tu_ngay')) {
+             $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                $q->where('ngay_tang_ca', '>=', $request->get('tu_ngay'));
+            });
+        }
+
+        if ($request->filled('den_ngay')) {
+             $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                    $q->where('ngay_tang_ca', '<=', $request->get('den_ngay'));
+            });
+        }
+
+        if ($request->filled('thang') && $request->filled('nam')) {
+                $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                    $q->whereMonth('ngay_tang_ca', $request->get('thang'))
+                      ->whereYear('ngay_tang_ca', $request->get('nam'));
+                });
+        } elseif ($request->filled('thang')) {
+            $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                    $q->whereMonth('ngay_tang_ca', $request->get('thang'));
+            });
+        } elseif ($request->filled('nam')) {
+             $query->whereHas('dangKyTangCa', function ($q) use ($request) {
+                    $q->whereYear('ngay_tang_ca', $request->get('nam'));
+            });
+        }
     }
 }
