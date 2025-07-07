@@ -19,7 +19,7 @@ class HoSoNhanVienController extends Controller
     $keyword = $request->input('search');
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-        ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
+        // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
         ->when($keyword, function ($query) use ($keyword) {
             $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
                 $subQuery->where('ho', 'like', "%$keyword%")
@@ -85,7 +85,7 @@ public function restore($id)
      */
     public function create()
     {
-        
+
     }
 
     /**

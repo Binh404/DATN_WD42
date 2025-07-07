@@ -1,102 +1,144 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
+@section('title', 'Chi tiết Phiếu lương')
+
+@push('styles')
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .content, .content * {
+        visibility: visible;
+    }
+
+    .content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    aside, header, footer, nav, .btn, .btn * {
+        display: none !important;
+    }
+}
+</style>
+@endpush
 
 @section('content')
 <div class="content-header">
-	<div class="container-fluid">
-		<div class="row mb-2">
-			<div class="col-sm-6">
-				<h1 class="m-0">Chi tiết Phiếu Lương</h1>
-			</div>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG {{ $thang }}/{{ $nam }}</h3>
+    </div>
 </div>
 
 <div class="content">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-12">
-				<div class="card">
-					<div class="card-body">
-						<div class="text-center mb-4">
-							@if(isset($platform->logo))
-								<img src="{{ asset($platform->logo) }}" alt="Logo" width="60">
-							@else
-								<h3>CÔNG TY DV TECH</h3>
-							@endif
-							<p>Địa chỉ: 123 Đường Trịnh Văn Bô, TP.HN - MST: 0101234567</p>
-						</div>
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="w-100" style="max-width: 900px;">
+            <table class="table table-bordered align-middle text-center">
+                <tbody>
+                    <tr>
+                        <td rowspan="3" style="width: 22%; vertical-align: middle;">
+                            <img src="{{ $base64 }}" alt="logo" style="width: 120px; height: auto;">
+                        </td>
+                        <th class="text-start ps-3" style="width: 20%">Mã số NV:</th>
+                        <td class="text-start" style="width: 20%"><span class="fw-bold bg-warning px-2">{{ $nhanVien->ma_nhan_vien ?? '---' }}</span></td>
 
-						<h5  class="mb-3 bg-dark">Thông tin nhân viên</h5>
-						<table class="table">
-							<tr><td>Họ tên:</td><td>{{ $nhanVien->ho }} {{ $nhanVien->ten }}</td></tr>
-							<tr><td>Mã nhân viên:</td><td>{{ $nhanVien->ma_nhan_vien }}</td></tr>
-                            <tr><td>Email:</td><td>{{ $nhanVien->email }}</td></tr>
-							<tr><td>Chức vụ:</td><td>{{ $nhanVien->chuc_vu ?? '---' }}</td></tr>
-							<tr><td>Phòng ban:</td><td>{{ $nhanVien->ten_phong_ban ?? '---' }}</td></tr>
-							<tr><td>Kỳ lương:</td><td>Tháng {{ $thang }}/{{ $nam }}</td></tr>
-							<tr><td>Ngày lập phiếu:</td><td>{{ date('d/m/Y') }}</td></tr>
-						</table>
+                    </tr>
+                    <tr>
+                        <th class="text-start ps-3">Tên NV:</th>
+                        <td class="text-start">{{ $nhanVien->ho }} {{ $nhanVien->ten }}</td>
 
-						{{-- <h5 class="mt-4 bg-dark">Chi tiết lương</h5>
-						<table class="table table-bordered">
-							<tr><th>Lương cơ bản</th><td>{{ number_format($nhanVien->luong_co_ban ?? 0) }} VND</td></tr>
-							<tr><th>Phụ cấp</th><td>{{ number_format($nhanVien->phu_cap ?? 0) }} VND</td></tr>
-							<tr><th>Thưởng</th><td>{{ number_format($nhanVien->thuong ?? 0) }} VND</td></tr>
-							<tr><th>Làm thêm giờ</th><td>{{ number_format($nhanVien->phu_cap_tang_ca ?? 0) }} VND</td></tr>
-							<tr><th>Tổng thu nhập</th><td>{{ number_format(($nhanVien->luong_co_ban ?? 0) + ($nhanVien->phu_cap ?? 0) + ($nhanVien->thuong ?? 0) + ($nhanVien->phu_cap_tang_ca ?? 0)) }} VND</td></tr>
-						</table> --}}
+                    </tr>
+                    <tr>
+                        <th class="text-start ps-3">Chức vụ:</th>
+                        <td class="text-start">{{ $nhanVien->chuc_vu ?? '---' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:5%">STT</th>
+                        <th style="width:35%">Chỉ tiêu 01</th>
+                        <th style="width:15%">Thành tiền 01</th>
+                        <th style="width:25%">Chỉ tiêu 02</th>
+                        <th style="width:20%">Thành tiền 02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-start ps-3">Lương Cơ bản</td>
+                        <td class="text-end pe-3">{{ number_format($tongLuong) }}</td>
+                        <td class="text-start ps-3">Ngày công</td>
+                        <td>{{ $soCong }}</td>
+                    </tr>
+                    <tr class="fw-bold">
+                        <td>2</td>
+                        <td class="text-start ps-3">Tổng lương</td>
+                        <td class="text-end pe-3">{{ number_format($tongLuong) }}</td>
+                        <td class="text-start ps-3">Tăng ca</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="text-start ps-3">Phụ cấp</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_trach_nhiem ?? 0) }}</td>
+                        <td class="text-start ps-3">Bảo hiểm</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->bao_hiem ?? 0) }}</td>
+                    </tr>
+                    {{-- <tr>
+                        <td>4</td>
+                        <td class="text-start ps-3">Tiền cơm / ngày</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_com ?? 0) }}</td>
+                        <td class="text-start ps-3">Thuế TNCN</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->thue_tncn ?? 0) }}</td>
+                    </tr> --}}
+                    {{-- <tr>
+                        <td>5</td>
+                        <td class="text-start ps-3">Xăng xe, điện thoại</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_xang ?? 0) }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr> --}}
+                    {{-- <tr>
+                        <td>6</td>
+                        <td class="text-start ps-3">Nhà ở / Con nhỏ</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_nhao ?? 0) }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr> --}}
+                    <tr class="fw-bold">
+                        <td>7</td>
+                        <td class="text-start ps-3">Tổng phụ cấp</td>
+                        <td class="text-end pe-3">{{ number_format(($nhanVien->phu_cap_trach_nhiem ?? 0) + ($nhanVien->phu_cap_com ?? 0) + ($nhanVien->phu_cap_xang ?? 0) + ($nhanVien->phu_cap_nhao ?? 0)) }}</td>
+                        <td class="text-start ps-3">Tổng trừ</td>
+                        <td class="text-end pe-3">{{ number_format(($nhanVien->bao_hiem ?? 0) + ($nhanVien->thue_tncn ?? 0)) }}</td>
+                    </tr>
+                    <tr class="fw-bold bg-light">
+                        <td colspan="4" class="text-start ps-3">Thực lĩnh</td>
+                        <td class="text-end pe-3">{{ number_format($tongLuong - (($nhanVien->bao_hiem ?? 0) + ($nhanVien->thue_tncn ?? 0))) }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
 
-
-						<h5 class="mt-4 bg-dark">Thông tin ngày công</h5>
-						<table class="table table-bordered">
-							<tr><th>Số giờ làm</th><td>{{ number_format($tongGioLam, 0) }}</td></tr>
-							{{-- <tr><th>Số ngày công</th><td>{{ $soCong ?? '---' }}</td></tr> --}}
-							<tr><th>Số ngày nghỉ có lương</th><td>{{ $nghiCoLuong ?? 0 }}</td></tr>
-							<tr><th>Số ngày nghỉ không lương</th><td>{{ $nghiKhongLuong ?? 0 }}</td></tr>
-						</table>
-
-                        {{-- <h5 class="mt-4 bg-dark">Các khoản khấu trừ</h5>
-						<table class="table table-bordered">
-							<tr><th>Thuế TNCN</th><td>{{ number_format($nhanVien->thue_tncn ?? 0) }} VND</td></tr>
-							<tr><th>Bảo hiểm xã hội</th><td>{{ number_format($nhanVien->bhxh ?? 0) }} VND</td></tr>
-							<tr><th>Bảo hiểm y tế</th><td>{{ number_format($nhanVien->bhyt ?? 0) }} VND</td></tr>
-							<tr><th>Khấu trừ khác</th><td>{{ number_format($nhanVien->khoan_khac ?? 0) }} VND</td></tr>
-							<tr><th>Tổng lương</th><td>{{ number_format($tongLuong) }} VND</td></tr>
-						</table> --}}
-                        <h5 class="mt-4 bg-dark">Lương thực lĩnh</h5>
-						<table class="table table-bordered">
-							<tr><th>Tổng</th><td>{{ number_format($tongLuong) }} VND</td></tr>
-						</table>
-						{{-- <h5 class="mt-4">Ký xác nhận</h5>
-						<div class="row">
-							<div class="col-md-6 text-center">
-								<p><strong>Người lập phiếu</strong></p>
-								<p style="margin-top: 80px">(Ký tên)</p>
-							</div>
-							<div class="col-md-6 text-center">
-								<p><strong>Người nhận phiếu</strong></p>
-								<p style="margin-top: 80px">(Ký tên)</p>
-							</div>
-						</div> --}}
-						<hr>
-						{{-- <p><strong>Ghi chú:</strong> Nếu có sai sót trong phiếu lương, vui lòng liên hệ bộ phận nhân sự.</p> --}}
-						<a href="{{ route('luong.index', ['thang' => $thang, 'nam' => $nam]) }}" class="btn btn-secondary mt-3">Quay lại</a>
-
-                        <div class="d-flex justify-content-end gap-2 mt-3">
-                            <a href="{{ route('luong.pdf', ['user_id' => $nhanVien->nguoi_dung_id, 'thang' => $thang, 'nam' => $nam]) }}" class="btn btn-primary">
-                                <i class="fas fa-file-pdf"></i> Xuất PDF
-                            </a>
-                            <a href="#" onclick="window.print()" class="btn btn-secondary">
-                                <i class="fas fa-print"></i> In
-                            </a>
-
-                        </div>
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end gap-2 mt-4 no-print">
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="fas fa-print"></i> In phiếu
+                </button>
+                <a class="btn btn-danger" target="_blank"
+                   href="{{ route('luong.pdf', ['user_id' => $nhanVien->nguoi_dung_id ?? $nhanVien->id, 'thang' => $thang, 'nam' => $nam]) }}">
+                    <i class="fas fa-file-pdf"></i> Xuất PDF
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -100,6 +100,10 @@ class LuongController extends Controller
         $nghiCoLuong = 1;
         $nghiKhongLuong = 0;
 
+        $pathToImage = public_path('assets/images/dvlogo.png');
+        $type = pathinfo($pathToImage, PATHINFO_EXTENSION);
+        $data = file_get_contents($pathToImage);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         return view('admin.luong.chitietphieuluong', compact(
             'nhanVien',
             'thang',
@@ -108,49 +112,57 @@ class LuongController extends Controller
             'tongLuong',
             'nghiCoLuong',
             'nghiKhongLuong',
-            'soCong'
+            'soCong',
+            'base64'
         ));
     }
 
-    public function exportPDF($user_id, $thang, $nam)
-    {
-        $nhanVien = DB::table('ho_so_nguoi_dung')
-            ->join('nguoi_dung', 'nguoi_dung.id', '=', 'ho_so_nguoi_dung.nguoi_dung_id')
-            ->leftJoin('phong_ban', 'phong_ban.id', '=', 'nguoi_dung.phong_ban_id')
-            ->leftJoin('chuc_vu', 'chuc_vu.id', '=', 'nguoi_dung.chuc_vu_id')
-            ->where('nguoi_dung.id', $user_id)
-            ->select('ho_so_nguoi_dung.*', 'nguoi_dung.email', 'phong_ban.ten_phong_ban', 'chuc_vu.luong_toi_thieu')
-            ->first();
+   public function exportPDF($user_id, $thang, $nam)
+{
+    $nhanVien = DB::table('ho_so_nguoi_dung')
+        ->join('nguoi_dung', 'nguoi_dung.id', '=', 'ho_so_nguoi_dung.nguoi_dung_id')
+        ->leftJoin('phong_ban', 'phong_ban.id', '=', 'nguoi_dung.phong_ban_id')
+        ->leftJoin('chuc_vu', 'chuc_vu.id', '=', 'nguoi_dung.chuc_vu_id')
+        ->where('nguoi_dung.id', $user_id)
+        ->select('ho_so_nguoi_dung.*', 'nguoi_dung.email', 'phong_ban.ten_phong_ban', 'chuc_vu.luong_toi_thieu')
+        ->first();
 
-        $tongGioLam = DB::table('cham_cong')
-            ->where('nguoi_dung_id', $user_id)
-            ->whereMonth('ngay_cham_cong', $thang)
-            ->whereYear('ngay_cham_cong', $nam)
-            ->sum('so_gio_lam');
-
-        $luongTheoGio = isset($nhanVien->luong_toi_thieu) && $nhanVien->luong_toi_thieu > 0
-            ? $nhanVien->luong_toi_thieu / 173
-            : 60000;
-
-        $tongLuong = $tongGioLam * $luongTheoGio;
-
-        $soCong = $tongGioLam / 8;
-        $nghiCoLuong = 1;
-        $nghiKhongLuong = 0;
-
-        $data = compact(
-            'nhanVien',
-            'thang',
-            'nam',
-            'tongGioLam',
-            'soCong',
-            'nghiKhongLuong',
-            'tongLuong',
-            'nghiCoLuong'
-        );
-
-        $pdf = PDF::loadView('admin.luong.chitietphieuluong', $data);
-
-        return $pdf->download("phieu_luong_NV{$user_id}_{$thang}_{$nam}.pdf");
+    if (!$nhanVien) {
+        abort(404, 'Không tìm thấy nhân viên.');
     }
+
+    $tongGioLam = DB::table('cham_cong')
+        ->where('nguoi_dung_id', $user_id)
+        ->whereMonth('ngay_cham_cong', $thang)
+        ->whereYear('ngay_cham_cong', $nam)
+        ->sum('so_gio_lam');
+
+    $luongCoBan = $nhanVien->luong_toi_thieu ?? 0;
+    $luongTheoGio = $luongCoBan > 0 ? $luongCoBan / 173 : 60000;
+
+    $tongLuong = $tongGioLam * $luongTheoGio;
+    $soCong = round($tongGioLam / 8, 2);
+
+    $pathToImage = public_path('assets/images/dvlogo.png');
+    $type = pathinfo($pathToImage, PATHINFO_EXTENSION);
+    $data = file_get_contents($pathToImage);
+    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $data = compact(
+        'nhanVien',
+        'thang',
+        'nam',
+        'tongGioLam',
+        'soCong',
+        'tongLuong',
+        'base64'
+
+
+    );
+
+    $pdf = PDF::loadView('admin.luong.pdf', $data);
+
+    return $pdf->download("phieu_luong_NV{$user_id}_{$thang}_{$nam}.pdf");
+}
+
 }

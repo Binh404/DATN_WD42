@@ -1,5 +1,4 @@
-@extends('layouts.master')
-@section('title', 'Chỉnh sửa phòng ban')
+@extends('layoutsAdmin.master')@section('title', 'Chỉnh sửa phòng ban')
 
 @section('content')
 

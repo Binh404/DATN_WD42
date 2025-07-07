@@ -1,9 +1,13 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 
 @section('title', 'Thêm địa chỉ công ty')
-
+@section('style')
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+@endsection
 @section('content')
-<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -11,7 +15,7 @@
                     <h3 class="card-title">Thêm địa chỉ công ty mới</h3>
                     <div class="card-tools">
                         <a href="{{ route('admin.locations.index') }}" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Quay lại
+                            <i class="mdi mdi-arrow-left"></i> Quay lại
                         </a>
                     </div>
                 </div>
@@ -22,8 +26,8 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-8">
-                                <div class="form-group">
-                                    <label for="address">Địa chỉ công ty <span class="text-danger">*</span></label>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Địa chỉ công ty <span class="text-danger">*</span></label>
                                     <input type="text"
                                            class="form-control @error('address') is-invalid @enderror"
                                            id="address"
@@ -37,8 +41,8 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="latitude">Vĩ độ (Latitude) <span class="text-danger">*</span></label>
+                                        <div class="mb-3">
+                                            <label for="latitude" class="form-label">Vĩ độ (Latitude) <span class="text-danger">*</span></label>
                                             <input type="number"
                                                    class="form-control @error('latitude') is-invalid @enderror"
                                                    id="latitude"
@@ -52,8 +56,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="longitude">Kinh độ (Longitude) <span class="text-danger">*</span></label>
+                                        <div class="mb-3">
+                                            <label for="longitude" class="form-label">Kinh độ (Longitude) <span class="text-danger">*</span></label>
                                             <input type="number"
                                                    class="form-control @error('longitude') is-invalid @enderror"
                                                    id="longitude"
@@ -68,8 +72,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="allowed_radius">Bán kính cho phép (mét) <span class="text-danger">*</span></label>
+                                <div class="mb-3">
+                                    <label for="allowed_radius" class="form-label">Bán kính cho phép (mét) <span class="text-danger">*</span></label>
                                     <input type="number"
                                            class="form-control @error('allowed_radius') is-invalid @enderror"
                                            id="allowed_radius"
@@ -78,14 +82,14 @@
                                            min="1"
                                            max="10000"
                                            placeholder="1000">
-                                    <small class="form-text text-muted">Khoảng cách tối đa từ địa chỉ công ty (1-10000 mét)</small>
+                                    <div class="form-text">Khoảng cách tối đa từ địa chỉ công ty (1-10000 mét)</div>
                                     @error('allowed_radius')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="alert alert-info">
-                                    <h6><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng:</h6>
+                                    <h6><i class="mdi mdi-information-outline"></i> Hướng dẫn sử dụng:</h6>
                                     <ul class="mb-0">
                                         <li>Click vào vị trí trên bản đồ để lấy tọa độ và địa chỉ</li>
                                         <li>Kéo thả marker để điều chỉnh vị trí (tự động cập nhật địa chỉ)</li>
@@ -94,20 +98,20 @@
                                     </ul>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="mb-3">
                                     <button type="button" class="btn btn-info" onclick="getCurrentLocation()">
-                                        <i class="fas fa-map-marker-alt"></i> Lấy vị trí hiện tại
+                                        <i class="mdi mdi-map-marker"></i> Lấy vị trí hiện tại
                                     </button>
-                                    <button type="button" class="btn btn-success ml-2" onclick="searchAddress()">
-                                        <i class="fas fa-search"></i> Tìm theo địa chỉ
+                                    <button type="button" class="btn btn-success ms-2" onclick="searchAddress()">
+                                        <i class="mdi mdi-magnify"></i> Tìm theo địa chỉ
                                     </button>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <div class="card bg-light">
+                                <div class="card">
                                     <div class="card-header">
-                                        <h5>Xem trước bản đồ</h5>
+                                        <h5 class="card-title">Xem trước bản đồ</h5>
                                     </div>
                                     <div class="card-body">
                                         <div id="map" style="height: 300px; border-radius: 5px;"></div>
@@ -122,27 +126,24 @@
 
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Lưu địa chỉ
+                            <i class="mdi mdi-content-save"></i> Lưu địa chỉ
                         </button>
                         <a href="{{ route('admin.locations.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Hủy bỏ
+                            <i class="mdi mdi-close"></i> Hủy bỏ
                         </a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+@endsection
 
+@section('script')
 <!-- Leaflet JavaScript -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 
 <script>
 let map;
@@ -232,7 +233,6 @@ function updateMapFromInput() {
 function updateCircle() {
     const radius = parseInt(document.getElementById('allowed_radius').value) || 1000;
     const position = marker.getLatLng();
-
     circle.setLatLng(position);
     circle.setRadius(radius);
 }
@@ -277,11 +277,11 @@ function getCurrentLocation() {
                 showNotification('Đã lấy vị trí hiện tại thành công!', 'success');
             },
             function(error) {
-                showNotification('Không thể lấy vị trí hiện tại. Vui lòng chọn trên bản đồ.', 'error');
+                showNotification('Không thể lấy vị trí hiện tại. Vui lòng chọn trên bản đồ.', 'danger');
             }
         );
     } else {
-        showNotification('Trình duyệt không hỗ trợ Geolocation.', 'error');
+        showNotification('Trình duyệt không hỗ trợ Geolocation.', 'danger');
     }
 }
 
@@ -317,35 +317,59 @@ async function searchAddress() {
             showNotification('Không tìm thấy địa chỉ. Vui lòng thử lại với địa chỉ khác.', 'warning');
         }
     } catch (error) {
-        showNotification('Lỗi khi tìm kiếm địa chỉ. Vui lòng thử lại.', 'error');
+        showNotification('Lỗi khi tìm kiếm địa chỉ. Vui lòng thử lại.', 'danger');
     }
 }
 
-// Hiển thị thông báo
+// Hiển thị thông báo Toast Bootstrap 5
 function showNotification(message, type = 'info') {
-    // Tạo thông báo tạm thời
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${getBootstrapAlertClass(type)} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-        </button>
+    // Tạo container cho toast nếu chưa có
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+
+    // Tạo toast
+    const toastId = 'toast-' + Date.now();
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `toast align-items-center text-bg-${getBootstrapToastClass(type)} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
     `;
 
-    document.body.appendChild(notification);
+    toastContainer.appendChild(toast);
 
-    // Tự động ẩn sau 3 giây
-    setTimeout(() => {
-        if (notification && notification.parentNode) {
-            notification.parentNode.removeChild(notification);
+    // Khởi tạo và hiển thị toast
+    const bsToast = new bootstrap.Toast(toast, {
+        autohide: true,
+        delay: 3000
+    });
+    bsToast.show();
+
+    // Xóa toast sau khi ẩn
+    toast.addEventListener('hidden.bs.toast', function() {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
         }
-    }, 3000);
+    });
 }
 
-// Chuyển đổi loại thông báo sang class Bootstrap
-function getBootstrapAlertClass(type) {
+// Chuyển đổi loại thông báo sang class Bootstrap Toast
+function getBootstrapToastClass(type) {
     switch(type) {
         case 'success': return 'success';
         case 'error': return 'danger';
