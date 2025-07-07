@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Tạo hợp đồng mới')
 
 @section('content')
@@ -57,7 +57,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="so_hop_dong">Số hợp đồng <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('so_hop_dong') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('so_hop_dong') is-invalid @enderror"
                                    id="so_hop_dong" name="so_hop_dong" value="{{ old('so_hop_dong') }}" required>
                             @error('so_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -86,7 +86,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ngay_bat_dau">Ngày bắt đầu <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control @error('ngay_bat_dau') is-invalid @enderror" 
+                            <input type="date" class="form-control @error('ngay_bat_dau') is-invalid @enderror"
                                    id="ngay_bat_dau" name="ngay_bat_dau" value="{{ old('ngay_bat_dau') }}" required>
                             @error('ngay_bat_dau')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -97,7 +97,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
-                            <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror" 
+                            <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
                                    id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}">
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -110,7 +110,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror" 
+                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
                                    id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban') }}" required>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -121,7 +121,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror" 
+                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
                                    id="phu_cap" name="phu_cap" value="{{ old('phu_cap') }}">
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -134,7 +134,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
                                    id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec') }}" required>
                             @error('hinh_thuc_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -145,7 +145,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
                                    id="dia_diem_lam_viec" name="dia_diem_lam_viec" value="{{ old('dia_diem_lam_viec') }}" required>
                             @error('dia_diem_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -185,7 +185,7 @@
 
                 <div class="form-group">
                     <label for="dieu_khoan">Điều khoản <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('dieu_khoan') is-invalid @enderror" 
+                    <textarea class="form-control @error('dieu_khoan') is-invalid @enderror"
                               id="dieu_khoan" name="dieu_khoan" rows="4" required>{{ old('dieu_khoan') }}</textarea>
                     @error('dieu_khoan')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -194,7 +194,7 @@
 
                 <div class="form-group">
                     <label for="file_hop_dong">File hợp đồng</label>
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
                            id="file_hop_dong" name="file_hop_dong">
                     <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
                     @error('file_hop_dong')
@@ -204,7 +204,7 @@
 
                 <div class="form-group">
                     <label for="ghi_chu">Ghi chú</label>
-                    <textarea class="form-control @error('ghi_chu') is-invalid @enderror" 
+                    <textarea class="form-control @error('ghi_chu') is-invalid @enderror"
                               id="ghi_chu" name="ghi_chu" rows="3">{{ old('ghi_chu') }}</textarea>
                     @error('ghi_chu')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -232,7 +232,7 @@
         $('#ngay_ket_thuc').on('change', function() {
             var ngayBatDau = new Date($('#ngay_bat_dau').val());
             var ngayKetThuc = new Date($(this).val());
-            
+
             if (ngayKetThuc < ngayBatDau) {
                 alert('Ngày kết thúc phải sau ngày bắt đầu');
                 $(this).val('');
@@ -248,4 +248,4 @@
         });
     });
 </script>
-@endsection 
+@endsection

@@ -386,7 +386,7 @@
                                 <input type="hidden" name="co_luong" value="0">
                                 <input type="checkbox" id="co_luong" name="co_luong" value="1"
                                     {{ old('co_luong') ? 'checked' : '' }}>
-                                
+
                                 <label for="co_luong">Có lương</label>
                                 @error('co_luong')
                                     <span class="error-message">{{ $message }}</span>
@@ -398,7 +398,7 @@
                                 <input type="hidden" name="trang_thai" value="0">
                                 <input type="checkbox" id="trang_thai" name="trang_thai" value="1"
                                     {{ old('trang_thai') ? 'checked' : '' }}>
-                                
+
                                 <label for="trang_thai">Trạng thái hoạt động</label>
                                 @error('trang_thai')
                                     <span class="error-message">{{ $message }}</span>

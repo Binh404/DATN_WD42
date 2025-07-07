@@ -286,20 +286,20 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .container {
                 margin: 10px;
                 border-radius: 15px;
             }
-            
+
             .detail-container {
                 padding: 20px;
             }
-            
+
             .header {
                 padding: 20px;
             }
-            
+
             .header h1 {
                 font-size: 1.8em;
             }

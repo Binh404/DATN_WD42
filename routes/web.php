@@ -146,8 +146,8 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     });
 });
 
-// HR routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,hr'])->group(function () {
+// HR, ADMIN routes
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
@@ -267,6 +267,16 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
 
 
     });
+
+    // Admin HR - Lương
+    Route::get('/luong', [LuongController::class, 'tongLuong'])->name('luong.index');
+    Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
+    Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
+    Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
+
+
+
+
 });
 
 // Employee routes

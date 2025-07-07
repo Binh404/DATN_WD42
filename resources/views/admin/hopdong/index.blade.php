@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh sách hợp đồng')
 
 @section('content')
@@ -59,7 +59,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="search">Từ khóa tìm kiếm</label>
-                                <input type="text" class="form-control" id="search" name="search" 
+                                <input type="text" class="form-control" id="search" name="search"
                                     value="{{ request('search') }}" placeholder="Số HĐ, tên NV, mã NV...">
                             </div>
                         </div>
@@ -176,18 +176,18 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('hopdong.show', $hopDong->id) }}" 
-                                               class="btn btn-info btn-sm" 
+                                            <a href="{{ route('hopdong.show', $hopDong->id) }}"
+                                               class="btn btn-info btn-sm"
                                                title="Xem chi tiết">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            
+
                                             @if($hopDong->trang_thai_hop_dong === 'het_han' && $hopDong->trang_thai_tai_ky !== 'da_tai_ky')
                                                 <a href="{{ route('hopdong.create', ['nguoi_dung_id' => $hopDong->nguoi_dung_id]) }}" class="btn btn-success btn-sm" title="Tái ký hợp đồng">
                                                     <i class="fas fa-file-signature"></i> Tái ký
                                                 </a>
                                             @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
-                                                <a href="{{ route('hopdong.edit', $hopDong->id) }}" 
+                                                <a href="{{ route('hopdong.edit', $hopDong->id) }}"
                                                    class="btn btn-primary btn-sm"
                                                    title="Chỉnh sửa">
                                                     <i class="fas fa-edit"></i>
@@ -195,7 +195,7 @@
                                             @endif
 
                                             <!-- @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
-                                                <button type="button" 
+                                                <button type="button"
                                                         class="btn btn-success btn-sm"
                                                         onclick="kyHopDong({{ $hopDong->id }})"
                                                         title="Ký hợp đồng">
@@ -214,13 +214,13 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-   
+
 @endsection
 
 @section('scripts')
 <script>
-   
-  
+
+
         if (confirm('Bạn có chắc chắn muốn ký hợp đồng này?')) {
             $.ajax({
                 url: `/hop-dong/${id}/ky`,
@@ -246,4 +246,4 @@
     }
 
 </script>
-@endsection 
+@endsection

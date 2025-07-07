@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Chỉnh sửa hợp đồng')
 
 @section('content')
@@ -75,7 +75,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ngay_bat_dau">Ngày bắt đầu <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control @error('ngay_bat_dau') is-invalid @enderror" 
+                            <input type="date" class="form-control @error('ngay_bat_dau') is-invalid @enderror"
                                    id="ngay_bat_dau" name="ngay_bat_dau" value="{{ old('ngay_bat_dau', $hopDong->ngay_bat_dau->format('Y-m-d')) }}" required readonly>
                             @error('ngay_bat_dau')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -86,7 +86,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
-                            <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror" 
+                            <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
     id="ngay_ket_thuc" name="ngay_ket_thuc"
     value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" readonly>
                             @error('ngay_ket_thuc')
@@ -100,7 +100,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror" 
+                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
                                    id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" required readonly>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -111,7 +111,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror" 
+                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
                                    id="phu_cap" name="phu_cap" value="{{ old('phu_cap', $hopDong->phu_cap) }}" readonly>
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -124,7 +124,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
                                    id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec', $hopDong->hinh_thuc_lam_viec) }}" required readonly>
                             @error('hinh_thuc_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -135,7 +135,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
                                    id="dia_diem_lam_viec" name="dia_diem_lam_viec" value="{{ old('dia_diem_lam_viec', $hopDong->dia_diem_lam_viec) }}" required readonly>
                             @error('dia_diem_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -182,7 +182,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ghi_chu">Ghi chú</label>
-                            <textarea class="form-control @error('ghi_chu') is-invalid @enderror" 
+                            <textarea class="form-control @error('ghi_chu') is-invalid @enderror"
                                       id="ghi_chu" name="ghi_chu" rows="3" readonly>{{ old('ghi_chu', $hopDong->ghi_chu) }}</textarea>
                             @error('ghi_chu')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -200,7 +200,7 @@
                             </a>
                         </div>
                     @endif
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
                            id="file_hop_dong" name="file_hop_dong" disabled>
                     <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
                     @error('file_hop_dong')
@@ -278,7 +278,7 @@
         $('#ngay_ket_thuc').on('change', function() {
             var ngayBatDau = new Date($('#ngay_bat_dau').val());
             var ngayKetThuc = new Date($(this).val());
-            
+
             if (ngayKetThuc < ngayBatDau) {
                 alert('Ngày kết thúc phải sau ngày bắt đầu');
                 $(this).val('');
@@ -294,4 +294,4 @@
         });
     });
 </script>
-@endsection 
+@endsection

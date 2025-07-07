@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Thêm phòng ban mới')
 
 @section('content')
@@ -62,7 +62,7 @@
                     </div>
                     @enderror
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="mo_ta" class="form-label fw-bold">
                         <i class="fas fa-align-left me-2 text-primary"></i>
