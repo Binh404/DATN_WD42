@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link" href="../../index.html">
+            <a class="nav-link" href=" {{route('admin.dashboard')}}">
                 <i class="mdi mdi-grid-large menu-icon"></i>
                 <span class="menu-title">Dashboard</span>
             </a>
@@ -11,17 +11,14 @@
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                 aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-floor-plan"></i>
-                <span class="menu-title">UI Elements</span>
+                <span class="menu-title">Hồ sơ</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/ui-features/buttons.html">Buttons</a>
+                    <li class="nav-item"> <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="../../pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                    <li class="nav-item"> <a class="nav-link"
-                            href="../../pages/ui-features/typography.html">Typography</a></li>
+
                 </ul>
             </div>
         </li>
@@ -29,27 +26,28 @@
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false"
                 aria-controls="form-elements">
                 <i class="menu-icon mdi mdi-card-text-outline"></i>
-                <span class="menu-title">Form elements</span>
+                <span class="menu-title">Phòng ban</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="form-elements">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="../../pages/forms/basic_elements.html">Basic
-                            Elements</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/phongban">Danh sách phòng ban</a></li>
                 </ul>
             </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
                 <i class="menu-icon mdi mdi-chart-line"></i>
-                <span class="menu-title">Charts</span>
+                <span class="menu-title">Lương</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/charts/chartjs.html">ChartJs</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Lương</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('phieuluong.index')}}">Phiếu Lương</a></li>
                 </ul>
             </div>
+
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
@@ -74,43 +72,80 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-                <i class="menu-icon mdi mdi-layers-outline"></i>
-                <span class="menu-title">Icons</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#hd" aria-expanded="false" aria-controls="hd">
+                <i class="menu-icon mdi mdi-file-document"></i>
+                <span class="menu-title">Hợp đồng</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="icons">
+            <div class="collapse" id="hd">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/icons/font-awesome.html">Font
-                            Awesome</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ttd" aria-expanded="false" aria-controls="ttd">
+                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <span class="menu-title">Tin tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ttd">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('hr.tintuyendung.index')}}">Tin đã đăng</a></li>
+
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#cttb" aria-expanded="false" aria-controls="cttb">
+                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <span class="menu-title">Thông báo</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="cttb">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}">Tuyển dụng</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#dd" aria-expanded="false" aria-controls="dd">
+                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <span class="menu-title">Duyệt đơn</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="dd">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('admin.duyetdon.tuyendung.index')}}">Tuyển dụng</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('department.donxinnghi.danhsach') }}">Xin nghỉ phép</a></li>
                 </ul>
             </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
                 <i class="menu-icon mdi mdi-account-circle-outline"></i>
-                <span class="menu-title">User Pages</span>
+                <span class="menu-title">Xin nghỉ phép</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/samples/blank-page.html">
-                            Blank Page </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/samples/error-404.html"> 404
-                        </a></li>
-                    <li class="nav-item"> <a class="nav-link" href="../../pages/samples/error-500.html"> 500
+                    <li class="nav-item"> <a class="nav-link" href="">
+                            Danh sách </a></li>
+                    {{-- <li class="nav-item"> <a class="nav-link" href="{{route('admin.duyetdon.tuyendung.index')}}"> Tuyển dụng
+                        </a></li> --}}
+                    {{-- <li class="nav-item"> <a class="nav-link" href="../../pages/samples/error-500.html"> 500
                         </a></li>
                     <li class="nav-item"> <a class="nav-link" href="../../pages/samples/login.html"> Login
                         </a></li>
                     <li class="nav-item"> <a class="nav-link" href="../../pages/samples/register.html">
-                            Register </a></li>
+                            Register </a></li> --}}
                 </ul>
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../../docs/documentation.html">
+            <a class="nav-link" href="{{route('hr.loainghiphep.index')}}">
                 <i class="menu-icon mdi mdi-file-document"></i>
-                <span class="menu-title">Documentation</span>
+                <span class="menu-title">Loại nghỉ phép </span>
             </a>
         </li>
     </ul>

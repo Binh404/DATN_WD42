@@ -25,7 +25,7 @@
             </thead>
             <tbody>
 
-                @foreach ($bangLuongNhanVien as $luongNhanVien)
+                {{-- @foreach ($bangLuongNhanVien as $luongNhanVien)
                 <tr>
                     <td>{{$luongNhanVien->bangLuong->thang}}/{{$luongNhanVien->bangLuong->nam}}</td>
                     <td>{{number_format($luongNhanVien->luong_co_ban, 0,  '.',',') }}đ</td>
@@ -41,7 +41,7 @@
                         <a href="{{ route('salary.show', $luongNhanVien->bangLuong->id) }}" class="btn btn-secondary"><i class="fas fa-eye"></i></a>
                     </td>
                 </tr>
-                @endforeach
+                @endforeach --}}
 
             </tbody>
         </table>

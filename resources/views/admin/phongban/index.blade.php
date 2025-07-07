@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh Sách Phòng Ban')
 
 @section('content')
@@ -161,9 +161,9 @@
                             </td>
                             <td class="px-4 py-3 align-middle">
                                 <div class="d-flex gap-2 justify-content-center">
-                                        <a href="/phongban/show/{{ $phongBan->id }}" 
+                                        <a href="/phongban/show/{{ $phongBan->id }}"
                                        class="btn btn-outline-primary btn-sm rounded-pill"
-                                       data-bs-toggle="tooltip" 
+                                       data-bs-toggle="tooltip"
                                        title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>

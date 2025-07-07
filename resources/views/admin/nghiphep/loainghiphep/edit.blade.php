@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Sửa Loại Nghỉ Phép')
 
 @section('content')
@@ -282,7 +282,7 @@
                         </div>
                         <div class="form-group full-width">
                             <label for="mo_ta">Mô tả</label>
-                            <textarea id="mo_ta" name="mo_ta" 
+                            <textarea id="mo_ta" name="mo_ta"
                                 placeholder="Mô tả chi tiết về loại nghỉ phép này...">{{ $loaiNghiPhep->mo_ta }}</textarea>
                             @error('mo_ta')
                                 <span class="error-message">{{ $message }}</span>
@@ -430,7 +430,7 @@
     </div>
 
     <script>
-    
+
         function resetForm() {
             document.getElementById('leaveTypeForm').reset();
             document.getElementById('co_luong').checked = true;

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Sinh phụ lục hợp đồng')
 
 @section('content')
@@ -122,4 +122,4 @@
         </div>
     </form>
 </div>
-@endsection 
+@endsection

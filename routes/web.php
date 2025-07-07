@@ -146,8 +146,8 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     });
 });
 
-// HR routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,hr'])->group(function () {
+// HR, ADMIN routes
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
@@ -228,22 +228,44 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
 
     // Admin HR - Hồ sơ nhân viên
     Route::prefix('/hoso')->group(function () {
-        Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
-        Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
-        Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
+        Route::get('/admin/hoso', [HoSoNhanVienController::class, 'indexAll'])->name('hoso.all');
+        Route::get('/admin/hoso/da-nghi', [HoSoNhanVienController::class, 'indexResigned'])->name('hoso.resigned');
+
+        Route::patch('/nghi-viec/{id}', [HoSoNhanVienController::class, 'markResigned'])->name('hoso.markResigned');
+        Route::patch('/khoi-phuc/{id}', [HoSoNhanVienController::class, 'restore'])->name('hoso.restore');
         Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
         Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
         Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
         Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
         Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
+        Route::prefix('/hoso')->group(function () {
+            Route::get('nhanvien', [HoSoNhanVienController::class, 'indexNhanVien'])->name('hoso.nhanvien');
+            Route::get('truongphong', [HoSoNhanVienController::class, 'indexTruongPhong'])->name('hoso.truongphong');
+            Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
+            Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
+            Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
+            Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+            Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
+            Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
 
 
-        // Admin HR - Thêm tk
-        Route::get('register', [RegisteredUserController::class, 'create'])
-            ->name('register');
+            // Admin HR - Thêm tk
+            Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
 
-        Route::post('register', [RegisteredUserController::class, 'store'])
-            ->name('register.store');
+            Route::post('register', [RegisteredUserController::class, 'store'])
+                ->name('register.store');
+        });
+
+        // Admin HR - Lương
+        Route::get('/luong', [LuongController::class, 'tongLuong'])->name('luong.index');
+        Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
+        Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
+        Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
+
+
+
+
     });
 
     // Admin HR - Lương

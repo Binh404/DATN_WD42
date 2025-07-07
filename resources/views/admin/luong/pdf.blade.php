@@ -1,35 +1,19 @@
-@extends('layoutsAdmin.master')
-@section('title', 'Chi tiết Phiếu lương')
-
-@push('styles')
-<style>
-@media print {
-    body * {
-        visibility: hidden;
-    }
-
-    .content, .content * {
-        visibility: visible;
-    }
-
-    .content {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    aside, header, footer, nav, .btn, .btn * {
-        display: none !important;
-    }
-}
-</style>
-@endpush
-
-@section('content')
-<div class="content-header">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 5px; }
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .text-start { text-align: left; }
+        .fw-bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="content-header">
     <div class="container-fluid">
         <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG {{ $thang }}/{{ $nam }}</h3>
     </div>
@@ -42,7 +26,7 @@
                 <tbody>
                     <tr>
                         <td rowspan="3" style="width: 22%; vertical-align: middle;">
-                            <img src="{{ $base64 }}" alt="logo" style="width: 120px; height: auto;">
+                            <img src="{{ $base64 }}" alt="logo" style="width: 118px; height: auto;">
                         </td>
                         <th class="text-start ps-3" style="width: 20%">Mã số NV:</th>
                         <td class="text-start" style="width: 20%"><span class="fw-bold bg-warning px-2">{{ $nhanVien->ma_nhan_vien ?? '---' }}</span></td>
@@ -129,7 +113,7 @@
 
 
             <!-- Buttons -->
-            <div class="d-flex justify-content-end gap-2 mt-4 no-print">
+            {{-- <div class="d-flex justify-content-end gap-2 mt-4 no-print">
                 <button onclick="window.print()" class="btn btn-primary">
                     <i class="fas fa-print"></i> In phiếu
                 </button>
@@ -137,8 +121,9 @@
                    href="{{ route('luong.pdf', ['user_id' => $nhanVien->nguoi_dung_id ?? $nhanVien->id, 'thang' => $thang, 'nam' => $nam]) }}">
                     <i class="fas fa-file-pdf"></i> Xuất PDF
                 </a>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
-@endsection
+</body>
+</html>
