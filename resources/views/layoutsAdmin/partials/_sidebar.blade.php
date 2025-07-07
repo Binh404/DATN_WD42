@@ -74,6 +74,78 @@
             </div>
         </li>
         <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#duyetdons" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                    <span class="menu-title">Duyệt đơn</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="duyetdons">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link
+                        " href="{{route('admin.duyetdon.tuyendung.index')}}">Tuyển dụng</a>
+                    </li>
+
+                    <li class="nav-item"> <a class="nav-link "
+                        href="{{ route('department.donxinnghi.danhsach') }}">Đơn nghỉ phép</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                    <span class="menu-title">Tạo đơn từ</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="taodontu">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link
+                        " href="{{ route('department.yeucautuyendung.index') }}">Yêu cầu tuyển dụng</a>
+                    </li>
+
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#captrenthongbao" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                    <span class="menu-title">Cấp trên thông báo</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="captrenthongbao">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link
+                        " href="{{route('hr.captrenthongbao.tuyendung.index')}}">Tuyển dụng</a>
+                    </li>   
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#tintuyendung" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                    <span class="menu-title">Tin tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="tintuyendung">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link
+                        " href="{{route('hr.tintuyendung.index')}}">Tin đã đăng</a>
+                    </li>   
+                </ul>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('hr.loainghiphep.index')}}" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                    <span class="menu-title">Loại nghỉ phép</span>
+            </a>
+            
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
                 <i class="menu-icon mdi mdi-layers-outline"></i>
                 <span class="menu-title">Icons</span>
