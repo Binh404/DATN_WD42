@@ -42,11 +42,11 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <th style="width: 200px;">Mã nhân viên</th>
-                                    <td>{{ $hopDong->hoSoNguoiDung->ma_nhan_vien }}</td>
+                                    <td>{{ $hopDong->hoSoNguoiDung ? $hopDong->hoSoNguoiDung->ma_nhan_vien : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Họ và tên</th>
-                                    <td>{{ $hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten }}</td>
+                                    <td>{{ $hopDong->hoSoNguoiDung ? ($hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten) : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Chức vụ</th>
@@ -102,10 +102,12 @@
                                 <tr>
                                     <th>Trạng thái hợp đồng</th>
                                     <td>
-                                        @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
+                                        @if($hopDong->trang_thai_hop_dong == 'tao_moi')
+                                            <span class="badge badge-warning">Tạo mới</span>
+                                        @elseif($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                             <span class="badge badge-success">Đang hiệu lực</span>
-                                            @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
-                                            <span class="badge badge-danger">Chưa hiệu lực</span>
+                                        @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
+                                            <span class="badge badge-info">Chưa hiệu lực</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'het_han')
                                             <span class="badge badge-danger">Hết hạn</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'huy_bo')
@@ -150,16 +152,92 @@
                         </div>
                     </div>
 
-                    @if($hopDong->file_hop_dong)
                     <div class="row mt-4">
                         <div class="col-12">
                             <h4>File hợp đồng</h4>
-                            <a href="{{ asset('storage/' . $hopDong->file_hop_dong) }}" class="btn btn-primary" target="_blank">
-                                <i class="fas fa-file-pdf"></i> Xem file hợp đồng
-                            </a>
+                            <div class="card">
+                                <div class="card-body">
+                                    @if($hopDong->duong_dan_file)
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="mr-3">
+                                                        @php
+                                                            $fileExtension = pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION);
+                                                            $iconClass = 'fas fa-file';
+                                                            if (in_array(strtolower($fileExtension), ['pdf'])) {
+                                                                $iconClass = 'fas fa-file-pdf text-danger';
+                                                            } elseif (in_array(strtolower($fileExtension), ['doc', 'docx'])) {
+                                                                $iconClass = 'fas fa-file-word text-primary';
+                                                            }
+                                                        @endphp
+                                                        <i class="{{ $iconClass }}" style="font-size: 2rem;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-1">File hợp đồng</h6>
+                                                        <p class="mb-1 text-muted">
+                                                            <small>
+                                                                <i class="fas fa-file"></i> 
+                                                                {{ basename($hopDong->duong_dan_file) }}
+                                                                @if(Storage::disk('public')->exists($hopDong->duong_dan_file))
+                                                                    | <i class="fas fa-weight-hanging"></i> 
+                                                                    {{ number_format(Storage::disk('public')->size($hopDong->duong_dan_file) / 1024, 1) }} KB
+                                                                @endif
+                                                            </small>
+                                                        </p>
+                                                        <p class="mb-0 text-muted">
+                                                            <small>
+                                                                <i class="fas fa-calendar"></i> 
+                                                                Cập nhật: {{ $hopDong->updated_at->format('d/m/Y H:i') }}
+                                                                @if($hopDong->duong_dan_file)
+                                                                    | <i class="fas fa-file"></i> 
+                                                                    {{ strtoupper(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION)) }}
+                                                                @endif
+                                                            </small>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 text-right">
+                                                <div class="btn-group-vertical">
+                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" 
+                                                       class="btn btn-primary btn-sm" 
+                                                       target="_blank"
+                                                       title="Xem file hợp đồng">
+                                                        <i class="fas fa-eye"></i> Xem file
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" 
+                                                       class="btn btn-success btn-sm" 
+                                                       download="{{ basename($hopDong->duong_dan_file) }}"
+                                                       title="Tải xuống file hợp đồng">
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </a>
+                                                    @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
+                                                    <a href="{{ route('hopdong.edit', $hopDong->id) }}" 
+                                                       class="btn btn-warning btn-sm"
+                                                       title="Cập nhật file hợp đồng">
+                                                        <i class="fas fa-edit"></i> Cập nhật file
+                                                    </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-file-excel text-muted" style="font-size: 3rem;"></i>
+                                            <h6 class="text-muted mt-2">Chưa có file hợp đồng</h6>
+                                            <p class="text-muted">File hợp đồng chưa được upload hoặc đã bị xóa.</p>
+                                            @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
+                                            <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-primary btn-sm mt-2">
+                                                <i class="fas fa-upload"></i> Upload file hợp đồng
+                                            </a>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    @endif
 
                     @if($hopDong->trang_thai_hop_dong === 'huy_bo')
                     <div class="row mt-4">
@@ -245,6 +323,21 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="btn-group">
+                                @php
+                                    $user = Auth::user();
+                                    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+                                    $canApprove = in_array('admin', $userRoles) || in_array('hr', $userRoles);
+                                    $canSign = in_array('admin', $userRoles) || in_array('hr', $userRoles);
+                                @endphp
+                                
+                                @if($hopDong->trang_thai_hop_dong == 'tao_moi' && $canApprove)
+                                <button type="button" class="btn btn-success" onclick="pheDuyetHopDong({{ $hopDong->id }})">
+                                    <i class="fas fa-check"></i> Phê duyệt
+                                </button>
+                                @endif
+                                
+                                
+                                
                                 @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
                                 <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
                                     <i class="fas fa-edit"></i> Chỉnh sửa
@@ -384,5 +477,63 @@ $(document).ready(function() {
         $(this).find('button[type="submit"]').html('<i class="fas fa-times"></i> Xác nhận hủy').prop('disabled', false);
     });
 });
+
+// Hàm phê duyệt hợp đồng
+function pheDuyetHopDong(hopDongId) {
+    if (confirm('Bạn có chắc chắn muốn phê duyệt hợp đồng này?')) {
+        $.ajax({
+            url: '{{ route("hopdong.phe-duyet", ":id") }}'.replace(':id', hopDongId),
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Phê duyệt hợp đồng thành công!');
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                var response = xhr.responseJSON;
+                if (response && response.message) {
+                    alert('Có lỗi xảy ra: ' + response.message);
+                } else {
+                    alert('Có lỗi xảy ra khi phê duyệt hợp đồng.');
+                }
+            }
+        });
+    }
+}
+
+// Hàm ký hợp đồng
+// function kyHopDong(hopDongId) {
+//     if (confirm('Bạn có chắc chắn muốn ký hợp đồng này?')) {
+//         $.ajax({
+//             url: '{{ route("hopdong.ky", ":id") }}'.replace(':id', hopDongId),
+//             type: 'POST',
+//             data: {
+//                 _token: '{{ csrf_token() }}'
+//             },
+//             success: function(response) {
+//                 if (response.status === 'success') {
+//                     alert('Ký hợp đồng thành công!');
+//                     location.reload();
+//                 } else {
+//                     alert('Có lỗi xảy ra: ' + response.message);
+//                 }
+//             },
+//             error: function(xhr) {
+//                 var response = xhr.responseJSON;
+//                 if (response && response.message) {
+//                     alert('Có lỗi xảy ra: ' + response.message);
+//                 } else {
+//                     alert('Có lỗi xảy ra khi ký hợp đồng.');
+//                 }
+//             }
+//         });
+//     }
+// }
 </script>
 @endpush 

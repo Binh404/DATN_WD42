@@ -80,6 +80,7 @@
                                 <label for="trang_thai_hop_dong">Trạng thái hợp đồng</label>
                                 <select class="form-control" id="trang_thai_hop_dong" name="trang_thai_hop_dong">
                                     <option value="">Tất cả</option>
+                                    <option value="tao_moi" {{ request('trang_thai_hop_dong') == 'tao_moi' ? 'selected' : '' }}>Tạo mới</option>
                                     <option value="hieu_luc" {{ request('trang_thai_hop_dong') == 'hieu_luc' ? 'selected' : '' }}>Hiệu lực</option>
                                     <option value="chua_hieu_luc" {{ request('trang_thai_hop_dong') == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
                                     <option value="het_han" {{ request('trang_thai_hop_dong') == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
@@ -140,8 +141,8 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $hopDong->so_hop_dong }}</td>
-                                    <td>{{ $hopDong->hoSoNguoiDung->ma_nhan_vien }}</td>
-                                    <td>{{ $hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten }}</td>
+                                    <td>{{ $hopDong->hoSoNguoiDung ? $hopDong->hoSoNguoiDung->ma_nhan_vien : 'N/A' }}</td>
+                                    <td>{{ $hopDong->hoSoNguoiDung ? ($hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten) : 'N/A' }}</td>
                                     <td>{{ $hopDong->chucVu ? $hopDong->chucVu->ten : $hopDong->chuc_vu }}</td>
                                     <td>
                                         @if($hopDong->loai_hop_dong == 'thu_viec')
@@ -164,10 +165,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
+                                        @if($hopDong->trang_thai_hop_dong == 'tao_moi')
+                                            <span class="badge badge-warning">Tạo mới</span>
+                                        @elseif($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                             <span class="badge badge-success">Hiệu lực</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
-                                            <span class="badge badge-warning">Chưa hiệu lực</span>
+                                            <span class="badge badge-info">Chưa hiệu lực</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'het_han')
                                             <span class="badge badge-danger">Hết hạn</span>
                                         @elseif($hopDong->trang_thai_hop_dong == 'huy_bo')

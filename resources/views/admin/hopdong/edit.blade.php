@@ -201,8 +201,8 @@
                         </div>
                     @endif
                     <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
-                           id="file_hop_dong" name="file_hop_dong" disabled>
-                    <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
+                           id="file_hop_dong" name="file_hop_dong">
+                    <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB. Để trống nếu muốn giữ file hiện tại.</small>
                     @error('file_hop_dong')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

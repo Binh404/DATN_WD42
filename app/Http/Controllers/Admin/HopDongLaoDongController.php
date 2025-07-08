@@ -124,17 +124,25 @@ class HopDongLaoDongController extends Controller
             'dia_diem_lam_viec' => 'required|string',
             'dieu_khoan' => 'required|string',
             'ghi_chu' => 'nullable|string',
-            'trang_thai_ky' => 'required|in:cho_ky,da_ky',
-            'file_hop_dong' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'file_hop_dong' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        ], [
+            'file_hop_dong.required' => 'Vui lòng chọn file hợp đồng.',
+            'file_hop_dong.file' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
+            'file_hop_dong.max' => 'File hợp đồng không được vượt quá 2MB.',
         ]);
 
         $data = $request->all();
 
-        // Tự động cập nhật trạng thái hợp đồng dựa trên trạng thái ký
-        if ($request->trang_thai_ky === 'da_ky') {
-            $data['trang_thai_hop_dong'] = 'dang_hieu_luc';
-        } else {
-            $data['trang_thai_hop_dong'] = 'chua_hieu_luc';
+        // Khi tạo mới hợp đồng, mặc định ở trạng thái "tạo mới"
+        $data['trang_thai_hop_dong'] = 'tao_moi';
+        $data['trang_thai_ky'] = 'cho_ky';
+
+        // Xử lý file hợp đồng
+        if ($request->hasFile('file_hop_dong')) {
+            $file = $request->file('file_hop_dong');
+            $path = $file->store('hop_dong', 'public');
+            $data['duong_dan_file'] = $path;
         }
 
         $nguoiDungId = $request->nguoi_dung_id;
@@ -196,6 +204,10 @@ class HopDongLaoDongController extends Controller
             'ghi_chu' => 'nullable|string',
             'trang_thai_ky' => 'required|in:cho_ky,da_ky',
             'file_hop_dong' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ], [
+            'file_hop_dong.file' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
+            'file_hop_dong.max' => 'File hợp đồng không được vượt quá 2MB.',
         ]);
 
         if ($hopDong->trang_thai_ky == 'da_ky' && $request->trang_thai_ky == 'cho_ky') {
@@ -211,6 +223,7 @@ class HopDongLaoDongController extends Controller
             $data['trang_thai_hop_dong'] = 'hieu_luc';
         }
 
+        // Xử lý file hợp đồng (bắt buộc)
         if ($request->hasFile('file_hop_dong')) {
             // Xóa file cũ nếu có
             if ($hopDong->duong_dan_file) {
@@ -220,6 +233,9 @@ class HopDongLaoDongController extends Controller
             $file = $request->file('file_hop_dong');
             $path = $file->store('hop_dong', 'public');
             $data['duong_dan_file'] = $path;
+        } else {
+            // Nếu không có file mới, giữ lại file cũ
+            $data['duong_dan_file'] = $hopDong->duong_dan_file;
         }
 
         $hopDong->update($data);
@@ -293,28 +309,40 @@ class HopDongLaoDongController extends Controller
         }
     }
 
-    public function kyHopDong($id)
+    public function pheDuyetHopDong($id)
     {
         $hopDong = HopDongLaoDong::findOrFail($id);
         
-        if ($hopDong->trang_thai_ky !== 'cho_ky') {
+        // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
+        $user = Auth::user();
+        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+        
+        if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Hợp đồng không ở trạng thái chờ ký'
+                'message' => 'Bạn không có quyền phê duyệt hợp đồng'
+            ], 403);
+        }
+        
+        if ($hopDong->trang_thai_hop_dong !== 'tao_moi') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hợp đồng không ở trạng thái tạo mới'
             ], 400);
         }
 
         $hopDong->update([
-            'trang_thai_ky' => 'da_ky',
-            'trang_thai_hop_dong' => 'hieu_luc',
-            'thoi_gian_ky' => Carbon::now()
+            'trang_thai_hop_dong' => 'chua_hieu_luc',
+            'trang_thai_ky' => 'cho_ky'
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Ký hợp đồng thành công'
+            'message' => 'Phê duyệt hợp đồng thành công'
         ]);
     }
+
+   
 
     public function createPhuLuc(HopDongLaoDong $hopDong)
     {

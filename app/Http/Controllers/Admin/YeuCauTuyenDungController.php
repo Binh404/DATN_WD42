@@ -155,7 +155,7 @@ class YeuCauTuyenDungController extends Controller
         }
 
         return redirect()->route('department.yeucautuyendung.index')
-            ->with('error', 'CHỉ có thể cập nhật yêu cầu đang ở trạng thái chờ duyệt!');
+            ->with('error', 'Chỉ có thể cập nhật yêu cầu đang ở trạng thái chờ duyệt!');
 
 
         
