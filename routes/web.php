@@ -156,8 +156,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
-        Route::post('/', [HopDongLaoDongController::class, 'store'])->name('store');
-        Route::get('/{id}', [HopDongLaoDongController::class, 'show'])->name('show');
+        Route::post('/store', [HopDongLaoDongController::class, 'store'])->name('store');
+        Route::get('/{id}/show', [HopDongLaoDongController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [HopDongLaoDongController::class, 'edit'])->name('edit');
         Route::put('/{id}', [HopDongLaoDongController::class, 'update'])->name('update');
         Route::delete('/{id}', [HopDongLaoDongController::class, 'destroy'])->name('destroy');
@@ -170,14 +170,22 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('phu-luc')->name('phuluc.')->group(function () {
         Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
     });
-
+    Route::prefix('phong-ban')->name('phongban.')->group(function () {
+        Route::get('/', [PhongBanController::class, 'index'])->name('index');
+        Route::get('/create', [PhongBanController::class, 'create'])->name('create');
+        Route::post('/store', [PhongBanController::class, 'store'])->name('store');
+        Route::get('/{id}/show', [PhongBanController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [PhongBanController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [PhongBanController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [PhongBanController::class, 'destroy'])->name('destroy');
+    });
     // Admin Phòng Ban
-    Route::get('/phongban', [PhongBanController::class, 'index']);
-    Route::get('/phongban/create', [PhongBanController::class, 'create']);
-    Route::post('/phongban/store', [PhongBanController::class, 'store']);
-    Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
-    Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
-    Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
+    // Route::get('/phongban', [PhongBanController::class, 'index']);
+    // Route::get('/phongban/create', [PhongBanController::class, 'create']);
+    // Route::post('/phongban/store', [PhongBanController::class, 'store']);
+    // Route::get('/phongban/show/{id}', [PhongBanController::class, 'show']);
+    // Route::get('/phongban/edit/{id}', [PhongBanController::class, 'edit']);
+    // Route::put('/phongban/update/{id}', [PhongBanController::class, 'update']);
 
     // Admin Công Việc
     // Route::get('/congviec', [CongViecController::class, 'index']);

@@ -31,7 +31,7 @@
             </a>
             <div class="collapse" id="form-elements">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="/phongban">Danh sách phòng ban</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('phongban.index')}}">Danh sách phòng ban</a></li>
                 </ul>
             </div>
         </li>

@@ -1,3 +1,11 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $nguoiDung = Auth::user();
+    $avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');
+    $ten     = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
+    $email   = $nguoiDung->email ?? 'N/A';
+@endphp
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <div class="me-3">
@@ -8,6 +16,7 @@
     <div>
       <a class="navbar-brand brand-logo" href="../index.html">
         <img src="{{asset('assets/admin/images/logo.svg' )}}" alt="logo" />
+        {{-- <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" /> --}}
       </a>
       <a class="navbar-brand brand-logo-mini" href="../index.html">
         <img src="{{asset('assets/admin/images/logo-mini.svg' )}}" alt="logo" />
@@ -149,18 +158,26 @@
       </li>
       <li class="nav-item dropdown d-none d-lg-block user-dropdown">
         <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="img-xs rounded-circle" src="{{ $nguoiDungs->hoSo->anh_dai_dien ?? 'N/A' }}" alt="Profile image" onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"> </a>
+            <img class="img-xs rounded-circle"
+                src="{{ $avatar }}"
+                onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
+                alt="Ảnh đại diện">
+        </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
           <div class="dropdown-header text-center">
-            <img class="img-md rounded-circle" src="{{ $nguoiDungs->hoSo->anh_dai_dien ?? 'N/A' }}" alt="Profile image" onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';" width="50" height="50">
-            <p class="mb-1 mt-3 fw-semibold">{{ $nguoiDungs->hoSo->ten ?? 'N/A' }}</p>
-            <p class="fw-light text-muted mb-0">{{ $nguoiDungs->email ?? 'N/A' }}</p>
+             <img class="img-md rounded-circle"
+                src="{{ $avatar }}"
+                onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
+                alt="Ảnh đại diện" width="50" height="50">
+            <p class="mb-1 mt-3 fw-semibold">{{ $ten }}</p>
+            <p class="fw-light text-muted mb-0">{{ $email }}</p>
           </div>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
           {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a> --}}
-          <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
+          <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
+
         </div>
       </li>
     </ul>
@@ -169,3 +186,6 @@
     </button>
   </div>
 </nav>
+<form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">
+  @csrf
+</form>
