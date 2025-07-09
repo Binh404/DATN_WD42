@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
@@ -97,14 +97,14 @@
                             <td class="px-4 py-3 align-middle">
                                 <span>{{ $item->chucVu->ten ?? 'Không có chức vụ' }}</span>
                             </td>
-                            
+
 
                             <td class="px-4 py-3 align-middle">
                                 @if($item->trang_thai == 'cho_duyet')
                                 <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2">
                                     Chờ duyệt
                                 </span>
-                                
+
                                 @elseif($item->trang_thai === 'da_duyet')
                                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
                                     <i class="fas fa-times-circle me-1"></i>Đã duyệt
@@ -113,12 +113,12 @@
                                 <span class="badge bg-danger text-light px-3 py-2">
                                     <i class="fas fa-times-circle me-1"></i> Bị từ chối
                                 </span>
-                                
+
                                 @elseif($item->trang_thai === 'huy_bo')
                                 <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
                                     <i class="fas fa-times-circle me-1"></i>Đã hủy
                                 </span>
-                                
+
                                 @endif
                             </td>
                             <td class="px-4 py-3 align-middle">
@@ -135,7 +135,7 @@
                                         <button class="btn btn-warning btn-sm">Xem chi tiết</button>
                                     </a>
 
-                                    
+
                                 </div>
                             </td>
                         </tr>

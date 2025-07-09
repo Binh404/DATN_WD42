@@ -402,7 +402,7 @@ Route::prefix('homepage')->group(function () {
 // Admin
 Route::prefix('admin')->name('admin.')->group(function () {
     // đơn yêu cầu tuyển dụng
-    Route::get('duyetdon/tuyendung', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('duyetdon.tuyendung.index');
+    Route::get('duyetdon/tuyendung.index', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('duyetdon.tuyendung.index');
     Route::get('duyetdon/tuyendung/{id}', [DuyetDonTuController::class, 'show'])->name('duyetdon.tuyendung.show');
     Route::post('duyetdon/tuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('duyetdon.tuyendung.duyet');
     Route::post('duyetdon/tuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('duyetdon.tuyendung.tuchoi');
@@ -462,18 +462,18 @@ Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
 
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])->group(function () {
     // Hr Ứng Tuyển
-    Route::get('/ungvien', [UngTuyenController::class, 'index'])->name('ungvien.index');
+    Route::get('/ungvien.index', [UngTuyenController::class, 'index'])->name('ungvien.index');
     Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');
     Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
     Route::get('/ungvien/luu-tru', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
     Route::post('/ungvien/phe-duyet', [UngTuyenController::class, 'pheDuyet'])->name('ungvien.phe-duyet');
     Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
-    Route::get('/ungvien/show/{id}', [UngTuyenController::class, 'show']);
+    Route::get('/ungvien/{id}/show', [UngTuyenController::class, 'show'])->name('ungvien.show');
     Route::post('/ungvien/{id}/diem-danh-gia', [UngTuyenController::class, 'luuDiemDanhGia'])->name('ungvien.luudiemdanhgia');
     Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
     Route::post('/ungvien/{id}/cap-nhat-diem-phong-van', [UngTuyenController::class, 'capNhatDiemPhongVan'])->name('ungvien.capnhatdiemphongvan');
-    Route::get('/ungvien/emaildagui', [UngTuyenController::class, 'emailDaGui']);
-    Route::get('/ungvien/trung-tuyen', [UngTuyenController::class, 'danhSachTrungTuyen']);
+    Route::get('/ungvien/emaildagui', [UngTuyenController::class, 'emailDaGui'])->name('ungvien.emaildagui');
+    Route::get('/ungvien/trung-tuyen', [UngTuyenController::class, 'danhSachTrungTuyen'])->name('ungvien.trung-tuyen');
 
     // Route Gửi Email Phỏng Vấn N8N
     Route::post('/ungvien/guiemailall', [UngTuyenController::class, 'guiEmailAll']);

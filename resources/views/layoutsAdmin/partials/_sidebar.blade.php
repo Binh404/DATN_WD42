@@ -2,15 +2,15 @@
     <ul class="nav">
         <li class="nav-item">
             <a class="nav-link" href=" {{route('admin.dashboard')}}">
-                <i class="mdi mdi-grid-large menu-icon"></i>
-                <span class="menu-title">Dashboard</span>
+                <i class="mdi mdi-view-dashboard-outline menu-icon"></i>
+                <span class="menu-title">Thống kê</span>
             </a>
         </li>
         <li class="nav-item nav-category">UI Elements</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                 aria-controls="ui-basic">
-                <i class="menu-icon mdi mdi-floor-plan"></i>
+                <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
                 <span class="menu-title">Hồ sơ</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -25,7 +25,7 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false"
                 aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-card-text-outline"></i>
+                <i class="menu-icon mdi mdi-office-building-outline"></i>
                 <span class="menu-title">Phòng ban</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -72,6 +72,22 @@
             </div>
         </li>
         <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#uv" aria-expanded="false" aria-controls="uv">
+                <i class="menu-icon mdi mdi-account-multiple"></i>
+                <span class="menu-title">Ứng viên</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="uv">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('ungvien.index')}}">Ứng viên</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('ungvien.phong-van')}}">Gửi email phỏng vấn</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('ungvien.emaildagui')}}">Danh sách email đã gửi</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('ungvien.trung-tuyen')}}">Trúng tuyển</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('ungvien.luu-tru')}}">Lưu trữ</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#hd" aria-expanded="false" aria-controls="hd">
                 <i class="menu-icon mdi mdi-file-document"></i>
                 <span class="menu-title">Hợp đồng</span>
@@ -85,7 +101,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ttd" aria-expanded="false" aria-controls="ttd">
-                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <i class="menu-icon mdi mdi-briefcase-search-outline"></i>
                 <span class="menu-title">Tin tuyển dụng</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -98,7 +114,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#cttb" aria-expanded="false" aria-controls="cttb">
-                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <i class="menu-icon mdi mdi-bell-outline"></i>
                 <span class="menu-title">Thông báo</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -108,9 +124,10 @@
                 </ul>
             </div>
         </li>
+
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#dd" aria-expanded="false" aria-controls="dd">
-                <i class="menu-icon mdi mdi-layers-outline"></i>
+                <i class="menu-icon mdi mdi-clipboard-check-outline"></i>
                 <span class="menu-title">Duyệt đơn</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -123,7 +140,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="menu-icon mdi mdi-account-circle-outline"></i>
+                <i class="menu-icon mdi mdi-calendar-remove-outline"></i>
                 <span class="menu-title">Xin nghỉ phép</span>
                 <i class="menu-arrow"></i>
             </a>
@@ -144,7 +161,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{route('hr.loainghiphep.index')}}">
-                <i class="menu-icon mdi mdi-file-document"></i>
+                <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
                 <span class="menu-title">Loại nghỉ phép </span>
             </a>
         </li>

@@ -14,24 +14,25 @@
       </button>
     </div>
     <div>
-      <a class="navbar-brand brand-logo" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo.svg' )}}" alt="logo" />
-        {{-- <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" /> --}}
+      <a class="navbar-brand brand-logo" href="{{route('admin.dashboard')}}">
+        {{-- <img src="{{asset('assets/admin/images/logo.png' )}}" alt="logo" /> --}}
+        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" />
+        <span class="text-dark fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
       </a>
-      <a class="navbar-brand brand-logo-mini" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo-mini.svg' )}}" alt="logo" />
+      <a class="navbar-brand brand-logo-mini" href="{{route('admin.dashboard')}}">
+        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" class="rounded-circle" />
       </a>
     </div>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-top">
-    <ul class="navbar-nav">
+    {{-- <ul class="navbar-nav">
       <li class="nav-item fw-semibold d-none d-lg-block ms-0">
         <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
         <h3 class="welcome-sub-text">Your performance summary this week </h3>
       </li>
-    </ul>
+    </ul> --}}
     <ul class="navbar-nav ms-auto">
-      <li class="nav-item dropdown d-none d-lg-block">
+      {{-- <li class="nav-item dropdown d-none d-lg-block">
         <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Select Category </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
           <a class="dropdown-item py-3">
@@ -63,7 +64,7 @@
             </div>
           </a>
         </div>
-      </li>
+      </li> --}}
       <li class="nav-item d-none d-lg-block">
         <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
           <span class="input-group-addon input-group-prepend border-right">
@@ -75,7 +76,7 @@
       <li class="nav-item">
         <form class="search-form" action="#">
           <i class="icon-search"></i>
-          <input type="search" class="form-control" placeholder="Search Here" title="Search here">
+          <input type="search" class="form-control" placeholder="Tìm kiếm ..." title="Search here">
         </form>
       </li>
       <li class="nav-item dropdown">
@@ -117,7 +118,7 @@
           </a>
         </div>
       </li>
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="icon-mail icon-lg"></i>
         </a>
@@ -155,7 +156,7 @@
             </div>
           </a>
         </div>
-      </li>
+      </li> --}}
       <li class="nav-item dropdown d-none d-lg-block user-dropdown">
         <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
             <img class="img-xs rounded-circle"
