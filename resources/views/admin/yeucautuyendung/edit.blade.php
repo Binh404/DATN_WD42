@@ -183,6 +183,182 @@
         </div>
     </div>
 
+    <script>
+        function validateForm(event) {
+            const ma = document.getElementById('ma').value.trim();
+            const soLuong = document.getElementById('so_luong').value.trim();
+            const chucVu = document.getElementById('chuc_vu_id').value.trim();
+            const loaiHopDong = document.getElementById('loai_hop_dong').value.trim();
+            const trinhDoHocVan = document.getElementById('trinh_do_hoc_van').value.trim();
+            const luongToiThieu = document.getElementById('luong_toi_thieu').value.trim();
+            const luongToiDa = document.getElementById('luong_toi_da').value.trim();
+            const kinhNghiemToiThieu = document.getElementById('kinh_nghiem_toi_thieu').value.trim();
+            const kinhNghiemToiDa = document.getElementById('kinh_nghiem_toi_da').value.trim();
+            const moTa = document.getElementById('mo_ta_cong_viec').value.trim();
+            const yeuCau = document.getElementById('yeu_cau').value.trim();
+            const kyNangYeuCau = document.getElementById('ky_nang_yeu_cau').value.trim();
+
+            // Xóa lỗi cũ
+            document.querySelectorAll('.validation-error').forEach(e => e.remove());
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.style.border = '';
+            });
+
+            let isValid = true;
+
+            // Validate mã (bắt buộc, ít nhất 3 ký tự)
+            if (ma === '') {
+                showValidationError('ma', 'Mã yêu cầu không được để trống');
+                isValid = false;
+            } else if (ma.length < 3) {
+                showValidationError('ma', 'Mã yêu cầu phải có ít nhất 3 ký tự');
+                isValid = false;
+            }
+
+            // Validate số lượng (bắt buộc, số nguyên > 0)
+            if (soLuong === '') {
+                showValidationError('so_luong', 'Số lượng không được để trống');
+                isValid = false;
+            } else if (isNaN(soLuong) || parseInt(soLuong) <= 0) {
+                showValidationError('so_luong', 'Số lượng phải là số nguyên lớn hơn 0');
+                isValid = false;
+            }
+
+            // Validate loại hợp đồng (bắt buộc)
+            if (loaiHopDong === '') {
+                showValidationError('loai_hop_dong', 'Vui lòng chọn loại hợp đồng');
+                isValid = false;
+            }
+
+            if (chucVu === '') {
+                showValidationError('chuc_vu_id', 'Vui lòng chọn chức vụ');
+                isValid = false;
+            }
+
+            if (trinhDoHocVan === '') {
+                showValidationError('trinh_do_hoc_van', 'Vui lòng chọn trình độ học vấn');
+                isValid = false;
+            }
+
+            // Validate lương (nếu có nhập thì phải hợp lệ)
+            if (luongToiThieu !== '' && (isNaN(luongToiThieu) || parseFloat(luongToiThieu) < 0)) {
+                showValidationError('luong_toi_thieu', 'Lương tối thiểu phải là số không âm');
+                isValid = false;
+            } else if (luongToiThieu === '') {
+                showValidationError('luong_toi_thieu', 'Vui lòng điền lương tối thiểu');
+                isValid = false;
+            }
+
+            if (luongToiDa !== '' && (isNaN(luongToiDa) || parseFloat(luongToiDa) < 0)) {
+                showValidationError('luong_toi_da', 'Lương tối đa phải là số không âm');
+                isValid = false;
+            } else if (luongToiDa === '') {
+                showValidationError('luong_toi_thieu', 'Vui lòng điền lương tối đa');
+                isValid = false;
+            }
+
+            // Validate range lương (nếu cả 2 đều có giá trị)
+            if (luongToiThieu !== '' && luongToiDa !== '' &&
+                !isNaN(luongToiThieu) && !isNaN(luongToiDa) &&
+                parseFloat(luongToiThieu) >= parseFloat(luongToiDa)) {
+                showValidationError('luong_toi_da', 'Lương tối đa phải lớn hơn lương tối thiểu');
+                isValid = false;
+            }
+
+            // Validate kinh nghiệm (nếu có nhập thì phải hợp lệ)
+            if (kinhNghiemToiThieu !== '' && (isNaN(kinhNghiemToiThieu) || parseFloat(kinhNghiemToiThieu) < 0)) {
+                showValidationError('kinh_nghiem_toi_thieu', 'Kinh nghiệm tối thiểu phải là số không âm');
+                isValid = false;
+            } else if (kinhNghiemToiThieu === '') {
+                showValidationError('kinh_nghiem_toi_thieu', 'Vui lòng điền kinh nghiệm tối thiểu');
+                isValid = false;
+            }
+
+            if (kinhNghiemToiDa !== '' && (isNaN(kinhNghiemToiDa) || parseFloat(kinhNghiemToiDa) < 0)) {
+                showValidationError('kinh_nghiem_toi_da', 'Kinh nghiệm tối đa phải là số không âm');
+                isValid = false;
+            } else if (kinhNghiemToiDa === '') {
+                showValidationError('kinh_nghiem_toi_da', 'Vui lòng điền kinh nghiệm tối đa');
+                isValid = false;
+            }
+
+            // Validate range kinh nghiệm (nếu cả 2 đều có giá trị)
+            if (kinhNghiemToiThieu !== '' && kinhNghiemToiDa !== '' &&
+                !isNaN(kinhNghiemToiThieu) && !isNaN(kinhNghiemToiDa) &&
+                parseFloat(kinhNghiemToiThieu) >= parseFloat(kinhNghiemToiDa)) {
+                showValidationError('kinh_nghiem_toi_da', 'Kinh nghiệm tối đa phải lớn hơn kinh nghiệm tối thiểu');
+                isValid = false;
+            }
+
+            if (moTa === '') {
+                showValidationError('mo_ta_cong_viec', 'Vui lòng điền mô tả công việc');
+                isValid = false;
+            }
+
+            if (yeuCau === '') {
+                showValidationError('yeu_cau', 'Vui lòng điền yêu cầu');
+                isValid = false;
+            }
+
+            if (kyNangYeuCau === '') {
+                showValidationError('ky_nang_yeu_cau', 'Vui lòng điền kỹ năng yêu cầu');
+                isValid = false;
+            }
+
+            // Scroll to first error if any
+            if (!isValid) {
+                event.preventDefault();
+                const firstError = document.querySelector('.validation-error');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }
+
+            return isValid;
+        }
+
+        function showValidationError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+
+            const error = document.createElement('div');
+            error.className = 'validation-error';
+            error.style.color = '#dc3545';
+            error.style.fontSize = '0.875rem';
+            error.style.marginTop = '0.25rem';
+            error.style.display = 'block';
+            error.textContent = message;
+
+            field.parentNode.appendChild(error);
+            field.style.border = '1px solid #dc3545';
+        }
+
+        // Thêm event listener để xóa lỗi khi user nhập lại
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['ma', 'so_luong', 'chuc_vu_id', 'loai_hop_dong', 'trinh_do_hoc_van',
+                'luong_toi_thieu', 'luong_toi_da', 'kinh_nghiem_toi_thieu', 'kinh_nghiem_toi_da',
+                'mo_ta_cong_viec', 'yeu_cau', 'ky_nang_yeu_cau'
+            ];
+
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        // Xóa lỗi của field hiện tại
+                        const error = this.parentNode.querySelector('.validation-error');
+                        if (error) {
+                            error.remove();
+                            this.style.border = '';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
 
     <style>
         .error-message {
