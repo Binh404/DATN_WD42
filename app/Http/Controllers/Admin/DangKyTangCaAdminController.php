@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DangKyTangCa;
 use App\Models\PhongBan;
+use App\Models\thucHienTangCa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class DangKyTangCaAdminController extends Controller
 {
      public function index(Request $request) {
-        // dd();
+        // dd(request()->all());
         try {
             // Get filter parameters
             $search = $request->get('search');
@@ -41,13 +42,16 @@ class DangKyTangCaAdminController extends Controller
                 });
             }
 
-            // Filter by department
-            if (!empty($phongBan)) {
-                $query->whereHas('nguoiDung', function ($q) use ($phongBan) {
-                    $q->where('phong_ban_id', $phongBan);
+            /// Tìm kiếm theo phòng ban
+            if ($request->filled('phong_ban_id')) {
+                $query->whereHas('nguoiDung', function ($q) use ($request) {
+                    $q->where('phong_ban_id', $request->get('phong_ban_id'));
                 });
             }
-
+            // Tìm kiếm theo ngày cụ thể
+            if ($request->filled('ngay_tang_ca')) {
+                $query->where('ngay_tang_ca', $request->get('ngay_tang_ca'));
+            }
             // Filter by date range
             if (!empty($tuNgay)) {
                 $query->where('ngay_tang_ca', '>=', $tuNgay);
@@ -59,7 +63,7 @@ class DangKyTangCaAdminController extends Controller
             if (!empty($trangThaiDuyet)) {
                 $query->where('trang_thai', $trangThaiDuyet);
             }
-
+            $soLuongDangKyTangCa = $query->count();
             // Order by latest first
             $query->orderBy('ngay_tang_ca', 'desc')
                   ->orderBy('created_at', 'desc');
@@ -69,8 +73,9 @@ class DangKyTangCaAdminController extends Controller
             // dd($pheDuyet);
             // Get departments for filter dropdown
             $phongBans = PhongBan::orderBy('ten_phong_ban')->get();
-
-            return view('admin.cham-cong.pheDuyetTangCa', compact('donTangCa', 'phongBans'));
+            $trangThaiDuyets = DangKyTangCa::TRANG_THAI;
+            // dd($trangThaiDuyets);
+            return view('admin.cham-cong.phe_duyet_tang_ca.index', compact('donTangCa', 'phongBans','soLuongDangKyTangCa','trangThaiDuyets'));
 
         } catch (\Exception $e) {
             Log::error('Error in PheDuyetController@index: ' . $e->getMessage());
@@ -95,7 +100,7 @@ class DangKyTangCaAdminController extends Controller
             //     return back()->with('error', 'Bạn không có quyền xem đăng ký này');
             // }
 
-            return view('admin.cham-cong.showDonTangCa', compact('dangKyTangCa'));
+            return view('admin.cham-cong.phe_duyet_tang_ca.show', compact('dangKyTangCa'));
 
         } catch (\Exception $e) {
             Log::error('Error in DangKyTangCaController@show: ' . $e->getMessage());
@@ -106,6 +111,10 @@ class DangKyTangCaAdminController extends Controller
         // dd($request->all());
         $dangKyTangCa = DangKyTangCa::where('id', $id)->first();
         // $trangThai = $dangKyTangCa->trang_thai;
+        $thucHienTangCa = thucHienTangCa::where('dang_ky_tang_ca_id', $id)->first();
+        if(!empty($thucHienTangCa)){
+            return back()->with('error', 'Đăng ký tăng ca ngày ' .$dangKyTangCa->ngay_tang_ca->format('d/m/Y').' đã thực hiện chấm công không thể thay đổi');
+        }
         $validated = $request->validate([
             'trang_thai' => 'required',
             'ly_do_tu_choi' => 'nullable|string'
@@ -168,7 +177,6 @@ class DangKyTangCaAdminController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        // dd($request->all());
         try {
             $validator = Validator::make($request->all(), [
                 'ids' => 'required|json',
@@ -177,68 +185,54 @@ class DangKyTangCaAdminController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dữ liệu không hợp lệ!'
-                ], 400);
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()], 400);
             }
 
             $ids = json_decode($request->ids, true);
-            $action = $request->action;
-            $reason = $request->reason;
-
             if (empty($ids) || !is_array($ids)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không có bản ghi nào được chọn!'
-                ], 400);
+                return response()->json(['success' => false, 'message' => 'Không có bản ghi nào được chọn!'], 400);
+            }
+
+            // Check if any records have been processed
+            if (ThucHienTangCa::whereIn('dang_ky_tang_ca_id', $ids)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Có đăng ký tăng ca đã chấm công, không thể thay đổi!'], 400);
             }
 
             DB::beginTransaction();
 
-            // if ($action === 'delete') {
-            //     // Bulk delete
-            //     $deletedCount = DangKyTangCa::whereIn('id', $ids)->delete();
-            //     $message = "Đã xóa {$deletedCount} bản ghi thành công!";
-            // } else {
-                // Bulk approve/reject
+            $actionTextMap = [
+                'da_duyet' => 'phê duyệt',
+                'tu_choi' => 'từ chối',
+                'huy' => 'hủy',
+                'delete' => 'xóa'
+            ];
+
+            if ($request->action === 'delete') {
+                $count = DangKyTangCa::whereIn('id', $ids)->delete();
+                $message = "Đã xóa {$count} bản ghi thành công!";
+            } else {
                 $updateData = [
-                    'trang_thai' =>  $action,
+                    'trang_thai' => $request->action,
                     'thoi_gian_duyet' => now(),
                     'nguoi_duyet_id' => auth()->id()
                 ];
 
-                if (($action == 'tu_choi' && $reason) || ($action == 'hủy' && $reason)) {
-                    $updateData['ly_do_tu_choi'] = $reason;
+                if (in_array($request->action, ['tu_choi', 'huy']) && $request->reason) {
+                    $updateData['ly_do_tu_choi'] = $request->reason;
                 }
 
-                $updatedCount = DangKyTangCa::whereIn('id', $ids)->update($updateData);
-
-                // $actionText = $action == 1 ? 'phê duyệt' : 'từ chối';
-                if($action == 'tu_choi'){
-                    $actionText = 'từ chối';
-                }elseif($action == 'da_duyet'){
-                    $actionText = 'phê duyệt';
-                }else{
-                    $actionText = 'hủy';
-                }
-                $message = "Đã {$actionText} {$updatedCount} bản ghi thành công!";
-            // }
+                $count = DangKyTangCa::whereIn('id', $ids)->update($updateData);
+                $message = "Đã {$actionTextMap[$request->action]} {$count} bản ghi thành công!";
+            }
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => $message
-            ]);
+            return response()->json(['success' => true, 'message' => $message]);
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error in PheDuyetController@bulkAction: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
+            Log::error('PheDuyetController@bulkAction: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Lỗi hệ thống, vui lòng thử lại!'], 500);
         }
     }
 }

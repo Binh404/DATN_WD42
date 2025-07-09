@@ -58,7 +58,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route('taikhoan.index')}}" class="nav-link">
+              {{-- <a href="{{route('taikhoan.index')}}" class="nav-link"> --}}
                 <i class="far fa-circle nav-icon"></i>
                 <p>Danh sách</p>
               </a>
@@ -80,48 +80,19 @@
         </li>
 
         <!-- People Management Section -->
-        <li class="nav-item">
+        <li class="nav-item ">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>Hồ sơ <i class="fas fa-angle-left right"></i></p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="/hoso/giamdoc" class="nav-link">
+              <a href="/hoso/admin/hoso" class="nav-link ">
                 <i class="far fa-circle nav-icon"></i>
-                <p>giám đốc</p>
+                <p>Hồ sơ</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="/hoso/truongphong" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>trưởng phòng</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/hoso/nhanvien" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Nhân viên</p>
-              </a>
-            </li>
-            {{-- <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Org Chart</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Teams</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Vendors</p>
-              </a>
-            </li> --}}
+
           </ul>
         </li>
 
@@ -139,17 +110,12 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.chamcong.danhSachTangCa')}}" class="nav-link">
+              <a href="{{ route('admin.chamcong.tangCa.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Danh sách tăng ca</p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.chamcong.xemPheDuyet')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Phê duyệt</p>
-              </a>
-            </li>
+
             <li class="nav-item">
               <a href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -162,140 +128,11 @@
                 <p>Quản lý vị trí</p>
               </a>
             </li>
-            {{-- <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Timeline</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Leaves</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>My Leaves</p>
-              </a>
-            </li> --}}
+
           </ul>
         </li>
 
-        <!-- Payments Section -->
-        {{-- <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-database"></i>
-            <p>Thanh toán <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Lương</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Org Chart</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Teams</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Vendors</p>
-              </a>
-            </li>
-          </ul>
-        </li> --}}
 
-        <!-- Settings Section -->
-        {{-- <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-cog"></i>
-            <p>Cài đặt <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Documents</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Branches</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Departments</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Designations</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Vendor Categories</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Leave Management</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Skills</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Platform Settings</p>
-              </a>
-            </li>
-          </ul>
-        </li> --}}
-
-        <!-- Help Section -->
-        {{-- <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-calendar-alt"></i>
-            <p>Trợ giúp <i class="right fas fa-angle-left"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Liên hệ</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>FAQ's</p>
-              </a>
-            </li>
-             </ul>
-        </li> --}}
 
             <!-- Phân quyền Section -->
         <li class="nav-item">
@@ -309,13 +146,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vai trò và quyền</p>
               </a>
-            </li>
-            {{-- <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>FAQ's</p>
-              </a>
-            </li> --}}
+
           </ul>
         </li>
 
@@ -332,18 +163,7 @@
                 <p>Quản lý phòng ban</p>
               </a>
             </li>
-            <!-- <li class="nav-item">
-              <a href="/congviec" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Quản lý công việc</p>
-              </a>
-            </li> -->
-            <!-- <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Báo cáo phòng ban</p>
-              </a>
-            </li> -->
+
           </ul>
         </li>
 
@@ -391,22 +211,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>Quản lý hợp đồng</p>
               </a>
-              <!-- <a href="/ungvien/phong-van" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Gửi email phỏng vấn</p>
-              </a>
-              <a href="/ungvien/emaildagui" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách email đã gửi</p>
-              </a>
-              <a href="/ungvien/trung-tuyen" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Trúng tuyển</p>
-              </a>
-              <a href="/ungvien/luu-tru" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Lưu trữ</p>
-              </a> -->
+
             </li>
           </ul>
         </li>

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 
 @section('title', 'Chi tiết hợp đồng')
 
@@ -253,13 +253,13 @@
                                     $user = Auth::user();
                                     $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
                                     $canCancel = in_array('admin', $userRoles) || in_array('hr', $userRoles);
-                                    
+
                                     // Kiểm tra điều kiện hủy hợp đồng
-                                    $canCancelContract = $canCancel && 
+                                    $canCancelContract = $canCancel &&
                                         $hopDong->trang_thai_hop_dong !== 'het_han' ;
                                 @endphp
                                 @if($canCancel)
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#huyHopDongModal" 
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#huyHopDongModal"
                                         {{ !$canCancelContract ? 'disabled' : '' }}>
                                     <i class="fas fa-times"></i> Hủy hợp đồng
                                 </button>
@@ -278,7 +278,7 @@
                                 @else
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
-                                    <strong>Lưu ý:</strong> 
+                                    <strong>Lưu ý:</strong>
                                     @if($hopDong->trang_thai_hop_dong == 'huy_bo')
                                         Hợp đồng này đã được hủy và không thể chỉnh sửa.
                                     @elseif($hopDong->trang_thai_hop_dong == 'het_han')
@@ -320,11 +320,11 @@
                     @endif
                     <div class="form-group">
                         <label for="ly_do_huy">Lý do hủy <span class="text-danger">*</span></label>
-                        <textarea class="form-control @error('ly_do_huy') is-invalid @enderror" 
-                                  id="ly_do_huy" 
-                                  name="ly_do_huy" 
-                                  rows="4" 
-                                  placeholder="Nhập lý do hủy hợp đồng..." 
+                        <textarea class="form-control @error('ly_do_huy') is-invalid @enderror"
+                                  id="ly_do_huy"
+                                  name="ly_do_huy"
+                                  rows="4"
+                                  placeholder="Nhập lý do hủy hợp đồng..."
                                   required>{{ old('ly_do_huy') }}</textarea>
                         @error('ly_do_huy')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -355,29 +355,29 @@ $(document).ready(function() {
     @if($errors->any())
         $('#huyHopDongModal').modal('show');
     @endif
-    
+
     // Xử lý form hủy hợp đồng
     $('#huyHopDongModal form').on('submit', function(e) {
         var lyDoHuy = $('#ly_do_huy').val().trim();
-        
+
         if (!lyDoHuy) {
             e.preventDefault();
             $('#ly_do_huy').addClass('is-invalid');
             $('#ly_do_huy').focus();
             return false;
         }
-        
+
         // Hiển thị loading khi submit
         $(this).find('button[type="submit"]').html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...').prop('disabled', true);
     });
-    
+
     // Xóa lỗi validation khi user nhập
     $('#ly_do_huy').on('input', function() {
         if ($(this).val().trim()) {
             $(this).removeClass('is-invalid');
         }
     });
-    
+
     // Reset form khi đóng modal
     $('#huyHopDongModal').on('hidden.bs.modal', function() {
         $('#ly_do_huy').val('').removeClass('is-invalid');
@@ -385,4 +385,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endpush 
+@endpush
