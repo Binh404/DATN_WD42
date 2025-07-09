@@ -1,64 +1,10 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(45deg,
-                    transparent,
-                    transparent 10px,
-                    rgba(255, 255, 255, 0.05) 10px,
-                    rgba(255, 255, 255, 0.05) 20px);
-            animation: float 20s linear infinite;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
+        a {
+            text-decoration: none;
         }
 
         .stats {
@@ -97,7 +43,7 @@
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 1rem;
             font-weight: bold;
             margin-bottom: 10px;
         }
@@ -106,255 +52,6 @@
             color: #666;
             font-size: 1rem;
         }
-
-        .filters {
-            padding: 20px 30px;
-            background: rgba(255, 255, 255, 0.7);
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            color: #555;
-        }
-
-        select,
-        input {
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        select:focus,
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .requests-list {
-            padding: 30px;
-        }
-
-        .request-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border-left: 5px solid #e0e0e0;
-        }
-
-        .request-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        }
-
-        .request-card.pending {
-            border-left-color: #f39c12;
-        }
-
-        .request-card.approved {
-            border-left-color: #27ae60;
-        }
-
-        .request-card.rejected {
-            border-left-color: #e74c3c;
-        }
-
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .employee-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .employee-details h3 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .employee-details p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background: #ffeaa7;
-            color: #d63031;
-        }
-
-        .status-approved {
-            background: #00b894;
-            color: white;
-        }
-
-        .status-rejected {
-            background: #d63031;
-            color: white;
-        }
-
-        .request-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
-        }
-
-        .detail-value {
-            color: #333;
-            font-size: 1rem;
-        }
-
-        .request-reason {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .reason-label {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
-        }
-
-        .reason-text {
-            color: #333;
-            line-height: 1.5;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btnn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btnn-approve {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btnn-approve:hover {
-            background: #219a52;
-            transform: translateY(-2px);
-        }
-
-        .btnn-reject {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btnn-reject:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        .btnn-view {
-            background: #3498db;
-            color: white;
-        }
-
-        .btnn-view:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .btnn-disabled {
-            background: #bdc3c7;
-            color: #7f8c8d;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .request-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .request-details {
-                grid-template-columns: 1fr;
-            }
-        }
-
 
         .modal {
             display: none;
@@ -421,51 +118,30 @@
         }
     </style>
 
-    <div class="container">
-        <div class="header">
-            <h1>🏢 Duyệt đơn</h1>
-            <p>Quản lý đơn xin nghỉ phép</p>
-        </div>
+    <div class="container-fluid px-4">
 
-        <div class="stats">
-            <div class="stat-card pending">
-                <div class="stat-number">{{ $soDonChuaDuyet }}</div>
-                <div class="stat-label">Chờ duyệt</div>
+        <div class="row align-items-center mb-4">
+            <div class="col-md-4">
+                <h2 class="fw-bold text-primary mb-0">
+                    Duyệt đơn
+                </h2>
             </div>
-            <div class="stat-card approved">
-                <div class="stat-number">{{ $thongKe['da_duyet'] ?? 0 }}</div>
-                <div class="stat-label">Đã duyệt</div>
-            </div>
-            <div class="stat-card rejected">
-                <div class="stat-number">{{ $thongKe['tu_choi'] ?? 0 }}</div>
-                <div class="stat-label">Từ chối</div>
-            </div>
-        </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label>Trạng thái:</label>
-                <select>
-                    <option value="all">Tất cả</option>
-                    <option value="pending">Chờ duyệt</option>
-                    <option value="approved">Đã duyệt</option>
-                    <option value="rejected">Từ chối</option>
-                </select>
+            <div class="col-md-5">
+                <form method="GET" action="/yeu$yeuCauTuyenDung">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" name="search"
+                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
+                        <button class="btn btn-outline-primary" type="submit">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="filter-group">
-                <label>Phòng ban:</label>
-                <select>
-                    <option value="all">Tất cả</option>
-                    <option value="IT">IT</option>
-                    <option value="HR">HR</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Sales">Sales</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Tìm kiếm:</label>
-                <input type="text" placeholder="Tên nhân viên...">
-            </div>
+
         </div>
 
         @if (session('success'))
@@ -478,91 +154,161 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="requests-list">
-            @foreach ($donXinNghis as $item)
-                <div class="request-card approved">
-                    <div class="request-header">
-                        <div class="employee-info">
-                            <div class="avatar">NVA</div>
-                            <div class="employee-details">
-                                <h3>{{ $item->nguoiDung->hoSo->ho . ' ' . $item->nguoiDung->hoSo->ten }}</h3>
-                                <p>{{ $item->nguoiDung->phongBan->ten_phong_ban . ' - ' . $item->nguoiDung->hoSo->ma_nhan_vien }}
-                                </p>
-                            </div>
-                        </div>
 
-                        @php
-                            $ketQua = $item->ketQuaDuyetTheoCap($vaiTro->ten === 'hr' ? 2 : 1);
-                        @endphp
-
-                        @if ($ketQua === 'da_duyet')
-                            <div class="status-badge status-approved">
-                                Đã duyệt
-                            </div>
-                        @elseif ($ketQua === 'tu_choi')
-                            <div class="status-badge status-rejected">
-                                Từ chối
-                            </div>
-                        @else
-                            <div class="status-badge status-pending">
-                                Chờ duyệt
-                            </div>
-                        @endif
-
-                    </div>
-
-                    <div class="request-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Loại nghỉ</div>
-                            <div class="detail-value">{{ $item->loaiNghiPhep->ten }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Từ ngày</div>
-                            <div class="detail-value">{{ $item->ngay_bat_dau->format('d/m/Y') }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Đến ngày</div>
-                            <div class="detail-value">{{ $item->ngay_ket_thuc->format('d/m/Y') }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Số ngày</div>
-                            <div class="detail-value">{{ $item->so_ngay_nghi }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Ngày gửi</div>
-                            <div class="detail-value">{{ $item->created_at->format('d/m/Y') }}</div>
-                        </div>
-                    </div>
-
-                    <div class="request-reason">
-                        <div class="reason-label">Lý do nghỉ:</div>
-                        <div class="reason-text">{{ $item->ly_do }}</div>
-                    </div>
-
-                    <div class="actions">
-
-                        @if ($ketQua === 'da_duyet')
-                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
-                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
-                            </a>
-                        @elseif ($ketQua === 'tu_choi')
-                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
-                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
-                            </a>
-                        @else
-                            <a href="{{ route('department.donxinnghi.duyet', $item->id) }}">
-                                <button class="btnn btnn-approve">✓ Duyệt</button>
-                            </a>
-
-                            <button class="btnn btnn-reject" onclick="clickTuChoi({{ $item->id }})">✗ Từ chối</button>
-                            <a href="{{ route('department.donxinnghi.show', $item->id) }}">
-                                <button class="btnn btnn-view">👁 Xem chi tiết</button>
-                            </a>
-                        @endif
-
-                    </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        Đơn xin nghỉ
+                    </h5>
                 </div>
-            @endforeach
+            </div>
+
+            <div class="stats">
+                <div class="stat-card pending">
+                    <div class="stat-number">{{ $soDonChuaDuyet }}</div>
+                    <div class="stat-label">Chờ duyệt</div>
+                </div>
+                <div class="stat-card approved">
+                    <div class="stat-number">{{ $thongKe['da_duyet'] ?? 0 }}</div>
+                    <div class="stat-label">Đã duyệt</div>
+                </div>
+                <div class="stat-card rejected">
+                    <div class="stat-number">{{ $thongKe['tu_choi'] ?? 0 }}</div>
+                    <div class="stat-label">Từ chối</div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    @if ($donXinNghis->count() > 0)
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Mã
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Tên nhân viên
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Phòng ban
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Loại Nghỉ
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Từ ngày
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Đến ngày
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Trạng thái
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted text-center">
+                                        Thao tác
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($donXinNghis as $item)
+                                    <tr class="border-bottom">
+                                        <td class="px-4 py-3 align-middle">
+                                            <code class="bg-light text-dark px-2 py-1 rounded">2</code>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->nguoiDung->hoSo->ho . ' ' . $item->nguoiDung->hoSo->ten }}</span>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->nguoiDung->phongBan->ten_phong_ban }}</span>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->loaiNghiPhep->ten }}</span>
+                                        </td>
+
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->ngay_bat_dau->format('d/m/Y') }}</span>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->ngay_ket_thuc->format('d/m/Y') }}</span>
+                                        </td>
+
+                                        <td class="px-4 py-3 align-middle">
+                                            @php
+                                                $ketQua = $item->ketQuaDuyetTheoCap($vaiTro->ten === 'hr' ? 2 : 1);
+                                            @endphp
+
+                                            @if ($ketQua === 'da_duyet')
+                                                <span class="bg-success-subtle text-success">
+                                                    Đã duyệt
+                                                </span>
+                                            @elseif ($ketQua === 'tu_choi')
+                                                <span class="bg-danger-subtle text-danger">
+                                                    Từ chối
+                                                </span>
+                                            @else
+                                                <span class="bg-warning-subtle text-warning">
+                                                    Chờ duyệt
+                                                </span>
+                                            @endif
+
+                                        </td>
+
+                                        <td class="px-4 py-3 align-middle">
+                                            @if ($ketQua === 'da_duyet')
+                                                <a class="btn btn-outline-success btn-sm rounded-pill"
+                                                    href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            @elseif ($ketQua === 'tu_choi')
+                                                <a class="btn btn-outline-success btn-sm rounded-pill"
+                                                    href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            @else
+                                                <a class="btn btn-outline-success btn-sm rounded-pill"
+                                                    href="{{ route('department.donxinnghi.duyet', $item->id) }}">
+                                                    <i class="fas fa-check text-success"></i>
+                                                </a>
+
+                                                <button class="btn btn-outline-success btn-sm rounded-pill"
+                                                    onclick="clickTuChoi({{ $item->id }})"><i
+                                                        class="fas fa-times text-danger"></i></button>
+                                                <a class="btn btn-outline-success btn-sm rounded-pill"
+                                                    href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            @endif
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    @else
+                        <!-- Thông báo không tìm thấy -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-search fa-3x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-muted mb-3">Không tìm thấy đơn  xin nghỉ nào</h5>
+                            @if (request('search'))
+                                <p class="text-muted mb-4">
+                                    Không có kết quả nào cho từ khóa: <strong>"{{ request('search') }}"</strong>
+                                </p>
+                                <a href="/yeu$item" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-list me-1"></i>Xem tất cả
+                                </a>
+                            @else
+                                <p class="text-muted mb-4">Chưa có đơn  xin nghỉ nào được tạo.</p>
+                            @endif
+                            
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
 
 

@@ -63,7 +63,6 @@ class TinTuyenDungController extends Controller
             'han_nop_ho_so' => 'required|date|after_or_equal:today',
             'lam_viec_tu_xa' => 'nullable|boolean',
             'tuyen_gap' => 'nullable|boolean',
-            'trang_thai' => 'required|in:nhap,dang_tuyen,tam_dung,ket_thuc',
             'yeu_cau_id' => 'required|integer|exists:yeu_cau_tuyen_dung,id', // Thêm này
         ]);
 
@@ -73,6 +72,8 @@ class TinTuyenDungController extends Controller
 
         $validated['nguoi_dang_id'] = Auth::id();
         $validated['thoi_gian_dang'] = now();
+        $validated['trang_thai'] = 'dang_tuyen';
+
 
         if (isset($validated['yeu_cau'])) {
             $validated['yeu_cau'] = array_map('trim', explode(',', $validated['yeu_cau']));
