@@ -9,7 +9,7 @@
     <div class="row align-items-center mb-4">
         <div class="col-md-4">
             <h2 class="fw-bold text-primary mb-0">
-                <i class="fas fa-building me-2"></i>Đơn từ
+                <i class="fas fa-building me-2"></i>Yêu cầu tuyển dụng
             </h2>
         </div>
 
@@ -55,7 +55,7 @@
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-semibold">
-                    <i class="fas fa-table me-2 text-primary"></i>Yêu Cầu Tuyển Dụng
+                    <i class="fas fa-table me-2 text-primary"></i>Danh sách
                 </h5>
             </div>
         </div>

@@ -3,6 +3,20 @@
 
 @section('content')
     <style>
+        .box {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .description-section {
+            width: 44%;
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -105,31 +119,16 @@
         }
 
         .info-section {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 5px solid #3498db;
+            padding: 10px;
+            margin-bottom: 15px;
             position: relative;
             overflow: hidden;
-        }
-
-        .info-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.1), transparent);
-            border-radius: 50%;
-            transform: translate(50%, -50%);
         }
 
         .section-title {
             color: #2c3e50;
             margin-bottom: 25px;
-            font-size: 1.4em;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -144,30 +143,24 @@
 
         .info-item {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 14px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #e1e8ed;
-        }
-
-        .info-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .info-label {
             font-weight: 600;
             color: #34495e;
             margin-bottom: 8px;
-            font-size: 0.95em;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .info-value {
             color: #2c3e50;
-            font-size: 1.1em;
+            font-size: 14px;
             font-weight: 500;
         }
 
@@ -181,20 +174,13 @@
             font-weight: 700;
         }
 
-        .description-section {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 20px;
-            border: 1px solid #e1e8ed;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
+
 
         .description-title {
             font-weight: 600;
             color: #34495e;
             margin-bottom: 15px;
-            font-size: 1.1em;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -202,12 +188,8 @@
 
         .description-content {
             color: #2c3e50;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
             white-space: pre-line;
-            font-size: 1em;
+            font-size: 14px;
             line-height: 1.7;
         }
 
@@ -322,140 +304,162 @@
             }
         }
     </style>
-    <div class="container">
-        <div class="header">
-            <div class="header-content">
-                <div class="header-left">
-                    <h1>📋 CHI TIẾT YÊU CẦU TUYỂN DỤNG</h1>
-                </div>
-                <div class="header-right">
-                    @if ($tuyenDung->trang_thai === 'da_duyet')
-                        <div class="request-id">Trạng thái: Đã duyệt</div>
-                    @elseif($tuyenDung->trang_thai === 'cho_duyet')
-                        <div class="request-id">Trạng thái: Chờ duyệt</div>
-                    @elseif($tuyenDung->trang_thai === 'bi_tu_choi')
-                        <div class="request-id">Trạng thái: Bị từ chối</div>
-                    @elseif($tuyenDung->trang_thai === 'huy_bo')
-                        <div class="request-id">Trạng thái: Đã hủy</div>
-                    @endif
 
-                </div>
+    <div class="container-fluid px-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-4">
+                <h2 class="fw-bold text-primary mb-0">
+                    Yêu cầu tuyển dụng
+                </h2>
             </div>
+
         </div>
 
-        <div class="content">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        Chi tiết
+                    </h5>
+                </div>
+            </div>
 
-            <div class="info-section">
-                <h3 class="section-title">🏢 Thông tin cơ bản</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Mã yêu cầu</div>
-                        <div class="info-value highlight">{{ $tuyenDung->ma }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Phòng ban</div>
-                        <div class="info-value">{{ $tuyenDung->phongBan->ten_phong_ban }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Chức vụ</div>
-                        <div class="info-value">{{ $tuyenDung->chucVu->ten }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Số lượng</div>
-                        <div class="info-value success">{{ $tuyenDung->so_luong }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Loại hợp đồng</div>
-                        @if ($tuyenDung->loai_hop_dong === 'chinh_thuc')
-                            <div class="info-value">Chính thức</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thu_viec')
-                            <div class="info-value">Thử việc</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_vu')
-                            <div class="info-value">Thời vụ</div>
-                        @elseif($tuyenDung->loai_hop_dong === 'thoi_han')
-                            <div class="info-value">Có thời hạn</div>
-                        @endif
+            <div class="content">
 
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Mức lương</div>
-                        <div class="info-value highlight">{{ $tuyenDung->luong_toi_thieu }} - {{ $tuyenDung->luong_toi_da }}
-                            VND
+                <div class="info-section">
+                    <h3 class="section-title">Thông tin cơ bản</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Mã yêu cầu</div>
+                            <div class="info-value highlight">{{ $tuyenDung->ma }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phòng ban</div>
+                            <div class="info-value">{{ $tuyenDung->phongBan->ten_phong_ban }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Chức vụ</div>
+                            <div class="info-value">{{ $tuyenDung->chucVu->ten }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Số lượng</div>
+                            <div class="info-value success">{{ $tuyenDung->so_luong }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Loại hợp đồng</div>
+                            @if ($tuyenDung->loai_hop_dong === 'thu_viec')
+                                <div class="info-value">Thử việc</div>
+                            @elseif($tuyenDung->loai_hop_dong === 'co_thoi_han')
+                                <div class="info-value">Có thời hạn</div>
+                            @elseif($tuyenDung->loai_hop_dong === 'khong_co_thoi_han')
+                                <div class="info-value">Thời vụ</div>
+                            @elseif($tuyenDung->loai_hop_dong === 'thoi_han')
+                                <div class="info-value">Không thời hạn</div>
+                            @endif
+
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Trạng thái</div>
+                            <div class="info-value highlight">
+                                @if ($tuyenDung->trang_thai === 'da_duyet')
+                                    <div class="request-id">Đã duyệt</div>
+                                @elseif($tuyenDung->trang_thai === 'cho_duyet')
+                                    <div class="request-id">Chờ duyệt</div>
+                                @elseif($tuyenDung->trang_thai === 'bi_tu_choi')
+                                    <div class="request-id">Bị từ chối</div>
+                                @elseif($tuyenDung->trang_thai === 'huy_bo')
+                                    <div class="request-id">Đã hủy</div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="info-section">
-                <h3 class="section-title">🎓 Yêu cầu ứng viên</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Trình độ học vấn</div>
-                        <div class="info-value">{{ $tuyenDung->trinh_do_hoc_van }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Kinh nghiệm</div>
-                        <div class="info-value">{{ $tuyenDung->kinh_nghiem_toi_thieu }} -
-                            {{ $tuyenDung->kinh_nghiem_toi_da }} năm</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h3 class="section-title">📝 Mô tả chi tiết</h3>
-
-                <div class="description-section">
-                    <div class="description-title">💼 Mô tả công việc</div>
-                    <div class="description-content">{{ $tuyenDung->mo_ta_cong_viec }}</div>
-                </div>
-
-                <div class="description-section">
-                    <div class="description-title">✅ Yêu cầu công việc</div>
-                    <div class="description-content">{{ $tuyenDung->yeu_cau }}</div>
-                </div>
-
-                <div class="description-section">
-                    <div class="description-title">🔧 Kỹ năng yêu cầu</div>
-                    <div class="description-content">
-                        {{ is_array($tuyenDung->ky_nang_yeu_cau) ? implode(', ', $tuyenDung->ky_nang_yeu_cau) : $tuyenDung->ky_nang_yeu_cau }}
+                <div class="info-section">
+                    <h3 class="section-title">🎓 Yêu cầu ứng viên</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Trình độ học vấn</div>
+                            <div class="info-value">{{ $tuyenDung->trinh_do_hoc_van }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Kinh nghiệm</div>
+                            <div class="info-value">{{ $tuyenDung->kinh_nghiem_toi_thieu }} -
+                                {{ $tuyenDung->kinh_nghiem_toi_da }} năm</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Mức lương</div>
+                            <div class="info-value highlight">{{ $tuyenDung->luong_toi_thieu }} -
+                                {{ $tuyenDung->luong_toi_da }}
+                                VND
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="description-section">
-                    <div class="description-title">📋 Ghi chú</div>
-                    <div class="description-content">{{ $tuyenDung->ghi_chu }}</div>
+                <div class="info-section">
+                    <h3 class="section-title">📝 Mô tả chi tiết</h3>
+
+                    <div class="box">
+                        <div class="description-section">
+                            <div class="description-title">💼 Mô tả công việc</div>
+                            <div class="description-content">{{ $tuyenDung->mo_ta_cong_viec }}</div>
+                        </div>
+
+                        <div class="description-section">
+                            <div class="description-title">✅ Yêu cầu công việc</div>
+                            <div class="description-content">{{ $tuyenDung->yeu_cau }}</div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="description-section">
+                            <div class="description-title">🔧 Kỹ năng yêu cầu</div>
+                            <div class="description-content">
+                                {{ is_array($tuyenDung->ky_nang_yeu_cau) ? implode(', ', $tuyenDung->ky_nang_yeu_cau) : $tuyenDung->ky_nang_yeu_cau }}
+                            </div>
+                        </div>
+
+                        <div class="description-section">
+                            <div class="description-title">📋 Ghi chú</div>
+                            <div class="description-content">{{ $tuyenDung->ghi_chu }}</div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+            <div class="footer">
+                <div class="footer-info">
+                    <div class="footer-item">
+                        <div class="footer-label">Ngày tạo</div>
+                        <div class="footer-value" id="current-date">{{ $tuyenDung->created_at }}</div>
+                    </div>
+                    <div class="footer-item">
+                        <div class="footer-label">Người yêu cầu</div>
+                        <div class="footer-value">{{ $tuyenDung->nguoiTao->ten_dang_nhap }}</div>
+                    </div>
+                    <div class="footer-item">
+                        <div class="footer-label">Phòng ban nhận</div>
+                        <div class="footer-value">Phòng Nhân Sự</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    {{-- @if ($tuyenDung->trang_thai_dang === 'chua_dang')
+                        <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
+                            <button class="btn btn-primary">
+                                Đăng tin tuyển dụng
+                            </button>
+                        </a>
+                    @endif --}}
+
+                </div>
+            </div>
+
+
         </div>
 
-        <div class="footer">
-            <div class="footer-info">
-                <div class="footer-item">
-                    <div class="footer-label">Ngày tạo</div>
-                    <div class="footer-value" id="current-date">{{ $tuyenDung->created_at }}</div>
-                </div>
-                <div class="footer-item">
-                    <div class="footer-label">Người yêu cầu</div>
-                    <div class="footer-value">{{ $tuyenDung->nguoiTao->ten_dang_nhap }}</div>
-                </div>
-                <div class="footer-item">
-                    <div class="footer-label">Phòng ban nhận</div>
-                    <div class="footer-value">Phòng Nhân Sự</div>
-                </div>
-            </div>
 
-            <div class="actions">
-                {{-- @if ($tuyenDung->trang_thai_dang === 'chua_dang')
-                    <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
-                        <button class="btn btn-primary">
-                            Đăng tin tuyển dụng
-                        </button>
-                    </a>
-                @endif --}}
-
-            </div>
-        </div>
     </div>
-
 
 @endsection
