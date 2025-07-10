@@ -140,7 +140,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
         Route::get('/', [CompanyLocationController::class, 'index'])->name('index');
         Route::get('/create', [CompanyLocationController::class, 'create'])->name('create');
         Route::post('/store', [CompanyLocationController::class, 'store'])->name('store');
-        Route::get('/edit/{id}', [CompanyLocationController::class, 'edit'])->name('edit');
+        Route::get('/{id}/edit', [CompanyLocationController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [CompanyLocationController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [CompanyLocationController::class, 'destroy'])->name('destroy');
     });
