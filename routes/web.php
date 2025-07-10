@@ -243,7 +243,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::patch('/khoi-phuc/{id}', [HoSoNhanVienController::class, 'restore'])->name('hoso.restore');
         Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
         Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
-        Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+        Route::get('/{id}/edit', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
         Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
         Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
         Route::prefix('/hoso')->group(function () {
@@ -252,7 +252,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
             Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
             Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
             Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
-            Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+            Route::get('/{id}/edit', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
             Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
             Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
 

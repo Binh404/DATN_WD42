@@ -23,7 +23,7 @@ class MenuHelper
                 'chamcong',
                 // 'ungvien',
                 'hopdong',
-                'tintuyendung',
+                // 'tintuyendung',
                 'thongbao',
                 'duyetdon',
                 'xinnghiphep',
