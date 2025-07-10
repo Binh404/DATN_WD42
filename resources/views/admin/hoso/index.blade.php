@@ -2,7 +2,7 @@
 @section('title', 'Danh sách nhân sự')
 
 @section('content')
-    <div class="container-fluid px-4">
+    {{-- <div class="container-fluid px-4"> --}}
         <div class="row">
             <div class="col-sm-12">
                 <div class="home-tab">
@@ -227,7 +227,7 @@
                                                                 </tr>
                                                             @empty
                                                                 <tr>
-                                                                    <td colspan="9" class="text-center py-5">
+                                                                    <td colspan="5" class="text-center py-5">
                                                                         <div class="text-muted">
                                                                             <i class="mdi mdi-inbox fs-1 mb-3"></i>
                                                                             <h5>Không có dữ liệu chấm công</h5>
@@ -270,7 +270,7 @@
         </div>
 
 
-    </div>
+    {{-- </div> --}}
 
     {{-- SCRIPT TÌM KIẾM --}}
     <script>

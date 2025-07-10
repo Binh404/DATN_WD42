@@ -16,7 +16,7 @@
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         @if(MenuHelper::hasMenuPermission('hoso'))
-        <li class="nav-item nav-category">UI Elements</li>
+        <li class="nav-item nav-category">Các chức năng</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
