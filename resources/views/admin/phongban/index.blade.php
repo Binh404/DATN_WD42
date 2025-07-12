@@ -1,303 +1,321 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh Sách Phòng Ban')
 
 @section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="home-tab">
+                <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                    {{-- <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
+                                aria-controls="overview" aria-selected="true">Chấm Công</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab"
+                                aria-controls="audiences" aria-selected="false">Phê duyệt</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab"
+                                aria-selected="false">Demographics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab"
+                                aria-selected="false">More</a>
+                        </li>
+                    </ul> --}}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold mb-1">Quản lý phòng ban</h2>
+                            <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi phòng ban</p>
+                        </div>
 
-<div class="container-fluid px-4">
-
-    <!-- Header Section -->
-    <div class="row align-items-center mb-4">
-        <div class="col-md-4">
-            <h2 class="fw-bold text-primary mb-0">
-                <i class="fas fa-building me-2"></i>Quản Lý Phòng Ban
-            </h2>
-        </div>
-
-
-        <div class="col-md-5">
-            <form method="GET" action="/phongban">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text"
-                        class="form-control border-start-0"
-                        name="search"
-                        placeholder="Tìm kiếm phòng ban..."
-                        value="{{ request('search') }}">
-                    <button class="btn btn-outline-primary" type="submit">
-                        Tìm kiếm
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="col-md-3 text-end">
-            <a href="/phongban/create" class="btn btn-primary btn-lg">
-                <i class="fas fa-plus me-2"></i>Thêm Phòng Ban
-            </a>
-        </div>
-    </div>
-
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-    @endif
-
-    <!-- Main Table Card -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fw-semibold">
-                    <i class="fas fa-table me-2 text-primary"></i>Danh Sách Phòng Ban
-                </h5>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                @if($phongBans->count() > 0)
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-hashtag me-1"></i>ID
-                            </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-code me-1"></i>Mã Phòng Ban
-                            </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-building me-1"></i>Tên Phòng Ban
-                            </th>
-
-                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-coins text-yellow-500 mr-1"></i>Ngân sách
-                            </th> -->
-                            <!-- <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-align-left me-1"></i>Mô Tả
-                            </th> -->
-
-                            <!-- {{-- <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-align-left me-1"></i>Mô Tả
-                            </th> --}} -->
-
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-toggle-on me-1"></i>Trạng Thái
-                            </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-calendar-plus me-2"></i>Ngày Tạo
-                            </th>
-                            <th class="px-4 py-3 fw-semibold text-muted">
-                                <i class="fas fa-calendar-check me-2"></i>Ngày Cập Nhật
-                            </th>
-                            <th class="px-4 py-3 fw-semibold text-muted text-center">
-                                <i class="fas fa-cogs me-1"></i>Hành Động
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($phongBans as $index => $phongBan)
-                        <tr class="border-bottom">
-                            <td class="px-4 py-3 align-middle">
-                                <span class="badge bg-light text-dark fw-normal">#{{ $index + 1 }}</span>
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <code class="bg-light text-dark px-2 py-1 rounded">{{ $phongBan->ma_phong_ban }}</code>
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-gradient rounded-circle d-flex align-items-center justify-content-center me-3 department-icon"
-                                        style="width: 40px; height: 40px; min-width: 40px;">
-                                        <i class="fas fa-building text-white"></i>
-                                    </div>
-                                    <div class="department-name" style="min-width: 0;">
-                                        <h6 class="mb-0 fw-semibold">
-                                            <a href="/phongban/show/{{$phongBan->id}}"
-                                                class="text-decoration-none text-black d-inline-flex align-items-center text-truncate">
-                                                {{ $phongBan->ten_phong_ban }}
-                                            </a>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <!-- <td class="px-4 py-3 align-middle">
-                                <span class="text-muted">
-                                    {{ $phongBan->mo_ta ?: 'Chưa có mô tả' }}
-                                </span>
-                            </td> -->
-
-                            <td class="px-4 py-3 align-middle">
-                                @if($phongBan->trang_thai == 1)
-                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
-                                    <i class="fas fa-check-circle me-1"></i>Hoạt động
-                                </span>
-                                @else
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
-                                    <i class="fas fa-times-circle me-1"></i>Ngừng hoạt động
-                                </span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <div class="text-muted small">
-                                    <!-- <i class="fas fa-calendar me-1"></i> -->
-                                    @if($phongBan->created_at)
-                                    {{ date('d/m/Y H:i:s', strtotime($phongBan->created_at)) }}
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <div class="text-muted small">
-                                    <!-- <i class="fas fa-calendar-edit me-1"></i> -->
-                                    @if($phongBan->updated_at)
-                                    {{ date('d/m/Y H:i:s', strtotime($phongBan->updated_at)) }}
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <div class="d-flex gap-2 justify-content-center">
-                                        <a href="/phongban/show/{{ $phongBan->id }}" 
-                                       class="btn btn-outline-primary btn-sm rounded-pill"
-                                       data-bs-toggle="tooltip" 
-                                       title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <!-- Sửa -->
-                                    <a href="/phongban/edit/{{ $phongBan->id }}" class="btn btn-outline-warning btn-sm rounded-pill"
-                                        data-bs-toggle="tooltip" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-
-                                    <!-- Xóa -->
-                                    <form action="/phongban/delete/{{$phongBan->id}}" method="post" class="d-inline">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn btn-outline-danger btn-sm rounded-pill delete-btn" onclick="return confirm('Bạn có muốn xóa không?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                @else
-                <!-- Thông báo không tìm thấy phòng ban -->
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <i class="fas fa-search fa-3x text-muted opacity-50"></i>
                     </div>
-                    <h5 class="text-muted mb-3">Không tìm thấy phòng ban nào</h5>
-                    @if(request('search'))
-                    <p class="text-muted mb-4">
-                        Không có kết quả nào cho từ khóa: <strong>"{{ request('search') }}"</strong>
-                    </p>
-                    <a href="/phongban" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-list me-1"></i>Xem tất cả
-                    </a>
-                    @else
-                    <p class="text-muted mb-4">Chưa có phòng ban nào được tạo.</p>
-                    @endif
-                    <a href="/phongban/create" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Thêm phòng ban đầu tiên
-                    </a>
+
+                    <div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <form method="GET" action="{{ route('phongban.index') }}">
+                                    <div class="input-group">
+                                        <!-- Icon tìm kiếm bên trái -->
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-account-search"></i>
+                                        </span>
+
+                                        <!-- Ô nhập tên nhân viên -->
+                                        <input
+                                            type="text"
+                                            name="search"
+                                            id="search"
+                                            class="form-control"
+                                            placeholder="Nhập tên phòng ban..."
+                                            value="{{ request('search"') }}"
+                                        >
+
+                                        <!-- Nút tìm kiếm bên phải -->
+                                        <button type="submit" class="input-group-text btn-primary ms-2 border-0 rounded-2">
+                                            Tìm kiếm
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                @endif
+                <div class="tab-content tab-content-basic">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+                        <div class="row">
+                                <div class="col-lg-12 d-flex flex-column">
+
+                                    <!-- Alert Messages -->
+                                    @if(session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center"
+                                            role="alert">
+                                            <i class="bi bi-check-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
+                                            <div>{{ session('success') }}</div>
+                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                    @endif
+
+                                    @if(session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center"
+                                            role="alert">
+                                            <i class="bi bi-exclamation-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
+                                            <div>{{ session('error') }}</div>
+                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                    @endif
+                                </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-12 d-flex flex-column">
+                                <div class="row flex-grow">
+                                    <div class="col-12 grid-margin stretch-card">
+                                        <div class="card card-rounded">
+                                            <div class="card-body">
+                                                <div class="d-sm-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h4 class="card-title card-title-dash">Bảng phòng ban</h4>
+                                                        <p class="card-subtitle card-subtitle-dash" id="tongSoBanGhi">Bảng
+                                                            có
+                                                            <span id="totalRecords">{{$soPhongBan}}</span> bản ghi
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <a href="{{ route('phongban.create') }}" class="btn btn-primary btn-lg text-white mb-0 me-0"
+                                                            ><i class="mdi mdi-account-plus"></i>Thêm phòng ban</a>
+                                                    </div>
+                                                </div>
+
+                                                <div class="table-responsive  mt-1">
+                                                    <table class="table table-hover align-middle text-nowrap">
+                                                        <thead class="table-light">
+                                                            <tr>
+
+                                                                <th>ID</th>
+                                                                <th>Mã Phòng Ban</th>
+                                                                <th>Tên Phòng Ban</th>
+                                                                <th>Trạng Thái</th>
+                                                                <th>Ngày Tạo</th>
+                                                                <th>Ngày Cập Nhật</th>
+                                                                <th>Hành Động</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @forelse($phongBans as $index => $phongBan)
+
+                                                                <tr>
+
+                                                                    <td>
+                                                                        <span class="text-muted">{{ $index + 1 }}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text-muted">{{ $phongBan->ma_phong_ban }}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="{{ route('phongban.show', $phongBan->id) }}"
+                                                                            class="text-decoration-none text-primary fw-medium">
+                                                                            {{ $phongBan->ten_phong_ban }}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                         @if($phongBan->trang_thai == 1)
+                                                                            <span class="badge bg-success">
+                                                                                Hoạt động
+                                                                            </span>
+                                                                            @else
+                                                                            <span class="badge bg-danger">
+                                                                                Ngừng hoạt động
+                                                                            </span>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
+                                                                         <div class="text-muted ">
+                                                                            <!-- <i class="fas fa-calendar me-1"></i> -->
+                                                                            @if($phongBan->created_at)
+                                                                            {{ date('d/m/Y ', strtotime($phongBan->created_at)) }}
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="text-muted ">
+                                                                            <!-- <i class="fas fa-calendar-edit me-1"></i> -->
+                                                                            @if($phongBan->updated_at)
+                                                                            {{ date('d/m/Y', strtotime($phongBan->updated_at)) }}
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="dropdown">
+                                                                            <button
+                                                                                class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                                                                type="button" data-bs-toggle="dropdown"
+                                                                                aria-expanded="false">
+                                                                                <i class="mdi mdi-dots-vertical"></i>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu">
+                                                                                <li>
+                                                                                    <a class="dropdown-item"
+                                                                                        href="{{ route('phongban.show', $phongBan->id)}}">
+                                                                                        <i class="mdi mdi-eye"></i>Xem chi
+                                                                                        tiết
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a class="dropdown-item"
+                                                                                        href="{{ route('phongban.edit', $phongBan->id)}}">
+                                                                                        <i class="mdi mdi-pencil"></i>Chỉnh
+                                                                                        sửa
+                                                                                    </a>
+                                                                                </li>
+
+                                                                                <li>
+                                                                                    <hr class="dropdown-divider">
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a class="dropdown-item text-danger"
+                                                                                        href="#"
+                                                                                         onclick="showConfirmDelete({{ $phongBan->id }})"
+                                                                                        >
+                                                                                        <i class="mdi mdi-delete me-2"></i>Xóa
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </td>
+
+                                                                </tr>
+                                                            @empty
+                                                                <tr>
+                                                                    <td colspan="9" class="text-center py-5">
+                                                                        <div class="text-muted">
+                                                                            <i class="mdi mdi-inbox fs-1 mb-3"></i>
+                                                                            <h5>Không có dữ liệu chấm công</h5>
+                                                                            <p>Không tìm thấy bản ghi nào phù hợp với điều kiện
+                                                                                tìm kiếm.</p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforelse
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            @if($phongBans->hasPages())
+                                                <div class="card-footer bg-white border-top">
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                        <small class="text-muted">
+                                                            Hiển thị {{ $phongBans->firstItem() }} đến
+                                                            {{ $phongBans->lastItem() }} trong tổng số {{ $chamCong->total() }}
+                                                            bản ghi
+                                                        </small>
+                                                        <nav>
+                                                            {{ $phongBans->links('pagination::bootstrap-5') }}
+                                                        </nav>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+<!-- Modal Xác Nhận -->
+    <div class="modal fade" id="confirmActionModal" tabindex="-1" aria-labelledby="confirmActionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmActionModalLabel">Xác Nhận Hành Động</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body" id="confirmActionMessage">
+                    <!-- Thông báo sẽ được cập nhật động -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn">Xác Nhận</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<!-- Form xóa ẩn -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
 @endsection
 
-@push('styles')
-<style>
-    .table-hover tbody tr:hover {
-        background-color: rgba(0, 123, 255, 0.05);
-    }
+@section('styles')
 
-    .card {
-        transition: all 0.3s ease;
-    }
 
-    .btn {
-        transition: all 0.2s ease;
-    }
+@endsection
 
-    .btn:hover {
-        transform: translateY(-1px);
-    }
-
-    .badge {
-        font-size: 0.75rem;
-    }
-
-    .bg-success-subtle {
-        background-color: rgba(25, 135, 84, 0.1) !important;
-    }
-
-    .bg-danger-subtle {
-        background-color: rgba(220, 53, 69, 0.1) !important;
-    }
-
-    .border-success-subtle {
-        border-color: rgba(25, 135, 84, 0.3) !important;
-    }
-
-    .border-danger-subtle {
-        border-color: rgba(220, 53, 69, 0.3) !important;
-    }
-
-    @media (max-width: 768px) {
-        .d-flex.justify-content-between {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .btn-lg {
-            width: 100%;
-        }
-
-        .table-responsive {
-            font-size: 0.9rem;
-        }
-    }
-</style>
-@endpush
-
-@push('scripts')
+@section('script')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+function huyPheDuyet() {
+            if (pheDuyetModalInstance) {
+                pheDuyetModalInstance.hide();
+                console.log('Hủy phê duyệt');
+            } else {
+                console.log('Modal instance chưa được khởi tạo');
+            }
 
-        // Delete confirmation
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const name = this.getAttribute('data-name');
-                document.getElementById('deleteName').textContent = name;
+            document.getElementById('pheDuyetForm').reset();
+        }
+        function showConfirmDelete(id) {
+            // Hiển thị modal
+            // Lưu vị trí cuộn hiện tại
+            const modal = new bootstrap.Modal(document.getElementById('confirmActionModal'));
+            const messageElement = document.getElementById('confirmActionMessage');
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            messageElement.textContent = `Bạn có chắc chắn muốn xóa?`;
+            confirmBtn.className = 'btn btn-danger'; // Màu đỏ cho từ chối
+            confirmBtn.textContent = 'Xóa';
+            modal.show();
 
-                const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                modal.show();
-            });
-        });
+            // Gắn sự kiện cho nút Xóa trong modal
+            document.getElementById('confirmActionBtn').onclick = function() {
+                const form = document.getElementById('deleteForm');
+                form.action = `{{ route('phongban.destroy', ':id') }}`.replace(':id', id);
+                form.submit();
 
-        // Confirm delete action
-        document.getElementById('confirmDelete').addEventListener('click', function() {
-            // Thêm logic xóa ở đây
-            alert('Chức năng xóa sẽ được implement!');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-            modal.hide();
-        });
-    });
+                // Đóng modal sau khi gửi form
+                modal.hide();
+            };
+
+        }
 </script>
-@endpush
+@endsection

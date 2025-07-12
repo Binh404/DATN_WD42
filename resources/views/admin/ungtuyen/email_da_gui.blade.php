@@ -157,21 +157,21 @@
 
 
                                 @php
-                                $trangThai = strtolower(trim($uv->trang_thai_pv));
+                                $trangThai = trim($uv->trang_thai_pv);
                                 @endphp
 
                                 @switch($trangThai)
-                                @case('chưa phỏng vấn')
+                                @case('Chưa phỏng vấn')
                                 <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
                                 @break
-                                @case('đã phỏng vấn')
+                                @case('Đã phỏng vấn')
                                 <span class="badge bg-info">Đã phỏng vấn</span>
                                 @break
-                                @case('pass')
-                                <span class="badge bg-success">Pass</span>
+                                @case('Đạt')
+                                <span class="badge bg-success">Đạt</span>
                                 @break
-                                @case('fail')
-                                <span class="badge bg-danger">Fail</span>
+                                @case('Khó')
+                                <span class="badge bg-danger">Không đạt</span>
                                 @break
                                 @default
                                 <span class="badge bg-warning text-dark">Chưa phỏng vấn</span>
@@ -224,9 +224,9 @@
                     <div class="mb-3">
                         <label for="trang_thai_pv" class="form-label">Trạng thái phỏng vấn</label>
                         <select class="form-select" id="trang_thai_pv" name="trang_thai_pv" onchange="handleStatusChange(this.value)">
-                            <option value="chưa phỏng vấn" id="chua">Chưa phỏng vấn</option>
-                            <option value="pass" id="pass">Pass</option>
-                            <option value="fail" id="fail">Fail</option>
+                            <option value="Chưa phỏng vấn" id="chua">Chưa phỏng vấn</option>
+                            <option value="Đạt" id="dat">Đạt</option>
+                            <option value="Khó" id="kho">Không đạt</option>
                         </select>
                     </div>
                     <div class="mb-3" id="diemPhongVanGroup">
@@ -267,7 +267,7 @@
         const diemInput = document.getElementById('diem_phong_van');
         const diemGroup = document.getElementById('diemPhongVanGroup');
 
-        if (['đã phỏng vấn', 'pass', 'fail'].includes(status)) {
+        if (['Đạt', 'Khó'].includes(status)) {
             diemGroup.style.display = 'block';
             diemInput.required = true;
         } else {
@@ -325,14 +325,11 @@
                         // Cập nhật trạng thái
                         let badgeHtml = '';
                         switch (trangThai) {
-                            case 'đã phỏng vấn':
-                                badgeHtml = '<span class="badge bg-info">Đã phỏng vấn</span>';
+                            case 'Đạt':
+                                badgeHtml = '<span class="badge bg-success">Đạt</span>';
                                 break;
-                            case 'pass':
-                                badgeHtml = '<span class="badge bg-success">Pass</span>';
-                                break;
-                            case 'fail':
-                                badgeHtml = '<span class="badge bg-danger">Fail</span>';
+                            case 'Khó':
+                                badgeHtml = '<span class="badge bg-danger">Khó</span>';
                                 break;
                             default:
                                 badgeHtml = '<span class="badge bg-warning text-dark">Chưa phỏng vấn</span>';
@@ -363,7 +360,7 @@
 
                         // Reset form
                         form[0].reset();
-                        handleStatusChange('chưa phỏng vấn');
+                        handleStatusChange('Chưa phỏng vấn');
 
                         Swal.fire({
                             icon: 'success',

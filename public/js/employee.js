@@ -93,10 +93,18 @@
                }
            });
        }
+        // Tạo function để lấy thời gian VN
+        function nowVN() {
+            return new Date().toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"});
+        }
 
+        function nowVNObject() {
+            const vnTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"});
+            return new Date(vnTime);
+        }
        // Update current time
        function updateTime() {
-           const now = new Date();
+           const now = nowVNObject();
            const timeString = now.toLocaleTimeString('vi-VN', {
                hour: '2-digit',
                minute: '2-digit',

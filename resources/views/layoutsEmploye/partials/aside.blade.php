@@ -8,12 +8,12 @@
         @endif
     </div>
     <div class="user-name fw-bold text-dark fs-5">{{ $hoSo->ho }} {{ $hoSo->ten }}</div>
-    <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div>
+    <!-- <div class="user-position small text-muted">{{ $nguoiDung->vai_tro ?? 'Nhân viên' }}</div> -->
 </div>
 
     <ul class="nav-menu">
         <li class="nav-item">
-            <a href="{{url('employee')}}" class="nav-link active" data-section="dashboard">
+            <a href="{{url('employee/dashboard')}}" class="nav-link active" data-section="dashboard">
                 <i class="fas fa-tachometer-alt"></i>
                 <span>Tổng quan</span>
             </a>
@@ -24,12 +24,12 @@
                 <span>Bảng lương</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{url('employee/advance')}}" class="nav-link" data-section="advance">
                 <i class="fas fa-hand-holding-usd"></i>
                 <span>Tạm ứng lương</span>
             </a>
-        </li>
+        </li> --}}
         <li class="nav-item">
             <a href="{{url('employee/profile')}}" class="nav-link" data-section="profile">
                 <i class="fas fa-user-circle"></i>
@@ -40,7 +40,7 @@
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>
                 <span>Thông báo</span>
-                <span class="notification-badge">3</span>
+                <span class="notification-badge"></span>
             </a>
         </li>
         <li class="nav-item">
@@ -50,7 +50,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/nghi-phep')}}" class="nav-link" data-section="leave">
+            <a href="{{ route('cham-cong.tao-don-xin-tang-ca') }}" class="nav-link" data-section="leave">
+                <i class="fas fa-calendar-times"></i>
+                <span>Đơn tăng ca</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('employee/nghi-phep') }}" class="nav-link" data-section="leave">
                 <i class="fas fa-calendar-times"></i>
                 <span>Đơn nghỉ phép</span>
             </a>

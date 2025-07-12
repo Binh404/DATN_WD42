@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -28,6 +29,7 @@ class ChamCong extends Model
         'dia_chi_ip',
         'ghi_chu',
         'trang_thai_duyet',
+        'ghi_chu_duyet',
         'nguoi_phe_duyet_id',
         'thoi_gian_phe_duyet',
     ];
@@ -45,7 +47,7 @@ class ChamCong extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-// Relationships
+    // Relationships
     public function nguoiDung()
     {
         return $this->belongsTo(NguoiDung::class, 'nguoi_dung_id');
@@ -66,7 +68,7 @@ class ChamCong extends Model
     public function scopeThangHienTai($query, $userId = null)
     {
         $query->whereYear('ngay_cham_cong', now()->year)
-              ->whereMonth('ngay_cham_cong', now()->month);
+            ->whereMonth('ngay_cham_cong', now()->month);
 
         if ($userId) {
             $query->where('nguoi_dung_id', $userId);
@@ -83,7 +85,7 @@ class ChamCong extends Model
     // Accessors & Mutators
     public function getTrangThaiTextAttribute()
     {
-        return match($this->trang_thai) {
+        return match ($this->trang_thai) {
             'binh_thuong' => 'Bình thường',
             'di_muon' => 'Đi muộn',
             've_som' => 'Về sớm',
@@ -106,7 +108,9 @@ class ChamCong extends Model
     // Methods
     public function tinhSoGioLam()
     {
+        // dd($this->gio_vao, $this->gio_ra);
         if (!$this->gio_vao || !$this->gio_ra) {
+            // dd($this->gio_vao, $this->gio_ra);
             return 0;
         }
 
@@ -127,16 +131,24 @@ class ChamCong extends Model
     public function tinhSoCong()
     {
         $soGioLam = $this->so_gio_lam;
-
+        if ($soGioLam < 3.5) {
+            return 0;
+        } else if ($soGioLam < 7) {
+            return 0.5;
+        } else {
+            return 1;
+        }
+        // $soChamCong = config('chamcong.calculation.hours_per_workday', 8);
         // Quy đổi số công: 8 giờ = 1 công
-        return round($soGioLam / 8, 1);
+        // return round($soGioLam / $soChamCong, 1);
     }
 
     public function kiemTraDiMuon()
     {
-        if (!$this->gio_vao) return false;
-
-        $gioVaoQuyDinh = Carbon::parse('08:30');
+        if (!$this->gio_vao)
+            return false;
+        $gioVaoQuyDinh = Carbon::createFromFormat('H:i', config('chamcong.working_hours.start_time', '08:30'));
+        // $gioVaoQuyDinh = Carbon::parse('08:30');
         $gioVaoThucTe = Carbon::parse($this->gio_vao);
 
         return $gioVaoThucTe->gt($gioVaoQuyDinh);
@@ -144,26 +156,31 @@ class ChamCong extends Model
 
     public function kiemTraVeSom()
     {
-        if (!$this->gio_ra) return false;
+        if (!$this->gio_ra)
+            return false;
 
-        $gioRaQuyDinh = Carbon::parse('17:30');
+        // $gioRaQuyDinh = Carbon::parse('17:30');
+        $gioRaQuyDinh = Carbon::createFromFormat('H:i', config('chamcong.working_hours.end_time', '17:30'));
         $gioRaThucTe = Carbon::parse($this->gio_ra);
 
         return $gioRaThucTe->lt($gioRaQuyDinh);
     }
 
-    public function capNhatTrangThai()
+    public function capNhatTrangThai($trangThai = null)
     {
-        $trangThai = 'binh_thuong';
+        if (!$trangThai) {
+            $trangThai = 'binh_thuong';
+            if ($this->kiemTraDiMuon()) {
+                $trangThai = 'di_muon';
+                $gioChuan = Carbon::createFromFormat('H:i', config('chamcong.working_hours.start_time', '8:30'));
+                $this->phut_di_muon = Carbon::parse($gioChuan)->diffInMinutes(Carbon::parse($this->gio_vao));
+            }
 
-        if ($this->kiemTraDiMuon()) {
-            $trangThai = 'di_muon';
-            $this->phut_di_muon = Carbon::parse('8:30')->diffInMinutes(Carbon::parse($this->gio_vao));
-        }
-
-        if ($this->kiemTraVeSom()) {
-            $trangThai = $trangThai === 'di_muon' ? 'di_muon' : 've_som';
-            $this->phut_ve_som = Carbon::parse($this->gio_ra)->diffInMinutes(Carbon::parse('17:30'));
+            if ($this->kiemTraVeSom()) {
+                $trangThai = $trangThai === 'di_muon' ? 'di_muon' : 've_som';
+                $gioChuan = Carbon::createFromFormat('H:i', config('chamcong.working_hours.end_time', '17:30'));
+                $this->phut_ve_som = Carbon::parse($this->gio_ra)->diffInMinutes(Carbon::parse($gioChuan));
+            }
         }
 
         $this->trang_thai = $trangThai;
@@ -181,10 +198,10 @@ class ChamCong extends Model
         $year = $year ?? now()->year;
 
         return self::where('nguoi_dung_id', $userId)
-                   ->whereYear('ngay_cham_cong', $year)
-                   ->whereMonth('ngay_cham_cong', $month)
-                   ->orderBy('ngay_cham_cong')
-                   ->get();
+            ->whereYear('ngay_cham_cong', $year)
+            ->whereMonth('ngay_cham_cong', $month)
+            ->orderBy('ngay_cham_cong')
+            ->get();
     }
 
     public static function kiemTraDaChamCong($userId, $date = null)
@@ -192,21 +209,25 @@ class ChamCong extends Model
         $date = $date ?? now()->format('Y-m-d');
 
         return self::where('nguoi_dung_id', $userId)
-                   ->where('ngay_cham_cong', $date)
-                   ->exists();
+            ->where('ngay_cham_cong', $date)
+            ->exists();
     }
 
     public static function layBanGhiHomNay($userId)
     {
         return self::where('nguoi_dung_id', $userId)
-                   ->where('ngay_cham_cong', now()->format('Y-m-d'))
-                   ->first();
+            ->where('ngay_cham_cong', now()->format('Y-m-d'))
+            ->first();
     }
     public static function layBanGhiTheoNgay($userId, $date)
     {
         return self::where('nguoi_dung_id', $userId)
-                   ->where('ngay_cham_cong', $date)
-                   ->first();
+            ->where('ngay_cham_cong', $date)
+            ->first();
+    }
+    public static function BanChamCongTheoId($id)
+    {
+        return self::where('id', $id)->first();
     }
 
 }

@@ -27,22 +27,43 @@ class ProfileController extends Controller
 
 public function update(Request $request)
 {
-    $request->validate([
-        'ho' => 'required|string|max:50',
-        'ten' => 'required|string|max:50',
-        'so_dien_thoai' => 'nullable|string|max:20',
-        'ngay_sinh' => 'nullable|date',
-        'gioi_tinh' => 'nullable|in:nam,nu,khac',
-        'dia_chi_hien_tai' => 'nullable|string',
-        'anh_dai_dien' => 'nullable|image|max:2048',
-    ]);
-
+    
     $nguoiDungId = Auth::id();
     $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $nguoiDungId)->first();
 
     if (!$hoSo) {
         return redirect()->back()->with('error', 'Không tìm thấy hồ sơ.');
     }
+
+    $request->validate([
+        'ho' => 'required|string|max:50',
+        'ten' => 'required|string|max:50',
+        'so_dien_thoai' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+        'ngay_sinh' => 'nullable|date',
+        'gioi_tinh' => 'nullable|in:nam,nu,khac',
+        'dia_chi_hien_tai' => 'nullable|string|max:255',
+        'dia_chi_thuong_tru' => 'nullable|string|max:255',
+        'cmnd_cccd' => 'nullable|string|max:20|regex:/^[0-9]{9,12}$/|unique:ho_so_nguoi_dung,cmnd_cccd,' . $hoSo->id,
+        'so_ho_chieu' => 'nullable|string|max:20',
+        'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
+        'anh_dai_dien' => 'nullable|image|max:2048',
+        'lien_he_khan_cap' => 'nullable|string|max:100',
+        'sdt_khan_cap' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+        'quan_he_khan_cap' => 'nullable|string|max:50',
+        'email_cong_ty' => 'required|email|max:255',
+    ], [
+        'ho.required' => 'Vui lòng nhập họ.',
+        'ten.required' => 'Vui lòng nhập tên.',
+        'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
+        'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
+        'gioi_tinh.in' => 'Giới tính không hợp lệ.',
+        'cmnd_cccd.regex' => 'CMND/CCCD không đúng định dạng.',
+        'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại trong hệ thống.',
+        'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
+        'email_cong_ty.required' => 'Email công ty là bắt buộc.',
+        'email_cong_ty.email' => 'Email công ty không đúng định dạng.',
+    ]);
+
 
     $hoSo->fill($request->except('anh_dai_dien'));
 

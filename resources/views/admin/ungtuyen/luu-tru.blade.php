@@ -106,8 +106,8 @@
                                 {{ $uv->ten_ung_vien }}
                                 @if($uv->trang_thai == 'tu_choi')
                                     <span class="badge bg-danger ms-2">Đã từ chối</span>
-                                @elseif($uv->trang_thai_pv == 'fail')
-                                    <span class="badge bg-danger ms-2">Fail PV</span>
+                                @elseif($uv->trang_thai_pv == 'Khó')
+                                    <span class="badge bg-danger ms-2">Không đạt PV</span>
                                 @endif
                             </td>
                             <td>{{ $uv->email }}</td>
