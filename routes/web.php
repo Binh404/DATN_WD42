@@ -243,7 +243,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::patch('/khoi-phuc/{id}', [HoSoNhanVienController::class, 'restore'])->name('hoso.restore');
         Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
         Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
-        Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+        Route::get('/{id}/edit', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
         Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
         Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
         Route::prefix('/hoso')->group(function () {
@@ -252,7 +252,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
             Route::get('giamdoc', [HoSoNhanVienController::class, 'indexGiamDoc'])->name('hoso.giamdoc');
             Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
             Route::post('/store', [HoSoNhanVienController::class, 'store'])->name('hoso.store');
-            Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
+            Route::get('/{id}/edit', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
             Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
             Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
 
@@ -271,6 +271,11 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
         Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
 
+        Route::get('register', [RegisteredUserController::class, 'create'])
+            ->name('register');
+
+        Route::post('register', [RegisteredUserController::class, 'store'])
+            ->name('register.store');
 
 
 
@@ -403,7 +408,7 @@ Route::prefix('homepage')->group(function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     // đơn yêu cầu tuyển dụng
     Route::get('duyetdon/tuyendung.index', [DuyetDonTuController::class, 'danhSachDonTuyenDung'])->name('duyetdon.tuyendung.index');
-    Route::get('duyetdon/tuyendung/{id}', [DuyetDonTuController::class, 'show'])->name('duyetdon.tuyendung.show');
+    Route::get('duyetdon/tuyendung/{id}/show', [DuyetDonTuController::class, 'show'])->name('duyetdon.tuyendung.show');
     Route::post('duyetdon/tuyendung/{id}/duyet', [DuyetDonTuController::class, 'duyetDonTuyenDung'])->name('duyetdon.tuyendung.duyet');
     Route::post('duyetdon/tuyendung/{id}/tuchoi', [DuyetDonTuController::class, 'tuChoiDonTuyenDung'])->name('duyetdon.tuyendung.tuchoi');
 });

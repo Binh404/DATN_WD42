@@ -20,6 +20,9 @@ class HoSoNhanVienController extends Controller
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
         // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
+        ->whereHas('hoSo', function ($query) {
+            $query->where('trang_thai_cong_viec', 'dang_lam');
+        })
         ->when($keyword, function ($query) use ($keyword) {
             $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
                 $subQuery->where('ho', 'like', "%$keyword%")
@@ -120,47 +123,49 @@ public function update(Request $request, $id)
 {
     $hoSo = HoSoNguoiDung::findOrFail($id);
 
-    $request->validate([
-    'ho' => 'required|string|max:50',
-    'ten' => 'required|string|max:50',
-    'email_cong_ty' => [
-        'nullable', 'email',
-        Rule::unique('ho_so_nguoi_dung', 'email_cong_ty')->ignore($hoSo->id),
-    ],
-    'so_dien_thoai' => 'nullable|string|max:15',
-    'ngay_sinh' => 'nullable|date',
-    'gioi_tinh' => 'nullable|in:nam,nu,khac',
-    'dia_chi_hien_tai' => 'nullable|string',
-    'dia_chi_thuong_tru' => 'nullable|string',
-    'cmnd_cccd' => [
-        'nullable', 'string',
-        Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
-    ],
-    'so_ho_chieu' => 'nullable|string|max:20',
-    'tinh_trang_hon_nhan' => 'nullable|in:doc_than,da_ket_hon,ly_hon,goa',
-    'lien_he_khan_cap' => 'nullable|string|max:50',
-    'sdt_khan_cap' => 'nullable|string|max:15',
-    'quan_he_khan_cap' => 'nullable|string|max:50',
-    'anh_dai_dien' => 'nullable|image|max:2048',
-], [
-    'ho.required' => 'Vui lòng nhập họ.',
-    'ten.required' => 'Vui lòng nhập tên.',
-    'email_cong_ty.email' => 'Email công ty không đúng định dạng.',
-    'email_cong_ty.unique' => 'Email công ty đã tồn tại.',
-    'so_dien_thoai.max' => 'Số điện thoại không quá 15 ký tự.',
-    'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
-    'gioi_tinh.in' => 'Giới tính không hợp lệ.',
-    'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại.',
-    'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
-    'anh_dai_dien.max' => 'Ảnh đại diện không được vượt quá 2MB.',
-]);
+    $validated = $request->validate([
+        'ho' => 'required|string|max:50',
+        'ten' => 'required|string|max:50',
+        'so_dien_thoai' => 'required|string|max:20|regex:/^[0-9]{9,15}$/',
+        'ngay_sinh' => 'required|date',
+        'gioi_tinh' => 'required|in:nam,nu,khac',
+        'dia_chi_hien_tai' => 'required|string|max:255',
+        'dia_chi_thuong_tru' => 'required|string|max:255',
+        'cmnd_cccd' => [
+            'required', 'string', 'regex:/^[0-9]{9,12}$/',
+            Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
+        ],
+        'so_ho_chieu' => 'nullable|string|max:20',
+        'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
+        'anh_dai_dien' => 'nullable|image|max:2048',
+        'lien_he_khan_cap' => 'nullable|string|max:100',
+        'sdt_khan_cap' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+        'quan_he_khan_cap' => 'nullable|string|max:50',
+    ], [
+        'ho.required' => 'Vui lòng nhập họ.',
+        'ten.required' => 'Vui lòng nhập tên.',
+        'so_dien_thoai.required' => 'Vui lòng nhập số điện thoại.',
+        'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
+        'ngay_sinh.required' => 'Vui lòng chọn ngày sinh.',
+        'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
+        'gioi_tinh.required' => 'Vui lòng chọn giới tính.',
+        'dia_chi_hien_tai.required' => 'Vui lòng nhập địa chỉ hiện tại.',
+        'dia_chi_thuong_tru.required' => 'Vui lòng nhập địa chỉ thường trú.',
+        'cmnd_cccd.required' => 'Vui lòng nhập CMND/CCCD.',
+        'cmnd_cccd.regex' => 'CMND/CCCD không đúng định dạng.',
+        'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại trong hệ thống.',
+        'tinh_trang_hon_nhan.required' => 'Vui lòng chọn tình trạng hôn nhân.',
+        'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
+        'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
+        'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
+    ]);
 
+    // Không cho sửa các trường đặc biệt
+    unset($validated['ma_nhan_vien'], $validated['nguoi_dung_id'], $validated['email_cong_ty']);
 
-    // Cập nhật dữ liệu không bao gồm ảnh
-    $data = $request->except(['ma_nhan_vien', 'nguoi_dung_id', 'anh_dai_dien']);
-    $hoSo->update($data);
+    $hoSo->update($validated);
 
-    // Nếu có ảnh thì xử lý
+    // Nếu có ảnh đại diện thì xử lý upload ảnh
     if ($request->hasFile('anh_dai_dien')) {
         $file = $request->file('anh_dai_dien');
         $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -172,12 +177,10 @@ public function update(Request $request, $id)
 
         file_put_contents($path, file_get_contents($file));
 
-        // Cập nhật đường dẫn trong CSDL
         $hoSo->anh_dai_dien = 'storage/anh_dai_dien/' . $filename;
         $hoSo->save();
     }
 
-    // Quay lại trang trước (edit) với thông báo thành công
     return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
 }
 
