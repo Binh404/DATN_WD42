@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="row align-items-center mb-4">
             <div class="col-md-4">
                 <h2 class="fw-bold text-primary mb-0">
-                    <i class="fas fa-building me-2"></i>Tin tuyển dụng
+                    Tin tuyển dụng
                 </h2>
             </div>
 
@@ -52,7 +52,7 @@
             <div class="card-header bg-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-table me-2 text-primary"></i>Tin Tuyển Dụng Đã Đăng
+                        Tin Tuyển Dụng Đã Đăng
                     </h5>
                 </div>
             </div>
@@ -63,25 +63,25 @@
                             <thead class="table-light">
                                 <tr>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-hashtag me-1"></i>ID
+                                        ID
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-code me-1"></i>Mã
+                                        Mã
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-building me-1"></i>Tiêu đề
+                                        Tiêu đề
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-building me-1"></i>Chức Vụ
+                                        Chức Vụ
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-toggle-on me-1"></i>Trạng Thái
+                                        </i>Trạng Thái
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-calendar-plus me-2"></i>Ngày Tạo
+                                        Ngày Tạo
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted text-center">
-                                        <i class="fas fa-cogs me-1"></i>Hành Động
+                                        Hành Động
                                     </th>
                                 </tr>
                             </thead>
@@ -179,57 +179,4 @@
 
 @endsection
 
-@push('styles')
-    <style>
-        .table-hover tbody tr:hover {
-            background-color: rgba(0, 123, 255, 0.05);
-        }
 
-        .card {
-            transition: all 0.3s ease;
-        }
-
-        .btn {
-            transition: all 0.2s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .badge {
-            font-size: 0.75rem;
-        }
-
-        .bg-success-subtle {
-            background-color: rgba(25, 135, 84, 0.1) !important;
-        }
-
-        .bg-danger-subtle {
-            background-color: rgba(220, 53, 69, 0.1) !important;
-        }
-
-        .border-success-subtle {
-            border-color: rgba(25, 135, 84, 0.3) !important;
-        }
-
-        .border-danger-subtle {
-            border-color: rgba(220, 53, 69, 0.3) !important;
-        }
-
-        @media (max-width: 768px) {
-            .d-flex.justify-content-between {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .btn-lg {
-                width: 100%;
-            }
-
-            .table-responsive {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
-@endpush
