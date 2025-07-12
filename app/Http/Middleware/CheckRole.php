@@ -24,7 +24,8 @@ class CheckRole
 
         $user = Auth::user();
         $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-        // dd($userRoles);
+        // dd(...$vaiTro);
+
         Log::info('Đang kiểm tra role cho route: ' . $request->path());
         Log::info('User Roles: ' . json_encode($userRoles));
 

@@ -8,12 +8,14 @@ use App\Models\ChamCong;
 use App\Models\NguoiDung;
 use App\Models\PhongBan;
 use Barryvdh\DomPDF\Facade\Pdf;
-use DB;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class ChamCongAdminController extends Controller
 {
@@ -83,7 +85,22 @@ class ChamCongAdminController extends Controller
         }
 
 
+        $user = auth()->user();
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin và HR xem tất cả dữ liệu, không giới hạn
+        } else if ($user->coVaiTro('department')) {
+            $phongBanId = $user->phong_ban_id;
+            $userId = $user->id;
 
+            // Lọc chỉ những người cùng phòng ban và không lấy user hiện tại
+            $query->whereHas('nguoiDung', function ($q) use ($phongBanId, $userId) {
+                $q->where('phong_ban_id', $phongBanId)
+                ->where('id', '<>', $userId);
+            });
+        } else {
+            // Nếu không phải Admin, HR, department thì không có quyền xem
+            abort(403, 'Bạn không có quyền truy cập.');
+        }
         // Sắp xếp theo thời gian mới nhất
         $chamCong = $query->orderBy('ngay_cham_cong', 'desc')
             ->orderBy('gio_vao', 'desc')
@@ -385,13 +402,34 @@ class ChamCongAdminController extends Controller
     // /**
     //  * Display the specified resource.
     //  */
+    // public function show($id)
+    // {
+    //     $chamCong = ChamCong::with(['nguoiDung', 'nguoiPheDuyet'])->findOrFail($id);
+    //     $chamCong->load(['nguoiDung.hoSo', 'nguoiDung.phongBan', 'nguoiPheDuyet.hoSo']);
+    //     // dd($chamCong->nguoiDung);
+    //     return view('admin.cham-cong.quan_ly_cham_cong.show', compact('chamCong'));
+    // }
     public function show($id)
     {
         $chamCong = ChamCong::with(['nguoiDung', 'nguoiPheDuyet'])->findOrFail($id);
         $chamCong->load(['nguoiDung.hoSo', 'nguoiDung.phongBan', 'nguoiPheDuyet.hoSo']);
-        // dd($chamCong->nguoiDung);
+
+        $user = auth()->user();
+
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+                abort(403, 'Bạn không có quyền xem bản ghi này.');
+            }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
+        }
+
         return view('admin.cham-cong.quan_ly_cham_cong.show', compact('chamCong'));
     }
+
 
     // /**
     //  * Show the form for editing the specified resource.
@@ -410,6 +448,17 @@ class ChamCongAdminController extends Controller
         //     ->orderBy('id')
         //     ->get();
 
+        $user = auth()->user();
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+                abort(403, 'Bạn không có quyền sửa bản ghi này.');
+            }
+        } else {
+            abort(403, 'Bạn không có quyền sửa bản ghi này.');
+        }
         // Danh sách trạng thái chấm công
         $trangThaiList = [
             'binh_thuong' => 'Bình thường',
@@ -429,6 +478,17 @@ class ChamCongAdminController extends Controller
     {
         $chamCong = ChamCong::BanChamCongTheoId($id);
         // dd($request->all());
+        $user = auth()->user();
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+                abort(403, 'Bạn không có quyền sửa bản ghi này.');
+            }
+        } else {
+            abort(403, 'Bạn không có quyền sửa bản ghi này.');
+        }
         $validated = $request->validate([
             'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
             'ngay_cham_cong' => 'required|date',
@@ -554,6 +614,17 @@ class ChamCongAdminController extends Controller
     public function destroy($id)
     {
         $chamCong = ChamCong::findOrFail($id);
+        $user = auth()->user();
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+                abort(403, 'Bạn không có quyền xóa bản ghi này.');
+            }
+        } else {
+            abort(403, 'Bạn không có quyền xóa bản ghi này.');
+        }
         $chamCong->delete();
 
         return redirect()->route('admin.chamcong.index')
@@ -629,6 +700,17 @@ class ChamCongAdminController extends Controller
     public function pheDuyet(Request $request, $id)
     {
         $chamCong = ChamCong::BanChamCongTheoId($id);
+        // $user = auth()->user();
+        // if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+        //     // Admin, HR xem được hết
+        // } else if ($user->coVaiTro('department')) {
+        //     // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+        //     if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+        //         abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
+        //     }
+        // } else {
+        //     abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
+        // }
         $trangThai = $chamCong->trang_thai;
         $validated = $request->validate([
             'trang_thai_duyet' => 'required|numeric',

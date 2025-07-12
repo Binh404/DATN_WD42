@@ -109,6 +109,11 @@
                         <a class="nav-link" href="{{ route('admin.locations.index') }}">Quản lý vị trí</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </li>

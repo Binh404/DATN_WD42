@@ -897,7 +897,7 @@
                 timestamp: new Date().toISOString()
             };
 
-            // console.log(attendanceData);
+            console.log(attendanceData);
 
             // Ẩn modal ngay sau khi submit
 
@@ -1043,44 +1043,45 @@
             showNotification('Đang lấy vị trí hiện tại...', 'info');
 
             try {
-                const location = await getCurrentLocation();
-                console.log('Vị trí công ty:', location);
-                if (!location || location.error) {
-                    showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
-                    return;
-                }
+                // const location = await getCurrentLocation();
+                // console.log('Vị trí công ty:', location);
+                // if (!location || location.error) {
+                //     showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
+                //     return;
+                // }
 
-                // Kiểm tra vị trí có trong phạm vi cho phép không
-                const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
+                // // Kiểm tra vị trí có trong phạm vi cho phép không
+                // const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
 
-                if (!locationCheck?.isValid) {
-                    const distance = locationCheck?.distance;
-                    const maxDistance = locationCheck?.maxDistance;
+                // if (!locationCheck?.isValid) {
+                //     const distance = locationCheck?.distance;
+                //     const maxDistance = locationCheck?.maxDistance;
 
-                    const isDistanceValid = typeof distance === 'number' && !isNaN(distance);
-                    const isMaxDistanceValid = typeof maxDistance === 'number' && !isNaN(maxDistance);
+                //     const isDistanceValid = typeof distance === 'number' && !isNaN(distance);
+                //     const isMaxDistanceValid = typeof maxDistance === 'number' && !isNaN(maxDistance);
 
-                    const distanceKm = isDistanceValid ? (distance / 1000).toFixed(1) : null;
-                    const maxDistanceKm = isMaxDistanceValid ? (maxDistance / 1000).toFixed(1) : null;
+                //     const distanceKm = isDistanceValid ? (distance / 1000).toFixed(1) : null;
+                //     const maxDistanceKm = isMaxDistanceValid ? (maxDistance / 1000).toFixed(1) : null;
 
-                    // Thông báo phù hợp
-                    let message = '';
+                //     // Thông báo phù hợp
+                //     let message = '';
 
-                    if (!distanceKm || !maxDistanceKm) {
-                        message = 'Không thể xác định được vị trí công ty hoặc vị trí của bạn. Vui lòng thử lại sau.';
-                    } else {
-                        message = `Bạn đang cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`;
-                    }
+                //     if (!distanceKm || !maxDistanceKm) {
+                //         message = 'Không thể xác định được vị trí công ty hoặc vị trí của bạn. Vui lòng thử lại sau.';
+                //     } else {
+                //         message = `Bạn đang cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`;
+                //     }
 
-                    showNotification(message, 'error');
-                    return;
-                }
+                //     showNotification(message, 'error');
+                //     return;
+                // }
 
                 // console.log(location);
                 const type = (attendanceStatus === 'out' ? 'in' : 'out');
                 const requiresReason = checkAttendance(type);
                 // console.log(type, location, attendanceStatus, btn);
-                console.log(requiresReason.reasonRequired);
+                // console.log(requiresReason.reasonRequired);
+                console.log(location);
 
 
                 // Nếu vị trí hợp lệ, tiến hành chấm công

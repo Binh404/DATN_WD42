@@ -57,7 +57,7 @@ Route::get('/testcatlayout', function () {
     return view('layoutsAdmin.master');
 });
 // Admin routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', function () {
@@ -286,14 +286,19 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
 
 });
+Route::prefix('department')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department'])->group(function () {
+     Route::get('/dashboard', function () {
+        return view('admin.dashboard.index');
+    })->name('department.dashboard');
+});
 
 // Employee routes
-Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department'])->group(function () {
     // Danh sách chấm công
     // / Chấm công routes
     Route::prefix('cham-cong')->name('cham-cong.')->group(function () {
         // Hiển thị trang chấm công
-        Route::get('/', [ChamCongController::class, 'index'])->name('index');
+        Route::get('/index.', [ChamCongController::class, 'index'])->name('index');
 
         // API chấm công
         Route::post('/vao', [ChamCongController::class, 'chamCongVao'])->name('vao');

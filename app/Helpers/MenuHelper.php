@@ -82,7 +82,7 @@ class MenuHelper
                 'duyetdon' => ['tuyendung', 'xinnghiphep']
             ],
             'department' => [
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong'],
                 'duyetdon' => ['xinnghiphep']
             ],
             'employee' => [
