@@ -7,10 +7,10 @@
     </div>
     <div>
       <a class="navbar-brand brand-logo" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo.svg' )}}" alt="logo" />
+        <img src="{{asset('assets/admin/images/logo.svg')}}" alt="logo" />
       </a>
       <a class="navbar-brand brand-logo-mini" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo-mini.svg' )}}" alt="logo" />
+        <img src="{{asset('assets/admin/images/logo-mini.svg')}}" alt="logo" />
       </a>
     </div>
   </div>
@@ -120,7 +120,7 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <img src="{{asset('assets/admin/images/faces/face10.jpg' ) }}" alt="image" class="img-sm profile-pic">
+              <img src="{{asset('assets/admin/images/faces/face10.jpg') }}" alt="image" class="img-sm profile-pic">
             </div>
             <div class="preview-item-content flex-grow py-2">
               <p class="preview-subject ellipsis fw-medium text-dark">Marian Garner </p>
@@ -160,7 +160,13 @@
           {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a> --}}
-          <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="dropdown-item">
+              <i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Đăng xuất
+            </button>
+          </form>
+        
         </div>
       </li>
     </ul>

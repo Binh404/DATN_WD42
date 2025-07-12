@@ -39,7 +39,7 @@ use App\Http\Controllers\Admin\HopDongLaoDongController;
 
 use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Admin\LuongController;
-
+use App\Http\Controllers\admin\TaiKhoanController;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -62,8 +62,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard.index');
-    })->name('admin.dashboard');
-    ;
+    })->name('admin.dashboard');;
     // Admin Phòng Ban
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // Route::get('/phongban/create', [PhongBanController::class, 'create']);
@@ -121,7 +120,6 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
             Route::delete('/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('destroy');
             Route::get('export', [ThucHienTangCaAdminController::class, 'export'])
                 ->name('export');
-
         });
         // Route xuất báo cáo (Excel/PDF)
         Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
@@ -247,9 +245,6 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
             Route::get('/edit/{id}', [HoSoNhanVienController::class, 'edit'])->name('hoso.edit');
             Route::put('/update/{id}', [HoSoNhanVienController::class, 'update'])->name('hoso.update');
             Route::delete('/delete/{id}', [HoSoNhanVienController::class, 'destroy'])->name('hoso.destroy');
-
-
-       
         });
 
         // Admin HR - Lương
@@ -257,12 +252,20 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
         Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
         Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
-        // Admin HR - Thêm tk
+        // Admin HR - tk tk
         Route::get('register', [RegisteredUserController::class, 'create'])
             ->name('register');
 
         Route::post('register', [RegisteredUserController::class, 'store'])
             ->name('register.store');
+
+        Route::get('tkall', [TaiKhoanController::class, 'getall'])
+            ->name('tkall');
+        Route::get('tkedit/{id}', [TaiKhoanController::class, 'edit'])
+            ->name('tkedit');
+        Route::put('tkedit/{id}', [TaiKhoanController::class, 'update'])
+            ->name('tkupdate');
+        // Route::delete('/taikhoan/{id}', [TaiKhoanController::class, 'delete'])->name('tkdelete');
     });
 
     // Admin HR - Lương
@@ -270,10 +273,6 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
     Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
     Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
-
-
-
-
 });
 
 // Employee routes
@@ -355,6 +354,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         // EM Profile , đặt tên khác để không bị trùng
         Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
+        Route::post('/tai-khoan/cap-nhat', [ProfileController::class, 'capNhatTaiKhoan'])->name('tai-khoan.cap-nhat');
+        Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
 });
 

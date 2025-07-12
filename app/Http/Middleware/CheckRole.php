@@ -10,31 +10,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle($request, Closure $next, ...$vaiTro)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
         $user = Auth::user();
-        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
 
-        Log::info('Đang kiểm tra role cho route: ' . $request->path());
-        Log::info('User Roles: ' . json_encode($userRoles));
-
-
-        foreach ($vaiTro as $role) {
-            if (in_array($role, $userRoles)) {
-                return $next($request);
-            }
+        if (!$user) {
+            abort(401); // chưa đăng nhập
         }
 
-        return abort(403, 'Bạn không có quyền truy cập.');
+        // Nếu quan hệ belongsTo
+        $userRole = optional($user->vaiTro)->ten;
+
+        if (in_array($userRole, $roles)) {
+            return $next($request);
+        }
+
+        abort(403, 'Bạn không có quyền truy cập.');
     }
 }
