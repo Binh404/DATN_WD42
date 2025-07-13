@@ -120,4 +120,8 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(LichSuDuyetDonNghi::class, 'nguoi_duyet_id');
     }
+     public function dangKyTangCa()
+    {
+        return $this->hasOne(DangKyTangCa::class, 'nguoi_dung_id');
+    }
 }

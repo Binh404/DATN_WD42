@@ -190,4 +190,7 @@ class DangKyTangCa extends Model
             $this->attributes['so_gio_tang_ca'] = round($soGio, 2);
         }
     }
+    public function thucHienTangCa(){
+        return $this->hasOne(ThucHienTangCa::class, 'dang_ky_tang_ca_id');
+    }
 }

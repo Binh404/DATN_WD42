@@ -13,10 +13,10 @@ class BangLuong extends Model
 
     protected $fillable = [
         'ma_bang_luong',
-        'loai_bang_luong',
+        // 'loai_bang_luong',
         'nam',
         'thang',
-        'ngay_tra_luong',
+        // 'ngay_tra_luong',
         'trang_thai',
         'nguoi_xu_ly_id',
         'thoi_gian_xu_ly',
@@ -27,13 +27,20 @@ class BangLuong extends Model
     protected $casts = [
         'nam' => 'integer',
         'thang' => 'integer',
-        'ngay_tra_luong' => 'date',
+        // 'ngay_tra_luong' => 'date',
         'thoi_gian_xu_ly' => 'datetime',
         'thoi_gian_phe_duyet' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+    public static function generateUniqueMaLuong(): string
+    {
+        do {
+            $code = 'DVT' . mt_rand(1000000, 9999999);
+        } while (self::where('ma_bang_luong', $code)->exists());
 
+        return $code;
+    }
     public function luongNhanVien()
     {
         // hehe

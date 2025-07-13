@@ -1,4 +1,5 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
+
 @section('title', 'Yêu cầu tuyển dụng')
 @section('content')
 
@@ -740,7 +741,7 @@
 
                     {{-- Trưởng phòng --}}
                     <div
-                        class="step-indicator 
+                        class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
                         <i class="fas fa-user-tie"></i>
                     </div>
@@ -765,7 +766,7 @@
 
                 <div class="timeline-step">
                     <div
-                        class="step-indicator 
+                        class="step-indicator
                                 {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
                         <i class="fas fa-users-cog"></i>
                     </div>
@@ -863,12 +864,12 @@
             // Hiển thị ảnh
             popupBody.innerHTML = `
                         <div class="image-container">
-                            <img src="${imageUrl}" 
-                                alt="${filename}" 
+                            <img src="${imageUrl}"
+                                alt="${filename}"
                                 class="popup-image"
                                 onload="this.style.opacity='1'"
                                 onerror="showImageError()">
-                            
+
                         </div>
                     `;
         } else {

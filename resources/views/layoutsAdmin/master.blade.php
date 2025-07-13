@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
  <!-- Font Awesome Icons StyleSheet -->
     <link rel="stylesheet" href="{{ asset('assets/backend/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Required meta tags -->
@@ -40,14 +41,15 @@
             @yield('content')
           </div>
           <!-- content-wrapper ends -->
-          <!-- partial:../../partials/_footer.html -->
-          @include('layoutsAdmin.partials._footer')
+
           <!-- partial -->
         </div>
         <!-- main-panel ends -->
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+     <!-- partial:../../partials/_footer.html -->
+          @include('layoutsAdmin.partials._footer')
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="{{ asset('assets/admin/vendors/js/vendor.bundle.base.js') }}"></script>
@@ -68,3 +70,5 @@
     @yield('script')
   </body>
 </html>
+@stack('scripts')
+

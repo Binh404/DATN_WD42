@@ -43,8 +43,8 @@
             </a>
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Lương</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{route('phieuluong.index')}}">Phiếu Lương</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li>
                 </ul>
             </div>
 
@@ -129,7 +129,7 @@
             </a>
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('donxinnghi.danhsach')}}">
                             Danh sách </a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="{{route('admin.duyetdon.tuyendung.index')}}"> Tuyển dụng
                         </a></li> --}}
@@ -146,6 +146,12 @@
             <a class="nav-link" href="{{route('hr.loainghiphep.index')}}">
                 <i class="menu-icon mdi mdi-file-document"></i>
                 <span class="menu-title">Loại nghỉ phép </span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('chucvu.index')}}">
+                <i class="menu-icon mdi mdi-file-document"></i>
+                <span class="menu-title">Chức vụ </span>
             </a>
         </li>
     </ul>
