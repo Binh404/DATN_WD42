@@ -55,6 +55,14 @@ class LichSuDuyetDonXinNghiController extends Controller
         } elseif ($capDuyet == 2) {
             // HR duyệt xong → duyệt hoàn tất
             $donXinNghi->trang_thai = 'da_duyet';
+
+            // cập nhật lại số dư nghỉ phép cho nhân viên
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                    'so_ngay_da_dung'   => DB::raw('so_ngay_da_dung + ' . $donXinNghi->so_ngay_nghi),
+                ]);
+
             for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
                 ChamCong::create([
                     'ngay_cham_cong' => $ngay->format('Y-m-d'),
@@ -66,7 +74,7 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'trang_thai' => 'nghi_phep',
                     'trang_thai_duyet' => 1
                 ]);
-        }
+          }
         }
 
         $donXinNghi->save();

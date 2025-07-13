@@ -179,6 +179,7 @@ class NghiPhepController extends Controller
     {
         $user = auth()->user();
         $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
+        $phongBanId = $user->phong_ban_id;
 
         // Khởi tạo các biến mặc định
         $donXinNghis = collect();
@@ -199,20 +200,24 @@ class NghiPhepController extends Controller
 
             $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
                 $query->where('cap_duyet', 1);
-            })->count();
-
+            })
+                ->whereHas('nguoiDung', function ($query) use ($phongBanId) {
+                    $query->where('phong_ban_id', $phongBanId);
+                })
+                ->count();
         } elseif ($vaiTro->ten == 'hr') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
                 ->where('cap_duyet_hien_tai', 2)->get();
 
             $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
-                ->where('cap_duyet', 1)
+                ->where('cap_duyet', 2)
                 ->groupBy('ket_qua')
                 ->pluck('tong', 'ket_qua');
 
-            $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
-                $query->where('cap_duyet', 2);
-            })
+            $soDonChuaDuyet = DonXinNghi::where('cap_duyet_hien_tai', 2)
+                ->whereDoesntHave('lichSuDuyet', function ($query) {
+                    $query->where('cap_duyet', 2);
+                })
                 ->count();
         } else {
             // Xử lý trường hợp vai trò khác
