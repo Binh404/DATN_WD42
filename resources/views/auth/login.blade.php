@@ -189,9 +189,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end mt-4">
-                                        @if (Route::has('password.request'))
+                                        {{-- @if (Route::has('password.request')) --}}
                                             <a href="{{ route('password.request') }}">Quên mật khẩu?</a>
-                                        @endif
+                                        {{-- @endif --}}
                                     </div>
                                 </div>
                             </div>

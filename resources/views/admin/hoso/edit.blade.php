@@ -3,7 +3,26 @@
 
 @section('content')
 <div class="container mt-4">
-    <h4>Chỉnh sửa hồ sơ nhân viên</h4>
+   <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Chỉnh sửa hồ sơ nhân viên</h2>
+            {{-- <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.chamcong.index') }}">Chấm công</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
+                </ol>
+            </nav> --}}
+            <p class="mb-0 opacity-75">Chỉnh sửa thông tin bản ghi hồ sơ nhân viên</p>
+
+        </div>
+        <div>
+            <a href="{{ route('hoso.all', $hoSo->id) }}" class="btn btn-light">
+                <i class="mdi mdi-arrow-left me-2"></i>Quay lại
+            </a>
+        </div>
+    </div>
 
     @if(session('success'))
         <div class="alert alert-success">

@@ -35,6 +35,7 @@
       <div class="container-fluid page-body-wrapper">
         <!-- partial:../../partials/_sidebar.html -->
         @include('layoutsAdmin.partials._sidebar')
+        {{-- @include('layoutsAdmin.partials.menu-item') --}}
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
