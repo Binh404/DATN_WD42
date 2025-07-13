@@ -73,8 +73,7 @@
             <form method="POST" action="{{ route('logout') }}" id="logout-form">
                 @csrf
 
-                <button type="submit" class="dropdown-item d-flex align-items-center"
-                    style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+                <button type="submit" class="nav-link" style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
                     <i class="fas fa-sign-out-alt mr-2"></i>
                     <span>Đăng xuất</span>
                 </button>

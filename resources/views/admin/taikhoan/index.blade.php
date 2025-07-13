@@ -65,8 +65,8 @@
                             </td>
                             <td>{{ $item->lan_dang_nhap_cuoi }}</td>
                             <td>{{ $item->ip_dang_nhap_cuoi }}</td>
-                            <td>{{ $item->phong_ban_id }}</td>
-                            <td>{{ $item->chuc_vu_id }}</td>
+                            <td>{{ $item->phongBan->ten_phong_ban }}</td>
+                            <td>{{ $item->chucVu->ten }}</td>
                             <td>
                                 <a href="{{ route('tkedit', $item->id) }}" class="btn btn-sm btn-warning">Sửa</a>
                             </td>

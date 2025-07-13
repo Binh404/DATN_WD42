@@ -14,9 +14,10 @@ class TaiKhoanController extends Controller
 {
     public function getall(Request $request)
     {
-        $taikhoan = NguoiDung::with('vaiTro')->get();
+        $taikhoan = NguoiDung::with(['phongBan', 'chucVu'])->get(); // lấy toàn bộ
         return view('admin.taikhoan.index', compact('taikhoan'));
     }
+
     public function edit($id)
     {
 
