@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChamCong;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
 use App\Models\SoDuNghiPhepNhanVien;
@@ -22,7 +23,9 @@ class LichSuDuyetDonXinNghiController extends Controller
         }
 
         $donXinNghi = DonXinNghi::findOrFail($id);
-
+        $ngayBatDau = $donXinNghi->ngay_bat_dau;
+        $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
+        // dd($ngayBatDau, $ngayKetThuc);
         // Gán cấp duyệt theo vai trò
         $capDuyet = $vaiTro->ten === 'department' ? 1 : 2;
 
@@ -59,6 +62,19 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                     'so_ngay_da_dung'   => DB::raw('so_ngay_da_dung + ' . $donXinNghi->so_ngay_nghi),
                 ]);
+
+            for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
+                ChamCong::create([
+                    'ngay_cham_cong' => $ngay->format('Y-m-d'),
+                    'nguoi_dung_id' => $donXinNghi->nguoi_dung_id,
+                    'gio_vao' => '08:30',
+                    'gio_ra' => '17:30',
+                    'so_gio_lam' => 8,
+                    'so_cong' => 1,
+                    'trang_thai' => 'nghi_phep',
+                    'trang_thai_duyet' => 1
+                ]);
+          }
         }
 
         $donXinNghi->save();
