@@ -217,12 +217,8 @@ class HopDongLaoDongController extends Controller
 
         $data = $request->except(['file_hop_dong', 'trang_thai_hop_dong']);
 
-        // Tự động map trạng thái hợp đồng theo trạng thái ký
-        if ($request->trang_thai_ky === 'cho_ky') {
-            $data['trang_thai_hop_dong'] = 'chua_hieu_luc';
-        } elseif ($request->trang_thai_ky === 'da_ky') {
-            $data['trang_thai_hop_dong'] = 'hieu_luc';
-        }
+        // Không tự động thay đổi trạng thái hợp đồng khi update
+        // Trạng thái hợp đồng chỉ thay đổi thông qua các action riêng biệt (phê duyệt, ký, hủy)
 
         // Xử lý file hợp đồng (bắt buộc)
         if ($request->hasFile('file_hop_dong')) {
@@ -281,10 +277,8 @@ class HopDongLaoDongController extends Controller
             return redirect()->back()->with('error', 'Không thể hủy hợp đồng đã hết hạn');
         }
 
-        // Kiểm tra xem hợp đồng có đang trong thời gian hiệu lực không
-        if ($hopDong->ngay_bat_dau && $hopDong->ngay_bat_dau->gt(now())) {
-            return redirect()->back()->with('error', 'Không thể hủy hợp đồng chưa đến ngày hiệu lực');
-        }
+        // Cho phép hủy hợp đồng trước thời hạn nếu có lý do hợp lệ
+        // Không cần kiểm tra ngày bắt đầu nữa
 
         // Kiểm tra quyền hủy hợp đồng (chỉ admin và HR mới có quyền)
         $user = Auth::user();
@@ -312,35 +306,72 @@ class HopDongLaoDongController extends Controller
 
     public function pheDuyetHopDong($id)
     {
-        $hopDong = HopDongLaoDong::findOrFail($id);
-        
-        // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
-        $user = Auth::user();
-        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-        
-        if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Bạn không có quyền phê duyệt hợp đồng'
-            ], 403);
-        }
-        
-        if ($hopDong->trang_thai_hop_dong !== 'tao_moi') {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Hợp đồng không ở trạng thái tạo mới'
-            ], 400);
-        }
+        try {
+            $hopDong = HopDongLaoDong::findOrFail($id);
+            
+            // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
+            $user = Auth::user();
+            $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+            
+            if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
+                return redirect()->back()->with('error', 'Bạn không có quyền phê duyệt hợp đồng');
+            }
+            
+            if ($hopDong->trang_thai_hop_dong !== 'tao_moi') {
+                return redirect()->back()->with('error', 'Hợp đồng không ở trạng thái tạo mới');
+            }
 
-        $hopDong->update([
-            'trang_thai_hop_dong' => 'chua_hieu_luc',
-            'trang_thai_ky' => 'cho_ky'
-        ]);
+            // Cập nhật trạng thái: từ "tạo mới" → "chưa hiệu lực", trạng thái ký vẫn là "chờ ký"
+            $hopDong->update([
+                'trang_thai_hop_dong' => 'chua_hieu_luc',
+                'trang_thai_ky' => 'cho_ky'
+            ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Phê duyệt hợp đồng thành công'
-        ]);
+            return redirect()->route('hopdong.show', $hopDong->id)
+                ->with('success', 'Phê duyệt hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Chưa hiệu lực" và sẵn sàng để ký.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Lỗi phê duyệt hợp đồng: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi phê duyệt hợp đồng: ' . $e->getMessage());
+        }
+    }
+
+    public function kyHopDong($id)
+    {
+        try {
+            $hopDong = HopDongLaoDong::findOrFail($id);
+            
+            // Kiểm tra quyền ký (chỉ admin và HR mới có quyền)
+            $user = Auth::user();
+            $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+            
+            if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
+                return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng');
+            }
+            
+            if ($hopDong->trang_thai_hop_dong !== 'chua_hieu_luc') {
+                return redirect()->back()->with('error', 'Hợp đồng phải ở trạng thái "Chưa hiệu lực" để có thể ký');
+            }
+
+            if ($hopDong->trang_thai_ky !== 'cho_ky') {
+                return redirect()->back()->with('error', 'Hợp đồng đã được ký trước đó');
+            }
+
+            // Cập nhật trạng thái: từ "chưa hiệu lực" → "hiệu lực", trạng thái ký từ "chờ ký" → "đã ký"
+            $hopDong->update([
+                'trang_thai_hop_dong' => 'hieu_luc',
+                'trang_thai_ky' => 'da_ky',
+                'nguoi_ky_id' => Auth::id(),
+                'thoi_gian_ky' => now()
+            ]);
+
+            return redirect()->route('hopdong.show', $hopDong->id)
+                ->with('success', 'Ký hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Hiệu lực".');
+                
+        } catch (\Exception $e) {
+            \Log::error('Lỗi ký hợp đồng: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi ký hợp đồng: ' . $e->getMessage());
+        }
     }
 
    

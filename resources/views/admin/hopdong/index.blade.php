@@ -49,6 +49,7 @@
                                                     <label for="trang_thai_hop_dong">Trạng thái hợp đồng</label>
                                                     <select class="form-control" id="trang_thai_hop_dong" name="trang_thai_hop_dong">
                                                         <option value="">Tất cả</option>
+                                                        <option value="tao_moi" {{ request('trang_thai_hop_dong') == 'tao_moi' ? 'selected' : '' }}>Tạo mới</option>
                                                         <option value="hieu_luc" {{ request('trang_thai_hop_dong') == 'hieu_luc' ? 'selected' : '' }}>Hiệu lực</option>
                                                         <option value="chua_hieu_luc" {{ request('trang_thai_hop_dong') == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
                                                         <option value="het_han" {{ request('trang_thai_hop_dong') == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
@@ -119,6 +120,20 @@
                                                     <p class="card-subtitle card-subtitle-dash" id="tongSoBanGhi">
                                                         Bảng có <span class="text-primary">{{ $hopDongs->total() }}</span> bản ghi
                                                     </p>
+                                                    @php
+                                                        $hopDongTaoMoi = $hopDongs->where('trang_thai_hop_dong', 'tao_moi')->count();
+                                                    @endphp
+                                                    @if($hopDongTaoMoi > 0)
+                                                        <div class="alert alert-info alert-sm mt-2 mb-0">
+                                                            <i class="mdi mdi-information-outline me-1"></i>
+                                                            Có <strong>{{ $hopDongTaoMoi }}</strong> hợp đồng ở trạng thái "Tạo mới" cần phê duyệt.
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('hopdong.create') }}" class="btn btn-primary">
+                                                        <i class="mdi mdi-plus me-1"></i> Thêm mới hợp đồng
+                                                    </a>
                                                 </div>
                                             </div>
 
@@ -185,7 +200,9 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
+                                                                    @if($hopDong->trang_thai_hop_dong == 'tao_moi')
+                                                                        <span class="badge badge-info" title="Hợp đồng mới tạo, cần phê duyệt để chuyển sang trạng thái 'Chưa hiệu lực'">Tạo mới</span>
+                                                                    @elseif($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                                                         <span class="badge badge-success">Hiệu lực</span>
                                                                     @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
                                                                         <span class="badge badge-warning">Chưa hiệu lực</span>
@@ -216,12 +233,15 @@
                                                                         @endif
 
                                                                         @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
-                                                                            <button type="button"
-                                                                                    class="btn btn-success btn-sm"
-                                                                                    onclick="kyHopDong({{ $hopDong->id }})"
-                                                                                    title="Ký hợp đồng">
-                                                                                <i class="fas fa-signature"></i>
-                                                                            </button>
+                                                                            <form action="{{ route('hopdong.ky', $hopDong->id) }}" method="POST" style="display: inline;">
+                                                                                @csrf
+                                                                                <button type="submit"
+                                                                                        class="btn btn-success btn-sm"
+                                                                                        onclick="return confirm('Bạn có chắc chắn muốn ký hợp đồng này?')"
+                                                                                        title="Ký hợp đồng">
+                                                                                    <i class="fas fa-signature"></i>
+                                                                                </button>
+                                                                            </form>
                                                                         @endif
                                                                     </div>
                                                                 </td>
@@ -266,29 +286,6 @@
 
 @section('scripts')
     <script>
-        function kyHopDong(id) {
-            if (confirm('Bạn có chắc chắn muốn ký hợp đồng này?')) {
-                $.ajax({
-                    url: `/hop-dong/${id}/ky`,
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        if (response.status === 'success') {
-                            toastr.success('Ký hợp đồng thành công');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1500);
-                        } else {
-                            toastr.error('Có lỗi xảy ra khi ký hợp đồng');
-                        }
-                    },
-                    error: function () {
-                        toastr.error('Có lỗi xảy ra khi ký hợp đồng');
-                    }
-                });
-            }
-        }
+        // JavaScript cho các chức năng khác nếu cần
     </script>
 @endsection

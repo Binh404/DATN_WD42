@@ -150,6 +150,7 @@
                             <label for="trang_thai_hop_dong">Trạng thái hợp đồng <span class="text-danger">*</span></label>
                             <select name="trang_thai_hop_dong" id="trang_thai_hop_dong" class="form-control @error('trang_thai_hop_dong') is-invalid @enderror" required style="pointer-events: none; background-color: #e9ecef;" tabindex="-1">
                                 <option value="">-- Chọn trạng thái hợp đồng --</option>
+                                <option value="tao_moi" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'tao_moi' ? 'selected' : '' }}>Tạo mới</option>
                                 <option value="chua_hieu_luc" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
                                 <option value="hieu_luc" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'hieu_luc' ? 'selected' : '' }}>Đang hiệu lực</option>
                                 <option value="het_han" {{ old('trang_thai_hop_dong', $hopDong->trang_thai_hop_dong) == 'het_han' ? 'selected' : '' }}>Hết hạn</option>

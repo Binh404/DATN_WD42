@@ -158,7 +158,12 @@
                     <div class="col-md-12">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <strong>Lưu ý:</strong> Hợp đồng mới tạo sẽ ở trạng thái "Tạo mới". Sau khi tạo, HR cần phê duyệt để chuyển sang trạng thái "Chưa hiệu lực" và có thể ký hợp đồng.
+                            <strong>Lưu ý:</strong> 
+                            <ul class="mb-0 mt-2">
+                                <li>Hợp đồng mới tạo sẽ ở trạng thái <strong>"Tạo mới"</strong></li>
+                                <li>Sau khi tạo, HR/Admin cần <strong>phê duyệt</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
+                                <li>Sau khi phê duyệt, HR/Admin có thể <strong>ký hợp đồng</strong> để chuyển sang trạng thái <strong>"Hiệu lực"</strong></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
