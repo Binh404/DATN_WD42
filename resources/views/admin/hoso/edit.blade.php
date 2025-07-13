@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Chỉnh sửa hồ sơ')
 
 @section('content')

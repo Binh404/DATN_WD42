@@ -61,14 +61,14 @@
                                 <td>
                                     @if(isset($nv->hoSo->id))
                                         <a href="{{ route('hoso.edit', $nv->hoSo->id) }}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square">Sửa</i>
                                         </a>
                                         <form action="{{ route('hoso.markResigned', $nv->hoSo->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="btn btn-sm btn-outline-danger"
                                                 onclick="return confirm('Bạn có chắc muốn đánh dấu nhân viên này là đã nghỉ?')">
-                                                <i class="bi bi-person-x"></i>
+                                                <i class="bi bi-person-x">Nghỉ</i>
                                             </button>
                                         </form>
                                     @else

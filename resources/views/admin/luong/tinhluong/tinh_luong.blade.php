@@ -45,13 +45,13 @@
     </div>
 
 
-    <div class="mb-3">
+    {{-- <div class="mb-3">
         <label class="form-label">Phụ cấp (chức vụ, xăng xe, ăn trưa...)</label>
         <div class="input-group">
             <input type="text" class="form-control" name="phu_cap" value="{{ old('phu_cap') }}" placeholder="Chọn 'tính phụ cấp' để biết số tiền phụ cấp">
             <button type="button" class="btn btn-primary">Tính phụ cấp</button>
         </div>
-    </div>
+    </div> --}}
 
    <div class="mb-3">
     <label class="form-label">Ngày tính lương</label>
@@ -69,7 +69,7 @@
         <label class="form-label">Người tính lương</label>
         <input type="text" readonly class="form-control rounded " style="color: #a5a7a8;background-color: #d9d9d9;" value="{{ auth()->user()->ten_dang_nhap }}">
     </div>
-    <button type="submit" class="btn btn-success">Lưu</button>
+    <button type="submit" class="btn btn-success">Cập nhật</button>
 </form>
 
 </div>

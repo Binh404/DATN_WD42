@@ -94,11 +94,16 @@ class TinTuyenDungController extends Controller
             ->with('success', 'Tạo tin tuyển dụng thành công!');
     }
 
-    public function index(){
+    public function index(Request $request){
         $user = auth()->user();
 
         if ($user->coVaiTro('HR')) {
-           $tinTuyenDungs = TinTuyenDung::all();
+            $query = TinTuyenDung::with('chucVu', 'phongBan')->orderBy("id", "desc");
+            // $tinTuyenDungs = TinTuyenDung::all();
+            if($request->filled('search')) {
+                $query->where('tieu_de', 'like', '%' . $request->search . '%');
+            }
+            $tinTuyenDungs = $query->paginate(20);
             return view("admin.tintuyendung.index", compact('tinTuyenDungs'));
         }
         abort(403, 'Bạn không có quyền truy cập trang này.');
