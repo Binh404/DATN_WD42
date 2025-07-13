@@ -77,7 +77,7 @@ class LoaiNghiPhepController extends Controller
 
         $validated = $request->validate([
             'ten' => 'required|string|max:255',
-            'ma' => 'required|string|max:255|unique:loai_nghi_phep,ma,' . $loaiNghiPhep->id,
+            // 'ma' => 'required|string|max:255|unique:loai_nghi_phep,ma,' . $loaiNghiPhep->id,
             'mo_ta' => 'nullable|string',
             'so_ngay_nam' => 'required|integer|min:0',
             'toi_da_ngay_lien_tiep' => 'required|integer|min:0',
