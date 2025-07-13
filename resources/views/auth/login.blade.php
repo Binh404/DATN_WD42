@@ -222,6 +222,69 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
     </section>
 </body>
 </html>
+=======
+      </div>
+      <div class="col-12 col-md-6 col-xl-5">
+        <div class="card border-0 rounded-4">
+          <div class="card-body p-3 p-md-4 p-xl-5">
+            <div class="row">
+              <div class="col-12">
+                <div class="mb-4">
+                  <h3>Sign in</h3>
+                 
+                </div>
+              </div>
+            </div>
+            <form method="POST" action="{{ route('login') }}">
+            @csrf
+              <div class="row gy-3 overflow-hidden">
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="name@example.com" required>
+                    <label for="email" class="form-label">Email</label>
+                    {{-- <input class="form-control" id="email" type="email" name="email"  required autofocus> --}}
+                @error('email')
+                    <div class="form-error">{{ $message }}</div>
+                @enderror
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" name="password" id="password" value="" placeholder="Password" required>
+                    @error('password')
+                        <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    <label for="password" class="form-label">Password</label>
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <div class="d-grid">
+                    <button class="btn btn-primary btn-lg" type="submit">Log in now</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end mt-4">
+                   @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}">Forgot password?</a>
+                        @endif
+                </div>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+>>>>>>> 4b80096c7d303713b5c388c8d374d454365b5418

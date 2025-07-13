@@ -38,7 +38,7 @@ use App\Http\Controllers\Admin\HopDongLaoDongController;
 
 use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Admin\LuongController;
-
+use App\Http\Controllers\admin\TaiKhoanController;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -61,8 +61,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard.index');
-    })->name('admin.dashboard');
-    ;
+    })->name('admin.dashboard');;
     // Admin Phòng Ban
 
     Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
@@ -107,7 +106,6 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
             Route::delete('/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('destroy');
             Route::get('export', [ThucHienTangCaAdminController::class, 'export'])
                 ->name('export');
-
         });
         // Route xuất báo cáo (Excel/PDF)
         Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
@@ -252,9 +250,16 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         // });
 
 
+        Route::post('register', [RegisteredUserController::class, 'store'])
+            ->name('register.store');
 
-
-
+        Route::get('tkall', [TaiKhoanController::class, 'getall'])
+            ->name('tkall');
+        Route::get('tkedit/{id}', [TaiKhoanController::class, 'edit'])
+            ->name('tkedit');
+        Route::put('tkedit/{id}', [TaiKhoanController::class, 'update'])
+            ->name('tkupdate');
+        // Route::delete('/taikhoan/{id}', [TaiKhoanController::class, 'delete'])->name('tkdelete');
     });
 
 
@@ -362,6 +367,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         // EM Profile , đặt tên khác để không bị trùng
         Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('employee.profile.update');
+        Route::post('/tai-khoan/cap-nhat', [ProfileController::class, 'capNhatTaiKhoan'])->name('tai-khoan.cap-nhat');
+        Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
 });
 

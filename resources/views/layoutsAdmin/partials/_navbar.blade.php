@@ -130,7 +130,7 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <img src="{{asset('assets/admin/images/faces/face10.jpg' ) }}" alt="image" class="img-sm profile-pic">
+              <img src="{{asset('assets/admin/images/faces/face10.jpg') }}" alt="image" class="img-sm profile-pic">
             </div>
             <div class="preview-item-content flex-grow py-2">
               <p class="preview-subject ellipsis fw-medium text-dark">Marian Garner </p>

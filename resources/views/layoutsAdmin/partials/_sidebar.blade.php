@@ -23,13 +23,18 @@
                 <span class="menu-title">Hồ sơ</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="ui-basic">
+            <div class="collapse" id="ui-hoso">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
                     </li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
+                    </li>
+
                 </ul>
+
             </div>
+
         </li>
         @endif
 
@@ -65,12 +70,12 @@
                     <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.create') }}">Lương</a>
+                        <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
                     </li>
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluong'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.index') }}">Bảng Lương</a>
+                        <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
                 </ul>
@@ -163,12 +168,13 @@
         {{-- Hợp đồng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('hopdong'))
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#hd" aria-expanded="false" aria-controls="hd">
-                <i class="menu-icon mdi mdi-file-document"></i>
-                <span class="menu-title">Hợp đồng</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
+                aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                <span class="menu-title">Tạo đơn từ</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="hd">
+            <div class="collapse" id="taodontu">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>

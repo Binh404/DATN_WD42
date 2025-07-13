@@ -1,54 +1,58 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-  <!-- Brand Logo -->
-  <a style="text-decoration: none;" href="@if(auth()->user()->role === 'admin')
-            {{route('admin.dashboard')}}
+    <!-- Brand Logo -->
+    <a style="text-decoration: none;"
+        href="@if (auth()->user()->role === 'admin') {{ route('admin.dashboard') }}
           @elseif(auth()->user()->role === 'hr')
-            {{route('hr.dashboard')}}
+            {{ route('hr.dashboard') }}
           {{-- @else
-            {{route('hr.dashboard')}} --}}
-          @endif" class="brand-link">
-    <div class="d-flex align-items-center px-3 py-2">
-    <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo" class="img-fluid bg-white rounded-circle shadow-sm me-2" style="width: 40px; height: 40px;">
-    <span class="text-white fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
-</div>
+            {{route('hr.dashboard')}} --}} @endif"
+        class="brand-link">
+        <div class="d-flex align-items-center px-3 py-2">
+            <img src="{{ asset('assets/images/dvlogo.png') }}" alt="Logo"
+                class="img-fluid bg-white rounded-circle shadow-sm me-2" style="width: 40px; height: 40px;">
+            <span class="text-white fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
+        </div>
 
-  </a>
+    </a>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
-    <div class="image">
-        <img src="{{ asset('assets/images/user.png') }}" alt="user" class="img-circle elevation-2 bg-white" style="width: 35px; height: 35px;">
-    </div>
-    <div class="info ms-2">
-        <span class="d-block text-white fw-semibold">{{ auth()->user()->ten_dang_nhap }}</span>
-    </div>
-</div>
-<style>
-    .user-panel {
-        background-color: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-        transition: 0.3s ease;
-            height: 54px;
-    padding-left: 25px;
-    padding-top: 15px;
-    }
-</style>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+            <div class="image">
+                <img src="{{ asset('assets/images/user.png') }}" alt="user" class="img-circle elevation-2 bg-white"
+                    style="width: 35px; height: 35px;">
+            </div>
+            <div class="info ms-2">
+                <span class="d-block text-white fw-semibold">{{ auth()->user()->ten_dang_nhap }}</span>
+            </div>
+        </div>
+        <style>
+            .user-panel {
+                background-color: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                transition: 0.3s ease;
+                height: 54px;
+                padding-left: 25px;
+                padding-top: 15px;
+            }
+        </style>
 
-    <!-- Sidebar Menu -->
-    <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-item">
-          <a href="
-                    {{route('hr.dashboard')}}
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <li class="nav-item">
+                    <a href="
+                    {{ route('hr.dashboard') }}
                   {{-- @else
                     {{route('employee.dashboard')}} --}}
-                  " class="nav-link">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-            <p>Dashboard</p>
-          </a>
-        </li>
+                  "
+                        class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
 
         <!-- account Section -->
         <li class="nav-item">
@@ -58,7 +62,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              {{-- <a href="{{route('taikhoan.index')}}" class="nav-link"> --}}
                 <i class="far fa-circle nav-icon"></i>
                 <p>Danh sách</p>
               </a>
@@ -76,8 +80,8 @@
               </a>
             </li>
 
-          </ul>
-        </li>
+                    </ul>
+                </li>
 
         <!-- People Management Section -->
         <li class="nav-item ">
@@ -96,25 +100,25 @@
           </ul>
         </li>
 
-        <!-- Attendance Section -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
-            <p>Chấm công <i class="right fas fa-angle-left"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{ route('admin.chamcong.index')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách chấm công</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.chamcong.tangCa.index')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách tăng ca</p>
-              </a>
-            </li>
+                <!-- Attendance Section -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon mdi mdi-alarm-check pl-1"></i>
+                        <p>Chấm công <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.chamcong.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách chấm công</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.chamcong.tangCa.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách tăng ca</p>
+                            </a>
+                        </li>
 
             <li class="nav-item">
               <a href="{{ route('admin.chamcong.xemPheDuyetTangCa')}}" class="nav-link">
@@ -167,37 +171,37 @@
           </ul>
         </li>
 
-         <!-- Ứng tuyển Section -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-calendar-alt"></i>
-            <p>Ứng tuyển<i class="right fas fa-angle-left"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/ungvien" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Ứng viên</p>
-              </a>
-              <a href="/ungvien/phong-van" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Gửi email phỏng vấn</p>
-              </a>
-              <a href="/ungvien/emaildagui" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách email đã gửi</p>
-              </a>
-              <a href="/ungvien/trung-tuyen" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Trúng tuyển</p>
-              </a>
-              <a href="/ungvien/luu-tru" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Lưu trữ</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+                <!-- Ứng tuyển Section -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        <p>Ứng tuyển<i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/ungvien" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ứng viên</p>
+                            </a>
+                            <a href="/ungvien/phong-van" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gửi email phỏng vấn</p>
+                            </a>
+                            <a href="/ungvien/emaildagui" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách email đã gửi</p>
+                            </a>
+                            <a href="/ungvien/trung-tuyen" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Trúng tuyển</p>
+                            </a>
+                            <a href="/ungvien/luu-tru" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Lưu trữ</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
          <!-- Hợp đồng Section -->
          <li class="nav-item">
@@ -237,72 +241,72 @@
           </ul>
         </li>
 
-        <!-- Duyệt đơn yêu cầu Section -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-user"></i>
-            <p>Duyệt đơn <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{route('admin.duyetdon.tuyendung.index')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tuyển dụng</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('department.donxinnghi.danhsach') }}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Xin nghỉ phép</p>
-              </a>
-            </li>
+                <!-- Duyệt đơn yêu cầu Section -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Duyệt đơn <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.duyetdon.tuyendung.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tuyển dụng</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('department.donxinnghi.danhsach') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Xin nghỉ phép</p>
+                            </a>
+                        </li>
 
-          </ul>
-        </li>
+                    </ul>
+                </li>
 
-        <!-- Cấp trên thông báo Section -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-user"></i>
-            <p>Cấp trên thông báo <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{route('hr.captrenthongbao.tuyendung.index')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tuyển dụng</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Gửi báo cáo</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tăng lương</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+                <!-- Cấp trên thông báo Section -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Cấp trên thông báo <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('hr.captrenthongbao.tuyendung.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tuyển dụng</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gửi báo cáo</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tăng lương</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
-        <!-- Tin tuyển dụng Section -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-user"></i>
-            <p>Tin tuyển dụng <i class="fas fa-angle-left right"></i></p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{route('hr.tintuyendung.index')}}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tin đã đăng</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+                <!-- Tin tuyển dụng Section -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>Tin tuyển dụng <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('hr.tintuyendung.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tin đã đăng</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
         <li class="nav-item">
           <a href="{{route('hr.loainghiphep.index')}}" class="nav-link">
@@ -317,7 +321,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{route('luong.index')}} " class="nav-link">
+              {{-- <a href="{{route('luong.index')}} " class="nav-link"> --}}
                 <i class="far fa-circle nav-icon"></i>
                 <p>Lương</p>
               </a>
