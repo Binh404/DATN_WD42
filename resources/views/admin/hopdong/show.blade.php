@@ -161,11 +161,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
 
@@ -368,8 +368,8 @@
                                                    
                                                 @else
                                                     <button type="button" class="btn btn-danger" disabled>
-                                                        <i class="fas fa-times"></i> Hủy hợp đồng
-                                                    </button>
+                                                    <i class="fas fa-times"></i> Hủy hợp đồng
+                                                </button>
                                                     <div class="alert alert-warning mt-2">
                                                         <i class="fas fa-exclamation-triangle"></i>
                                                         <strong>Lưu ý:</strong> Hợp đồng này không thể được hủy.
@@ -446,4 +446,4 @@ function showHuyForm() {
         alert('Vui lòng nhập lý do hủy hợp đồng!');
     }
 }
-</script> 
+</script>

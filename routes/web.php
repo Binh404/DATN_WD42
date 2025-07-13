@@ -486,5 +486,8 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
+    
+    // Route test vai_tro_id
+    Route::get('/ungvien/test-vai-tro/{id}', [UngTuyenController::class, 'testVaiTro'])->name('ungvien.test-vai-tro');
 });
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);

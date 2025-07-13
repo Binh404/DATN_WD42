@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\VaiTro;
 
 
 class NguoiDung extends Authenticatable  implements CanResetPassword
