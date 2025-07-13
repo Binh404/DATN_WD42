@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/simple-line-icons/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -30,26 +28,7 @@
   </head>
   <body>
     <div class="container-scroller">
-      <!-- partial:../../partials/_navbar.html -->
-      @include('layoutsAdmin.partials._navbar')
-      <!-- partial -->
-      <div class="container-fluid page-body-wrapper">
-        <!-- partial:../../partials/_sidebar.html -->
-        @include('layoutsAdmin.partials._sidebar')
-        {{-- @include('layoutsAdmin.partials.menu-item') --}}
-        <!-- partial -->
-        <div class="main-panel">
-          <div class="content-wrapper">
             @yield('content')
-          </div>
-          <!-- content-wrapper ends -->
-          <!-- partial:../../partials/_footer.html -->
-          @include('layoutsAdmin.partials._footer')
-          <!-- partial -->
-        </div>
-        <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
     <!-- plugins:js -->

@@ -609,62 +609,55 @@ class UngTuyenController extends Controller
             return redirect('/ungvien/trung-tuyen')->with('error', 'Không có ứng viên nào cần gửi email.');
         }
 
-        foreach ($ungviens as $uv) {
-            $td = $uv->tinTuyenDung;
-
-            // Cập nhật dữ liệu thiếu từ tin tuyển dụng
-            $uv->update([
-                'vai_tro_id'   => $uv->vai_tro_id ?: $td->vai_tro_id,
-            ]);
-
-            $emailPrefix = Str::slug($uv->ten_ung_vien, '');
-            $maSo = substr($uv->ma_ung_tuyen, 2);
+        foreach ($ungviens as $ungvien) {
+            $emailPrefix = Str::slug($ungvien->ten_ung_vien, '');
+            $maSo = substr($ungvien->ma_ung_tuyen, 2);
             $email = strtolower($emailPrefix . 'dv' . $maSo . '@gmail.com');
             $password = Str::random(10);
-            $tenDangNhap = Str::slug($uv->ten_ung_vien);
+            $tenDangNhap = Str::slug($ungvien->ten_ung_vien);
 
-            $nguoiDung = NguoiDung::firstOrCreate(
-                ['email' => $email],
-                [
+            $vaiTroId = $ungvien->vai_tro_id ?? optional($ungvien->tinTuyenDung)->vai_tro_id;
+            $phongBanId = $ungvien->phong_ban_id ?? optional($ungvien->phongBan)->id;
+            $chucVuId = $ungvien->chuc_vu_id ?? optional($ungvien->chucVu)->id;
+
+            if ($vaiTroId && !NguoiDung::where('email', $email)->exists()) {
+                Http::withOptions(['verify' => false])->post('https://nguyencong.app.n8n.cloud/webhook-test/email-di-lam', [
+                    'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                    'ten_dang_nhap' => $email,
+                    'email' => $ungvien->email,
+                    'name' => $ungvien->ten_ung_vien,
+                    'vi_tri' => optional($ungvien->tinTuyenDung)->tieu_de,
+                    'lich' => $request->dat_lich,
+                    'mat_khau' => $password
+                ]);
+
+                $nguoiDung = NguoiDung::create([
                     'ten_dang_nhap' => $tenDangNhap,
+                    'name' => $ungvien->ten_ung_vien,
+                    'email' => $email,
                     'password' => Hash::make($password),
-                    'phong_ban_id' => $uv->phong_ban_id,
-                    'chuc_vu_id' => $uv->chuc_vu_id,
-                    'vai_tro_id' => $uv->vai_tro_id,
-                ]
-            );
+                    'ma_ung_tuyen' => $ungvien->ma_ung_tuyen,
+                    'vai_tro_id' => $vaiTroId,
+                    'phong_ban_id' => $phongBanId,
+                    'chuc_vu_id' => $chucVuId,
+                ]);
 
-            // Gán vai trò nếu chưa có
-            if (!NguoiDungVaiTro::where([
-                'nguoi_dung_id' => $nguoiDung->id,
-                'vai_tro_id' => $uv->vai_tro_id
-            ])->exists()) {
                 NguoiDungVaiTro::create([
                     'nguoi_dung_id' => $nguoiDung->id,
-                    'vai_tro_id' => $uv->vai_tro_id,
+                    'vai_tro_id' => $vaiTroId,
                     'model_type' => NguoiDung::class,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
+
+                $ungvien->update(['trang_thai_email_trungtuyen' => 'da_gui']);
             }
-
-            // Webhook 1
-            Http::withOptions(['verify' => false])->timeout(5)->post('https://nguyencong.app.n8n.cloud/webhook-test/email-di-lam', [
-                'ma_ung_vien' => $uv->ma_ung_tuyen,
-                'ten_dang_nhap' => $email,
-                'email' => $uv->email,
-                'name' => $uv->ten_ung_vien,
-                'vi_tri' => $td->tieu_de ?? '',
-                'lich' => $request->dat_lich,
-                'mat_khau' => $password
-            ]);
-
-            // Cập nhật trạng thái
-            $uv->update(['trang_thai_email_trungtuyen' => 'da_gui']);
         }
 
-        return redirect('/ungvien/trung-tuyen')->with('success', 'Đã gửi email cho tất cả ứng viên.');
+        return redirect('/ungvien/trung-tuyen')->with('success', 'Đã gửi email cho tất cả ứng viên hợp lệ.');
     }
+
+
 
 
     // Method test đơn giản để kiểm tra vai_tro_id
