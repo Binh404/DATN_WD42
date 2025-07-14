@@ -23,8 +23,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
     <!-- Basic Information Section -->
@@ -252,8 +250,5 @@
         border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
     }
 </style>
-
-</div>
-
 
 @endsection

@@ -20,6 +20,11 @@ class ChucVu extends Model
     ];
 
     protected $casts = [
+        'cap_do' => 'integer',
+        'luong_toi_thieu' => 'decimal:2',
+        'luong_toi_da' => 'decimal:2',
+        'trach_nhiem' => 'json',
+        'yeu_cau' => 'json',
         'trang_thai' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

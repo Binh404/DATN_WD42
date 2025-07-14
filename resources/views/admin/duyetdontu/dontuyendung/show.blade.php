@@ -1,7 +1,9 @@
 @extends('layoutsAdmin.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
+<<<<<<< HEAD
 <<<<<<< HEAD
     <style>
         .actions {
@@ -470,6 +472,8 @@
                     </div>
 
 =======
+=======
+>>>>>>> 3f5e6fc1d5af29a79ad8e48710b8afc3ca2ad839
 <div class="container-fluid">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -488,14 +492,20 @@
                             <i class="mdi mdi-arrow-left me-1"></i> Quay lại
                         </a>
                     </div>
+<<<<<<< HEAD
 >>>>>>> 36b15d15a94c4f811e5e4efc738ee93a791af31d
+=======
+>>>>>>> 3f5e6fc1d5af29a79ad8e48710b8afc3ca2ad839
                 </div>
             </div>
         </div>
     </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 3f5e6fc1d5af29a79ad8e48710b8afc3ca2ad839
     <!-- Basic Information Section -->
     <div class="row mb-4">
         <div class="col-12">
@@ -729,5 +739,5 @@
     }
 </style>
 
->>>>>>> 36b15d15a94c4f811e5e4efc738ee93a791af31d
+
 @endsection

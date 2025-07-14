@@ -15,8 +15,8 @@
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
-        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item nav-category">Các chức năng</li>
+        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
@@ -37,6 +37,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
                     </li>
+
+
                     @endif
                 </ul>
 
@@ -85,6 +87,7 @@
                         <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
+
                 </ul>
             </div>
         </li>
@@ -188,8 +191,8 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
                 aria-controls="tables">
-                {{-- <i class="menu-icon mdi mdi-clock-outline"></i> --}}
-                <span class="menu-title">Hợp động</span>
+                <i class="menu-icon mdi mdi-file-document-outline"></i>
+                <span class="menu-title">Hợp đồng</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="taodontu">
@@ -197,7 +200,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
+
                 </ul>
+
             </div>
         </li>
         @endif

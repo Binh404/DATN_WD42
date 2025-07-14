@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\DB; // ✅ Import đúng DB
+use Illuminate\Support\Facades\DB;
 use App\Models\NguoiDung;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

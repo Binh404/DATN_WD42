@@ -41,7 +41,6 @@ public function destroy($id)
 }
 public function getByPhongBan($phongBanId)
     {
-        // dd('lô');
         $chucVus = \App\Models\ChucVu::where('phong_ban_id', $phongBanId)->get();
 
         return response()->json($chucVus);

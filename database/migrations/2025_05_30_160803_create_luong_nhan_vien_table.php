@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('luong_thuc_nhan', 12, 2);
             $table->decimal('so_ngay_cong', 5, 2)->default(0);
             $table->decimal('gio_tang_ca', 8, 2)->default(0);
+            $table->decimal('cong_tang_ca', 12, 2)->default(0);
             $table->decimal('ngay_nghi_phep', 5, 2)->default(0);
             $table->decimal('ngay_nghi_khong_phep', 5, 2)->default(0);
             $table->decimal('ngay_le', 5, 2)->default(0);
