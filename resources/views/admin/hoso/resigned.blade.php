@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Nhân sự đã nghỉ việc')
 
 @section('content')

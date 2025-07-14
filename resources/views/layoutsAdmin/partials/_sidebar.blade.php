@@ -15,15 +15,15 @@
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
-        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item nav-category">Các chức năng</li>
+        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
                 <span class="menu-title">Hồ sơ</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="ui-basic">
+            <div class="collapse" id="ui-hoso">
                 <ul class="nav flex-column sub-menu">
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'qlhoso'))
                     <li class="nav-item">
@@ -34,9 +34,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
                     </li>
+
+
                     @endif
+                    <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
+                    </li>
                 </ul>
+
             </div>
+
         </li>
         @endif
 
@@ -68,14 +74,16 @@
             </a>
             <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
+                    {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.index') }}">Lương</a>
+                        <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
                     </li>
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluong'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('phieuluong.index') }}">Phiếu Lương</a>
+                        <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
 
@@ -182,8 +190,8 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
                 aria-controls="tables">
-                <i class="menu-icon mdi mdi-clock-outline"></i>
-                <span class="menu-title">Tạo đơn từ</span>
+                <i class="menu-icon mdi mdi-file-document-outline"></i>
+                <span class="menu-title">Hợp đồng</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="taodontu">
@@ -191,7 +199,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
+
                 </ul>
+
             </div>
         </li>
         @endif
@@ -291,6 +301,12 @@
             <a class="nav-link" href="{{ route('hr.loainghiphep.index') }}">
                 <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
                 <span class="menu-title">Loại nghỉ phép</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('chucvu.index')}}">
+                <i class="menu-icon mdi mdi-file-document"></i>
+                <span class="menu-title">Chức vụ </span>
             </a>
         </li>
         @endif

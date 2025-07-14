@@ -8,12 +8,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-use Spatie\Permission\Traits\HasRoles;
+// use Spatie\Permission\Traits\HasRoles;
 
 
 class NguoiDung extends Authenticatable  implements CanResetPassword
 {
-    use HasFactory, Notifiable, CanResetPasswordTrait, HasRoles;
+    use HasFactory, Notifiable, CanResetPasswordTrait;
 
 
     protected $table = 'nguoi_dung';
@@ -71,20 +71,26 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
-    public function chamCong(){
+    public function chamCong()
+    {
         return $this->hasMany(ChamCong::class, 'nguoi_dung_id');
     }
-    public function soDuNghiPhepNhanVien(){
+    public function soDuNghiPhepNhanVien()
+    {
         return $this->hasMany(SoDuNghiPhepNhanVien::class, 'nguoi_dung_id');
     }
-    public function vaiTro(){
-        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
-    }
+    // public function vaitro(){
+    //     return $this->belongsTo(VaiTro::class, 'vai_tro_id');
+    // }
 
     public function vaiTros()
     {
         return $this->belongsToMany(VaiTro::class, 'nguoi_dung_vai_tro', 'nguoi_dung_id', 'vai_tro_id')
             ->withTimestamps();
+    }
+    public function vaiTro()
+    {
+        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
     }
 
     public function quyenTrucTiep()
@@ -122,5 +128,9 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     public function duyetDonNghi()
     {
         return $this->hasMany(LichSuDuyetDonNghi::class, 'nguoi_duyet_id');
+    }
+     public function dangKyTangCa()
+    {
+        return $this->hasOne(DangKyTangCa::class, 'nguoi_dung_id');
     }
 }

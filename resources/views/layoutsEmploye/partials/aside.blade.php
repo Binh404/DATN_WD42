@@ -36,6 +36,7 @@
                 <span>Hồ sơ cá nhân</span>
             </a>
         </li>
+       
         <li class="nav-item">
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>

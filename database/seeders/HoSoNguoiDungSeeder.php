@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as FakerFactory;
@@ -127,6 +127,6 @@ class HoSoNguoiDungSeeder extends Seeder
             ]
         ]);
 
-       
+
     }
 }
