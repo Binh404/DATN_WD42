@@ -78,6 +78,7 @@
                         <a class="nav-link" href="{{ route('phieuluong.index') }}">Phiếu Lương</a>
                     </li>
                     @endif
+
                 </ul>
             </div>
         </li>
@@ -179,12 +180,13 @@
         {{-- Hợp đồng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('hopdong'))
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#hd" aria-expanded="false" aria-controls="hd">
-                <i class="menu-icon mdi mdi-file-document"></i>
-                <span class="menu-title">Hợp đồng</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
+                aria-controls="tables">
+                <i class="menu-icon mdi mdi-clock-outline"></i>
+                <span class="menu-title">Tạo đơn từ</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="hd">
+            <div class="collapse" id="taodontu">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>

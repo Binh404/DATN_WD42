@@ -581,6 +581,7 @@
                                 attendanceStatus = 'no_overtime_approval';
                             }
                             updateNormalDisplayData(data.normal_data)
+                            updateOvertimeDisplayData(data.overtime_data);
 
                         }
                     } else {
@@ -633,11 +634,12 @@
         // Cập nhật dữ liệu hiển thị cho chấm công thường
         function updateNormalDisplayData(data) {
             // Cập nhật giờ vào
-            // if (data.gio_vao) {
+            if (data ) {
+                // if (data && data.gio_vao) {
                 const gioVaoEl = document.getElementById('gioVaoHomNay');
                 // if (gioVaoEl) {
                     gioVaoEl.textContent = data.gio_vao ?? '--:--';
-                // }
+            //     }
             // }
 
             // Cập nhật giờ ra
@@ -645,7 +647,7 @@
                 const gioRaEl = document.getElementById('gioRaHomNay');
                 // if (gioRaEl) {
                     gioRaEl.textContent = data.gio_ra ?? '--:--';
-                // }
+            //     }
             // }
 
             // Cập nhật số giờ làm
@@ -703,10 +705,18 @@
 
             // Ẩn thông tin tăng ca nếu có
             hideOvertimeInfo();
+            }else{
+                hideAttendanceInfo();
+            }
+
         }
 
         // Cập nhật dữ liệu hiển thị cho chấm công tăng ca
         function updateOvertimeDisplayData(data) {
+            if (!data) {
+                hideOvertimeInfo();
+                return;
+            }
             const gioVaoEl = document.getElementById('gioVaoTangCa');
             // if (gioVaoEl && data.gio_bat_dau_thuc_te) {
                 gioVaoEl.textContent = data.gio_bat_dau_thuc_te ?? '--:--';
