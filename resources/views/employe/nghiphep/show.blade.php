@@ -745,7 +745,7 @@
 
                             {{-- Trưởng phòng --}}
                             <div
-                                class="step-indicator 
+                                class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
                                 <i class="fas fa-user-tie"></i>
                             </div>
@@ -770,7 +770,7 @@
 
                         <div class="timeline-step">
                             <div
-                                class="step-indicator 
+                                class="step-indicator
                                 {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
                                 <i class="fas fa-users-cog"></i>
                             </div>
@@ -826,7 +826,7 @@
                     </div>
                 </div>
 
-                
+
                 <!-- Các hành động -->
                 <div class="actions">
                     <a style="text-decoration: none;" href="{{ route('nghiphep.index') }}">
@@ -852,7 +852,7 @@
 
 
         <script>
-            function showImagePopup(imageUrl, filename) {                
+            function showImagePopup(imageUrl, filename) {
                 const popup = document.getElementById('imagePopup');
                 const popupTitle = document.getElementById('popupTitle');
                 const popupBody = document.getElementById('popupBody');
@@ -868,12 +868,12 @@
                     // Hiển thị ảnh
                     popupBody.innerHTML = `
                         <div class="image-container">
-                            <img src="${imageUrl}" 
-                                alt="${filename}" 
+                            <img src="${imageUrl}"
+                                alt="${filename}"
                                 class="popup-image"
                                 onload="this.style.opacity='1'"
                                 onerror="showImageError()">
-                            
+
                         </div>
                     `;
                 } else {

@@ -18,13 +18,12 @@ class HoSoController extends Controller
         // Kiểm tra nếu đã hoàn thành hồ sơ thì chuyển hướng về dashboard
         if ($user->da_hoan_thanh_ho_so) {
             // dd($user);
-
             return redirect()->route('employee.dashboard');
         }
         // dd($user);
         // Nếu chưa có hồ sơ thì hiển thị form trống
-        $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $user->id)->first();
-
+        $hoSo = HoSoNguoiDung::with('nguoiDung')->where('nguoi_dung_id', $user->id)->first();
+        // dd($hoSo);
         return view('employe.complete-profile', compact('hoSo'));
     }
 
@@ -85,7 +84,7 @@ class HoSoController extends Controller
     'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
     'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
     'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
-]); 
+]);
 
      $prefix = $user->chucVu->ma ?? 'NV'; // fallback là NV nếu không có
     // Tự động tạo mã nhân viên

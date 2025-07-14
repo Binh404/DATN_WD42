@@ -349,7 +349,7 @@ class UngTuyenController extends Controller
                 'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
                 'lich' => $request->dat_lich
             ]);
-            $ungvien->trang_thai_email = 'Đã gửi';
+            $ungvien->trang_thai_email = 'da_gui';
             $ungvien->save();
         }
 

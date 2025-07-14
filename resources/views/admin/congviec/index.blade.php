@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh Sách Công Việc')
 
 @section('content')
@@ -17,9 +17,9 @@
                     <span class="input-group-text bg-white border-end-0">
                         <i class="fas fa-search text-muted"></i>
                     </span>
-                    <input type="text" 
-                        class="form-control border-start-0" 
-                        name="search" 
+                    <input type="text"
+                        class="form-control border-start-0"
+                        name="search"
                         placeholder="Tìm kiếm công việc..."
                         value="{{ request('search') }}">
                     <button class="btn btn-outline-primary" type="submit">
@@ -82,7 +82,7 @@
                             </th>
                             <!-- <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-calendar-alt me-1"></i>Ngày Bắt Đầu
-                            </th>   
+                            </th>
                             <th class="px-4 py-3 fw-semibold text-muted">
                                 <i class="fas fa-clock me-1"></i>Thời Hạn
                             </th>
@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="task-name" style="min-width: 0;">
                                         <h6 class="mb-0 fw-semibold">
-                                            <a href="/congviec/show/{{$congviec->id}}" 
+                                            <a href="/congviec/show/{{$congviec->id}}"
                                                class="text-decoration-none text-black d-inline-flex align-items-center text-truncate">
                                                 {{ $congviec->ten_cong_viec }}
                                             </a>
@@ -145,7 +145,7 @@
                                         'Trung bình' => 'warning',
                                         'Thấp' => 'info'
                                     ][$congviec->do_uu_tien] ?? 'secondary';
-                                    
+
                                     $priorityIcon = [
                                         'Cao' => 'arrow-up',
                                         'Trung bình' => 'equals',
@@ -167,7 +167,7 @@
                                     $deadline = strtotime($congviec->deadline);
                                     $now = time();
                                     $daysLeft = ceil(($deadline - $now) / (60 * 60 * 24));
-                                    
+
                                     if ($daysLeft < 0) {
                                         $timeClass = 'danger';
                                         $timeStatus = 'Đã quá hạn';
@@ -198,24 +198,24 @@
                             </td> -->
                             <td class="px-4 py-3">
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <a href="/congviec/show/{{ $congviec->id }}" 
+                                    <a href="/congviec/show/{{ $congviec->id }}"
                                        class="btn btn-outline-primary btn-sm rounded-pill"
-                                       data-bs-toggle="tooltip" 
+                                       data-bs-toggle="tooltip"
                                        title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="/congviec/edit/{{ $congviec->id }}" 
+                                    <a href="/congviec/edit/{{ $congviec->id }}"
                                        class="btn btn-outline-warning btn-sm rounded-pill"
-                                       data-bs-toggle="tooltip" 
+                                       data-bs-toggle="tooltip"
                                        title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="/congviec/delete/{{$congviec->id}}" method="post" class="d-inline">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" 
+                                        <button type="submit"
                                                 class="btn btn-outline-danger btn-sm rounded-pill"
-                                                data-bs-toggle="tooltip" 
+                                                data-bs-toggle="tooltip"
                                                 title="Xóa"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa công việc này?')">
                                             <i class="fas fa-trash"></i>

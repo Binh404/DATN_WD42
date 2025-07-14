@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
 {
     $this->call([
         // 1. Cơ sở tổ chức
-        ChiNhanhSeeder::class,
+        // ChiNhanhSeeder::class,
         PhongBanSeeder::class,
         ChucVuSeeder::class,
 

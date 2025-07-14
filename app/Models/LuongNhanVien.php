@@ -21,6 +21,7 @@ class LuongNhanVien extends Model
         'luong_thuc_nhan',
         'so_ngay_cong',
         'gio_tang_ca',
+        'cong_tang_ca',
         'ghi_chu',
     ];
 
@@ -32,6 +33,7 @@ class LuongNhanVien extends Model
         'luong_thuc_nhan' => 'decimal:2',
         'so_ngay_cong' => 'decimal:1',
         'gio_tang_ca' => 'decimal:1',
+        'cong_tang_ca' => 'decimal:1',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -15,12 +15,7 @@ class ChucVu extends Model
         'ten',
         'ma',
         'mo_ta',
-        'phong_ban_id',
-        'cap_do',
-        'luong_toi_thieu',
-        'luong_toi_da',
-        'trach_nhiem',
-        'yeu_cau',
+        'luong_co_ban',
         'trang_thai',
     ];
 

@@ -304,7 +304,7 @@
                             @else
                                 <p class="text-muted mb-4">Chưa có đơn  xin nghỉ nào được tạo.</p>
                             @endif
-                            
+
                         </div>
                     @endif
                 </div>
