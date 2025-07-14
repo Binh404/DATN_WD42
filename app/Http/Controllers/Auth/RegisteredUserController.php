@@ -64,7 +64,7 @@ class RegisteredUserController extends Controller
         // Gán vai trò cho người dùng
         $nguoiDungVT = NguoiDungVaiTro::create([
             'nguoi_dung_id' => $user->id,
-            'vai_tro_id' => 3,
+            'vai_tro_id' => $request->vai_tro_id,
             'model_type' => NguoiDung::class,
             'created_at' => now(),
             'updated_at' => now()

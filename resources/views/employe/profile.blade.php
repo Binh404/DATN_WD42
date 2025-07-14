@@ -1,5 +1,11 @@
 @extends('layoutsEmploye.master')
-
+<style>
+    hr{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+</style>
 @section('content-employee')
     @if(session('success'))
         <div class="notification">
@@ -15,6 +21,76 @@
 
     <div class="main-content">
         <div class="content-section">
+            {{-- tài khoan --}}
+            <fieldset class="form-section">
+                <legend><i class="bi bi-info-circle me-1"></i> Tài khoản</legend>
+              
+                <form action="{{ route('tai-khoan.cap-nhat') }}" method="POST">
+                    @csrf
+                    <div class="form-row">
+                        <!-- Tên đăng nhập -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Tên đăng nhập</label>
+                            <input type="text" name="ten_dang_nhap" class="form-control"
+                                value="{{ old('ten_dang_nhap', $taiKhoan->ten_dang_nhap) }}" required>
+                            @error('ten_dang_nhap')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- Email -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email', $taiKhoan->email) }}" required>
+                            @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="mt-3 text-end">
+                        <button type="submit" class="btn btn-primary">Cập nhật tài khoản</button>
+                    </div>
+                </form>
+<hr>
+                <form action="{{ route('tai-khoan.doi-mat-khau') }}" method="POST">
+                    @csrf
+
+                    <div class="form-row">
+                        <!-- Mật khẩu hiện tại -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <input type="password" name="current_password" class="form-control" required>
+                            @error('current_password')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Mật khẩu mới -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <input type="password" name="new_password" class="form-control" required>
+                            @error('new_password')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Xác nhận mật khẩu mới -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" name="new_password_confirmation" class="form-control" required>
+                            @error('new_password_confirmation')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-end">
+                        <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+                    </div>
+
+                </form>
+
+
+            </fieldset>
             <form action="{{ route('employee.profile.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
@@ -22,6 +98,25 @@
                 <!-- Thông tin cá nhân -->
                 <fieldset class="form-section">
                     <legend><i class="bi bi-info-circle me-1"></i> Thông tin cá nhân</legend>
+                    <div class="form-row">
+                        <!-- Phòng ban -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label" style="color: black">Phòng ban</label>
+                            <p class="form-control-plaintext" style="color: rgb(150, 18, 18)">
+                                {{ $taiKhoan->phongBan->ten_phong_ban ?? 'Chưa có' }}
+                            </p>
+                        </div>
+                        <!-- Chức vụ -->
+                        <div class="form-group col-md-6">
+                            <label class="form-label" style="color: black;">Chức vụ</label>
+                            <p class="form-control-plaintext" style="color: rgb(150, 18, 18)">
+                                {{ $taiKhoan->chucVu->ten ?? 'Chưa có' }}
+                            </p>
+                        </div>
+
+
+
+                    </div>
                     <div class="form-row">
                         <!-- Mã nhân viên -->
                         <div class="form-group">
