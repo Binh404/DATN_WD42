@@ -392,8 +392,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         ->name('employee.complete-profile.store');
 
     Route::middleware([CheckHoSoNguoiDung::class])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('employe.dashboard');
+        Route::get('employee/dashboard', function () {
+            return view('admin.dashboard.index');
         })->name('employee.dashboard');
 
         Route::get('/advance', function () {
