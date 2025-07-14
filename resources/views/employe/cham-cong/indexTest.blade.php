@@ -496,7 +496,7 @@
                                 if (!data.has_approved_overtime) {
                                     attendanceStatus = 'no_overtime_approval';
                                 }
-                                updateNormalDisplayData(data.normal_data)
+                                // updateNormalDisplayData(data.normal_data)
 
                             }
                         } else {

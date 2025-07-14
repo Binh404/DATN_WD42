@@ -24,7 +24,7 @@ class MenuHelper
                 // 'ungvien',
                 'hopdong',
                 // 'tintuyendung',
-                'thongbao',
+                // 'thongbao',
                 'duyetdon',
                 'xinnghiphep',
                 'loainghiphep'
@@ -34,6 +34,8 @@ class MenuHelper
                 'hoso',
                 'phongban',
                 'ungvien',
+                'luong',
+                'chamcong',
                 'hopdong',
                 'tintuyendung',
                 'thongbao',
@@ -72,21 +74,35 @@ class MenuHelper
         // dd($userRole);
         $subMenuPermissions = [
             'admin' => [
+                'hoso' => ['qlhoso'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung'],
-                'luong' => ['luong', 'phieuluong']
+                'luong' => ['luong', 'phieuluong'],
+                'xinnghiphep' => ['danhsach']
+
             ],
             'hr' => [
+                'hoso' => ['qlhoso', 'hosocn'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
-                'duyetdon' => ['tuyendung', 'xinnghiphep']
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
+                'duyetdon' => ['tuyendung', 'xinnghiphep'],
+                'xinnghiphep' => ['danhsach']
+
             ],
             'department' => [
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong'],
-                'duyetdon' => ['xinnghiphep']
+                'hoso' => ['qlhoso', 'hosocn'],
+
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
+                'duyetdon' => ['xinnghiphep'],
+                'xinnghiphep' => ['danhsach','donxinnghiphep']
+
             ],
             'employee' => [
-                'chamcong' => ['danhsach']
+                'chamcong' => [ 'chamcong', 'donxintangca'],
+                'hoso' => ['hosocn'],
+                'xinnghiphep' => ['donxinnghiphep']
+
             ]
         ];
 

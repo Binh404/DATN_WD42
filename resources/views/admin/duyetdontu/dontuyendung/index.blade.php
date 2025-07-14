@@ -174,7 +174,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="5" class="text-center py-5">
+                                                        <td colspan="7" class="text-center py-5">
                                                             <div class="text-muted">
                                                                 <i class="mdi mdi-inbox fs-1 mb-3"></i>
                                                                 <h5>Không có dữ liệu đơn tuyển dụng</h5>

@@ -94,60 +94,11 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Quản lý chấm công
 
-    Route::post('/chamcong/phe-duyet/bulk-action', [ChamCongAdminController::class, 'bulkAction'])->name('admin.phe-duyet.bulk-action');
-    // Route xuất Excel với filter hiện tại
-    Route::get('cham-cong/export', [ChamCongAdminController::class, 'export'])
-        ->name('chamcong.export');
-    Route::prefix('cham-cong')->name('admin.chamcong.')->group(function () {
-        Route::get('/index-', [ChamCongAdminController::class, 'index'])->name('index');
-        // Route::get('/create', [ChamCongAdminController::class, 'create'])->name('.create');
-        Route::post('/{id}/pheDuyet', [ChamCongAdminController::class, 'pheDuyet'])->name('pheDuyet');
-        Route::get('/{id}/show', [ChamCongAdminController::class, 'show'])->name('show');
-        Route::delete('delete/{id}', [ChamCongAdminController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/edit', [ChamCongAdminController::class, 'edit'])->name('edit');
-        Route::put('{id}/update', [ChamCongAdminController::class, 'update'])->name('update');
-
-        // Route::prefix('tang-ca')->name('tangCa.')->group(function () {
-        //     Route::get('', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.tangCa.index');
-
-        // });
-        Route::prefix('/tang-ca')->name('tangCa.')->group(function () {
-            Route::get('/index>', [ThucHienTangCaAdminController::class, 'index'])->name('index');
-            Route::get('/{id}/show', [ThucHienTangCaAdminController::class, 'show'])->name('show');
-            Route::get('/{id}/edit', [ThucHienTangCaAdminController::class, 'edit'])->name('edit');
-            Route::put('/{id}/update', [ThucHienTangCaAdminController::class, 'update'])->name('update');
-            Route::delete('/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('destroy');
-            Route::get('export', [ThucHienTangCaAdminController::class, 'export'])
-                ->name('export');
-
-        });
-        // Route xuất báo cáo (Excel/PDF)
-        Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
-            ->name('exportReport');
-    });
-    // Route xuất báo cáo (Excel/PDF)
-    // Route::post('cham-cong/export-report', [ChamCongAdminController::class, 'exportReport'])
-    //     ->name('chamcong.exportReport');
-    Route::get('chamCongPheDuyetTangCa', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.xemPheDuyetTangCa');
-    Route::get('chamCongPheDuyetTangCa/{id}/show', [DangKyTangCaAdminController::class, 'show'])->name('admin.chamcong.xemChiTietDonTangCa');
-    Route::post('chamCongPheDuyetTangCa/{id}/pheDuyet', [DangKyTangCaAdminController::class, 'pheDuyet'])->name('admin.chamcong.pheDuyetTangCaTrangThai');
-    // Route::delete('chamCongPheDuyetTangCa/{id}/destroy', [DangKyTangCaAdminController::class, 'destroy'])->name('admin.chamcong.destroyTangCa');
-    Route::post('/chamcong/phe-duyet-tang-ca/bulk-action', [DangKyTangCaAdminController::class, 'bulkAction'])->name('admin.phe-duyet-tang-ca.bulk-action');
-    //danh sách tăng ca
-    Route::prefix('locations')->name('admin.locations.')->group(function () {
-        Route::get('/', [CompanyLocationController::class, 'index'])->name('index');
-        Route::get('/create', [CompanyLocationController::class, 'create'])->name('create');
-        Route::post('/store', [CompanyLocationController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [CompanyLocationController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [CompanyLocationController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [CompanyLocationController::class, 'destroy'])->name('destroy');
-    });
 });
 
 // HR, ADMIN routes
-Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr,department'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('hr.dashboard');
@@ -281,7 +232,56 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::get('/phieu-luong', [LuongController::class, 'phieuLuongIndex'])->name('phieuluong.index');
     Route::get('/luong/chitiet/{user_id}/{thang}/{nam}', [LuongController::class, 'xemPhieuLuong'])->name('luong.chitiet');
     Route::get('/luong/export-pdf/{user_id}/{thang}/{nam}', [LuongController::class, 'exportPDF'])->name('luong.pdf');
+    //Quản lý chấm công
 
+    Route::post('/chamcong/phe-duyet/bulk-action', [ChamCongAdminController::class, 'bulkAction'])->name('admin.phe-duyet.bulk-action');
+    // Route xuất Excel với filter hiện tại
+    Route::get('cham-cong/export', [ChamCongAdminController::class, 'export'])
+        ->name('chamcong.export');
+    Route::prefix('cham-cong')->name('admin.chamcong.')->group(function () {
+        Route::get('/index-', [ChamCongAdminController::class, 'index'])->name('index');
+        // Route::get('/create', [ChamCongAdminController::class, 'create'])->name('.create');
+        Route::post('/{id}/pheDuyet', [ChamCongAdminController::class, 'pheDuyet'])->name('pheDuyet');
+        Route::get('/{id}/show', [ChamCongAdminController::class, 'show'])->name('show');
+        Route::delete('delete/{id}', [ChamCongAdminController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/edit', [ChamCongAdminController::class, 'edit'])->name('edit');
+        Route::put('{id}/update', [ChamCongAdminController::class, 'update'])->name('update');
+
+        // Route::prefix('tang-ca')->name('tangCa.')->group(function () {
+        //     Route::get('', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.tangCa.index');
+
+        // });
+        Route::prefix('/tang-ca')->name('tangCa.')->group(function () {
+            Route::get('/index>', [ThucHienTangCaAdminController::class, 'index'])->name('index');
+            Route::get('/{id}/show', [ThucHienTangCaAdminController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [ThucHienTangCaAdminController::class, 'edit'])->name('edit');
+            Route::put('/{id}/update', [ThucHienTangCaAdminController::class, 'update'])->name('update');
+            Route::delete('/{id}/destroy', [ThucHienTangCaAdminController::class, 'destroy'])->name('destroy');
+            Route::get('export', [ThucHienTangCaAdminController::class, 'export'])
+                ->name('export');
+
+        });
+        // Route xuất báo cáo (Excel/PDF)
+        Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
+            ->name('exportReport');
+    });
+    // Route xuất báo cáo (Excel/PDF)
+    // Route::post('cham-cong/export-report', [ChamCongAdminController::class, 'exportReport'])
+    //     ->name('chamcong.exportReport');
+    Route::get('chamCongPheDuyetTangCa', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.xemPheDuyetTangCa');
+    Route::get('chamCongPheDuyetTangCa/{id}/show', [DangKyTangCaAdminController::class, 'show'])->name('admin.chamcong.xemChiTietDonTangCa');
+    Route::post('chamCongPheDuyetTangCa/{id}/pheDuyet', [DangKyTangCaAdminController::class, 'pheDuyet'])->name('admin.chamcong.pheDuyetTangCaTrangThai');
+    // Route::delete('chamCongPheDuyetTangCa/{id}/destroy', [DangKyTangCaAdminController::class, 'destroy'])->name('admin.chamcong.destroyTangCa');
+    Route::post('/chamcong/phe-duyet-tang-ca/bulk-action', [DangKyTangCaAdminController::class, 'bulkAction'])->name('admin.phe-duyet-tang-ca.bulk-action');
+    //danh sách tăng ca
+    Route::prefix('locations')->name('admin.locations.')->group(function () {
+        Route::get('/', [CompanyLocationController::class, 'index'])->name('index');
+        Route::get('/create', [CompanyLocationController::class, 'create'])->name('create');
+        Route::post('/store', [CompanyLocationController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [CompanyLocationController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [CompanyLocationController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [CompanyLocationController::class, 'destroy'])->name('destroy');
+    });
 
 
 
@@ -326,7 +326,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
     });
 });
 
-Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee'])->group(function () {
+Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department,hr'])->group(function () {
 
     // Route cho điền hồ sơ lần đầu
     Route::get('/complete-profile', [HoSoController::class, 'form'])

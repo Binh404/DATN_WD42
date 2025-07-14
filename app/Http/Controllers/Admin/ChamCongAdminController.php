@@ -24,7 +24,7 @@ class ChamCongAdminController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ChamCong::with(['nguoiDung.hoSo', 'nguoiDung.phongBan']);
+        $query = ChamCong::with(['nguoiDung.hoSo', 'nguoiDung.phongBan','nguoiDung.vaiTro']);
 
         // Tìm kiếm theo tên nhân viên
         if ($request->filled('ten_nhan_vien')) {
@@ -95,7 +95,10 @@ class ChamCongAdminController extends Controller
             // Lọc chỉ những người cùng phòng ban và không lấy user hiện tại
             $query->whereHas('nguoiDung', function ($q) use ($phongBanId, $userId) {
                 $q->where('phong_ban_id', $phongBanId)
-                ->where('id', '<>', $userId);
+                ->where('id', '<>', $userId)
+                ->whereHas('vaiTro', function ($qr) {
+                    $qr->where('ten', '<>', 'department'); // loại trưởng phòng khác
+                });;
             });
         } else {
             // Nếu không phải Admin, HR, department thì không có quyền xem
@@ -419,8 +422,14 @@ class ChamCongAdminController extends Controller
         if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
             // Admin, HR xem được hết
         } else if ($user->coVaiTro('department')) {
-            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
-            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+            // Trưởng phòng chỉ được xem nhân viên trong cùng phòng ban, không được xem chính mình hoặc trưởng phòng khác
+            $target = $chamCong->nguoiDung;
+
+            if (
+                $target->phong_ban_id !== $user->phong_ban_id || // khác phòng
+                $target->id === $user->id ||                     // chính họ
+                $target->coVaiTro('department')                  // người cũng là trưởng phòng
+            ) {
                 abort(403, 'Bạn không có quyền xem bản ghi này.');
             }
         } else {
@@ -452,9 +461,15 @@ class ChamCongAdminController extends Controller
         if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
             // Admin, HR xem được hết
         } else if ($user->coVaiTro('department')) {
-            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
-            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
-                abort(403, 'Bạn không có quyền sửa bản ghi này.');
+            // Trưởng phòng chỉ được xem nhân viên trong cùng phòng ban, không được xem chính mình hoặc trưởng phòng khác
+            $target = $chamCong->nguoiDung;
+
+            if (
+                $target->phong_ban_id !== $user->phong_ban_id || // khác phòng
+                $target->id === $user->id ||                     // chính họ
+                $target->coVaiTro('department')                  // người cũng là trưởng phòng
+            ) {
+                abort(403, 'Bạn không có quyền xem bản ghi này.');
             }
         } else {
             abort(403, 'Bạn không có quyền sửa bản ghi này.');
@@ -618,8 +633,14 @@ class ChamCongAdminController extends Controller
         if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
             // Admin, HR xem được hết
         } else if ($user->coVaiTro('department')) {
-            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
-            if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
+            // Trưởng phòng chỉ được xem nhân viên trong cùng phòng ban, không được xem chính mình hoặc trưởng phòng khác
+            $target = $chamCong->nguoiDung;
+
+            if (
+                $target->phong_ban_id !== $user->phong_ban_id || // khác phòng
+                $target->id === $user->id ||                     // chính họ
+                $target->coVaiTro('department')                  // người cũng là trưởng phòng
+            ) {
                 abort(403, 'Bạn không có quyền xóa bản ghi này.');
             }
         } else {
@@ -700,17 +721,23 @@ class ChamCongAdminController extends Controller
     public function pheDuyet(Request $request, $id)
     {
         $chamCong = ChamCong::BanChamCongTheoId($id);
-        // $user = auth()->user();
-        // if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
-        //     // Admin, HR xem được hết
-        // } else if ($user->coVaiTro('department')) {
-        //     // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
-        //     if ($chamCong->nguoiDung->phong_ban_id !== $user->phong_ban_id || $chamCong->nguoiDung->id == $user->id) {
-        //         abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
-        //     }
-        // } else {
-        //     abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
-        // }
+        $user = auth()->user();
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Trưởng phòng chỉ được xem nhân viên trong cùng phòng ban, không được xem chính mình hoặc trưởng phòng khác
+            $target = $chamCong->nguoiDung;
+
+            if (
+                $target->phong_ban_id !== $user->phong_ban_id || // khác phòng
+                $target->id === $user->id ||                     // chính họ
+                $target->coVaiTro('department')                  // người cũng là trưởng phòng
+            ) {
+                abort(403, 'Bạn không có quyền xem bản ghi này.');
+            }
+        } else {
+            abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
+        }
         $trangThai = $chamCong->trang_thai;
         $validated = $request->validate([
             'trang_thai_duyet' => 'required|numeric',

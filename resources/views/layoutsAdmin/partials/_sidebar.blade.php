@@ -25,9 +25,16 @@
             </a>
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qlhoso'))
                     <li class="nav-item">
-                        <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
+                        <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
                     </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </li>
@@ -114,6 +121,12 @@
                         <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
+                    </li>
+                    @endif
+
                 </ul>
             </div>
         </li>
@@ -253,9 +266,18 @@
             </a>
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('xinnghiphep', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="">Danh sách</a>
                     </li>
+                    @endif
+
+                    @if(MenuHelper::hasSubMenuPermission('xinnghiphep', 'donxinnghiphep'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url('employee/nghi-phep')}}">Đơn nghỉ phép</a>
+                    </li>
+                    @endif
+
                 </ul>
             </div>
         </li>

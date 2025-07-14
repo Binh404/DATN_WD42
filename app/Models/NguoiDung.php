@@ -77,6 +77,9 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     public function soDuNghiPhepNhanVien(){
         return $this->hasMany(SoDuNghiPhepNhanVien::class, 'nguoi_dung_id');
     }
+    public function vaiTro(){
+        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
+    }
 
     public function vaiTros()
     {

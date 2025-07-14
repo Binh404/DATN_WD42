@@ -23,10 +23,12 @@ class DangKyTangCaController extends Controller
         if ($request->filled('trang_thai')) {
             $query->byTrangThai($request->trang_thai);
         }
-
+        if($request->filled('ngay_tang_ca')){
+            $query->byNgayTangCa($request->ngay_tang_ca);
+        }
         // Filter by month
-        if ($request->filled('thang') && $request->filled('nam')) {
-            $query->byThang($request->nam, $request->thang);
+        if ($request->filled('thang') ) {
+            $query->byThang( $request->thang);
         }
         if ($request->filled('nam')) {
             $query->byNam($request->nam);
@@ -44,7 +46,7 @@ class DangKyTangCaController extends Controller
         ];
         // dd($stats);
 
-        return view('employe.cham-cong.leave', compact('dangKyTangCa', 'stats'));
+        return view('employe.cham-cong.leaveTest', compact('dangKyTangCa', 'stats'));
     }
     /**
      * Store a newly created overtime registration

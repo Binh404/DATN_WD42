@@ -3,6 +3,7 @@
 
     $nguoiDung = Auth::user();
     $avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');
+    // dd($avatar);
     $ten     = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
     $email   = $nguoiDung->email ?? 'N/A';
 @endphp
@@ -160,14 +161,14 @@
       <li class="nav-item dropdown d-none d-lg-block user-dropdown">
         <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
             <img class="img-xs rounded-circle"
-                src="{{ $avatar }}"
+                src="{{ asset($avatar)  }}"
                 onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
                 alt="Ảnh đại diện">
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
           <div class="dropdown-header text-center">
              <img class="img-md rounded-circle"
-                src="{{ $avatar }}"
+                src="{{ asset($avatar) }}"
                 onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
                 alt="Ảnh đại diện" width="50" height="50">
             <p class="mb-1 mt-3 fw-semibold">{{ $ten }}</p>
