@@ -6,6 +6,7 @@
     // dd($avatar);
     $ten     = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
     $email   = $nguoiDung->email ?? 'N/A';
+    $vaiTro  = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
 @endphp
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
@@ -173,7 +174,8 @@
                 alt="Ảnh đại diện" width="50" height="50">
             <p class="mb-1 mt-3 fw-semibold">{{ $ten }}</p>
             <p class="fw-light text-muted mb-0">{{ $email }}</p>
-          </div>
+                <p class="fw-light text-muted mb-0">{{ $vaiTro }}</p>
+            </div>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
           {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layoutsAdmin.master')
 
 @section('content')
 <div class="container">
@@ -32,7 +32,7 @@
 
                 <div class="mb-3">
                     <label for="gioi_tinh" class="form-label">Giới tính</label>
-                    <select name="gioi_tinh" id="gioi_tinh" class="form-control">
+                    <select name="gioi_tinh" id="gioi_tinh" class="form-select">
                         <option value="">-- Chọn --</option>
                         <option value="nam" {{ old('gioi_tinh', $hoSo->gioi_tinh ?? '') == 'nam' ? 'selected' : '' }}>Nam</option>
                         <option value="nu" {{ old('gioi_tinh', $hoSo->gioi_tinh ?? '') == 'nu' ? 'selected' : '' }}>Nữ</option>
@@ -45,7 +45,7 @@
 
                 <div class="mb-3">
                     <label for="tinh_trang_hon_nhan" class="form-label">Tình trạng hôn nhân</label>
-                    <select name="tinh_trang_hon_nhan" id="tinh_trang_hon_nhan" class="form-control">
+                    <select name="tinh_trang_hon_nhan" id="tinh_trang_hon_nhan" class="form-select">
                         <option value="">-- Chọn --</option>
                         <option value="doc_than" {{ old('tinh_trang_hon_nhan', $hoSo->tinh_trang_hon_nhan ?? '') == 'doc_than' ? 'selected' : '' }}>Độc thân</option>
                         <option value="da_ket_hon" {{ old('tinh_trang_hon_nhan', $hoSo->tinh_trang_hon_nhan ?? '') == 'da_ket_hon' ? 'selected' : '' }}>Đã kết hôn</option>
@@ -78,7 +78,7 @@
                 <div class="mb-3">
                     <label for="email_cong_ty" class="form-label">Email công ty</label>
                     <input type="email" name="email_cong_ty" id="email_cong_ty" class="form-control"
-                           value="{{ Auth::user()->email }}" readonly>
+                           value="{{ $hoSo->nguoiDung->email }}" readonly>
                 </div>
 
                 <div class="mb-3">
@@ -91,7 +91,7 @@
 
                 @if (!empty($hoSo->anh_dai_dien))
                     <div class="mb-3">
-                        <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" width="100">
+                        <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" class="img-thumbnail" width="100">
                     </div>
                 @endif
             </div>

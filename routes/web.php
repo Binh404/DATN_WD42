@@ -352,7 +352,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::get('/nghi-phep/create', [NghiPhepController::class, 'create'])->name('nghiphep.create');
         Route::post('/nghi-phep/store', [NghiPhepController::class, 'store'])->name('nghiphep.store');
         Route::get('/nghi-phep/{id}/huy', [NghiPhepController::class, 'huyDonXinNghi'])->name('nghiphep.cancel');
-        Route::get('/nghi-phep/{id}', [NghiPhepController::class, 'show'])->name('nghiphep.show');
+        Route::get('/nghi-phep/{id}/show', [NghiPhepController::class, 'show'])->name('nghiphep.show');
 
 
         Route::get('/so-du-nghi-phep', [NghiPhepController::class, 'soDuNghiPhep'])->name('nghiphep.sodu');
@@ -417,7 +417,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('hr')->name('hr.')->group(function () {
     // tuyển dụng
     Route::get('captrenthongbao/tuyendung/danhsach', [YeuCauTuyenDungController::class, 'danhSachThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.index');
-    Route::get('captrenthongbao/tuyendung/{id}', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
+    Route::get('captrenthongbao/tuyendung/{id}/show', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
     Route::get('tintuyendung/create-from-request/{id}', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
 
