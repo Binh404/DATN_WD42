@@ -86,7 +86,7 @@ class MenuHelper
                 'hoso' => ['qlhoso', 'hosocn'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
-                'duyetdon' => ['tuyendung', 'xinnghiphep'],
+                'duyetdon' => [ 'xinnghiphep'],
                 'xinnghiphep' => ['danhsach']
 
             ],

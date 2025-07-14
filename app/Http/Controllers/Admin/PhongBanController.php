@@ -51,7 +51,7 @@ class PhongBanController extends Controller
 
         PhongBan::create($validated);
 
-        return redirect("/phongban")->with('success', 'Thêm phòng ban thành công!');
+        return redirect(route('phongban.index'))->with('success', 'Thêm phòng ban thành công!');
     }
 
     /**
@@ -95,7 +95,7 @@ class PhongBanController extends Controller
 
         $phongban->update($validated);
 
-        return redirect("/phongban")->with('success', 'Cập nhật thành công!');
+        return redirect(route('phongban.index'))->with('success', 'Cập nhật thành công!');
     }
 
     /**
@@ -104,6 +104,6 @@ class PhongBanController extends Controller
     public function destroy(string $id)
     {
         $phongBan = PhongBan::findOrFail($id)->delete();
-        return redirect('/phongban')->with('success', "Đã xóa phòng ban thành công!");
+        return redirect(route('phongban.index'))->with('success', "Đã xóa phòng ban thành công!");
     }
 }

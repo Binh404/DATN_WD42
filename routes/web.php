@@ -443,7 +443,7 @@ Route::prefix('department')->name('department.')->group(function () {
 
     // quản lý đơn xin nghỉ chung cho cả hr và trưởng phòng
     Route::get('don-xin-nghi', [NghiPhepController::class, 'donXinNghi'])->name('donxinnghi.danhsach');
-    Route::get('don-xin-nghi/show/{id}', [NghiPhepController::class, 'chiTiet'])->name('donxinnghi.show');
+    Route::get('don-xin-nghi/{id}/show', [NghiPhepController::class, 'chiTiet'])->name('donxinnghi.show');
     Route::get('don-xin-nghi/duyet/{id}', [LichSuDuyetDonXinNghiController::class, 'duyetDonXinNghi'])->name('donxinnghi.duyet');
     Route::post('don-xin-nghi/tuchoi', [LichSuDuyetDonXinNghiController::class, 'tuChoi'])->name('donxinnghi.tuchoi');
 });
