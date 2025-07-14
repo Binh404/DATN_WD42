@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
         } elseif (in_array('employee', $roles)) {
             return redirect()->route('employee.dashboard');
         } elseif (in_array('department', $roles)) {
-            return redirect()->route('department.yeucautuyendung.index');
+            return redirect()->route('department.dashboard');
         }
 
         // Không có vai trò phù hợp

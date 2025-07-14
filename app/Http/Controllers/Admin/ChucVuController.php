@@ -39,5 +39,12 @@ public function destroy($id)
     $chucvu->delete();
     return redirect()->route('chucvu.index')->with('success', 'Xóa chức vụ thành công');
 }
+public function getByPhongBan($phongBanId)
+    {
+        // dd('lô');
+        $chucVus = \App\Models\ChucVu::where('phong_ban_id', $phongBanId)->get();
+
+        return response()->json($chucVus);
+    }
 
 }

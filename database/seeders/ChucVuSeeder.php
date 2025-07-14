@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\DB;
 
 class ChucVuSeeder extends Seeder
 {
@@ -15,17 +12,20 @@ class ChucVuSeeder extends Seeder
      */
     public function run(): void
     {
-        FacadesDB::table('chuc_vu')->insert([
+        // Lấy ID các phòng ban theo mã
+        $banGiamDocId = DB::table('phong_ban')->where('ma_phong_ban', 'BGD')->value('id');
+        $phongHRId    = DB::table('phong_ban')->where('ma_phong_ban', 'HR')->value('id');
+        $phongITId    = DB::table('phong_ban')->where('ma_phong_ban', 'IT')->value('id');
+        $phongKTId    = DB::table('phong_ban')->where('ma_phong_ban', 'KT')->value('id');
+
+        DB::table('chuc_vu')->insert([
             [
                 'id' => 1,
                 'ten' => 'Giám Đốc',
                 'ma' => 'GD',
                 'mo_ta' => 'Giám đốc công ty',
-                // 'phong_ban_id' => 1, mấy cái t xóa ở dưới là những cái t cmt này tại thấy không cần thiết
-                // 'cap_do' => 10,
-                'luong_co_ban' => 30000000, // Salary per day
-                // 'trach_nhiem' => json_encode(['Điều hành công ty', 'Đưa ra quyết định chiến lược', 'Quản lý tổng thể']),
-                // 'yeu_cau' => json_encode(['Tốt nghiệp Đại học', 'Kinh nghiệm quản lý 10+ năm', 'Kỹ năng lãnh đạo']),
+                'phong_ban_id' => $banGiamDocId,
+                'luong_co_ban' => 30000000,
                 'he_so_luong' => 4.0,
                 'trang_thai' => true,
                 'created_at' => now(),
@@ -36,6 +36,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Trưởng Phòng Nhân Sự',
                 'ma' => 'TP_HR',
                 'mo_ta' => 'Trưởng phòng nhân sự',
+                'phong_ban_id' => $phongHRId,
                 'luong_co_ban' => 15000000,
                 'he_so_luong' => 1.5,
                 'trang_thai' => true,
@@ -47,6 +48,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Nhân Viên Nhân Sự',
                 'ma' => 'NV_HR',
                 'mo_ta' => 'Nhân viên phòng nhân sự',
+                'phong_ban_id' => $phongHRId,
                 'luong_co_ban' => 9000000,
                 'he_so_luong' => 1,
                 'trang_thai' => true,
@@ -58,6 +60,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Trưởng Phòng IT',
                 'ma' => 'TP_IT',
                 'mo_ta' => 'Trưởng phòng công nghệ thông tin',
+                'phong_ban_id' => $phongITId,
                 'luong_co_ban' => 12000000,
                 'he_so_luong' => 1.2,
                 'trang_thai' => true,
@@ -69,8 +72,9 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Lập Trình Viên Senior',
                 'ma' => 'DEV_SR',
                 'mo_ta' => 'Lập trình viên cấp cao',
-               'luong_co_ban' => 17000000,
-               'he_so_luong' => 1,
+                'phong_ban_id' => $phongITId,
+                'luong_co_ban' => 17000000,
+                'he_so_luong' => 1,
                 'trang_thai' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -80,6 +84,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Lập Trình Viên',
                 'ma' => 'DEV',
                 'mo_ta' => 'Lập trình viên',
+                'phong_ban_id' => $phongITId,
                 'luong_co_ban' => 21000000,
                 'he_so_luong' => 1,
                 'trang_thai' => true,
@@ -91,6 +96,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Trưởng Phòng Kế Toán',
                 'ma' => 'TP_KT',
                 'mo_ta' => 'Trưởng phòng kế toán',
+                'phong_ban_id' => $phongKTId,
                 'luong_co_ban' => 22000000,
                 'he_so_luong' => 1,
                 'trang_thai' => true,
@@ -102,6 +108,7 @@ class ChucVuSeeder extends Seeder
                 'ten' => 'Nhân Viên Kế Toán',
                 'ma' => 'NV_KT',
                 'mo_ta' => 'Nhân viên kế toán',
+                'phong_ban_id' => $phongKTId,
                 'luong_co_ban' => 20000000,
                 'he_so_luong' => 1,
                 'trang_thai' => true,

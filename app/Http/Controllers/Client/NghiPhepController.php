@@ -110,7 +110,7 @@ class NghiPhepController extends Controller
         $donNghiPhep = DonXinNghi::with('loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->findOrFail($id);
         $lichSuTruongPhong = $donNghiPhep->lichSuDuyet->firstWhere('cap_duyet', 1);
 
-        return view('employe.nghiphep.show', compact('donNghiPhep', 'lichSuTruongPhong'));
+        return view('employe.nghiphep.showTest', compact('donNghiPhep', 'lichSuTruongPhong'));
     }
 
     public function chiTiet($id)

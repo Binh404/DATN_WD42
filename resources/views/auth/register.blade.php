@@ -3,7 +3,7 @@
 <style>
     select#vai_tro_id {
     color: black;
-   
+
 }
 select.form-select {
     color: black !important;
@@ -96,7 +96,7 @@ select.form-select {
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                              
+
                                 <button type="submit" class="btn btn-primary px-4">Đăng ký</button>
                             </div>
                         </form>

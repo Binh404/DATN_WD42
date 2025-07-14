@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB; // ✅ Import đúng DB
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class NhomQuyenSeeder extends Seeder
 {

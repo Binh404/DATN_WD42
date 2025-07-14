@@ -34,7 +34,7 @@
 
     <div class="mb-3">
     <label class="form-label">Số ngày công</label>
-<input type="number" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}">
+    <input type="text" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}">
 </div>
     <div class="mb-3">
         <label class="form-label">Số ngày công OT</label>
