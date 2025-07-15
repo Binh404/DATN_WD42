@@ -84,6 +84,8 @@ class MenuHelper
             ],
             'hr' => [
                 'hoso' => ['qlhoso', 'hosocn'],
+                'luong' => ['luong', 'phieuluong'],
+
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
                 'duyetdon' => [ 'xinnghiphep'],
@@ -91,7 +93,7 @@ class MenuHelper
 
             ],
             'department' => [
-                'hoso' => ['qlhoso', 'hosocn'],
+                'hoso' => [ 'hosocn'],
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
                 'duyetdon' => ['xinnghiphep'],

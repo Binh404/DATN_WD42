@@ -35,7 +35,7 @@
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
+                        <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
 
 

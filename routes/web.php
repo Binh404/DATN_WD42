@@ -56,7 +56,7 @@ Route::get('/testcatlayout', function () {
     return view('layoutsAdmin.master');
 });
 // Admin routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,employee,hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', function () {
@@ -254,9 +254,9 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
         Route::get('tkall', [TaiKhoanController::class, 'getall'])
             ->name('tkall');
-        Route::get('tkedit/{id}', [TaiKhoanController::class, 'edit'])
+        Route::get('tkedit/{id}/edit', [TaiKhoanController::class, 'edit'])
             ->name('tkedit');
-        Route::put('tkedit/{id}', [TaiKhoanController::class, 'update'])
+        Route::put('tkedit/{id}/update', [TaiKhoanController::class, 'update'])
             ->name('tkupdate');
         // Route::delete('/taikhoan/{id}', [TaiKhoanController::class, 'delete'])->name('tkdelete');
     });

@@ -16,21 +16,32 @@ class HoSoNhanVienController extends Controller
      */
   public function indexAll(Request $request)
 {
-    $keyword = $request->input('search');
+    // $keyword = $request->input('search');
+    $query = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        ->where('trang_thai', 1);
+    // $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+    //     // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
+    //     ->when($keyword, function ($query) use ($keyword) {
+    //         $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
+    //             $subQuery->where('ho', 'like', "%$keyword%")
+    //                      ->orWhere('ten', 'like', "%$keyword%")
+    //                      ->orWhere('email_cong_ty', 'like', "%$keyword%");
+    //         });
+    //     })
 
-    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-        // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
-        ->when($keyword, function ($query) use ($keyword) {
-            $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
-                $subQuery->where('ho', 'like', "%$keyword%")
-                         ->orWhere('ten', 'like', "%$keyword%")
-                         ->orWhere('email_cong_ty', 'like', "%$keyword%");
+        if ($request->filled('search')) {
+            $tenNhanVien = $request->get('search');
+            $query->whereHas('hoSo', function ($q) use ($tenNhanVien) {
+                $q->where('ho', 'LIKE', "%{$tenNhanVien}%")
+                    ->orWhere('ten', 'LIKE', "%{$tenNhanVien}%")
+                    ->orWhereRaw("CONCAT(ho, ' ', ten) LIKE ?", ["%{$tenNhanVien}%"]);
             });
-        })
+        }
+        $nguoiDungs = $query
         ->orderByDesc('created_at')
-        ->paginate(10);
+        ->paginate(20);
 
-    return view('admin.hoso.index', compact('nguoiDungs', 'keyword'));
+    return view('admin.hoso.index', compact('nguoiDungs'));
 }
 // Danh sách đã nghỉ việc
 public function indexResigned(Request $request)
@@ -38,7 +49,7 @@ public function indexResigned(Request $request)
     $keyword = $request->input('search');
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-        ->where('trang_thai_cong_viec', 'da_nghi') // <-- lọc ở đây mới đúng
+        ->where('trang_thai', 0) // <-- lọc ở đây mới đúng
         ->when($keyword, function ($query) use ($keyword) {
             $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
                 $subQuery->where('ho', 'like', "%$keyword%")
@@ -60,7 +71,7 @@ public function markResigned($id)
     $nguoiDung = $hoSo->nguoiDung; // lấy bản ghi liên kết từ bảng nguoi_dung
 
     if ($nguoiDung) {
-        $nguoiDung->trang_thai_cong_viec = 'da_nghi';
+        $nguoiDung->trang_thai = 0;
         $nguoiDung->save();
     }
 
@@ -69,12 +80,18 @@ public function markResigned($id)
 // Khôi phục nhân viên
 public function restore($id)
 {
-    $hoSo = HoSoNguoiDung::findOrFail($id);
-    $nguoiDung = $hoSo->nguoiDung;
+    // $hoSo = HoSoNguoiDung::findOrFail($id);
+    // $nguoiDung = $hoSo->nguoiDung;
 
+    // if ($nguoiDung) {
+    //     $nguoiDung->trang_thai_cong_viec = 'dang_lam';
+    //     $nguoiDung->save();
+    // }
+
+    $nguoiDung = NguoiDung::findOrFail($id);
     if ($nguoiDung) {
-        $nguoiDung->trang_thai_cong_viec = 'dang_lam';
-        $nguoiDung->save();
+    $nguoiDung->trang_thai = 1;
+    $nguoiDung->save();
     }
 
     return redirect()->route('hoso.resigned')->with('success', 'Đã khôi phục nhân viên về trạng thái đang làm.');

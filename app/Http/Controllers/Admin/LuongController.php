@@ -366,7 +366,7 @@ public function tinhLuongVaLuu(Request $request)
         'ma_bang_luong' => $maBangLuong,
         'nam' => Carbon::parse($request->ngay_tinh_luong)->year,
         'thang' => Carbon::parse($request->ngay_tinh_luong)->month,
-        // 'ngay_tra_luong' => now()->endOfMonth()->format('Y-m-d'),
+        'ngay_tra_luong' => now()->endOfMonth()->format('Y-m-d'),
         'trang_thai' => 'dang_xu_ly',
         'nguoi_xu_ly_id' => auth()->id(),
         'thoi_gian_xu_ly' => Carbon::now(),

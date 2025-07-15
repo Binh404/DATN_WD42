@@ -234,7 +234,7 @@ class DangKyTangCaAdminController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'ids' => 'required|json',
-                'action' => 'required|in:da_duyet,tu_choi,delete',
+                'action' => 'required|in:da_duyet,tu_choi,huy',
                 'reason' => 'nullable|string|max:500'
             ]);
 
