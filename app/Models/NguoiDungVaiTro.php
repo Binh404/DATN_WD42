@@ -14,6 +14,7 @@ class NguoiDungVaiTro extends Model
     protected $primaryKey = ['role_id', 'vai_tro_id'];
 
     protected $fillable = [
+        'nguoi_dung_id',
         'role_id',
         'vai_tro_id',
         'model_type',

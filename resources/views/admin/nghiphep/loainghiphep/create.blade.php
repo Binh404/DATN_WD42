@@ -289,8 +289,8 @@
 
                 <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Mã LNP<span class="required">*</span></label>
-                    <input type="text" class="form-control" id="ma" name="ma" value="{{ old('ma') }}" placeholder="VD: NPN"
-                        maxlength="10">
+                    <input type="text" class="form-control" id="ma" name="ma" value="{{ old('ma') }}"
+                        placeholder="VD: NPN" maxlength="10">
                     @error('ma')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
@@ -322,7 +322,7 @@
 
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Số ngày trên năm<span class="required">*</span></label>
                     <input type="number" id="so_ngay_nam" name="so_ngay_nam" value="{{ old('so_ngay_nam') }}"
                         placeholder="12" class="form-control">
@@ -331,17 +331,19 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Tối đa ngày liên tiếp<span class="required">*</span></label>
                     <input type="number" id="toi_da_ngay_lien_tiep" name="toi_da_ngay_lien_tiep"
                         value="{{ old('toi_da_ngay_lien_tiep') }}" placeholder="5" value="{{ old('ma') }}"
                         class="form-control">
+                    <span id="error_toi_da_ngay_lien_tiep" class="error-message text-danger" style="display:none;"></span>
+
                     @error('toi_da_ngay_lien_tiep')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Số ngày báo trước<span class="required">*</span></label>
                     <input type="number" id="so_ngay_bao_truoc" name="so_ngay_bao_truoc"
                         value="{{ old('so_ngay_bao_truoc') }}" min="0" max="30" placeholder="3"
@@ -350,17 +352,7 @@
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
-
-                <div class="form-group col-md-3">
-                    <label for="inputEmail4" class="form-label">Tối đa ngày chuyển<span class="required">*</span></label>
-                    <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen"
-                        value="{{ old('toi_da_ngay_chuyen') }}" min="0" max="365" placeholder="5"
-                        class="form-control">
-                    @error('toi_da_ngay_chuyen')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
-                </div>
-
+                {{-- 
                 <div class="form-group col-md-3">
                     <label for="inputEmail4" class="form-label">Cho phép chuyển năm</label>
                     <input type="hidden" name="cho_phep_chuyen_nam" value="0">
@@ -373,6 +365,16 @@
 
                     <input type="hidden" name="cho_phep_chuyen_nam" value="0">
 
+                </div> --}}
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Cho phép chuyển năm</label>
+                    <input type="hidden" name="cho_phep_chuyen_nam" value="0">
+                    <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam" value="1"
+                        {{ old('cho_phep_chuyen_nam') ? 'checked' : '' }}>
+                    @error('cho_phep_chuyen_nam')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group col-md-3">
@@ -412,6 +414,16 @@
 
                 </div>
 
+                <div class="form-group col-md-3" id="group_toi_da_ngay_chuyen" style="display: none;">
+                    <label class="form-label">Tối đa ngày chuyển</label>
+                    <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen"
+                        value="{{ old('toi_da_ngay_chuyen') }}" min="0" max="365" placeholder="5"
+                        class="form-control">
+                    @error('toi_da_ngay_chuyen')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <div class="form-group col-md-12">
                     <label for="inputEmail4" class="form-label">Mô tả</label>
                     <textarea class="form-textarea" id="mo_ta" name="mo_ta" value="{{ old('mo_ta') }}"
@@ -429,5 +441,46 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('cho_phep_chuyen_nam');
+            const groupInput = document.getElementById('group_toi_da_ngay_chuyen');
+            const form = document.getElementById('leaveTypeForm');
+            const soNgayNamInput = document.getElementById('so_ngay_nam');
+            const toiDaNgayInput = document.getElementById('toi_da_ngay_lien_tiep');
+            const errorElement = document.getElementById('error_toi_da_ngay_lien_tiep');
+
+            form.addEventListener('submit', function(e) {
+                const soNgayNam = parseInt(soNgayNamInput.value);
+                const toiDaNgay = parseInt(toiDaNgayInput.value);
+
+                // Reset lỗi
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+
+                // Kiểm tra nếu cả hai ô đều có giá trị hợp lệ
+                if (!isNaN(soNgayNam) && !isNaN(toiDaNgay)) {
+                    if (toiDaNgay > soNgayNam) {
+                        e.preventDefault();
+                        errorElement.textContent =
+                            'Tối đa ngày liên tiếp phải nhỏ hơn hoặc bằng số ngày trên năm.';
+                        errorElement.style.display = 'block';
+                        toiDaNgayInput.focus();
+                    }
+                }
+            });
+
+            function toggleInput() {
+                groupInput.style.display = checkbox.checked ? 'block' : 'none';
+            }
+
+            // Gọi ngay lúc load để đảm bảo đúng trạng thái khi old('cho_phep_chuyen_nam') có giá trị
+            toggleInput();
+
+            checkbox.addEventListener('change', toggleInput);
+        });
+    </script>
+
 
 @endsection

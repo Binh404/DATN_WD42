@@ -38,12 +38,38 @@ class LoaiNghiPhepController extends Controller
             'toi_da_ngay_lien_tiep' => 'required|integer|min:0',
             'so_ngay_bao_truoc' => 'required|integer|min:0|max:127',
             'cho_phep_chuyen_nam' => 'required|boolean',
-            'toi_da_ngay_chuyen' => 'required|integer|min:0|max:255',
+            'toi_da_ngay_chuyen' => 'min:0|max:255',
             'gioi_tinh_ap_dung' => 'required|in:tat_ca,nam,nu',
             'yeu_cau_giay_to' => 'required|boolean',
             'co_luong' => 'required|boolean',
             'trang_thai' => 'required|boolean',
+        ], [
+            'ten.required' => 'Tên loại nghỉ phép không được để trống.',
+
+            'ma.required' => 'Mã loại nghỉ phép không được để trống.',
+            'ma.unique' => 'Mã loại nghỉ phép đã tồn tại.',
+
+            'so_ngay_nam.required' => 'Vui lòng nhập số ngày nghỉ phép trong năm.',
+            'so_ngay_nam.integer' => 'Số ngày phải là số nguyên.',
+            'so_ngay_nam.min' => 'Số ngày phải lớn hơn hoặc bằng 0.',
+
+            'toi_da_ngay_lien_tiep.required' => 'Vui lòng nhập số ngày nghỉ liên tiếp tối đa.',
+            'toi_da_ngay_lien_tiep.integer' => 'Số ngày liên tiếp phải là số nguyên.',
+            'toi_da_ngay_lien_tiep.min' => 'Số ngày liên tiếp phải lớn hơn hoặc bằng 0.',
+
+            'so_ngay_bao_truoc.required' => 'Vui lòng nhập số ngày báo trước.',
+            'so_ngay_bao_truoc.integer' => 'Số ngày báo trước phải là số nguyên.',
+            'so_ngay_bao_truoc.min' => 'Số ngày báo trước không được âm.',
+            'so_ngay_bao_truoc.max' => 'Số ngày báo trước tối đa là :max.',
+
+            'toi_da_ngay_chuyen.integer' => 'Số ngày chuyển phải là số nguyên.',
+            'toi_da_ngay_chuyen.min' => 'Số ngày chuyển không được âm.',
+            'toi_da_ngay_chuyen.max' => 'Số ngày chuyển tối đa là :max.',
+
+            'gioi_tinh_ap_dung.required' => 'Vui lòng chọn giới tính áp dụng.',
+            'gioi_tinh_ap_dung.in' => 'Giới tính áp dụng không hợp lệ.',
         ]);
+
         LoaiNghiPhep::create($validated);
 
         return redirect()->route('hr.loainghiphep.index')

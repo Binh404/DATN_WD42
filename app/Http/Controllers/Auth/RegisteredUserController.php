@@ -61,6 +61,7 @@ class RegisteredUserController extends Controller
             'chuc_vu_id' => $request->chuc_vu_id,
             'password' => Hash::make($request->password),
         ]);
+
         // Gán vai trò cho người dùng
         $nguoiDungVT = NguoiDungVaiTro::create([
             'nguoi_dung_id' => $user->id,
@@ -80,19 +81,20 @@ class RegisteredUserController extends Controller
             $soNgayDuocCap = $item->tinh_theo_ty_le
                 ? round($item->so_ngay_nam * $soThangLamTrongNam / 12)
                 : $item->so_ngay_nam;
-
-            SoDuNghiPhepNhanVien::create([
-                'nguoi_dung_id' => $user->id,
-                'loai_nghi_phep_id' => $item->id,
-                'nam' => now()->year,
-                'so_ngay_duoc_cap' => $soNgayDuocCap,
-                'so_ngay_da_dung' => 0,
-                'so_ngay_cho_duyet' => 0,
-                'so_ngay_con_lai' => $soNgayDuocCap,
-                'so_ngay_chuyen_tu_nam_truoc' => 0,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            if ($item->trang_thai == 1) {
+                SoDuNghiPhepNhanVien::create([
+                    'nguoi_dung_id' => $user->id,
+                    'loai_nghi_phep_id' => $item->id,
+                    'nam' => now()->year,
+                    'so_ngay_duoc_cap' => $soNgayDuocCap,
+                    'so_ngay_da_dung' => 0,
+                    'so_ngay_cho_duyet' => 0,
+                    'so_ngay_con_lai' => $soNgayDuocCap,
+                    'so_ngay_chuyen_tu_nam_truoc' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
         }
 
         return redirect(route('hr.dashboard', absolute: false));
