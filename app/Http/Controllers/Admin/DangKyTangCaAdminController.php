@@ -140,7 +140,7 @@ class DangKyTangCaAdminController extends Controller
     }
 
     public function pheDuyet(Request $request, $id){
-        // dd($request->all());
+        // dd($request->trang_thai == 'huy');
         $dangKyTangCa = DangKyTangCa::where('id', $id)->first();
         $user = auth()->user();
 
@@ -158,7 +158,10 @@ class DangKyTangCaAdminController extends Controller
                 ) {
                     abort(403, 'Bạn không có quyền xem bản ghi này.');
                 }
-        } else {
+        } else if($user->coVaiTro('employee') && $request->trang_thai == 'huy'){
+            // $target = $dangKyTangCa->nguoiDung;
+
+        }else{
             abort(403, 'Bạn không có quyền xem bản ghi này.');
         }
         // $trangThai = $dangKyTangCa->trang_thai;
