@@ -581,6 +581,7 @@
                                 attendanceStatus = 'no_overtime_approval';
                             }
                             updateNormalDisplayData(data.normal_data)
+                            updateOvertimeDisplayData(data.overtime_data);
 
                         }
                     } else {
@@ -633,11 +634,12 @@
         // Cập nhật dữ liệu hiển thị cho chấm công thường
         function updateNormalDisplayData(data) {
             // Cập nhật giờ vào
-            // if (data.gio_vao) {
+            if (data ) {
+                // if (data && data.gio_vao) {
                 const gioVaoEl = document.getElementById('gioVaoHomNay');
                 // if (gioVaoEl) {
                     gioVaoEl.textContent = data.gio_vao ?? '--:--';
-                // }
+            //     }
             // }
 
             // Cập nhật giờ ra
@@ -645,7 +647,7 @@
                 const gioRaEl = document.getElementById('gioRaHomNay');
                 // if (gioRaEl) {
                     gioRaEl.textContent = data.gio_ra ?? '--:--';
-                // }
+            //     }
             // }
 
             // Cập nhật số giờ làm
@@ -703,10 +705,18 @@
 
             // Ẩn thông tin tăng ca nếu có
             hideOvertimeInfo();
+            }else{
+                hideAttendanceInfo();
+            }
+
         }
 
         // Cập nhật dữ liệu hiển thị cho chấm công tăng ca
         function updateOvertimeDisplayData(data) {
+            if (!data) {
+                hideOvertimeInfo();
+                return;
+            }
             const gioVaoEl = document.getElementById('gioVaoTangCa');
             // if (gioVaoEl && data.gio_bat_dau_thuc_te) {
                 gioVaoEl.textContent = data.gio_bat_dau_thuc_te ?? '--:--';
@@ -897,7 +907,7 @@
                 timestamp: new Date().toISOString()
             };
 
-            // console.log(attendanceData);
+            console.log(attendanceData);
 
             // Ẩn modal ngay sau khi submit
 
@@ -1043,44 +1053,45 @@
             showNotification('Đang lấy vị trí hiện tại...', 'info');
 
             try {
-                const location = await getCurrentLocation();
-                console.log('Vị trí công ty:', location);
-                if (!location || location.error) {
-                    showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
-                    return;
-                }
+                // const location = await getCurrentLocation();
+                // console.log('Vị trí công ty:', location);
+                // if (!location || location.error) {
+                //     showNotification('Không thể lấy vị trí hiện tại. Vui lòng cho phép truy cập vị trí.', 'error');
+                //     return;
+                // }
 
-                // Kiểm tra vị trí có trong phạm vi cho phép không
-                const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
+                // // Kiểm tra vị trí có trong phạm vi cho phép không
+                // const locationCheck = isWithinAllowedArea(location.latitude, location.longitude);
 
-                if (!locationCheck?.isValid) {
-                    const distance = locationCheck?.distance;
-                    const maxDistance = locationCheck?.maxDistance;
+                // if (!locationCheck?.isValid) {
+                //     const distance = locationCheck?.distance;
+                //     const maxDistance = locationCheck?.maxDistance;
 
-                    const isDistanceValid = typeof distance === 'number' && !isNaN(distance);
-                    const isMaxDistanceValid = typeof maxDistance === 'number' && !isNaN(maxDistance);
+                //     const isDistanceValid = typeof distance === 'number' && !isNaN(distance);
+                //     const isMaxDistanceValid = typeof maxDistance === 'number' && !isNaN(maxDistance);
 
-                    const distanceKm = isDistanceValid ? (distance / 1000).toFixed(1) : null;
-                    const maxDistanceKm = isMaxDistanceValid ? (maxDistance / 1000).toFixed(1) : null;
+                //     const distanceKm = isDistanceValid ? (distance / 1000).toFixed(1) : null;
+                //     const maxDistanceKm = isMaxDistanceValid ? (maxDistance / 1000).toFixed(1) : null;
 
-                    // Thông báo phù hợp
-                    let message = '';
+                //     // Thông báo phù hợp
+                //     let message = '';
 
-                    if (!distanceKm || !maxDistanceKm) {
-                        message = 'Không thể xác định được vị trí công ty hoặc vị trí của bạn. Vui lòng thử lại sau.';
-                    } else {
-                        message = `Bạn đang cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`;
-                    }
+                //     if (!distanceKm || !maxDistanceKm) {
+                //         message = 'Không thể xác định được vị trí công ty hoặc vị trí của bạn. Vui lòng thử lại sau.';
+                //     } else {
+                //         message = `Bạn đang cách công ty ${distanceKm}km. Chỉ được chấm công trong phạm vi ${maxDistanceKm}km.`;
+                //     }
 
-                    showNotification(message, 'error');
-                    return;
-                }
+                //     showNotification(message, 'error');
+                //     return;
+                // }
 
                 // console.log(location);
                 const type = (attendanceStatus === 'out' ? 'in' : 'out');
                 const requiresReason = checkAttendance(type);
                 // console.log(type, location, attendanceStatus, btn);
-                console.log(requiresReason.reasonRequired);
+                // console.log(requiresReason.reasonRequired);
+                console.log(location);
 
 
                 // Nếu vị trí hợp lệ, tiến hành chấm công

@@ -1,7 +1,311 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
+
+    <div class="container-fluid px-4">
+        <div class="col-md-4">
+            <h2 class="fw-bold text-primary mb-2">
+                Yêu cầu tuyển dụng
+            </h2>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    Tạo đơn
+                </h5>
+            </div>
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form class="forms-sample ml-5 row g-3" action="{{ route('hr.tintuyendung.store') }}" method="POST"
+                class="form-container" id="jobPostingForm" onsubmit="return validateForm(event)">
+                @csrf
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Mã yêu cầu<span class="required">*</span></label>
+                    <input type="text" id="ma" name="ma" placeholder="VD: JOB-2024-001"
+                        value="{{ old('ma') }}" class="{{ $errors->has('ma') ? 'error' : '' }} form-control">
+                    @error('ma')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputPassword4" class="form-label">Tiêu đề<span class="required">*</span></label>
+                    <input type="text" id="tieu_de" name="tieu_de" placeholder="VD: Senior Frontend Developer"
+                        value="{{ old('tieu_de') }}" class="{{ $errors->has('tieu_de') ? 'error' : '' }} form-control">
+                    @error('tieu_de')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Số lượng<span class="required">*</span></label>
+                    <input type="number" id="so_vi_tri" name="so_vi_tri"
+                        value="{{ old('so_vi_tri', $yeuCau->so_luong ?? '') }}"
+                        class="{{ $errors->has('so_vi_tri') ? 'error' : '' }} form-control">
+                    @error('so_vi_tri')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputPassword4" class="form-label">Phòng ban<span class="required">*</span></label>
+                    <select id="phong_ban_id" name="phong_ban_id"
+                        class="{{ $errors->has('phong_ban_id') ? 'error' : '' }} form-control">
+                        <option value="">Chọn phòng ban</option>
+                        @foreach ($phongBans as $key => $item)
+                            <option value="{{ $item->id }}"
+                                {{ old('phong_ban_id') == $item->id || (isset($yeuCau) && $item->id === $yeuCau->phongBan->id) ? 'selected' : '' }}>
+                                {{ $item->ten_phong_ban }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('phong_ban_id')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Chức vụ<span class="required">*</span></label>
+                    <select id="chuc_vu_id" name="chuc_vu_id"
+                        class="{{ $errors->has('chuc_vu_id') ? 'error' : '' }} form-control">
+                        @if (isset($yeuCau))
+                            <option value="{{ $yeuCau->chuc_vu_id }}"
+                                {{ old('chuc_vu_id') == $yeuCau->chuc_vu_id ? 'selected' : '' }}>
+                                {{ $yeuCau->chucVu->ten }}
+                            </option>
+                        @endif
+                    </select>
+                    @error('chuc_vu_id')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="exampleInputEmail1">Vai trò<span class="required">*</span></label>
+                    <select id="vai_tro_id" name="vai_tro_id"
+                        class="{{ $errors->has('vai_tro_id') ? 'error' : '' }} form-control">
+                        <option value="">Chọn vai trò</option>
+                        @foreach ($vaiTros as $key => $item)
+                            <option value="{{ $item->id }}">
+                                {{ $item->ten }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('vai_tro_id')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Loại hợp đồng<span class="required">*</span></label>
+                    <select id="loai_hop_dong" name="loai_hop_dong"
+                        class="{{ $errors->has('loai_hop_dong') ? 'error' : '' }} form-control">
+                        <option value="">Chọn loại hợp đồng</option>
+                        <option value="thu_viec"
+                            {{ old('loai_hop_dong') == 'thu_viec' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'thu_viec') ? 'selected' : '' }}>
+                            Thử việc
+                        </option>
+                        <option value="xac_dinh_thoi_han"
+                            {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'xac_dinh_thoi_han') ? 'selected' : '' }}>
+                            Xác định thời hạn
+                        </option>
+                        <option value="khong_xac_dinh_thoi_han"
+                            {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'khong_xac_dinh_thoi_han') ? 'selected' : '' }}>
+                            Không xác định thời hạn
+                        </option>
+                    </select>
+                    @error('loai_hop_dong')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="exampleInputEmail1">Cấp độ kinh nghiệm<span class="required">*</span></label>
+                    <select id="cap_do_kinh_nghiem" name="cap_do_kinh_nghiem"
+                        class="{{ $errors->has('cap_do_kinh_nghiem') ? 'error' : '' }} form-control">
+                        <option value="">Chọn cấp độ</option>
+                        <option value="intern" {{ old('cap_do_kinh_nghiem') == 'intern' ? 'selected' : '' }}>Intern
+                        </option>
+                        <option value="fresher" {{ old('cap_do_kinh_nghiem') == 'fresher' ? 'selected' : '' }}>Fresher
+                        </option>
+                        <option value="junior" {{ old('cap_do_kinh_nghiem') == 'junior' ? 'selected' : '' }}>Junior
+                        </option>
+                        <option value="middle" {{ old('cap_do_kinh_nghiem') == 'middle' ? 'selected' : '' }}>Middle
+                        </option>
+                        <option value="senior" {{ old('cap_do_kinh_nghiem') == 'senior' ? 'selected' : '' }}>Senior
+                        </option>
+                    </select>
+                    @error('cap_do_kinh_nghiem')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4" class="form-label">Kinh nghiệm tối thiểu<span
+                            class="required">*</span></label>
+                    <input type="number" id="kinh_nghiem_toi_thieu" name="kinh_nghiem_toi_thieu"
+                        value="{{ old('kinh_nghiem_toi_thieu', $yeuCau->kinh_nghiem_toi_thieu ?? '') }}"
+                        class="{{ $errors->has('kinh_nghiem_toi_thieu') ? 'error' : '' }} form-control">
+                    @error('kinh_nghiem_toi_thieu')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">King nghiệm tối đa<span class="required">*</span></label>
+                    <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da"
+                        value="{{ old('kinh_nghiem_toi_da', $yeuCau->kinh_nghiem_toi_da ?? '') }}"
+                        class="{{ $errors->has('kinh_nghiem_toi_da') ? 'error' : '' }} form-control">
+                    @error('kinh_nghiem_toi_da')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Trình độ học vấn<span class="required">*</span></label>
+                    <select id="trinh_do_hoc_van" name="trinh_do_hoc_van"
+                        class="{{ $errors->has('trinh_do_hoc_van') ? 'error' : '' }} form-control">
+                        <option value="">Chọn trình độ</option>
+                        <option value="Trung cấp"
+                            {{ old('trinh_do_hoc_van') == 'Trung cấp' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Trung cấp') ? 'selected' : '' }}>
+                            Trung cấp
+                        </option>
+                        <option value="Cao đẳng"
+                            {{ old('trinh_do_hoc_van') == 'Cao đẳng' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Cao đẳng') ? 'selected' : '' }}>
+                            Cao đẳng
+                        </option>
+                        <option value="Đại học"
+                            {{ old('trinh_do_hoc_van') == 'Đại học' || (isset($yeuCau) && $yeuCau->trinh_do_hoc_van === 'Đại học') ? 'selected' : '' }}>
+                            Đại học
+                        </option>
+                    </select>
+                    @error('trinh_do_hoc_van')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">Lương tối thiểu</label>
+                    <input type="number" id="luong_toi_thieu" name="luong_toi_thieu" placeholder="10000000"
+                        value="{{ old('luong_toi_thieu', $yeuCau->luong_toi_thieu ?? '') }}"
+                        class="{{ $errors->has('luong_toi_thieu') ? 'error' : '' }} form-control">
+                    @error('luong_toi_thieu')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Lương tối đa<span class="required">*</span></label>
+                    <input type="number" id="luong_toi_da" name="luong_toi_da" placeholder="20000000"
+                        value="{{ old('luong_toi_da', $yeuCau->luong_toi_da ?? '') }}"
+                        class="{{ $errors->has('luong_toi_da') ? 'error' : '' }} form-control">
+                    @error('luong_toi_da')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Hạn nộp hồ sơ<span class="required">*</span></label>
+                    <input type="date" id="han_nop_ho_so" name="han_nop_ho_so" value="{{ old('han_nop_ho_so') }}"
+                        class="{{ $errors->has('han_nop_ho_so') ? 'error' : '' }}">
+                    @error('han_nop_ho_so')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Cho phép làm việc từ xa<span
+                            class="required">*</span></label>
+                    <input type="checkbox" id="lam_viec_tu_xa" name="lam_viec_tu_xa" value="1"
+                        {{ old('lam_viec_tu_xa') ? 'checked' : '' }}>
+                    @error('lam_viec_tu_xa')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Tuyển gấp<span class="required">*</span></label>
+                    <input type="checkbox" id="tuyen_gap" name="tuyen_gap" value="1"
+                        {{ old('tuyen_gap') ? 'checked' : '' }}>
+                    @error('tuyen_gap')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Kỹ năng yêu cầu<span class="required">*</span></label>
+                    <textarea id="ky_nang_yeu_cau" name="ky_nang_yeu_cau" placeholder="Các yêu cầu về kinh nghiệm, kỹ năng, tính cách..."
+                        class="{{ $errors->has('ky_nang_yeu_cau') ? 'error' : '' }}">
+                        {{ is_array(old('ky_nang_yeu_cau'))
+                            ? implode(', ', old('ky_nang_yeu_cau'))
+                            : old(
+                                'ky_nang_yeu_cau',
+                                is_array($yeuCau->ky_nang_yeu_cau ?? null) ? implode(', ', $yeuCau->ky_nang_yeu_cau) : $yeuCau->ky_nang_yeu_cau,
+                            ) }}
+                    </textarea>
+
+
+                    @error('ky_nang_yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+                <input type="hidden" name="yeu_cau_id" id="yeu_cau_id" value="{{ $yeuCau->id }}">
+
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Mô tả công việc<span class="required">*</span></label>
+                    <textarea id="mo_ta_cong_viec" name="mo_ta_cong_viec" placeholder="Mô tả chi tiết về công việc, trách nhiệm chính..."
+                        class="{{ $errors->has('mo_ta_cong_viec') ? 'error' : '' }}">{{ old('mo_ta_cong_viec', $yeuCau->mo_ta_cong_viec ?? '') }}</textarea>
+                    @error('mo_ta_cong_viec')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Yêu cầu ứng viên<span class="required">*</span></label>
+                    <textarea id="yeu_cau" name="yeu_cau" placeholder="Các yêu cầu về kinh nghiệm, kỹ năng, tính cách..."
+                        class="{{ $errors->has('yeu_cau') ? 'error' : '' }}">{{ old('yeu_cau', $yeuCau->yeu_cau ?? '') }}</textarea>
+                    @error('yeu_cau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4" class="form-label">Phúc lợi<span class="required">*</span></label>
+                    <textarea id="phuc_loi" name="phuc_loi"
+                        placeholder="Các phúc lợi dành cho nhân viên: bảo hiểm, thưởng, nghỉ phép..."
+                        class="{{ $errors->has('phuc_loi') ? 'error' : '' }}">{{ old('phuc_loi') }}</textarea>
+                    @error('phuc_loi')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary me-2">Đăng tin</button>
+                <button class="btn btn-light">Hủy</button>
+            </form>
+        </div>
+    </div>
+
+
+
+
     <style>
         .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -264,10 +568,6 @@
         }
     </style>
     <div class="container animate-fade-in">
-        <div class="header">
-            <h1><i class="fas fa-briefcase"></i> Đăng Tin Tuyển Dụng</h1>
-            <p>Tạo tin tuyển dụng chuyên nghiệp và thu hút ứng viên tài năng</p>
-        </div>
 
         <form action="{{ route('hr.tintuyendung.store') }}" method="POST" class="form-container" id="jobPostingForm"
             onsubmit="return validateForm(event)">
@@ -392,7 +692,8 @@
                             <option value="">Chọn cấp độ</option>
                             <option value="intern" {{ old('cap_do_kinh_nghiem') == 'intern' ? 'selected' : '' }}>Intern
                             </option>
-                            <option value="fresher" {{ old('cap_do_kinh_nghiem') == 'fresher' ? 'selected' : '' }}>Fresher
+                            <option value="fresher" {{ old('cap_do_kinh_nghiem') == 'fresher' ? 'selected' : '' }}>
+                                Fresher
                             </option>
                             <option value="junior" {{ old('cap_do_kinh_nghiem') == 'junior' ? 'selected' : '' }}>Junior
                             </option>

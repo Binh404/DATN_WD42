@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
  <!-- Font Awesome Icons StyleSheet -->
     <link rel="stylesheet" href="{{ asset('assets/backend/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Required meta tags -->
@@ -17,6 +18,8 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/simple-line-icons/css/simple-line-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -24,6 +27,8 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/css/style.css') }}">
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.png') }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @yield('style')
   </head>
   <body>
@@ -41,14 +46,15 @@
             @yield('content')
           </div>
           <!-- content-wrapper ends -->
-          <!-- partial:../../partials/_footer.html -->
-          @include('layoutsAdmin.partials._footer')
+
           <!-- partial -->
         </div>
         <!-- main-panel ends -->
       </div>
       <!-- page-body-wrapper ends -->
     </div>
+     <!-- partial:../../partials/_footer.html -->
+          @include('layoutsAdmin.partials._footer')
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="{{ asset('assets/admin/vendors/js/vendor.bundle.base.js') }}"></script>
@@ -69,3 +75,5 @@
     @yield('script')
   </body>
 </html>
+@stack('scripts')
+

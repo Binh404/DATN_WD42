@@ -36,6 +36,7 @@
                 <span>Hồ sơ cá nhân</span>
             </a>
         </li>
+       
         <li class="nav-item">
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>
@@ -44,7 +45,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
+            <a href="{{route('cham-cong.index')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
             </a>
@@ -56,7 +57,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ url('employee/nghi-phep') }}" class="nav-link" data-section="leave">
+            <a href="{{ route('nghiphep.index')}}" class="nav-link" data-section="leave">
+
                 <i class="fas fa-calendar-times"></i>
                 <span>Đơn nghỉ phép</span>
             </a>

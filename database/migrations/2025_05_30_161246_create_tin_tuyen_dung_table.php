@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('ma')->unique();
             $table->foreignId('phong_ban_id')->constrained('phong_ban');
             $table->foreignId('chuc_vu_id')->constrained('chuc_vu');
-            $table->foreignId('chi_nhanh_id')->constrained('chi_nhanh');
+            // $table->foreignId('chi_nhanh_id')->constrained('chi_nhanh');
             $table->enum('loai_hop_dong', ['thu_viec', 'xac_dinh_thoi_han', 'khong_xac_dinh_thoi_han']);
             $table->enum('cap_do_kinh_nghiem', ['intern', 'fresher', 'junior', 'middle', 'senior']);
             $table->tinyInteger('kinh_nghiem_toi_thieu')->default(0);

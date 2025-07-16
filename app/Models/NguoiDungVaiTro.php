@@ -11,10 +11,11 @@ class NguoiDungVaiTro extends Model
 
     protected $table = 'nguoi_dung_vai_tro';
     public $incrementing = false;
-    protected $primaryKey = ['nguoi_dung_id', 'vai_tro_id'];
+    protected $primaryKey = ['role_id', 'vai_tro_id'];
 
     protected $fillable = [
         'nguoi_dung_id',
+        'role_id',
         'vai_tro_id',
         'model_type',
     ];
@@ -25,7 +26,7 @@ class NguoiDungVaiTro extends Model
     // Relationships
     public function nguoiDung()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_dung_id');
+        return $this->belongsTo(NguoiDung::class, 'role_id');
     }
 
     public function vaiTro()

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +20,7 @@ class TinTuyenDungSeeder extends Seeder
                 'ma' => 'TD001',
                 'phong_ban_id' => 1,
                 'chuc_vu_id' => 3,
-                'chi_nhanh_id' => 1,
+                // 'chi_nhanh_id' => 1,
                 'loai_hop_dong' => 'xac_dinh_thoi_han',
                 'cap_do_kinh_nghiem' => 'junior',
                 'kinh_nghiem_toi_thieu' => 1,
@@ -48,7 +48,7 @@ class TinTuyenDungSeeder extends Seeder
                 'ma' => 'TD002',
                 'phong_ban_id' => 2,
                 'chuc_vu_id' => 4,
-                'chi_nhanh_id' => 1,
+                // 'chi_nhanh_id' => 1,
                 'loai_hop_dong' => 'khong_xac_dinh_thoi_han',
                 'cap_do_kinh_nghiem' => 'fresher',
                 'kinh_nghiem_toi_thieu' => 0,
@@ -76,7 +76,7 @@ class TinTuyenDungSeeder extends Seeder
                 'ma' => 'TD003',
                 'phong_ban_id' => 3,
                 'chuc_vu_id' => 5,
-                'chi_nhanh_id' => 2,
+                // 'chi_nhanh_id' => 2,
                 'loai_hop_dong' => 'xac_dinh_thoi_han',
                 'cap_do_kinh_nghiem' => 'middle',
                 'kinh_nghiem_toi_thieu' => 2,

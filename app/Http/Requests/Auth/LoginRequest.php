@@ -41,6 +41,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+       
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -49,6 +50,19 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+      
+        $user = Auth::user();
+
+      
+        if ($user->trang_thai === 0) {
+            Auth::logout(); 
+
+            throw ValidationException::withMessages([
+                'email' => 'Tài khoản của bạn đã bị vô hiệu hóa hãy liên hệ quản trị viên.',
+            ]);
+        }
+
+       
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -80,6 +94,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

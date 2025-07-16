@@ -142,47 +142,150 @@
         }
     </style>
 
-    <div class="container">
-        <div class="header">
-            <h1>
-                <i class="fas fa-bell"></i>
-                Cấp Trên Thông Báo
-            </h1>
-            <div class="subtitle">Trung tâm thông báo và chỉ thị từ lãnh đạo công ty</div>
-        </div>
+    <div class="container-fluid px-4">
 
-        <div class="notifications-container">
-            <div class="section-title">
-                <i class="fas fa-list"></i>
-                Thông Báo Tuyển dụng
+        <!-- Header Section -->
+        <div class="row align-items-center mb-4">
+            <div class="col-md-4">
+                <h2 class="fw-bold text-primary mb-0">
+                    Thông báo tuyển dụng
+                </h2>
             </div>
 
-            <div id="notifications-list">
-                @foreach ($TuyenDungs as $index => $item)
-                <a class="notification-item" href="{{ route('hr.captrenthongbao.tuyendung.show', ['id' => $item->id]) }}">
-                        <div class="notification-card important" data-priority="important">
-                            <div class="notification-header">
-                                <div class="notification-title">Tuyển dụng chức vụ {{ $item->chucVu->ten }}</div>
-                            </div>
-                            <div class="notification-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-user"></i>
-                                    Giám đốc điều hành
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-clock"></i>
-                                    {{ $item->created_at }}
-                                </div>
-                            </div>
-                            <div class="notification-content">
-                                {{ $item->mo_ta_cong_viec }}
-                            </div>
 
+            <div class="col-md-5">
+                <form method="GET" action="/yeu$yeuCauTuyenDung">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" name="search"
+                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
+                        <button class="btn btn-outline-primary" type="submit">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- <div class="col-md-3 text-end">
+        <a href="{{ route('department.yeucautuyendung.create') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus me-2"></i>Tạo yêu cầu
+        </a>
+    </div> --}}
+        </div>
+
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Main Table Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        Danh sách thông báo
+                    </h5>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    @if ($TuyenDungs->count() > 0)
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Mã
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Người gửi
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Chức vụ
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Phòng ban
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted">
+                                        Ngày Tạo
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted text-center">
+                                        Hành Động
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($TuyenDungs as $index => $item)
+                                    <tr class="border-bottom">
+                                        <td class="px-4 py-3 align-middle">
+                                            <code class="bg-light text-dark px-2 py-1 rounded">{{ $item->ma }}</code>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>Giám đốc</span>
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            <span>{{ $item->chucVu->ten }}</span>
+                                        </td>
+
+                                        <td class="px-4 py-3 align-middle">
+                                            phòng ban
+                                        </td>
+                                        <td class="px-4 py-3 align-middle">
+                                            {{ $item->created_at }}
+                                        </td>
+
+                                        <td class="px-4 py-3 align-middle">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="{{ route('hr.tintuyendung.create-from-request', $item->id) }}"
+                                                    class="btn btn-outline-warning btn-sm rounded-pill"
+                                                    data-bs-toggle="tooltip">
+                                                    <i class="fas fa-plus-circle"></i>
+                                                </a>
+
+                                                <a href="{{ route('hr.captrenthongbao.tuyendung.show', ['id' => $item->id]) }}"
+                                                    class="btn btn-outline-success btn-sm rounded-pill"
+                                                    data-bs-toggle="tooltip" title="Chi tiết">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <!-- Thông báo không tìm thấy -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-search fa-3x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-muted mb-3">Không tìm thấy thông báo nào</h5>
+                            @if (request('search'))
+                                <p class="text-muted mb-4">
+                                    Không có kết quả nào cho từ khóa: <strong>"{{ request('search') }}"</strong>
+                                </p>
+                                <a href="/yeu$item" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-list me-1"></i>Xem tất cả
+                                </a>
+                            @else
+                                <p class="text-muted mb-4">Chưa có thông báo nào được tạo.</p>
+                            @endif
+                            <a href="/yeu$item/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i>Thêm thông báo đầu tiên
+                            </a>
                         </div>
-                    </a>
-                @endforeach
-
+                    @endif
+                </div>
             </div>
         </div>
     </div>
+
+
 @endsection

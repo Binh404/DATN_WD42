@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('nguoi_tao_id');
             $table->unsignedBigInteger('phong_ban_id');
             $table->unsignedBigInteger('chuc_vu_id')->nullable();
-            $table->unsignedBigInteger('chi_nhanh_id')->nullable();
+            // $table->unsignedBigInteger('chi_nhanh_id')->nullable();
             $table->integer('so_luong');
             $table->enum('loai_hop_dong', ['thu_viec', 'chinh_thuc', 'thoi_vu', 'thoi_han']);
             $table->integer('luong_toi_thieu')->nullable();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->foreign('nguoi_duyet_id')->references('id')->on('nguoi_dung');
             $table->foreign('phong_ban_id')->references('id')->on('phong_ban');
             $table->foreign('chuc_vu_id')->references('id')->on('chuc_vu');
-            $table->foreign('chi_nhanh_id')->references('id')->on('chi_nhanh');
+            // $table->foreign('chi_nhanh_id')->references('id')->on('chi_nhanh');
         });
     }
 

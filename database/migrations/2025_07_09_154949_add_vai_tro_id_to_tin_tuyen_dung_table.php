@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tin_tuyen_dung', function (Blueprint $table) {
-            $table->unsignedBigInteger('chi_nhanh_id')->nullable()->change();
+            $table->unsignedBigInteger('vai_tro_id')->nullable()->after('chuc_vu_id');
+
+            // Nếu có quan hệ foreign key:
+            $table->foreign('vai_tro_id')->references('id')->on('vai_tro')->onDelete('set null');
         });
     }
 
@@ -22,7 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tin_tuyen_dung', function (Blueprint $table) {
-            $table->unsignedBigInteger('chi_nhanh_id')->nullable(false)->change();
+            $table->dropForeign(['vai_tro_id']);
+            $table->dropColumn('vai_tro_id');
         });
     }
 };
