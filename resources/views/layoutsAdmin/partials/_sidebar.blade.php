@@ -37,8 +37,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
-
-
                     @endif
                 </ul>
 
@@ -103,6 +101,7 @@
             </a>
             <div class="collapse" id="tables">
                 <ul class="nav flex-column sub-menu">
+
                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.chamcong.index') }}">Danh sách chấm công</a>
@@ -136,6 +135,12 @@
                         <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'importcc'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('chamcong.import.form') }}">Import chấm công</a>
+                    </li>
+                    @endif
+
 
                 </ul>
             </div>

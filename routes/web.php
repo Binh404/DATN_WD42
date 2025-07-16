@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\CompanyLocationController;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\employee\DangKyTangCaController;
+use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
@@ -375,9 +376,15 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
 });
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,hr'])->group(function () {
 
-Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);
+Route::get('/import-chamcong', [ImportChamCongController::class, 'showImportForm'])->name('chamcong.import.form');
+Route::post('/import-chamcong', [ImportChamCongController::class, 'import'])->name('chamcong.import');
+Route::get('/download-template', [ImportChamCongController::class, 'downloadTemplate'])->name('chamcong.download-template');
 
+Route::get('/chuc-vus/{phongBanId}', action: [ChucVuController::class, 'getByPhongBan']);
+
+});
 
 Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
     Route::get('/', function () {
