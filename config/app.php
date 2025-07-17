@@ -66,7 +66,8 @@ return [
     */
 
     // 'timezone' => 'UTC',
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    // 'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
     /*
     |--------------------------------------------------------------------------
@@ -123,5 +124,9 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'aliases' => [
+        'MenuHelper' => App\Helpers\MenuHelper::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    ]
 
 ];

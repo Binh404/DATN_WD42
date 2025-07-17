@@ -1,9 +1,17 @@
-@extends('layouts.master')
-@section('title', 'thêm tài khoản')
+@extends('layoutsAdmin.master')
+{{-- @section('title', 'thêm tài khoản') --}}
+<style>
+    select#vai_tro_id {
+    color: black;
 
+}
+select.form-select {
+    color: black !important;
+}
+</style>
 @section('content')
 {{-- resources/views/auth/register.blade.php --}}
-<x-guest-layout>
+
     {{-- Bootstrap 5 --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -88,7 +96,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ route('login') }}" class="text-decoration-none">Đã có tài khoản? Đăng nhập</a>
+
                                 <button type="submit" class="btn btn-primary px-4">Đăng ký</button>
                             </div>
                         </form>
@@ -123,6 +131,6 @@
             }
         });
     </script>
-</x-guest-layout>
+
 
 @endsection

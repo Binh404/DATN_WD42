@@ -1,10 +1,10 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh Sách Ứng Viên Phỏng Vấn')
 
 @section('content')
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    {{-- <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">
             <i class="fas fa-users me-2"></i>Danh Sách Đã Gửi Email Phỏng Vấn
         </h2>
@@ -13,6 +13,17 @@
                 <i class="fas fa-arrow-left me-2"></i>Quay lại
             </a>
         </div> -->
+    </div> --}}
+    <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1">Quản lý đã gửi email phỏng vấn</h2>
+                    <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi đã gửi email phỏng vấn</p>
+                </div>
+
+            </div>
+
+
     </div>
 
     <!-- Alert Messages -->
@@ -31,73 +42,84 @@
     @endif
 
 
-    <!-- Gửi email và đặt lịch -->
-    <!-- <form action="/ungvien/guiemailall" method="POST" style="margin-bottom: 15px;" onsubmit="return confirm('Bạn có muốn gửi email không!')">
-        @csrf
-        <div class="row align-items-center">
-            <div class="col-auto">
-                <label for="dat_lich" class="form-label mb-0">Đặt lịch phỏng vấn</label>
-                <input type="datetime-local" name="dat_lich" id="dat_lich" class="form-control">
-                @error('dat_lich')
-                <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-envelope-open-text me-2"></i>Gửi Email Phỏng Vấn</button>
-            </div>
-        </div>
-    </form> -->
 
-    <!-- Xuất Excel
-    <a href="/ungvien/export" class="btn btn-success mb-3">
-        📥 Xuất Excel
-    </a> -->
 
 
     <!-- Filter Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="GET" action="{{ route('ungvien.phong-van') }}" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label">Tên ứng viên</label>
-                    <input type="text" name="ten_ung_vien" class="form-control" value="{{ request('ten_ung_vien') }}" placeholder="Nhập tên ứng viên...">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Kỹ năng</label>
-                    <input type="text" name="ky_nang" class="form-control" value="{{ request('ky_nang') }}" placeholder="Nhập kỹ năng...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Kinh nghiệm</label>
-                    <select name="kinh_nghiem" class="form-select">
-                        <option value="">Tất cả</option>
-                        <option value="0-1" {{ request('kinh_nghiem') == '0-1' ? 'selected' : '' }}>0-1 năm</option>
-                        <option value="1-3" {{ request('kinh_nghiem') == '1-3' ? 'selected' : '' }}>1-3 năm</option>
-                        <option value="3-5" {{ request('kinh_nghiem') == '3-5' ? 'selected' : '' }}>3-5 năm</option>
-                        <option value="5+" {{ request('kinh_nghiem') == '5+' ? 'selected' : '' }}>Trên 5 năm</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Vị trí</label>
-                    <select name="vi_tri" class="form-select">
-                        <option value="">Tất cả</option>
-                        @foreach($viTriList as $id => $tieuDe)
-                        <option value="{{ $id }}" {{ request('vi_tri') == $id ? 'selected' : '' }}>
-                            {{ $tieuDe }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Tìm kiếm
-                    </button>
-                    <!-- <a href="{{ route('ungvien.phong-van') }}" class="btn btn-secondary">
-                        <i class="fas fa-redo me-2"></i>Đặt lại
-                    </a> -->
-                </div>
-            </form>
+    <div class="card mb-4 mt-4">
+            <div
+                class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="mdi mdi-magnify me-2"></i> Tìm kiếm</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ route('ungvien.emaildagui') }}">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Tên ứng viên -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="ten_ung_vien" class="form-label">Tìm theo tên ứng viên</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="mdi mdi-account-search"></i></span>
+                                        <input type="text" name="ten_ung_vien" id="ten_ung_vien" class="form-control" placeholder="Nhập tên..." value="{{ request('ten_ung_vien') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Kỹ năng -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="ky_nang" class="form-label">Tìm theo kỹ năng</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="mdi mdi-tools"></i></span>
+                                        <input type="text" name="ky_nang" id="ky_nang" class="form-control" placeholder="Nhập kỹ năng..." value="{{ request('ky_nang') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Kinh nghiệm -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="kinh_nghiem" class="form-label">Kinh nghiệm</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="mdi mdi-briefcase"></i></span>
+                                        <select class="form-select" id="kinh_nghiem" name="kinh_nghiem">
+                                            <option value="">-- Tất cả kinh nghiệm --</option>
+                                            <option value="0-1" {{ request('kinh_nghiem') == '0-1' ? 'selected' : '' }}>0-1 năm</option>
+                                            <option value="1-3" {{ request('kinh_nghiem') == '1-3' ? 'selected' : '' }}>1-3 năm</option>
+                                            <option value="3-5" {{ request('kinh_nghiem') == '3-5' ? 'selected' : '' }}>3-5 năm</option>
+                                            <option value="5+" {{ request('kinh_nghiem') == '5+' ? 'selected' : '' }}>Trên 5 năm</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Vị trí ứng tuyển -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="vi_tri" class="form-label">Vị trí ứng tuyển</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="mdi mdi-briefcase-check"></i></span>
+                                        <select class="form-select" id="vi_tri" name="vi_tri">
+                                            <option value="" {{ request()->filled('vi_tri') ? '' : 'selected' }}>-- Tất cả vị trí --</option>
+                                            @foreach($viTriList as $id => $tieuDe)
+                                                <option value="{{ $id }}" {{ request('vi_tri') == $id ? 'selected' : '' }}>{{ $tieuDe }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <!-- Nút hành động -->
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-magnify me-1"></i> Tìm kiếm
+                                </button>
+                                <a href="{{ route('ungvien.index') }}" class="btn btn-secondary">
+                                    <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
     <!-- Data Table -->
     <div class="card">
@@ -107,21 +129,21 @@
                     <thead class="table-light">
                         <tr>
                             <th>STT</th>
-                            <th>Tên Ứng Viên</th>
-                            <th>Email</th>
-                            <th>Số Điện Thoại</th>
-                            <th>Kinh Nghiệm</th>
-                            <th>Kỹ Năng</th>
-                            <th>Vị Trí</th>
-                            <th>Điểm Đánh Giá</th>
+                            <th>TÊN ỨNG VIÊN</th>
+                            <th>EMAIL</th>
+                            <th>SỐ ĐIỆN THOẠI</th>
+                            <th>KINH NGHIỆM</th>
+                            <th>KỸ NĂNG</th>
+                            <th>VỊ TRÍ</th>
+                            <th>ĐIỂM ĐÁNH GIÁ</th>
                             <!-- <th>Trạng Thái Email</th> -->
-                            <th>Trạng Thái PV</th>
-                            <th>Điểm PV</th>
-                            <th>Hành Động</th>
+                            <th>TRẠNG THÁI PV</th>
+                            <th>ĐIỂM PV</th>
+                            <th>THAO TÁC</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($ungViens as $key => $uv)
+                        @forelse($ungViens as $key => $uv)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
@@ -202,7 +224,18 @@
 
                         <!-- Modal Phỏng Vấn -->
 
-                        @endforeach
+                       @empty
+                        <tr>
+                            <td colspan="11" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="mdi mdi-inbox fs-1 mb-3"></i>
+                                    <h5>Không có dữ liệu ứng viên</h5>
+                                    <p>Không tìm thấy bản ghi nào phù hợp với điều kiện
+                                        tìm kiếm.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
             </div>

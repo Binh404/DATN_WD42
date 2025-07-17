@@ -196,7 +196,7 @@
                     <label for="file_hop_dong">File hợp đồng</label>
                     @if($hopDong->duong_dan_file)
                         <div class="mb-2">
-                            <a href="{{ Storage::url($hopDong->duong_dan_file) }}" target="_blank" class="btn btn-info btn-sm">
+                            <a href="{{ \Illuminate\Support\Facades\Storage::url($hopDong->duong_dan_file) }}" target="_blank" class="btn btn-info btn-sm">
                                 <i class="fas fa-file-pdf"></i> Xem file hiện tại
                             </a>
                         </div>

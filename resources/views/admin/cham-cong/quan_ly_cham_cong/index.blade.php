@@ -423,8 +423,8 @@
                                                                                         Phòng:
                                                                                         {{ $cc->nguoiDung->phongBan->ten_phong_ban ?? 'N/A' }}
                                                                                     </div>
-                                                                                    <div><i class="mdi mdi-email me-1"></i>
-                                                                                        Email: {{ $cc->nguoiDung->email }}</div>
+                                                                                    <div><i class="mdi mdi-account-badge me-1"></i>
+                                                                                        Vai trò: {{ $cc->nguoiDung->vaiTro->ten_hien_thi }}</div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

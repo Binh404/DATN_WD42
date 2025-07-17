@@ -130,9 +130,12 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <div>
+                                                <div class="d-flex gap-2">
                                                     <a href="{{ route('hopdong.create') }}" class="btn btn-primary">
                                                         <i class="mdi mdi-plus me-1"></i> Thêm mới hợp đồng
+                                                    </a>
+                                                    <a href="{{ route('hopdong.export', request()->query()) }}" class="btn btn-success">
+                                                        <i class="mdi mdi-file-excel me-1"></i> Xuất Excel
                                                     </a>
                                                 </div>
                                             </div>

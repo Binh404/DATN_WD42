@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Danh Sách Ứng Viên Tiềm Năng')
 
 @section('content')
@@ -103,7 +103,7 @@
                         <tr>
                             <th width="40">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="checkAll" 
+                                    <input type="checkbox" class="form-check-input" id="checkAll"
                                            onchange="toggleAllCheckboxes(this)">
                                 </div>
                             </th>
@@ -125,8 +125,8 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input check-item" 
-                                           name="selected_ids[]" 
+                                    <input type="checkbox" class="form-check-input check-item"
+                                           name="selected_ids[]"
                                            value="{{ $uv->id }}"
                                            form="formUngVien"
                                            onchange="toggleApproveButton()"
@@ -145,11 +145,11 @@
                             <td>{{ $uv->tinTuyenDung->tieu_de }}</td>
                             <td>
                                 <div class="progress" style="height: 25px;">
-                                    <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : 'bg-warning' }}" 
-                                         role="progressbar" 
+                                    <div class="progress-bar {{ $uv->diem_danh_gia >= 60 ? 'bg-success' : 'bg-warning' }}"
+                                         role="progressbar"
                                          style="width: {{ $uv->diem_danh_gia }}%"
-                                         aria-valuenow="{{ $uv->diem_danh_gia }}" 
-                                         aria-valuemin="0" 
+                                         aria-valuenow="{{ $uv->diem_danh_gia }}"
+                                         aria-valuemin="0"
                                          aria-valuemax="100">
                                         {{ $uv->diem_danh_gia }}%
                                     </div>
@@ -166,8 +166,8 @@
                                 @elseif($uv->trang_thai == 'tu_choi')
                                     <span class="badge bg-danger">Từ chối</span>
                                     @if($uv->ly_do)
-                                        <i class="fas fa-info-circle text-info" 
-                                           data-bs-toggle="tooltip" 
+                                        <i class="fas fa-info-circle text-info"
+                                           data-bs-toggle="tooltip"
                                            title="Lý do: {{ $uv->ly_do }}"></i>
                                     @endif
                                 @endif
@@ -181,7 +181,7 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <!-- <button type="button" class="btn btn-sm btn-primary" 
+                                    <!-- <button type="button" class="btn btn-sm btn-primary"
                                             onclick="showPheDuyetModal({{ $uv->id }})">
                                         <i class="fas fa-check-circle"></i>
                                     </button> -->
@@ -220,7 +220,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="ly_do" class="form-label">Lý do</label>
-                    <textarea class="form-control" id="ly_do" name="ly_do" rows="3" 
+                    <textarea class="form-control" id="ly_do" name="ly_do" rows="3"
                               placeholder="Nhập lý do phê duyệt/từ chối..." form="formUngVien"></textarea>
                 </div>
             </div>
@@ -247,11 +247,11 @@ function toggleApproveButton() {
     const checkboxes = document.getElementsByName('selected_ids[]');
     const btnPheDuyet = document.getElementById('btnPheDuyet');
     let checkedCount = 0;
-    
+
     for(let checkbox of checkboxes) {
         if(checkbox.checked) checkedCount++;
     }
-    
+
     btnPheDuyet.style.display = checkedCount > 0 ? '' : 'none';
 }
 
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnPheDuyet = document.getElementById('btnPheDuyet');
     const formUngVien = document.getElementById('formUngVien');
     const modalPheDuyet = new bootstrap.Modal(document.getElementById('modalPheDuyet'));
-    
+
     btnPheDuyet.addEventListener('click', function(e) {
         e.preventDefault(); // Ngăn form submit
         modalPheDuyet.show();

@@ -48,7 +48,7 @@ class ChamCongController extends Controller
         //     'message' => 'success',
         // ]);
 
-        return view('employe.cham-cong.index', compact(
+        return view('employe.cham-cong.indexTest', compact(
             'chamCongHomNay',
             'lichChamCong',
             // 'thongKe'
@@ -289,9 +289,12 @@ class ChamCongController extends Controller
                     'success' => true,
                     'message' => 'Chấm công ra thành công! Hẹn gặp lại vào ngày mai.',
                     'data' => [
+                        'gio_vao' => $chamCong->gio_vao->format('H:i'),
                         'gio_ra' => $currentTime->format('H:i'),
                         'so_gio_lam' => $chamCong->so_gio_lam,
                         'so_cong' => $chamCong->so_cong,
+                        'ghi_chu' => $chamCong->ghi_chu,
+                        'ghi_chu_duyet' => $chamCong->ghi_chu_duyet,
                         // 'trang_thai' => $chamCong->trang_thai,
                         'trang_thai_duyet' => $request->trang_thai_duyet,
                         'trang_thai_text' => $chamCong->trang_thai_text
@@ -424,8 +427,13 @@ class ChamCongController extends Controller
                 'status' => 'success',
                 'message' => 'Cập nhật trạng thái thành công',
                 'data' => [
-                    'ghi_chu' => $chamCong->reason_detail,
-                    // 'trang_thai_text' => $chamCong->trang_thai_text
+                    'ghi_chu' => $chamCong->ghi_chu ?? '',
+                    'trang_thai_text' => $chamCong->trang_thai_text ?? '',
+                    'gio_vao' => $chamCong->gio_vao ? Carbon::parse($chamCong->gio_vao)->format('H:i') : null,
+                    'gio_ra' => $chamCong->gio_ra ? Carbon::parse($chamCong->gio_ra)->format('H:i') : null,
+                    'so_gio_lam' => $chamCong->so_gio_lam ?? 0,
+                    'ghi_chu_duyet' => $chamCong->ghi_chu_duyet ?? null,
+                    'trang_thai_duyet' => $chamCong->trang_thai_duyet ?? 0,
                 ]
             ]);
 
@@ -571,23 +579,27 @@ class ChamCongController extends Controller
             // Mặc định trạng thái và class
             if ($ngayHienTai->lessThan(now())) {
                 $trangThai = 'vang_mat';
-                $class = 'day-absent';
+                // $class = 'day-absent';
+                $class = 'bg-danger text-white fw-bold';
             } else {
                 $trangThai = 'chua_cham_cong';
-                $class = 'day-normal';
+                // $class = 'day-normal';
+                $class = 'bg-primary text-white fw-bold';
             }
 
             // Kiểm tra nếu là cuối tuần
             if ($ngayHienTai->isWeekend()) {
                 $trangThai = 'cuoi_tuan';
-                $class = 'day-weekend';
+                // $class = 'day-weekend';
+                $class = 'bg-light text-dark fw-bold';
 
                 // Nếu có đơn tăng ca được duyệt
                 if ($donTangCa) {
                     $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
                     if ($chamCongTangCa) {
                         $trangThai = 'tang_ca';
-                        $class = 'day-overtime';
+                        // $class = 'day-overtime';
+                        $class = 'bg-success text-white fw-bold';
                     }
                 }
             } elseif ($chamCong) {
@@ -595,23 +607,28 @@ class ChamCongController extends Controller
                 switch ($chamCong->trang_thai) {
                     case 'binh_thuong':
                         $trangThai = 'binh_thuong';
-                        $class = 'day-present';
+                        // $class = 'day-present';
+                        $class = 'bg-success text-white fw-bold';
                         break;
                     case 'di_muon':
                         $trangThai = 'di_muon';
-                        $class = 'day-late';
+                        // $class = 'day-late';
+                        $class = 'bg-warning text-white fw-bold';
                         break;
                     case 've_som':
                         $trangThai = 've_som';
-                        $class = 'day-early';
+                        // $class = 'day-early';
+                        $class = 'bg-info text-white fw-bold';
                         break;
                     case 'nghi_phep':
                         $trangThai = 'nghi_phep';
-                        $class = 'day-leave';
+                        // $class = 'day-leave';
+                        $class = 'bg-secondary text-white fw-bold';
                         break;
                     case 'vang_mat':
                         $trangThai = 'vang_mat';
-                        $class = 'day-absent';
+                        // $class = 'day-absent';
+                        $class = 'bg-danger text-white fw-bold';
                         break;
                 }
             }

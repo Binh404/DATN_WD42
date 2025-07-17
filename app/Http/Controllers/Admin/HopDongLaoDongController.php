@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Exports\HopDongExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HopDongLaoDongController extends Controller
 {
@@ -443,5 +445,87 @@ class HopDongLaoDongController extends Controller
 
         return redirect()->route('hopdong.show', $hopDong->id)
             ->with('success', 'Tạo phụ lục hợp đồng thành công!');
+    }
+
+    public function export(Request $request)
+    {
+        $query = HopDongLaoDong::with(['hoSoNguoiDung', 'chucVu', 'nguoiHuy.hoSo']);
+
+        // Áp dụng các bộ lọc tương tự như trong method index
+        if ($request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('so_hop_dong', 'like', "%{$search}%")
+                  ->orWhereHas('hoSoNguoiDung', function($q) use ($search) {
+                      $q->where('ma_nhan_vien', 'like', "%{$search}%")
+                        ->orWhere('ho', 'like', "%{$search}%")
+                        ->orWhere('ten', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->loai_hop_dong) {
+            $query->where('loai_hop_dong', $request->loai_hop_dong);
+        }
+
+        if ($request->trang_thai_hop_dong) {
+            $query->where('trang_thai_hop_dong', $request->trang_thai_hop_dong);
+        }
+
+        if ($request->trang_thai_ky) {
+            $query->where('trang_thai_ky', $request->trang_thai_ky);
+        }
+
+        $hopDongs = $query->latest()->get();
+
+        $fileName = 'danh_sach_hop_dong_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        return Excel::download(new HopDongExport($hopDongs), $fileName);
+    }
+
+    private function getLoaiHopDongText($loaiHopDong)
+    {
+        switch ($loaiHopDong) {
+            case 'thu_viec':
+                return 'Thử việc';
+            case 'xac_dinh_thoi_han':
+                return 'Xác định thời hạn';
+            case 'khong_xac_dinh_thoi_han':
+                return 'Không xác định thời hạn';
+            case 'mua_vu':
+                return 'Mùa vụ';
+            default:
+                return 'Không xác định';
+        }
+    }
+
+    private function getTrangThaiHopDongText($trangThai)
+    {
+        switch ($trangThai) {
+            case 'tao_moi':
+                return 'Tạo mới';
+            case 'hieu_luc':
+                return 'Đang hiệu lực';
+            case 'chua_hieu_luc':
+                return 'Chưa hiệu lực';
+            case 'het_han':
+                return 'Hết hạn';
+            case 'huy_bo':
+                return 'Đã hủy';
+            default:
+                return 'Không xác định';
+        }
+    }
+
+    private function getTrangThaiKyText($trangThaiKy)
+    {
+        switch ($trangThaiKy) {
+            case 'cho_ky':
+                return 'Chờ ký';
+            case 'da_ky':
+                return 'Đã ký';
+            default:
+                return 'Không xác định';
+        }
     }
 }

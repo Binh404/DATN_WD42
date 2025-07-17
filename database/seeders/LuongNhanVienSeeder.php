@@ -4,7 +4,7 @@ namespace Database\Seeders;
 use Faker\Factory as Faker;
 use App\Models\BangLuong;
 use App\Models\NguoiDung;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -49,13 +49,15 @@ class LuongNhanVienSeeder extends Seeder
                     'luong_thuc_nhan' => $luongThucNhan,
                     'so_ngay_cong' => $faker->randomFloat(1, 20, 26),
                     'gio_tang_ca' => $faker->randomFloat(1, 0, 40),
+                    'ngay_nghi_phep' => $faker->randomFloat(1, 0, 5),
+                    'ngay_nghi_khong_phep' => $faker->randomFloat(1, 0, 5),
+                    'ngay_le' => $faker->randomFloat(1, 0, 5),
                     'ghi_chu' => $faker->optional(0.3)->sentence(),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
             }
         }
-
         // Insert dữ liệu theo batch để tối ưu performance
         $chunks = array_chunk($luongNhanVienData, 100);
         foreach ($chunks as $chunk) {

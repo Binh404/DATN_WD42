@@ -131,8 +131,8 @@
                                             <div class="d-flex align-items-center mx-auto">
                                                 @php
                                                     $fileName = basename($hopDong->duong_dan_file);
-                                                    $fileSize = Storage::disk('public')->exists($hopDong->duong_dan_file)
-                                                        ? number_format(Storage::disk('public')->size($hopDong->duong_dan_file) / 1024, 1) . ' KB'
+                                                    $fileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file)
+                                                        ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($hopDong->duong_dan_file) / 1024, 1) . ' KB'
                                                         : 'Không xác định';
                                                     $fileExt = strtoupper(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION));
                                                 @endphp
@@ -311,7 +311,7 @@
                                             
                                             @if($hopDong->trang_thai_hop_dong === 'tao_moi')
                                                 @php
-                                                    $user = Auth::user();
+                                                    $user = \Illuminate\Support\Facades\Auth::user();
                                                     $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
                                                     $canApprove = in_array('admin', $userRoles) || in_array('hr', $userRoles);
                                                 @endphp
@@ -332,7 +332,7 @@
                                             
                                             @if($hopDong->trang_thai_hop_dong === 'chua_hieu_luc' && $hopDong->trang_thai_ky === 'cho_ky')
                                                 @php
-                                                    $user = Auth::user();
+                                                    $user = \Illuminate\Support\Facades\Auth::user();
                                                     $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
                                                     $canSign = in_array('admin', $userRoles) || in_array('hr', $userRoles);
                                                 @endphp
@@ -351,7 +351,7 @@
                                                 @endif
                                             @endif
                                             @php
-                                                $user = Auth::user();
+                                                $user = \Illuminate\Support\Facades\Auth::user();
                                                 $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
                                                 $canCancel = in_array('admin', $userRoles) || in_array('hr', $userRoles);
 
