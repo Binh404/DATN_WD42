@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\Http;
 use App\Models\ChamCong;
 
 // use Barryvdh\DomPDF\PDF;
@@ -213,7 +213,9 @@ class LuongController extends Controller
     ->paginate(10)
     ->appends(request()->query());
 
-    return view('admin.luong.bangluong.index', compact('luongs', 'thang', 'nam', 'ngay'));
+
+    $dsLuong = BangLuong::with('luongNhanVien')->get(); // Hoặc whatever bạn cần
+    return view('admin.luong.bangluong.index', compact('luongs', 'thang', 'nam', 'ngay','dsLuong'));
 }
   public function chiTietPhieuLuong(Request $request, $id)
 {
@@ -474,6 +476,38 @@ public function tinhLuongVaLuu(Request $request)
 
         return redirect()->back()->with('success', 'Đã xoá phiếu lương thành công.');
     }
+    public function guiMailLuong(Request $request, $user_id)
+    {
+        $thang = $request->thang;
+        $nam = $request->nam;
+
+        $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu')
+            ->where('nguoi_dung_id', $user_id)
+            ->whereMonth('created_at', $thang)->whereYear('created_at', $nam)->get();
+
+        // $url = ''; // Webhook n8n của bạn
+        // Http::withOptions(['verify' => false])->post('https://quocbinh1.app.n8n.cloud/webhook/send-email'
+
+        foreach ($luongs as $luong) {
+             Http::withOptions(['verify' => false])->post('https://quocbinh.app.n8n.cloud/webhook-test/send-email', [
+                'id' => $luong->id,
+                'ten_nhan_vien' => $luong->nguoiDung->hoSo->ho . ' ' . $luong->nguoiDung->hoSo->ten,
+                'email' => $luong->nguoiDung->email,
+                'chuc_vu' => $luong->nguoiDung->chucVu->ten,
+                'thang' => $luong->thang,
+                'nam' => $luong->nam,
+                'link_pdf' => route('luong.pdf', [
+                    'user_id' => $luong->nguoiDung->id,
+                    'thang' => $luong->thang,
+                    'nam' => $luong->nam
+                ]),
+            ]);
+        }
+
+        return back()->with('success', 'Đã gửi tất cả phiếu lương thành công.');
+    }
+
+
 
 
 }

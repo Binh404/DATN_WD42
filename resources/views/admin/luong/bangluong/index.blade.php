@@ -2,6 +2,12 @@
 @section('title', 'Lương')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+
+@endif
 <!-- Breadcrumbs Start -->
 {{-- <div class="content-header">
   <div class="container-fluid">
@@ -52,6 +58,26 @@
                             </button>
                         </div>
                     </form>
+                       @foreach ($luongs as $luong)
+    <form action="{{ route('luong.gui-mail-luong', [
+        'user_id' => $luong->nguoiDung->id,
+        'thang' => $thang,
+        'nam' => $nam
+    ]) }}" method="POST">
+        @csrf
+        <button type="submit">Gửi phiếu lương cho {{ $luong->nguoiDung->ten }}</button>
+    </form>
+@endforeach
+
+
+
+                        {{-- <form action="{{ route('luong.gui-mail-luong', $id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-primary">Gửi phiếu lương</button>
+                        </form> --}}
+
+
+
                 </div>
 
                 <div class="table-responsive">
@@ -104,11 +130,11 @@
 
                                     </td>
                                     <td>
-                                         <form action="{{ route('luong.delete', $luong->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bạn có chắc muốn xoá?')">
+                                         {{-- <form action="{{ route('luong.delete', $luong->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bạn có chắc muốn xoá?')">
                                             @csrf
                                             @method('DELETE')
                                             <button onclick="return confirm('Bạn có chắc muốn xoá?')" class="btn btn-danger btn-sm">Xoá</button>
-                                        </form>
+                                        </form> --}}
                                     </td>
                                 </tr>
                             @endforeach
