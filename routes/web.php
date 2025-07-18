@@ -60,10 +60,11 @@ Route::get('/testcatlayout', function () {
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('admin.dashboard');;
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');;
     // Admin Phòng Ban
+    // Route::get('/thongke',function(){
+    //     return view('admin.thongke');
+    // })->name('admin.dashboard.index');
 
     Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
@@ -132,9 +133,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
 
 // HR, ADMIN routes
 Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr,department'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('hr.dashboard');
+    Route::get('/dashboard',[DashboardController::class, 'index'])->name('hr.dashboard');
 
     // Hợp đồng lao động
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
@@ -288,9 +287,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
 });
 Route::prefix('department')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department'])->group(function () {
-     Route::get('/dashboard', function () {
-        return view('admin.dashboard.index');
-    })->name('department.dashboard');
+     Route::get('/dashboard',[DashboardController::class, 'personalStats'])->name('department.dashboard');
 });
 
 // Employee routes
@@ -327,7 +324,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
     });
 });
 
-Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department,hr'])->group(function () {
+Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department,hr,admin'])->group(function () {
 
     // Route cho điền hồ sơ lần đầu
     Route::get('/complete-profile', [HoSoController::class, 'form'])
@@ -336,9 +333,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         ->name('employee.complete-profile.store');
 
     Route::middleware([CheckHoSoNguoiDung::class])->group(function () {
-        Route::get('employee/dashboard', function () {
-            return view('admin.dashboard.index');
-        })->name('employee.dashboard');
+        Route::get('employee/dashboard', [DashboardController::class, 'personalStats'])->name('employee.dashboard');
 
         Route::get('/advance', function () {
             return view('employe.advance');
