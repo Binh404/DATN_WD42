@@ -87,9 +87,14 @@ class NghiPhepController extends Controller
         $validated['nguoi_dung_id'] = $user->id;
         $validated['so_ngay_nghi'] = $soNgayNghi;
         $validated['trang_thai'] = 'cho_duyet';
-        $validated['cap_duyet_hien_tai'] = 1;
         $validated['tai_lieu_ho_tro'] = $taiLieuPaths;
-        // dd($validated);
+        if($user->coVaiTro('DEPARTMENT')){
+            $validated['cap_duyet_hien_tai'] = 2;
+        }elseif($user->coVaiTro('HR')){
+            $validated['cap_duyet_hien_tai'] = 3;
+        }else{
+            $validated['cap_duyet_hien_tai'] = 1;
+        }
 
         $don = DonXinNghi::create($validated);
 
