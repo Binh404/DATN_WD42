@@ -138,7 +138,9 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Hợp đồng lao động
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
+        Route::get('/luu-tru', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
         Route::get('/export', [HopDongLaoDongController::class, 'export'])->name('export');
+        Route::get('/export-luu-tru', [HopDongLaoDongController::class, 'exportLuuTru'])->name('export-luu-tru');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
         Route::post('/store', [HopDongLaoDongController::class, 'store'])->name('store');
         Route::get('/{id}/show', [HopDongLaoDongController::class, 'show'])->name('show');

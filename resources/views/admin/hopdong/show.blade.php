@@ -130,11 +130,11 @@
                                         <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                                             <div class="d-flex align-items-center mx-auto">
                                                 @php
-                                                    $fileName = basename($hopDong->duong_dan_file);
-                                                    $fileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file)
+                                                    $fileName = $hopDong->duong_dan_file ? basename($hopDong->duong_dan_file) : 'Không có file';
+                                                    $fileSize = $hopDong->duong_dan_file && \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file)
                                                         ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($hopDong->duong_dan_file) / 1024, 1) . ' KB'
                                                         : 'Không xác định';
-                                                    $fileExt = strtoupper(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION));
+                                                    $fileExt = $hopDong->duong_dan_file ? strtoupper(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION)) : 'N/A';
                                                 @endphp
                                                 <i class="fas fa-file-pdf text-danger" style="font-size: 2.5rem;"></i>
                                                 <div class="ms-3">
@@ -145,12 +145,18 @@
                                                 </div>
                                             </div>
                                             <div class="btn-group mt-3 mt-md-0 mx-auto">
-                                                <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-primary" target="_blank">
-                                                    <i class="fas fa-eye"></i> Xem
-                                                </a>
-                                                <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-success" download>
-                                                    <i class="fas fa-download"></i> Tải xuống
-                                                </a>
+                                                @if($hopDong->duong_dan_file && \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file))
+                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-primary" target="_blank">
+                                                        <i class="fas fa-eye"></i> Xem
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-success" download>
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary" disabled>
+                                                        <i class="fas fa-exclamation-triangle"></i> File không tồn tại
+                                                    </button>
+                                                @endif
                                                 @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
                                                     <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
                                                         <i class="fas fa-edit"></i> Cập nhật

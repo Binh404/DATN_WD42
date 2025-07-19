@@ -49,6 +49,21 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', request('trang_thai_ky'));
         }
 
+        // Loại trừ hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        $query->where(function($q) {
+            $q->where('trang_thai_hop_dong', '!=', 'huy_bo')
+              ->where(function($subQ) {
+                  $subQ->where('trang_thai_hop_dong', '!=', 'het_han')
+                       ->orWhere(function($innerQ) {
+                           $innerQ->where('trang_thai_hop_dong', 'het_han')
+                                  ->where(function($finalQ) {
+                                      $finalQ->whereNull('trang_thai_tai_ky')
+                                             ->orWhere('trang_thai_tai_ky', 'cho_tai_ky');
+                                  });
+                       });
+              });
+        });
+
         $hopDongs = $query->latest()->paginate(20);
 
         foreach ($hopDongs as $hopDong) {
@@ -78,6 +93,65 @@ class HopDongLaoDongController extends Controller
 
         return view('admin.hopdong.index', compact(
             'hopDongs',
+            'hieuLuc',
+            'chuaCoHopDong',
+            'sapHetHan',
+            'hetHanChuaTaiKy'
+        ));
+    }
+
+    public function luuTru()
+    {
+        $query = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu']);
+
+        // Tìm kiếm theo từ khóa
+        if (request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('so_hop_dong', 'like', "%{$search}%")
+                  ->orWhereHas('hoSoNguoiDung', function($q) use ($search) {
+                      $q->where('ma_nhan_vien', 'like', "%{$search}%")
+                        ->orWhere('ho', 'like', "%{$search}%")
+                        ->orWhere('ten', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Lọc theo loại hợp đồng
+        if (request('loai_hop_dong')) {
+            $query->where('loai_hop_dong', request('loai_hop_dong'));
+        }
+
+        // Lọc theo trạng thái ký
+        if (request('trang_thai_ky')) {
+            $query->where('trang_thai_ky', request('trang_thai_ky'));
+        }
+
+        // Chỉ lấy hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        $query->where(function($q) {
+            $q->where('trang_thai_hop_dong', 'huy_bo')
+              ->orWhere(function($subQ) {
+                  $subQ->where('trang_thai_hop_dong', 'het_han')
+                       ->where('trang_thai_tai_ky', 'da_tai_ky');
+              });
+        });
+
+        $hopDongsArchive = $query->latest()->paginate(20);
+
+        // Thống kê cho dashboard
+        $now = now();
+        $in30days = now()->addDays(30);
+
+        $hieuLuc = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')->count();
+        $chuaCoHopDong = HoSoNguoiDung::whereDoesntHave('hopDongLaoDong')->count();
+        $sapHetHan = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')
+            ->where('ngay_ket_thuc', '>', $now)
+            ->where('ngay_ket_thuc', '<=', $in30days)
+            ->count();
+        $hetHanChuaTaiKy = HopDongLaoDong::where('trang_thai_tai_ky', 'cho_tai_ky')->count();
+
+        return view('admin.hopdong.luu-tru', compact(
+            'hopDongsArchive',
             'hieuLuc',
             'chuaCoHopDong',
             'sapHetHan',
@@ -199,7 +273,7 @@ class HopDongLaoDongController extends Controller
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
-            'ngay_ket_thuc' => 'nullable|date|after:ngay_bat_dau',
+            'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
             'hinh_thuc_lam_viec' => 'required|string',
@@ -208,10 +282,37 @@ class HopDongLaoDongController extends Controller
             'trang_thai_ky' => 'required|in:cho_ky,da_ky',
             'file_hop_dong' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ], [
+            'chuc_vu_id.required' => 'Vui lòng chọn chức vụ.',
+            'chuc_vu_id.exists' => 'Chức vụ không tồn tại.',
+            'loai_hop_dong.required' => 'Vui lòng chọn loại hợp đồng.',
+            'ngay_bat_dau.required' => 'Vui lòng chọn ngày bắt đầu.',
+            'ngay_bat_dau.date' => 'Ngày bắt đầu không hợp lệ.',
+            'ngay_ket_thuc.required' => 'Vui lòng chọn ngày kết thúc.',
+            'ngay_ket_thuc.date' => 'Ngày kết thúc không hợp lệ.',
+            'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'luong_co_ban.required' => 'Vui lòng nhập lương cơ bản.',
+            'luong_co_ban.numeric' => 'Lương cơ bản phải là số.',
+            'luong_co_ban.min' => 'Lương cơ bản không được âm.',
+            'phu_cap.numeric' => 'Phụ cấp phải là số.',
+            'phu_cap.min' => 'Phụ cấp không được âm.',
+            'hinh_thuc_lam_viec.required' => 'Vui lòng chọn hình thức làm việc.',
+            'dia_diem_lam_viec.required' => 'Vui lòng nhập địa điểm làm việc.',
+            'trang_thai_ky.required' => 'Vui lòng chọn trạng thái ký.',
+            'trang_thai_ky.in' => 'Trạng thái ký không hợp lệ.',
             'file_hop_dong.file' => 'File hợp đồng không hợp lệ.',
             'file_hop_dong.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
             'file_hop_dong.max' => 'File hợp đồng không được vượt quá 2MB.',
         ]);
+
+        // Kiểm tra ngày bắt đầu >= ngày hiện tại khi hợp đồng ở trạng thái "chưa hiệu lực"
+        if ($hopDong->trang_thai_hop_dong === 'chua_hieu_luc') {
+            $ngayBatDau = \Carbon\Carbon::parse($request->ngay_bat_dau);
+            $ngayHienTai = \Carbon\Carbon::today();
+            
+            if ($ngayBatDau->lt($ngayHienTai)) {
+                return redirect()->back()->withErrors(['ngay_bat_dau' => 'Ngày bắt đầu phải từ ngày hôm nay trở đi khi hợp đồng ở trạng thái chưa hiệu lực.'])->withInput();
+            }
+        }
 
         if ($hopDong->trang_thai_ky == 'da_ky' && $request->trang_thai_ky == 'cho_ky') {
             return redirect()->back()->withErrors(['trang_thai_ky' => 'Không thể thay đổi trạng thái của hợp đồng đã ký.'])->withInput();
@@ -476,9 +577,65 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', $request->trang_thai_ky);
         }
 
+        // Loại trừ hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        $query->where(function($q) {
+            $q->where('trang_thai_hop_dong', '!=', 'huy_bo')
+              ->where(function($subQ) {
+                  $subQ->where('trang_thai_hop_dong', '!=', 'het_han')
+                       ->orWhere(function($innerQ) {
+                           $innerQ->where('trang_thai_hop_dong', 'het_han')
+                                  ->where(function($finalQ) {
+                                      $finalQ->whereNull('trang_thai_tai_ky')
+                                             ->orWhere('trang_thai_tai_ky', 'cho_tai_ky');
+                                  });
+                       });
+              });
+        });
+
         $hopDongs = $query->latest()->get();
 
         $fileName = 'danh_sach_hop_dong_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        return Excel::download(new HopDongExport($hopDongs), $fileName);
+    }
+
+    public function exportLuuTru(Request $request)
+    {
+        $query = HopDongLaoDong::with(['hoSoNguoiDung', 'chucVu', 'nguoiHuy.hoSo']);
+
+        // Áp dụng các bộ lọc
+        if ($request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('so_hop_dong', 'like', "%{$search}%")
+                  ->orWhereHas('hoSoNguoiDung', function($q) use ($search) {
+                      $q->where('ma_nhan_vien', 'like', "%{$search}%")
+                        ->orWhere('ho', 'like', "%{$search}%")
+                        ->orWhere('ten', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->loai_hop_dong) {
+            $query->where('loai_hop_dong', $request->loai_hop_dong);
+        }
+
+        if ($request->trang_thai_ky) {
+            $query->where('trang_thai_ky', $request->trang_thai_ky);
+        }
+
+        // Chỉ export hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        $query->where(function($q) {
+            $q->where('trang_thai_hop_dong', 'huy_bo')
+              ->orWhere(function($subQ) {
+                  $subQ->where('trang_thai_hop_dong', 'het_han')
+                       ->where('trang_thai_tai_ky', 'da_tai_ky');
+              });
+        });
+
+        $hopDongs = $query->latest()->get();
+
+        $fileName = 'hop_dong_luu_tru_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
         return Excel::download(new HopDongExport($hopDongs), $fileName);
     }
