@@ -1,6 +1,7 @@
-@extends('layoutsEmploye.master')
+@extends('layoutsAdmin.master')
+@section('title', 'Yêu cầu tuyển dụng')
+@section('content')
 
-@section('content-employee')
     <style>
         .containerr {
             max-width: 1000px;
@@ -63,30 +64,22 @@
         }
 
         .request-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 30px;
         }
 
         .info-card {
-            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
-            border-radius: 15px;
+            width: 25%;
             padding: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .info-card h3 {
             color: #1e293b;
-            margin-bottom: 20px;
-            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -96,7 +89,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
             padding: 10px 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
@@ -108,6 +100,7 @@
 
         .info-label {
             font-weight: 600;
+            font-size: 14px;
             color: #475569;
             flex: 1;
         }
@@ -116,6 +109,7 @@
             flex: 2;
             text-align: right;
             font-weight: 500;
+            font-size: 14px;
             color: #1e293b;
         }
 
@@ -163,16 +157,15 @@
         }
 
         .description-card {
-            background: linear-gradient(145deg, #fefefe, #f1f5f9);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
+            padding: 15px;
+            margin-top: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .description-card h3 {
             color: #1e293b;
             margin-bottom: 15px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -180,10 +173,9 @@
 
         .description-text {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #06b6d4;
-            line-height: 1.6;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
             color: #475569;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
@@ -263,16 +255,15 @@
         }
 
         .tracking-section {
-            background: linear-gradient(135deg, #f8f9ff, #e8eaf6);
             border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
+            padding: 20px;
+            margin: 20px 0;
         }
 
         .tracking-section h3 {
             color: #3f51b5;
             margin-bottom: 25px;
-            font-size: 1.4em;
+            font-size: 17px;
             text-align: center;
             display: flex;
             align-items: center;
@@ -281,6 +272,8 @@
         }
 
         .progress-timeline {
+            display: flex;
+            justify-content: space-between;
             position: relative;
             padding: 20px 0;
         }
@@ -297,8 +290,8 @@
         }
 
         .step-indicator {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -345,13 +338,8 @@
         }
 
         .timeline-line {
-            position: absolute;
-            left: 25px;
-            top: 60px;
-            bottom: 25px;
-            width: 2px;
-            background: #e0e0e0;
             z-index: 1;
+            padding: 20px;
         }
 
         .timeline-step:last-child .timeline-line {
@@ -364,14 +352,14 @@
 
         .step-title {
             font-weight: 600;
-            font-size: 1.1em;
+            font-size: 16px;
             color: #333;
             margin-bottom: 5px;
         }
 
         .step-description {
             color: #666;
-            font-size: 0.95em;
+            font-size: 14px;
             line-height: 1.4;
         }
 
@@ -600,13 +588,24 @@
             }
         }
     </style>
-    </head>
 
-    <body>
-        <div class="containerr">
-            <div class="headerr">
-                <h1>Chi tiết đơn nghỉ phép</h1>
-                <p class="subtitle">Thông tin chi tiết về đơn xin nghỉ phép của bạn</p>
+    <div class="container-fluid px-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-4">
+                <h2 class="fw-bold text-primary mb-0">
+                    Đơn xin nghỉ
+                </h2>
+            </div>
+
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">
+                        Chi tiết
+                    </h5>
+                </div>
             </div>
 
             <div class="content">
@@ -725,8 +724,9 @@
                                 <div class="step-title">Đã gửi đơn</div>
                                 <div class="step-description">Đơn nghỉ phép đã được tạo và gửi đi</div>
                             </div>
-                            <div class="timeline-line"></div>
                         </div>
+                        <div class="timeline-line"></div>
+
 
                         <div class="timeline-step">
                             @php
@@ -743,51 +743,51 @@
                                 $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
                             @endphp
 
-                            {{-- Trưởng phòng --}}
-                            <div
-                                class="step-indicator 
+                    {{-- Trưởng phòng --}}
+                    <div
+                        class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">
-                                    {{ !$lichSuTruongPhongDuyet
-                                        ? 'Chờ trưởng phòng duyệt'
-                                        : ($trPhongTuChoi
-                                            ? 'Trưởng phòng từ chối'
-                                            : 'Trưởng phòng đã duyệt') }}
-                                </div>
-                                <div class="step-description">
-                                    {{ !$lichSuTruongPhongDuyet
-                                        ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
-                                        : ($trPhongTuChoi
-                                            ? 'Trưởng phòng đã từ chối đơn nghỉ của bạn'
-                                            : 'Trưởng phòng đã duyệt đơn nghỉ của bạn') }}
-                                </div>
-                            </div>
-                            <div class="timeline-line"></div>
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-title">
+                            {{ !$lichSuTruongPhongDuyet
+                                ? 'Chờ trưởng phòng duyệt'
+                                : ($trPhongTuChoi
+                                    ? 'Trưởng phòng từ chối'
+                                    : 'Trưởng phòng đã duyệt') }}
                         </div>
+                        <div class="step-description">
+                            {{ !$lichSuTruongPhongDuyet
+                                ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
+                                : ($trPhongTuChoi
+                                    ? 'Trưởng phòng đã từ chối đơn nghỉ'
+                                    : 'Trưởng phòng đã duyệt đơn nghỉ') }}
+                        </div>
+                    </div>
+                    <div class="timeline-line"></div>
+                </div>
 
-                        <div class="timeline-step">
-                            <div
-                                class="step-indicator 
+                <div class="timeline-step">
+                    <div
+                        class="step-indicator
                                 {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
-                                <i class="fas fa-users-cog"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">
-                                    {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
-                                </div>
-                                <div class="step-description">
-                                    {{ !$lichSuHRDuyet && $trPhongDuyet
-                                        ? 'HR đang xem xét đơn nghỉ'
-                                        : ($hrTuChoi
-                                            ? 'HR đã từ chối đơn nghỉ của bạn'
-                                            : 'HR đã duyệt đơn nghỉ của bạn') }}
-                                </div>
-                            </div>
-                            <div class="timeline-line"></div>
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-title">
+                            {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
                         </div>
+                        <div class="step-description">
+                            {{ !$lichSuHRDuyet && $trPhongDuyet
+                                ? 'HR đang xem xét đơn nghỉ'
+                                : ($hrTuChoi
+                                    ? 'HR đã từ chối đơn nghỉ'
+                                    : 'HR đã duyệt đơn nghỉ') }}
+                        </div>
+                    </div>
+                    <div class="timeline-line"></div>
+                </div>
 
 
                         <div class="timeline-step">
@@ -799,7 +799,9 @@
                                 <div class="step-title">Hoàn tất</div>
                                 <div class="step-description">Đơn nghỉ phép được chấp thuận và có hiệu lực</div>
                             </div>
+
                         </div>
+                        <div class="timeline-line"></div>
                     </div>
                 </div>
 
@@ -826,7 +828,7 @@
                     </div>
                 </div>
 
-                
+
                 <!-- Các hành động -->
                 <div class="actions">
                     <a style="text-decoration: none;" href="{{ route('nghiphep.index') }}">
@@ -838,47 +840,50 @@
             </div>
         </div>
 
-        <!-- Popup hiển thị ảnh -->
-        <div class="popup-overlay" id="imagePopup" onclick="closePopup(event)">
-            <div class="popup-content" onclick="event.stopPropagation()">
-                <div class="popup-header">
-                    <h4 class="popup-title" id="popupTitle">Xem tài liệu</h4>
-                </div>
-                <div class="popup-body" id="popupBody">
-                    <!-- Nội dung sẽ được load động -->
-                </div>
+
+    </div>
+
+    <!-- Popup hiển thị ảnh -->
+    <div class="popup-overlay" id="imagePopup" onclick="closePopup(event)">
+        <div class="popup-content" onclick="event.stopPropagation()">
+            <div class="popup-header">
+                <h4 class="popup-title" id="popupTitle">Xem tài liệu</h4>
+            </div>
+            <div class="popup-body" id="popupBody">
+                <!-- Nội dung sẽ được load động -->
             </div>
         </div>
+    </div>
 
 
-        <script>
-            function showImagePopup(imageUrl, filename) {                
-                const popup = document.getElementById('imagePopup');
-                const popupTitle = document.getElementById('popupTitle');
-                const popupBody = document.getElementById('popupBody');
+    <script>
+        function showImagePopup(imageUrl, filename) {
+            const popup = document.getElementById('imagePopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupBody = document.getElementById('popupBody');
 
-                // Set tiêu đề popup
-                popupTitle.textContent = filename;
+            // Set tiêu đề popup
+            popupTitle.textContent = filename;
 
-                // Kiểm tra loại file dựa vào extension
-                const fileExtension = filename.split('.').pop().toLowerCase();
-                const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+            // Kiểm tra loại file dựa vào extension
+            const fileExtension = filename.split('.').pop().toLowerCase();
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
 
-                if (imageExtensions.includes(fileExtension)) {
-                    // Hiển thị ảnh
-                    popupBody.innerHTML = `
+            if (imageExtensions.includes(fileExtension)) {
+                // Hiển thị ảnh
+                popupBody.innerHTML = `
                         <div class="image-container">
-                            <img src="${imageUrl}" 
-                                alt="${filename}" 
+                            <img src="${imageUrl}"
+                                alt="${filename}"
                                 class="popup-image"
                                 onload="this.style.opacity='1'"
                                 onerror="showImageError()">
-                            
+
                         </div>
                     `;
-                } else {
-                    // File không phải ảnh (PDF, DOC, etc.)
-                    popupBody.innerHTML = `
+            } else {
+                // File không phải ảnh (PDF, DOC, etc.)
+                popupBody.innerHTML = `
                         <div class="no-image">
                             <i data-lucide="file-text" style="width: 48px; height: 48px; margin-bottom: 10px; color: #6c757d;"></i>
                             <br>
@@ -891,21 +896,21 @@
                             </a>
                         </div>
                     `;
-                }
-
-                // Khởi tạo lại Lucide icons cho nội dung mới
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-
-                // Hiển thị popup với animation
-                popup.classList.add('show');
-                document.body.style.overflow = 'hidden'; // Ngăn scroll khi popup mở
             }
 
-            function showImageError() {
-                const popupBody = document.getElementById('popupBody');
-                popupBody.innerHTML = `
+            // Khởi tạo lại Lucide icons cho nội dung mới
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Hiển thị popup với animation
+            popup.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Ngăn scroll khi popup mở
+        }
+
+        function showImageError() {
+            const popupBody = document.getElementById('popupBody');
+            popupBody.innerHTML = `
                     <div class="no-image">
                         <i data-lucide="image-off" style="width: 48px; height: 48px; margin-bottom: 10px; color: #dc3545;"></i>
                         <br>
@@ -914,31 +919,30 @@
                     </div>
                 `;
 
-                // Khởi tạo lại Lucide icons
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
+            // Khởi tạo lại Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
             }
+        }
 
-            function closePopup(event) {
-                // Kiểm tra nếu click vào overlay, nút đóng, hoặc gọi trực tiếp
-                if (!event ||
-                    event.target.id === 'imagePopup' ||
-                    event.target.closest('.close-btn') ||
-                    event.target.classList.contains('popup-overlay')) {
+        function closePopup(event) {
+            // Kiểm tra nếu click vào overlay, nút đóng, hoặc gọi trực tiếp
+            if (!event ||
+                event.target.id === 'imagePopup' ||
+                event.target.closest('.close-btn') ||
+                event.target.classList.contains('popup-overlay')) {
 
-                    const popup = document.getElementById('imagePopup');
-                    popup.classList.remove('show');
-                    document.body.style.overflow = 'auto'; // Cho phép scroll lại
+                const popup = document.getElementById('imagePopup');
+                popup.classList.remove('show');
+                document.body.style.overflow = 'auto'; // Cho phép scroll lại
 
-                    // Clear nội dung popup sau khi đóng để tránh lag
-                    setTimeout(() => {
-                        if (!popup.classList.contains('show')) {
-                            document.getElementById('popupBody').innerHTML = '';
-                        }
-                    }, 300);
-                }
+                // Clear nội dung popup sau khi đóng để tránh lag
+                setTimeout(() => {
+                    if (!popup.classList.contains('show')) {
+                        document.getElementById('popupBody').innerHTML = '';
+                    }
+                }, 300);
             }
-
-        </script>
-    @endsection
+        }
+    </script>
+@endsection

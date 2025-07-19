@@ -1,38 +1,23 @@
-@extends('layoutsEmploye.master')
+@extends('layoutsAdmin.master')
 
-@section('content-employee')
+@section('content')
     <style>
-        .containerr {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        .headerr {
+        .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
+            color: white;
         }
 
-        .headerr h1 {
-            font-size: 2rem;
+        .header h1 {
+            font-size: 25px;
             margin-bottom: 10px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .headerr p {
+        .header p {
+            font-size: 17px;
             opacity: 0.9;
-            font-size: 1.1rem;
         }
 
         .form-container {
@@ -41,47 +26,63 @@
 
         .form-grid {
             display: grid;
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .form-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #4facfe;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2d3748;
         }
 
         .required {
-            color: #e74c3c;
+            color: #e53e3e;
         }
 
-        input[type="text"],
-        input[type="date"],
-        input[type="tel"],
+        input,
         select,
         textarea {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e1e8ed;
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 14px;
             transition: all 0.3s ease;
-            background: #fafbfc;
+            background: white;
         }
 
         input:focus,
@@ -89,189 +90,155 @@
         textarea:focus {
             outline: none;
             border-color: #4facfe;
-            background: white;
             box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        select {
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 12px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-right: 40px;
+            transform: translateY(-1px);
         }
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
-        .file-upload {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .file-upload input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-upload-label {
-            display: block;
-            padding: 12px 15px;
-            border: 2px dashed #cbd5e0;
-            border-radius: 10px;
-            text-align: center;
-            background: #f7fafc;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .file-upload-label:hover {
-            border-color: #4facfe;
-            background: #edf8ff;
-        }
-
-        .file-upload-label i {
-            font-size: 1.5rem;
-            color: #4facfe;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .file-list {
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        .file-item {
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: #4facfe;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            gap: 8px;
         }
 
-        .file-item span {
-            font-size: 0.9rem;
-            color: #475569;
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
         }
 
-        .remove-file {
-            background: #ef4444;
+        .add-skill {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-skill input {
+            flex: 1;
+        }
+
+        .add-skill button {
+            background: #48bb78;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .emergency-contact {
-            background: #fff7ed;
-            border: 2px solid #fed7aa;
+            padding: 12px 20px;
             border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .emergency-contact h3 {
-            color: #ea580c;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .handover-section {
-            background: #f0f9ff;
-            border: 2px solid #bae6fd;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .handover-section h3 {
-            color: #0369a1;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .btnn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            justify-content: center;
-        }
-
-        .btnn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .btnn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .add-skill button:hover {
+            background: #38a169;
+            transform: translateY(-1px);
         }
 
-        .btnn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        .status-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
-        .btnn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btnn-secondary:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-        }
-
-        .auto-generate {
-            display: inline-flex;
+        .status-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
             align-items: center;
-            background: #10b981;
+            gap: 8px;
+        }
+
+        .status-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            margin: 0 -40px -40px -40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
             cursor: pointer;
-            margin-left: 10px;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
         }
 
-        .auto-generate:hover {
-            background: #059669;
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .draft-btn {
+            background: #718096;
+            margin-right: 15px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .preview-btn {
+            background: #805ad5;
+            margin-left: 15px;
         }
 
         @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
             .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-
-            .headerr {
-                padding: 20px;
+            .header h1 {
+                font-size: 2rem;
             }
 
             .form-container {
@@ -279,174 +246,154 @@
             }
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 
-    <div class="containerr">
-        <div class="headerr">
-            <h1>🏢 Đơn Xin Nghỉ Phép</h1>
-            <p>Điền thông tin chi tiết để tạo đơn xin nghỉ</p>
+    <div class="container-fluid px-4">
+        <div class="col-md-4">
+            <h2 class="fw-bold text-primary mb-2">
+                Đơn xin nghỉ phép
+            </h2>
         </div>
 
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    Tạo đơn nghỉ phép
+                </h5>
+            </div>
+        </div>
         @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
         @endif
+        <div class="card-body">
 
-        <div class="form-container">
-            <form id="leaveRequestForm" action="{{ route('nghiphep.store') }}" method="POST" enctype="multipart/form-data">
+            <form class="forms-sample ml-5 row g-3" id="leaveRequestForm" action="{{ route('nghiphep.store') }}"
+                method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="form-grid">
-                    <!-- Mã đơn nghỉ -->
-                    <div class="form-group">
-                        <label for="ma_don_nghi">Mã đơn nghỉ <span class="required">*</span></label>
-                        <div style="display: flex; align-items: center;">
-                            <input type="text" id="ma_don_nghi" name="ma_don_nghi" required placeholder="VD: DN001-2024">
-                            @error('ma_don_nghi')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
+                <div class="form-group col-md-3">
+                    <label for="exampleInputEmail1">Loại nghỉ phép<span class="required">*</span></label>
+                    <select class="form-select" id="loai_nghi_phep_id" name="loai_nghi_phep_id">
+                        <option value="">Chọn loại nghỉ phép</option>
+                        @foreach ($soDus as $key => $soDu)
+                            <option value="{{ $soDu->loaiNghiPhep->id }}">{{ $soDu->loaiNghiPhep->ten }}</option>
+                        @endforeach
 
-                        </div>
-                    </div>
+                    </select>
+                    @error('loai_nghi_phep_id')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
 
-                    <!-- Loại nghỉ phép -->
-                    <div class="form-group">
-                        <label for="loai_nghi_phep_id">Loại nghỉ phép <span class="required">*</span></label>
-                        <select id="loai_nghi_phep_id" name="loai_nghi_phep_id" required>
-                            <option value="">-- Chọn loại nghỉ --</option>
-                            @foreach ($soDus as $key => $soDu)
-                                <option value="{{ $soDu->loaiNghiPhep->id }}">{{ $soDu->loaiNghiPhep->ten }}</option>
-                            @endforeach
-
-                        </select>
-                        @error('loai_nghi_phep_id')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Thời gian nghỉ -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="ngay_bat_dau">Ngày bắt đầu <span class="required">*</span></label>
-                            <input type="date" id="ngay_bat_dau" name="ngay_bat_dau" required>
-                            @error('ngay_bat_dau')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="ngay_ket_thuc">Ngày kết thúc <span class="required">*</span></label>
-                            <input type="date" id="ngay_ket_thuc" name="ngay_ket_thuc" required>
-                            @error('ngay_ket_thuc')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Lý do nghỉ -->
-                    <div class="form-group full-width">
-                        <label for="ly_do">Lý do nghỉ <span class="required">*</span></label>
-                        <textarea id="ly_do" name="ly_do" required placeholder="Mô tả chi tiết lý do xin nghỉ..."></textarea>
-                        @error('ly_do')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Tài liệu hỗ trợ -->
-                    <div class="form-group full-width">
-                        <label for="tai_lieu_ho_tro">Tài liệu hỗ trợ</label>
-                        <div class="file-upload">
-                            <input type="file" id="tai_lieu_ho_tro" name="tai_lieu_ho_tro[]" multiple
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <label for="tai_lieu_ho_tro" class="file-upload-label">
-                                <i>📎</i>
-                                <div>Nhấp để chọn tệp hoặc kéo thả tệp vào đây</div>
-                                <small style="color: #6b7280;">Hỗ trợ: PDF, DOC, DOCX, JPG, PNG</small>
-                            </label>
-                            @error('tai_lieu_ho_tro')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div id="fileList" class="file-list"></div>
-                    </div>
                 </div>
 
-                <!-- Thông tin liên hệ khẩn cấp -->
-                <div class="emergency-contact">
-                    <h3>📞 Thông tin liên hệ khẩn cấp</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lien_he_khan_cap">Người liên hệ khẩn cấp</label>
-                            <input type="text" id="lien_he_khan_cap" name="lien_he_khan_cap"
-                                placeholder="Họ tên người liên hệ">
-                            @error('lien_he_khan_cap')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="sdt_khan_cap">Số điện thoại khẩn cấp</label>
-                            <input type="tel" id="sdt_khan_cap" name="sdt_khan_cap" placeholder="0901234567">
-                            @error('sdt_khan_cap')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Ngày bắt đầu<span class="required">*</span></label>
+                    <input class="form-control" type="date" id="ngay_bat_dau" name="ngay_bat_dau">
+                    @error('ngay_bat_dau')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <!-- Thông tin bàn giao công việc -->
-                <div class="handover-section">
-                    <h3>🤝 Thông tin bàn giao công việc</h3>
-                    <div class="form-group">
-                        <label for="ban_giao_cho_id">Bàn giao cho</label>
-                        <select id="ban_giao_cho_id" name="ban_giao_cho_id">
-                            <option value="">-- Chọn người nhận bàn giao --</option>
-                            @foreach ($nguoiBanGiaos as $key => $nguoiBanGiao)
-                                <option value="{{ $nguoiBanGiao->id }}">{{ $nguoiBanGiao->ten_dang_nhap }}</option>
-                            @endforeach
-
-
-                        </select>
-                        @error('ban_giao_cho_id')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="ghi_chu_ban_giao">Ghi chú bàn giao</label>
-                        <textarea id="ghi_chu_ban_giao" name="ghi_chu_ban_giao"
-                            placeholder="Mô tả chi tiết công việc cần bàn giao, lưu ý đặc biệt..."></textarea>
-                        @error('ghi_chu_ban_giao')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
+                <div class="form-group col-md-3">
+                    <label for="inputPassword4" class="form-label">Ngày kết thúc<span class="required">*</span></label>
+                    <input class="form-control" type="date" id="ngay_ket_thuc" name="ngay_ket_thuc">
+                    @error('ngay_ket_thuc')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <div class="btnn-group">
-                    <button type="button" class="btnn btnn-secondary" onclick="resetForm()">🔄 Làm mới</button>
-                    <button type="submit" class="btnn btnn-primary">📝 Gửi đơn xin nghỉ</button>
+                <div class="form-group col-md-3">
+                    <label for="inputPassword4" class="form-label">Tài liệu hỗ trợ<span class="required">*</span></label>
+                    <input type="file" id="tai_lieu_ho_tro" name="tai_lieu_ho_tro[]" multiple
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="form-control">
+                    @error('tai_lieu_ho_tro')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                    <div id="fileList" class="file-list"></div>
                 </div>
+
+
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Người liên hệ khẩn cấp<span
+                            class="required">*</span></label>
+                    <input type="text" id="lien_he_khan_cap" name="lien_he_khan_cap" placeholder="Họ tên người liên hệ"
+                        class="form-control">
+                    @error('lien_he_khan_cap')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Số điện thoại khẩn cấp<span
+                            class="required">*</span></label>
+                    <input type="tel" id="sdt_khan_cap" name="sdt_khan_cap" placeholder="0901234567"
+                        value="{{ old('sdt_khan_cap') }}" class="form-control">
+
+                    @error('sdt_khan_cap')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="exampleInputEmail1">Bàn giao cho<span class="required">*</span></label>
+                    <select class="form-select" id="ban_giao_cho_id" name="ban_giao_cho_id">
+                        <option value="">Chọn người ban giao</option>
+                        @foreach ($nguoiBanGiaos as $key => $nguoiBanGiao)
+                            <option value="{{ $nguoiBanGiao->id }}">{{ $nguoiBanGiao->ten_dang_nhap }}</option>
+                        @endforeach
+
+                    </select>
+                    @error('ban_giao_cho_id')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="form-label">Ghi chú bàn giao</label>
+                    <input type="text" id="ghi_chu_ban_giao" name="ghi_chu_ban_giao"
+                        placeholder="Mô tả chi tiết công việc cần bàn giao, lưu ý đặc biệt...">
+                    @error('ghi_chu_ban_giao')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label for="inputEmail4" class="form-label">Lý do</label>
+                    <textarea class="form-textarea" id="ly_do" name="ly_do" required placeholder="Mô tả chi tiết lý do xin nghỉ..."
+                        value="{{ old('ly_do') }}"></textarea>
+                    @error('ly_do')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Tạo đơn</button>
+                <button class="btn btn-light">Hủy</button>
             </form>
         </div>
-    </div>
-
-    <div id="notification" class="notification">
-        Đơn xin nghỉ đã được gửi thành công! ✅
     </div>
 
     <script>
@@ -487,11 +434,11 @@
         function removeFile(index) {
             const fileInput = document.getElementById('tai_lieu_ho_tro');
             const dt = new DataTransfer();
-            
+
             Array.from(fileInput.files).forEach((file, i) => {
                 if (i !== index) dt.items.add(file);
             });
-            
+
             fileInput.files = dt.files;
             fileInput.dispatchEvent(new Event('change'));
         }

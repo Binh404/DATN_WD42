@@ -4,7 +4,7 @@ namespace Database\Seeders;
 use Faker\Factory as Faker;
 use App\Models\BangLuong;
 use App\Models\NguoiDung;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

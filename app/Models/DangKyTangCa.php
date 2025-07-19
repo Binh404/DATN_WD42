@@ -89,10 +89,14 @@ class DangKyTangCa extends Model
     /**
      * Scope để lọc theo tháng
      */
-    public function scopeByThang($query, $thang, $nam)
+    public function scopeByNgayTangCa($query, $ngayTangCa)
     {
-        return $query->whereMonth('ngay_tang_ca', $thang)
-                    ->whereYear('ngay_tang_ca', $nam);
+        return $query->where('ngay_tang_ca', $ngayTangCa);
+    }
+    public function scopeByThang($query, $thang)
+    {
+        return $query->whereMonth('ngay_tang_ca', $thang);
+                    // ->whereYear('ngay_tang_ca', $nam);
     }
     public function scopeByNam($query, $nam)
     {

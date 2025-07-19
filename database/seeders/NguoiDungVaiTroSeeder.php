@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Models\NguoiDung;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

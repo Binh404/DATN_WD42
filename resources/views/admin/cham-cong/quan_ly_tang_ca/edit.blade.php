@@ -72,7 +72,7 @@
                         <div class="card-body text-center">
                             @php
                                 $avatar = $thucHienTangCa->dangKyTangCa->nguoiDung->hoSo->anh_dai_dien
-                                    ? asset($dangKyTangCa->dangKyTangCa->nguoiDung->hoSo->anh_dai_dien)
+                                    ? asset($thucHienTangCa->dangKyTangCa->nguoiDung->hoSo->anh_dai_dien)
                                     : asset('assets/images/default.png');
                             @endphp
                             <img src="{{ $avatar }}" alt="Avatar" class="rounded-circle border border-3 border-primary mb-3"
@@ -80,7 +80,7 @@
                                 onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';">
 
                             <h5 class="card-title mb-3">
-                                {{ $dangKyTangCa->dangKyTangCa->nguoiDung->hoSo->ho ?? 'N/A' }}
+                                {{ $thucHienTangCa->dangKyTangCa->nguoiDung->hoSo->ho ?? 'N/A' }}
                                 {{ $thucHienTangCa->dangKyTangCa->nguoiDung->hoSo->ten ?? 'N/A' }}
                             </h5>
 
@@ -125,8 +125,8 @@
                             <!-- Thông tin audit -->
                             <div class="mb-3 p-2  bg-body-secondary rounded">
                                 <h6 class="mb-2"><i class="mdi mdi-history me-2"></i>Thông tin cập nhật</h6>
-                                <div><strong>Tạo lúc:</strong> {{ $thucHienTangCa->created_at->format('d/m/Y H:i') }}</div>
-                                <div><strong>Cập nhật:</strong> {{ $thucHienTangCa->updated_at->format('d/m/Y H:i') }}</div>
+                                <div><strong>Tạo lúc:</strong> {{ $thucHienTangCa->created_at }}</div>
+                                <div><strong>Cập nhật:</strong> {{ $thucHienTangCa->updated_at }}</div>
                             </div>
 
                             <!-- Hướng dẫn -->

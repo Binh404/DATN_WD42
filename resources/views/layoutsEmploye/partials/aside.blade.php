@@ -45,7 +45,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
+            <a href="{{route('cham-cong.index')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
             </a>

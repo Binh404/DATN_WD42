@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layoutsAdmin.master')
 
 @section('content')
     <div class="container">
@@ -11,15 +11,15 @@
                 {{-- Cột bên trái --}}
                 <div class="col-md-6">
                     @foreach ([
-            'ho' => 'Họ',
-            'ten' => 'Tên',
-            'so_dien_thoai' => 'Số điện thoại',
-            'ngay_sinh' => 'Ngày sinh',
-            'dia_chi_hien_tai' => 'Địa chỉ hiện tại',
-            'dia_chi_thuong_tru' => 'Địa chỉ thường trú',
-            'cmnd_cccd' => 'CMND/CCCD',
-            'so_ho_chieu' => 'Số hộ chiếu',
-        ] as $field => $label)
+                        'ho' => 'Họ',
+                        'ten' => 'Tên',
+                        'so_dien_thoai' => 'Số điện thoại',
+                        'ngay_sinh' => 'Ngày sinh',
+                        'dia_chi_hien_tai' => 'Địa chỉ hiện tại',
+                        'dia_chi_thuong_tru' => 'Địa chỉ thường trú',
+                        'cmnd_cccd' => 'CMND/CCCD',
+                        'so_ho_chieu' => 'Số hộ chiếu',
+                    ] as $field => $label)
                         <div class="mb-3">
                             <label for="{{ $field }}" class="form-label">{{ $label }}</label>
                             <input type="{{ $field == 'ngay_sinh' ? 'date' : 'text' }}" name="{{ $field }}"
@@ -68,24 +68,6 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                {{-- Cột bên phải --}}
-                <div class="col-md-6">
-                    @foreach ([
-            'lien_he_khan_cap' => 'Người liên hệ khẩn cấp',
-            'sdt_khan_cap' => 'SĐT khẩn cấp',
-            'quan_he_khan_cap' => 'Quan hệ với người khẩn cấp',
-        ] as $field => $label)
-                        <div class="mb-3">
-                            <label for="{{ $field }}" class="form-label">{{ $label }}</label>
-                            <input type="text" name="{{ $field }}" id="{{ $field }}" class="form-control"
-                                value="{{ old($field, $hoSo->$field ?? '') }}">
-                            @error($field)
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    @endforeach
 
                     <div class="mb-3">
                         <label for="email_cong_ty" class="form-label">Email công ty</label>
@@ -93,25 +75,47 @@
                             value="{{ auth()->user()->email }}" readonly>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="anh_dai_dien" class="form-label">Ảnh đại diện</label>
-                        <input type="file" name="anh_dai_dien" id="anh_dai_dien" class="form-control">
-                        @error('anh_dai_dien')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    {{-- Cột bên phải --}}
+                    <div class="col-md-6">
+                        @foreach ([
+                            'lien_he_khan_cap' => 'Người liên hệ khẩn cấp',
+                            'sdt_khan_cap' => 'SĐT khẩn cấp',
+                            'quan_he_khan_cap' => 'Quan hệ với người khẩn cấp',
+                        ] as $field => $label)
+                            <div class="mb-3">
+                                <label for="{{ $field }}" class="form-label">{{ $label }}</label>
+                                <input type="text" name="{{ $field }}" id="{{ $field }}"
+                                    class="form-control" value="{{ old($field, $hoSo->$field ?? '') }}">
+                                @error($field)
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endforeach
 
-                    @if (!empty($hoSo->anh_dai_dien))
                         <div class="mb-3">
-                            <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" width="100">
+                            <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện"
+                                class="img-thumbnail" width="100">
                         </div>
-                    @endif
-                </div>
-            </div>
 
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">Lưu thông tin</button>
-            </div>
+                        <div class="mb-3">
+                            <label for="anh_dai_dien" class="form-label">Ảnh đại diện</label>
+                            <input type="file" name="anh_dai_dien" id="anh_dai_dien" class="form-control">
+                            @error('anh_dai_dien')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        @if (!empty($hoSo->anh_dai_dien))
+                            <div class="mb-3">
+                                <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" width="100">
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                </div>
         </form>
     </div>
 @endsection

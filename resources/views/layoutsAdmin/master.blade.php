@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/css/style.css') }}">
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.png') }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @yield('style')
   </head>
   <body>

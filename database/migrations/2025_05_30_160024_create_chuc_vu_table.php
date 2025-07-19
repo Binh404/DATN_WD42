@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('mo_ta')->nullable();
             $table->decimal('luong_co_ban', 12, 2)->nullable(); // Salary per day
             $table->decimal('he_so_luong', 5, 2)->nullable(); // Salary coefficient
-            // $table->foreignId('phong_ban_id')->constrained('phong_ban');
+            $table->foreignId('phong_ban_id')->constrained('phong_ban');
             // $table->tinyInteger('cap_do')->default(1);
             // $table->decimal('luong_toi_thieu', 12, 2)->nullable();
             // $table->decimal('luong_toi_da', 12, 2)->nullable();

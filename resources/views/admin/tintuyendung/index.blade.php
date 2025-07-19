@@ -2,7 +2,7 @@
 @section('title', 'Yêu cầu tuyển dụng')
 
 @section('content')
-<<<<<<< HEAD
+
     <div class="row">
         <div class="col-12">
             <div class="home-tab">
@@ -29,7 +29,34 @@
                         <div>
                             <h2 class="fw-bold mb-1">Quản lý tin tuyển dụng</h2>
                             <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi tuyển dụng</p>
-=======
+
+    <div class="row">
+        <div class="col-12">
+            <div class="home-tab">
+                <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                    {{-- <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
+                                aria-controls="overview" aria-selected="true">Chấm Công</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab"
+                                aria-controls="audiences" aria-selected="false">Phê duyệt</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab"
+                                aria-selected="false">Demographics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab"
+                                aria-selected="false">More</a>
+                        </li>
+                    </ul> --}}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold mb-1">Quản lý tin tuyển dụng</h2>
+                            <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi tuyển dụng</p>
+
 
     <div class="container-fluid px-4">
 
@@ -198,7 +225,7 @@
                             <a href="/yeu$item/create" class="btn btn-primary">
                                 <i class="fas fa-plus me-1"></i>Thêm phòng ban đầu tiên
                             </a>
->>>>>>> 4b80096c7d303713b5c388c8d374d454365b5418
+>>>>>>> 00995b6441629123acc3004268d0c1981ebf72a3
                         </div>
 
                     </div>
@@ -415,5 +442,7 @@
 
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
 
->>>>>>> 4b80096c7d303713b5c388c8d374d454365b5418
+>>>>>>> 00995b6441629123acc3004268d0c1981ebf72a3

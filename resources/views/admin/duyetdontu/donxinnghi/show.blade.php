@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 @section('content')
 
@@ -595,21 +595,6 @@
                 <h2 class="fw-bold text-primary mb-0">
                     Duyệt đơn
                 </h2>
-            </div>
-
-            <div class="col-md-5">
-                <form method="GET" action="/yeu$yeuCauTuyenDung">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" name="search"
-                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </form>
             </div>
 
         </div>

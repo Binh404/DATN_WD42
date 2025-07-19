@@ -15,8 +15,8 @@
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
-        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item nav-category">Các chức năng</li>
+        @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
@@ -25,12 +25,21 @@
             </a>
             <div class="collapse" id="ui-hoso">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qlhoso'))
                     <li class="nav-item">
-                        <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
+                        <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
                     </li>
 
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
+                    </li>
+
+
+                    @endif
                 </ul>
 
             </div>
@@ -50,6 +59,23 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('phongban.index') }}">Danh sách phòng ban</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        @endif
+
+        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-office-building-outline"></i>
+                <span class="menu-title">Thông báo tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="form-elements">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}">Danh sách phòng ban</a>
                     </li>
                 </ul>
             </div>
@@ -78,6 +104,7 @@
                         <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
+
                 </ul>
             </div>
         </li>
@@ -116,6 +143,17 @@
                         <a class="nav-link" href="{{ route('admin.locations.index') }}">Quản lý vị trí</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
+                    </li>
+                    @endif
+
                 </ul>
             </div>
         </li>
@@ -170,8 +208,8 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
                 aria-controls="tables">
-                <i class="menu-icon mdi mdi-clock-outline"></i>
-                <span class="menu-title">Tạo đơn từ</span>
+                <i class="menu-icon mdi mdi-file-document-outline"></i>
+                <span class="menu-title">Hợp đồng</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="taodontu">
@@ -179,7 +217,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
+
                 </ul>
+
             </div>
         </li>
         @endif
@@ -256,9 +296,18 @@
             </a>
             <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('xinnghiphep', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="">Danh sách</a>
                     </li>
+                    @endif
+
+                    @if(MenuHelper::hasSubMenuPermission('xinnghiphep', 'donxinnghiphep'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url('employee/nghi-phep')}}">Đơn nghỉ phép</a>
+                    </li>
+                    @endif
+
                 </ul>
             </div>
         </li>

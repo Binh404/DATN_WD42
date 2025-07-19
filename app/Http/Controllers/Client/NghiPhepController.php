@@ -33,13 +33,22 @@ class NghiPhepController extends Controller
         return view('employe.nghiphep.create', compact('soDus', 'nguoiBanGiaos'));
     }
 
+    private function generateUniqueMaDonNghi()
+    {
+        do {
+            $code = 'DXN' . mt_rand(100000, 999999);
+        } while (DonXinNghi::where('ma_don_nghi', $code)->exists());
+
+        return $code;
+    }
+
+
     public function store(Request $request)
     {
 
         $user = auth()->user();
 
         $validated = $request->validate([
-            'ma_don_nghi' => 'required|string|max:255|unique:don_xin_nghi,ma_don_nghi',
             'loai_nghi_phep_id' => 'required|exists:loai_nghi_phep,id',
             'ngay_bat_dau' => 'required|date',
             'ngay_ket_thuc' => 'required|date|after_or_equal:ngay_bat_dau',
@@ -49,6 +58,9 @@ class NghiPhepController extends Controller
             'ban_giao_cho_id' => 'nullable|exists:nguoi_dung,id',
             'ghi_chu_ban_giao' => 'nullable|string',
         ]);
+
+        // Tạo mã đơn không trùng
+        $validated['ma_don_nghi'] = $this->generateUniqueMaDonNghi();
 
 
         // Xử lý upload nhiều file tài liệu hỗ trợ (nếu có)
@@ -88,13 +100,15 @@ class NghiPhepController extends Controller
         $validated['so_ngay_nghi'] = $soNgayNghi;
         $validated['trang_thai'] = 'cho_duyet';
         $validated['tai_lieu_ho_tro'] = $taiLieuPaths;
-        if($user->coVaiTro('DEPARTMENT')){
-            $validated['cap_duyet_hien_tai'] = 2;
-        }elseif($user->coVaiTro('HR')){
-            $validated['cap_duyet_hien_tai'] = 3;
-        }else{
-            $validated['cap_duyet_hien_tai'] = 1;
-        }
+        $validated['cap_duyet_hien_tai'] = 1;
+
+        // if($user->coVaiTro('DEPARTMENT')){
+        //     $validated['cap_duyet_hien_tai'] = 2;
+        // }elseif($user->coVaiTro('HR')){
+        //     $validated['cap_duyet_hien_tai'] = 3;
+        // }else{
+        //     $validated['cap_duyet_hien_tai'] = 1;
+        // }
 
         $don = DonXinNghi::create($validated);
 
@@ -128,6 +142,10 @@ class NghiPhepController extends Controller
 
     public function huyDonXinNghi($id)
     {
+        $user = auth()->user();
+
+        $donXinNghi = DonXinNghi::find($id);
+        $nam = Carbon::today()->year;
         $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
         if ($lichSuDuyet->isNotEmpty()) {
             return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt không thể hủy!');
@@ -136,6 +154,17 @@ class NghiPhepController extends Controller
         DonXinNghi::where('id', $id)->update([
             'trang_thai' => 'huy_bo'
         ]);
+        $soDu = SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
+            ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+            ->where('nam', $nam)
+            ->first();
+
+        if ($soDu) {
+            $soDu->update([
+                'so_ngay_cho_duyet' => $soDu->so_ngay_cho_duyet - $donXinNghi->so_ngay_nghi,
+                'so_ngay_con_lai' => $soDu->so_ngay_con_lai + $donXinNghi->so_ngay_nghi,
+            ]);
+        }
 
         return redirect()->route('nghiphep.index')->with('success', 'Hủy đơn xin nghỉ thành công!');
     }
@@ -181,45 +210,44 @@ class NghiPhepController extends Controller
 
     // hr và trưởng phòng
     public function donXinNghi()
-{
-    $user = auth()->user();
-    $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
+    {
+        $user = auth()->user();
+        $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
 
-    // Khai báo mặc định để tránh lỗi
-    $donXinNghis = collect();
-    $thongKe = [];
-    $soDonChuaDuyet = 0;
+        // Khai báo mặc định để tránh lỗi
+        $donXinNghis = collect();
+        $thongKe = [];
+        $soDonChuaDuyet = 0;
 
-    if ($vaiTro->ten == 'department') {
-        $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
-            ->whereHas('nguoiDung', function ($query) use ($user) {
-                $query->where('phong_ban_id', $user->phong_ban_id);
-            })
-            ->get();
+        if ($vaiTro->ten == 'department') {
+            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
+                ->whereHas('nguoiDung', function ($query) use ($user) {
+                    $query->where('phong_ban_id', $user->phong_ban_id);
+                })
+                ->get();
 
-        $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
-            ->where('cap_duyet', 1)
-            ->groupBy('ket_qua')
-            ->pluck('tong', 'ket_qua');
+            $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
+                ->where('cap_duyet', 1)
+                ->groupBy('ket_qua')
+                ->pluck('tong', 'ket_qua');
 
-        $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
-            $query->where('cap_duyet', 1);
-        })->count();
-    } elseif ($vaiTro->ten == 'hr') {
-        $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
-            ->where('cap_duyet_hien_tai', 2)->get();
+            $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
+                $query->where('cap_duyet', 1);
+            })->count();
+        } elseif ($vaiTro->ten == 'hr') {
+            $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
+                ->where('cap_duyet_hien_tai', 2)->get();
 
-        $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
-            ->where('cap_duyet', 1)
-            ->groupBy('ket_qua')
-            ->pluck('tong', 'ket_qua');
+            $thongKe = LichSuDuyetDonNghi::select('ket_qua', DB::raw('count(*) as tong'))
+                ->where('cap_duyet', 1)
+                ->groupBy('ket_qua')
+                ->pluck('tong', 'ket_qua');
 
-        $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
-            $query->where('cap_duyet', 2);
-        })->count();
+            $soDonChuaDuyet = DonXinNghi::whereDoesntHave('lichSuDuyet', function ($query) {
+                $query->where('cap_duyet', 2);
+            })->count();
+        }
+
+        return view('admin.duyetdontu.donxinnghi.index', compact('vaiTro', 'thongKe', 'soDonChuaDuyet', 'donXinNghis'));
     }
-
-    return view('admin.duyetdontu.donxinnghi.index', compact('vaiTro', 'thongKe', 'soDonChuaDuyet', 'donXinNghis'));
-}
-
 }

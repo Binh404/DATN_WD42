@@ -69,6 +69,22 @@ class DangKyTangCaAdminController extends Controller
                   ->orderBy('created_at', 'desc');
             // dd($query);
             // Paginate results
+            $user = auth()->user();
+            if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+                // Admin và HR xem tất cả dữ liệu, không giới hạn
+            } else if ($user->coVaiTro('department')) {
+                $phongBanId = $user->phong_ban_id;
+                $userId = $user->id;
+
+                // Lọc chỉ những người cùng phòng ban và không lấy user hiện tại
+                $query->whereHas('nguoiDung', function ($q) use ($phongBanId, $userId) {
+                    $q->where('phong_ban_id', $phongBanId)
+                    ->where('id', '<>', $userId);
+                });
+            } else {
+                // Nếu không phải Admin, HR, department thì không có quyền xem
+                abort(403, 'Bạn không có quyền truy cập.');
+            }
             $donTangCa = $query->paginate($perPage);
             // dd($pheDuyet);
             // Get departments for filter dropdown
@@ -95,10 +111,25 @@ class DangKyTangCaAdminController extends Controller
                 'nguoiDuyet.hoSo'
             ])->findOrFail($id);
 
-            // Kiểm tra quyền xem
-            // if (!Auth::user()->is_admin && $dangKyTangCa->nguoi_dung_id !== Auth::id()) {
-            //     return back()->with('error', 'Bạn không có quyền xem đăng ký này');
-            // }
+            $user = auth()->user();
+
+            if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+                // Admin và HR xem tất cả
+            } elseif ($user->coVaiTro('department')) {
+                $target = $dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+            } else {
+                abort(403, 'Bạn không có quyền xem bản ghi này.');
+            }
 
             return view('admin.cham-cong.phe_duyet_tang_ca.show', compact('dangKyTangCa'));
 
@@ -107,9 +138,29 @@ class DangKyTangCaAdminController extends Controller
             return back()->with('error', 'Không tìm thấy đăng ký tăng ca');
         }
     }
+
     public function pheDuyet(Request $request, $id){
         // dd($request->all());
         $dangKyTangCa = DangKyTangCa::where('id', $id)->first();
+        $user = auth()->user();
+
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            $target = $dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
+        }
         // $trangThai = $dangKyTangCa->trang_thai;
         $thucHienTangCa = thucHienTangCa::where('dang_ky_tang_ca_id', $id)->first();
         if(!empty($thucHienTangCa)){
