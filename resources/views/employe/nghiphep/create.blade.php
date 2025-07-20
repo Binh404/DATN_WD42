@@ -295,8 +295,15 @@
                     <label for="exampleInputEmail1">Loại nghỉ phép<span class="required">*</span></label>
                     <select class="form-select" id="loai_nghi_phep_id" name="loai_nghi_phep_id">
                         <option value="">Chọn loại nghỉ phép</option>
-                        @foreach ($soDus as $key => $soDu)
+                        {{-- @foreach ($soDus as $key => $soDu)
                             <option value="{{ $soDu->loaiNghiPhep->id }}">{{ $soDu->loaiNghiPhep->ten }}</option>
+                        @endforeach --}}
+
+                        @foreach ($soDus as $key => $soDu)
+                            <option value="{{ $soDu->loaiNghiPhep->id }}"
+                                {{ old('loai_nghi_phep_id') == $soDu->loaiNghiPhep->id ? 'selected' : '' }}>
+                                {{ $soDu->loaiNghiPhep->ten }}
+                            </option>
                         @endforeach
 
                     </select>
@@ -308,7 +315,8 @@
 
                 <div class="form-group col-md-3">
                     <label for="inputEmail4" class="form-label">Ngày bắt đầu<span class="required">*</span></label>
-                    <input class="form-control" type="date" id="ngay_bat_dau" name="ngay_bat_dau">
+                    <input class="form-control" type="date" id="ngay_bat_dau" name="ngay_bat_dau"
+                        value="{{ old('ngay_bat_dau') }}">
                     @error('ngay_bat_dau')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
@@ -316,14 +324,15 @@
 
                 <div class="form-group col-md-3">
                     <label for="inputPassword4" class="form-label">Ngày kết thúc<span class="required">*</span></label>
-                    <input class="form-control" type="date" id="ngay_ket_thuc" name="ngay_ket_thuc">
+                    <input class="form-control" type="date" id="ngay_ket_thuc" name="ngay_ket_thuc"
+                        value="{{ old('ngay_ket_thuc') }}">
                     @error('ngay_ket_thuc')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="inputPassword4" class="form-label">Tài liệu hỗ trợ<span class="required">*</span></label>
+                    <label for="inputPassword4" class="form-label">Tài liệu hỗ trợ</label>
                     <input type="file" id="tai_lieu_ho_tro" name="tai_lieu_ho_tro[]" multiple
                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="form-control">
                     @error('tai_lieu_ho_tro')
@@ -339,7 +348,7 @@
                     <label for="inputEmail4" class="form-label">Người liên hệ khẩn cấp<span
                             class="required">*</span></label>
                     <input type="text" id="lien_he_khan_cap" name="lien_he_khan_cap" placeholder="Họ tên người liên hệ"
-                        class="form-control">
+                        class="form-control" value="{{ old('lien_he_khan_cap') }}">
                     @error('lien_he_khan_cap')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
@@ -358,11 +367,13 @@
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="exampleInputEmail1">Bàn giao cho<span class="required">*</span></label>
+                    <label for="exampleInputEmail1">Bàn giao cho</label>
                     <select class="form-select" id="ban_giao_cho_id" name="ban_giao_cho_id">
                         <option value="">Chọn người ban giao</option>
                         @foreach ($nguoiBanGiaos as $key => $nguoiBanGiao)
-                            <option value="{{ $nguoiBanGiao->id }}">{{ $nguoiBanGiao->ten_dang_nhap }}</option>
+                            <option value="{{ $nguoiBanGiao->id }}"
+                                {{ old('ban_giao_cho_id') == $nguoiBanGiao->id ? 'selected' : '' }}>
+                                {{ $nguoiBanGiao->ten_dang_nhap }}</option>
                         @endforeach
 
                     </select>
@@ -375,16 +386,16 @@
                 <div class="form-group col-md-3">
                     <label class="form-label">Ghi chú bàn giao</label>
                     <input type="text" id="ghi_chu_ban_giao" name="ghi_chu_ban_giao"
-                        placeholder="Mô tả chi tiết công việc cần bàn giao, lưu ý đặc biệt...">
+                        placeholder="Mô tả chi tiết công việc cần bàn giao, lưu ý đặc biệt..."
+                        value="{{ old('ghi_chu_ban_giao') }}">
                     @error('ghi_chu_ban_giao')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group col-md-12">
-                    <label for="inputEmail4" class="form-label">Lý do</label>
-                    <textarea class="form-textarea" id="ly_do" name="ly_do" required placeholder="Mô tả chi tiết lý do xin nghỉ..."
-                        value="{{ old('ly_do') }}"></textarea>
+                    <label for="inputEmail4" class="form-label">Lý do<span class="required">*</span></label>
+                    <textarea class="form-textarea" id="ly_do" name="ly_do" placeholder="Mô tả chi tiết lý do xin nghỉ...">{{ old('ly_do') }}</textarea>
                     @error('ly_do')
                         <span class="error-message">{{ $message }}</span>
                     @enderror

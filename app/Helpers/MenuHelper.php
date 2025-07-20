@@ -60,7 +60,7 @@ class MenuHelper
         ];
 
         return isset($menuPermissions[$userRole]) &&
-               in_array($menuKey, $menuPermissions[$userRole]);
+            in_array($menuKey, $menuPermissions[$userRole]);
     }
 
     public static function hasSubMenuPermission($menuKey, $subMenuKey)
@@ -78,7 +78,7 @@ class MenuHelper
                 'hoso' => ['qlhoso'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
-                'duyetdon' => ['tuyendung'],
+                'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong'],
                 'xinnghiphep' => ['danhsach']
 
@@ -87,9 +87,9 @@ class MenuHelper
                 'hoso' => ['qlhoso', 'hosocn'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
-                'duyetdon' => [ 'xinnghiphep'],
+                'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
-                'thongbaotuyendung' =>['danhsach']
+                'thongbaotuyendung' => ['danhsach']
 
             ],
             'department' => [
@@ -97,11 +97,11 @@ class MenuHelper
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
                 'duyetdon' => ['xinnghiphep'],
-                'xinnghiphep' => ['danhsach','donxinnghiphep']
+                'xinnghiphep' => ['danhsach', 'donxinnghiphep']
 
             ],
             'employee' => [
-                'chamcong' => [ 'chamcong', 'donxintangca'],
+                'chamcong' => ['chamcong', 'donxintangca'],
                 'hoso' => ['hosocn'],
                 'xinnghiphep' => ['donxinnghiphep']
 
@@ -109,6 +109,6 @@ class MenuHelper
         ];
 
         return isset($subMenuPermissions[$userRole][$menuKey]) &&
-               in_array($subMenuKey, $subMenuPermissions[$userRole][$menuKey]);
+            in_array($subMenuKey, $subMenuPermissions[$userRole][$menuKey]);
     }
 }

@@ -713,7 +713,7 @@
                 </div>
 
                 {{-- tiến trình xử lý --}}
-                <div class="tracking-section">
+                {{-- <div class="tracking-section">
                     <h3><i class="fas fa-route"></i> Tiến trình xử lý</h3>
                     <div class="progress-timeline">
                         <div class="timeline-step">
@@ -743,7 +743,6 @@
                                 $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
                             @endphp
 
-                    {{-- Trưởng phòng --}}
                     <div
                         class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
@@ -803,7 +802,7 @@
                         </div>
                         <div class="timeline-line"></div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Tài liệu hỗ trợ -->
                 <div class="description-card">

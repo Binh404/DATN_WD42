@@ -93,7 +93,7 @@
                         @endforeach
 
                         <div class="mb-3">
-                            <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện"
+                            {{-- <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" --}}
                                 class="img-thumbnail" width="100">
                         </div>
 
@@ -107,7 +107,7 @@
 
                         @if (!empty($hoSo->anh_dai_dien))
                             <div class="mb-3">
-                                <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" width="100">
+                                {{-- <img src="{{ asset('storage/' . $hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" width="100"> --}}
                             </div>
                         @endif
                     </div>

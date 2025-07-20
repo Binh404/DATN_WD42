@@ -662,7 +662,7 @@
                             <span class="info-label">Cấp duyệt hiện tại:</span>
                             <span class="info-value">
                                 <span class="approval-level" id="approvalLevel">
-                                    {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : 'HR' }}
+                                    {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : ($donNghiPhep->cap_duyet_hien_tai == 2 ? 'HR' : 'Giám đốc') }}
                                 </span>
                             </span>
                         </div>
@@ -727,9 +727,19 @@
                         </div>
                         <div class="timeline-line"></div>
 
+                        @php
+                            $user = auth()->user();
+                            if ($user->coVaiTro('department')) {
+                                $lichSuHRDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 2);
 
-                        <div class="timeline-step">
-                            @php
+                                $hrTuChoi = $lichSuHRDuyet?->ket_qua === 'tu_choi';
+                                $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
+                            } elseif ($user->coVaiTro('hr')) {
+                                $lichSuAdminDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 3);
+
+                                $adminTuChoi = $lichSuAdminDuyet?->ket_qua === 'tu_choi';
+                                $adminDuyet = $lichSuAdminDuyet?->ket_qua === 'da_duyet';
+                            } else {
                                 $lichSuTruongPhongDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere(
                                     'cap_duyet',
                                     1,
@@ -741,54 +751,86 @@
 
                                 $hrTuChoi = $lichSuHRDuyet?->ket_qua === 'tu_choi';
                                 $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
-                            @endphp
+                            }
 
-                    {{-- Trưởng phòng --}}
-                    <div
-                        class="step-indicator
+                        @endphp
+
+                        {{-- Trưởng phòng duyệt --}}
+                        @if ($user->coVaiTro('employee'))
+                            <div class="timeline-step">
+                                <div
+                                    class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Chờ trưởng phòng duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng từ chối'
-                                    : 'Trưởng phòng đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng đã từ chối đơn nghỉ'
-                                    : 'Trưởng phòng đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="step-content">
+                                    <div class="step-title">
+                                        Trưởng phòng duyệt
+                                    </div>
+                                    <div class="step-description">
+                                        Cấp duyệt trưởng phòng
+                                    </div>
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                        @endif
 
-                <div class="timeline-step">
-                    <div
-                        class="step-indicator
+                        {{-- HR duyệt --}}
+                        @if ($user->coVaiTro('department'))
+                            <div class="timeline-step">
+                                <div
+                                    class="step-indicator
+                                {{ !$lichSuHRDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <div class="step-content">
+                                    <div class="step-title">
+                                        HR duyệt
+                                    </div>
+                                    <div class="step-description">
+                                        Cấp duyệt bộ phận nhân sự
+                                    </div>
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                        @elseif($user->coVaiTro('employee'))
+                            <div class="timeline-step">
+                                <div
+                                    class="step-indicator
                                 {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet
-                                ? 'HR đang xem xét đơn nghỉ'
-                                : ($hrTuChoi
-                                    ? 'HR đã từ chối đơn nghỉ'
-                                    : 'HR đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <div class="step-content">
+                                    <div class="step-title">
+                                        HR duyệt
+                                    </div>
+                                    <div class="step-description">
+                                        Cấp duyệt bộ phận nhân sự
+                                    </div>
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                        @endif
 
+                        {{-- Admin duyệt --}}
+                        @if ($user->coVaiTro('hr'))
+                            <div class="timeline-step">
+                                <div
+                                    class="step-indicator
+                                {{ !$lichSuAdminDuyet ? 'step-active' : ($adminTuChoi ? 'step-rejected' : ($adminDuyet ? 'step-completed' : 'step-pending')) }}">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <div class="step-content">
+                                    <div class="step-title">
+                                        Giám đốc duyệt
+                                    </div>
+                                    <div class="step-description">
+                                        Cấp duyệt của giám đốc
+                                    </div>
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                        @endif
 
                         <div class="timeline-step">
                             <div
@@ -797,7 +839,7 @@
                             </div>
                             <div class="step-content">
                                 <div class="step-title">Hoàn tất</div>
-                                <div class="step-description">Đơn nghỉ phép được chấp thuận và có hiệu lực</div>
+                                <div class="step-description">Có hiệu lực khi các cấp duyệt</div>
                             </div>
 
                         </div>
