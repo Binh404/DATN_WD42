@@ -21,12 +21,12 @@ class MenuHelper
                 'phongban',
                 'luong',
                 'chamcong',
-                // 'ungvien',
+                'ungvien',
                 'hopdong',
                 // 'tintuyendung',
                 // 'thongbao',
                 'duyetdon',
-                'xinnghiphep',
+                // 'xinnghiphep',
                 'loainghiphep'
             ],
             'hr' => [
@@ -41,10 +41,12 @@ class MenuHelper
                 'thongbao',
                 'duyetdon',
                 'xinnghiphep',
-                'loainghiphep'
+                'loainghiphep',
+                'thongbaotuyendung'
             ],
             'department' => [
                 'dashboard',
+                'yeucautuyendung',
                 'hoso',
                 'chamcong',
                 'duyetdon',
@@ -54,12 +56,13 @@ class MenuHelper
                 'dashboard',
                 'hoso',
                 'chamcong',
-                'xinnghiphep'
+                'xinnghiphep',
+                'luong'
             ]
         ];
 
         return isset($menuPermissions[$userRole]) &&
-               in_array($menuKey, $menuPermissions[$userRole]);
+            in_array($menuKey, $menuPermissions[$userRole]);
     }
 
     public static function hasSubMenuPermission($menuKey, $subMenuKey)
@@ -75,38 +78,42 @@ class MenuHelper
         $subMenuPermissions = [
             'admin' => [
                 'hoso' => ['qlhoso'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
-                'duyetdon' => ['tuyendung'],
+                'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong'],
-                'xinnghiphep' => ['danhsach']
+                // 'xinnghiphep' => ['danhsach']
 
             ],
             'hr' => [
                 'hoso' => ['qlhoso', 'hosocn'],
+                'luong' => ['luong', 'phieuluong'],
+
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
-                'duyetdon' => [ 'xinnghiphep'],
-                'xinnghiphep' => ['danhsach']
+                'duyetdon' => ['xinnghiphep'],
+                'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
+                'thongbaotuyendung' => ['danhsach']
 
             ],
             'department' => [
-                'hoso' => ['qlhoso', 'hosocn'],
+                'hoso' => [ 'hosocn'],
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
                 'duyetdon' => ['xinnghiphep'],
-                'xinnghiphep' => ['danhsach','donxinnghiphep']
+                'xinnghiphep' => ['danhsach', 'donxinnghiphep']
 
             ],
             'employee' => [
-                'chamcong' => [ 'chamcong', 'donxintangca'],
+                'chamcong' => ['chamcong', 'donxintangca'],
                 'hoso' => ['hosocn'],
-                'xinnghiphep' => ['donxinnghiphep']
+                'xinnghiphep' => ['donxinnghiphep'],
+                'luong' => ['phieuluongnv']
 
             ]
         ];
 
         return isset($subMenuPermissions[$userRole][$menuKey]) &&
-               in_array($subMenuKey, $subMenuPermissions[$userRole][$menuKey]);
+            in_array($subMenuKey, $subMenuPermissions[$userRole][$menuKey]);
     }
 }

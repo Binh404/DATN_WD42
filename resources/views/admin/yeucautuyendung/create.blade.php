@@ -129,7 +129,7 @@
                 <div class="form-group col-md-6">
                     <label for="exampleInputEmail1">Yêu cầu ứng viên<span class="required">*</span></label>
                     <textarea class="form-control" id="yeu_cau" name="yeu_cau" value="{{ old('yeu_cau') }}" cols="30"
-                        rows="30">1</textarea>
+                        rows="30"></textarea>
                     @error('yeu_cau')
                         <span class="error-message">{{ $message }}</span>
                     @enderror

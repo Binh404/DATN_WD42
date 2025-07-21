@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 @section('title', 'Yêu cầu tuyển dụng')
 @section('content')
 
@@ -597,21 +597,6 @@
                 </h2>
             </div>
 
-            <div class="col-md-5">
-                <form method="GET" action="/yeu$yeuCauTuyenDung">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" name="search"
-                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </form>
-            </div>
-
         </div>
 
         <div class="card border-0 shadow-sm">
@@ -641,7 +626,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Số ngày nghỉ:</span>
-                            <span class="info-value" id="totalDays">{{ $donNghiPhep->so_ngay_nghi }} ngày</span>
+                            <span class="info-value" id="totalDays">{{ number_format($donNghiPhep->so_ngay_nghi) }} ngày</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ngày tạo:</span>
@@ -677,7 +662,7 @@
                             <span class="info-label">Cấp duyệt hiện tại:</span>
                             <span class="info-value">
                                 <span class="approval-level" id="approvalLevel">
-                                    {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : 'HR' }}
+                                    {{-- {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : 'HR' }} --}}
                                 </span>
                             </span>
                         </div>
@@ -728,7 +713,7 @@
                 </div>
 
                 {{-- tiến trình xử lý --}}
-                <div class="tracking-section">
+                {{-- <div class="tracking-section">
                     <h3><i class="fas fa-route"></i> Tiến trình xử lý</h3>
                     <div class="progress-timeline">
                         <div class="timeline-step">
@@ -758,7 +743,6 @@
                                 $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
                             @endphp
 
-                    {{-- Trưởng phòng --}}
                     <div
                         class="step-indicator
                                 {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
@@ -818,7 +802,7 @@
                         </div>
                         <div class="timeline-line"></div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Tài liệu hỗ trợ -->
                 <div class="description-card">
@@ -864,97 +848,8 @@
             <div class="popup-header">
                 <h4 class="popup-title" id="popupTitle">Xem tài liệu</h4>
             </div>
-<<<<<<< HEAD
-        </div>
-
-        {{-- tiến trình xử lý --}}
-        <div class="tracking-section">
-            <h3><i class="fas fa-route"></i> Tiến trình xử lý</h3>
-            <div class="progress-timeline">
-                <div class="timeline-step">
-                    <div class="step-indicator step-completed">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">Đã gửi đơn</div>
-                        <div class="step-description">Đơn nghỉ phép đã được tạo và gửi đi</div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-                <div class="timeline-step">
-                    @php
-                        $lichSuTruongPhongDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 1);
-                        $lichSuHRDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 2);
-
-                        $trPhongTuChoi = $lichSuTruongPhongDuyet?->ket_qua === 'tu_choi';
-                        $trPhongDuyet = $lichSuTruongPhongDuyet?->ket_qua === 'da_duyet';
-
-                        $hrTuChoi = $lichSuHRDuyet?->ket_qua === 'tu_choi';
-                        $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
-                    @endphp
-
-                    {{-- Trưởng phòng --}}
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Chờ trưởng phòng duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng từ chối'
-                                    : 'Trưởng phòng đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng đã từ chối đơn nghỉ'
-                                    : 'Trưởng phòng đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-                <div class="timeline-step">
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet
-                                ? 'HR đang xem xét đơn nghỉ'
-                                : ($hrTuChoi
-                                    ? 'HR đã từ chối đơn nghỉ'
-                                    : 'HR đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-
-                <div class="timeline-step">
-                    <div
-                        class="step-indicator {{ $donNghiPhep->trang_thai == 'da_duyet' ? 'step-completed' : 'step-pending' }}">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">Hoàn tất</div>
-                        <div class="step-description">Đơn nghỉ phép được chấp thuận và có hiệu lực</div>
-                    </div>
-                </div>
-=======
             <div class="popup-body" id="popupBody">
                 <!-- Nội dung sẽ được load động -->
->>>>>>> 00995b6441629123acc3004268d0c1981ebf72a3
             </div>
         </div>
     </div>

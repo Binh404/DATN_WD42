@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0 fw-bold text-danger">Danh sách nhân sự đã nghỉ việc</h4>
         <a href="{{ route('hoso.all') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left-circle me-1"></i> Quay về danh sách đang làm
+            <i class="mdi mdi-arrow-left-circle me-1"></i> Quay về danh sách đang làm
         </a>
     </div>
 
@@ -26,7 +26,7 @@
     @endif
 
     {{-- BẢNG --}}
-    <div class="card shadow-sm border-0 rounded-4">
+    <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body p-0">
             <div class="table-responsive" style="min-height: 600px;">
                 <table class="table table-striped align-middle mb-0 text-center">
@@ -59,12 +59,12 @@
                                 <td>{{ $nv->hoSo->email_cong_ty ?? 'N/A' }}</td>
                                 <td>{{ $nv->created_at ? $nv->created_at->format('d/m/Y') : 'N/A' }}</td>
                                 <td>
-                                    <form action="{{ route('hoso.restore', $nv->hoSo->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('hoso.restore', $nv->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="btn btn-sm btn-outline-success"
                                             onclick="return confirm('Khôi phục nhân viên này về trạng thái đang làm?')">
-                                            <i class="bi bi-person-check"></i>
+                                            <i class="mdi mdi-account-reactivate"></i>
                                         </button>
                                     </form>
                                 </td>
