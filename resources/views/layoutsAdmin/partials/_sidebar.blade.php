@@ -87,6 +87,11 @@
                         <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương</a>
+                    </li>
+                    @endif
 
                 </ul>
             </div>

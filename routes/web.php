@@ -379,6 +379,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::post('/tai-khoan/cap-nhat', [ProfileController::class, 'capNhatTaiKhoan'])->name('tai-khoan.cap-nhat');
         Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
+        Route::get('/luong-employee', [LuongController::class, 'listEmploy'])->name('danh-sach-luong');
+    // Route::get('/luong/download/{id}', [LuongController::class, 'download'])->name('nhanvien.luong.download');
 });
 
 Route::get('/chuc-vus/{phongBanId}', [ChucVuController::class, 'getByPhongBan']);

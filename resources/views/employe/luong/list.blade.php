@@ -1,5 +1,4 @@
-@extends('layoutsEmploye.master')
-
+@extends('layoutsAdmin.master')
 @section('content')
 <div class="container py-4">
     <h2 class="mb-4">Phiếu lương của tôi</h2>
@@ -28,9 +27,10 @@
         <thead class="thead-dark">
             <tr>
                 <th>Tháng/Năm</th>
+                <th>Ngày tạo</th>
                 <th>Lương cơ bản</th>
                 <th>Ngày công</th>
-                <th>Giờ tăng ca</th>
+                <th>Công tăng ca</th>
                 <th>Lương thực nhận</th>
                 <th>Hành động</th>
             </tr>
@@ -38,13 +38,18 @@
         <tbody>
         @forelse ($luongs as $luong)
             <tr>
-                <td>{{ $luong->thang }}/{{ $luong->nam }}</td>
+                <td>
+                    {{ $luong->created_at ? $luong->created_at->format('m/Y') : '/' }}
+                </td>
+                <td>
+                    {{ $luong->created_at ? $luong->created_at->format('d/m/Y') : '/' }}
+                </td>
                 <td>{{ number_format($luong->luong_co_ban) }} VNĐ</td>
-                <td>{{ $luong->so_ngay_cong }}</td>
-                <td>{{ $luong->gio_tang_ca }}</td>
+                <td>{{ number_format($luong->so_ngay_cong) }}</td>
+                <td>{{ number_format($luong->cong_tang_ca) }}</td>
                 <td><strong>{{ number_format($luong->luong_thuc_nhan) }} VNĐ</strong></td>
                 <td>
-                    <a href="{{ route('nhanvien.luong.download', $luong->id) }}" class="btn btn-sm btn-success">Tải PDF</a>
+                    {{-- <a href="{{ route('nhanvien.luong.download', $luong->id) }}" class="btn btn-sm btn-success">Tải PDF</a> --}}
                 </td>
             </tr>
         @empty

@@ -103,7 +103,7 @@ class MenuHelper
                 'chamcong' => [ 'chamcong', 'donxintangca'],
                 'hoso' => ['hosocn'],
                 'xinnghiphep' => ['donxinnghiphep'],
-                'luong' => ['phieuluong', 'xemluong']
+                'luong' => ['phieuluongnv']
 
             ]
         ];

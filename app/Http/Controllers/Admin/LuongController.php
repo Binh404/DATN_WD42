@@ -16,6 +16,7 @@ use App\Helpers\RemoveNameHelper;
 use Illuminate\Support\Facades\DB;
 use App\Exports\LuongNhanVienExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -722,5 +723,24 @@ function removeVietnameseTones($str) {
 // }
 
 
+// Lương cho Employee
+
+    public function listEmploy(Request $request){
+         $nguoiDungId = Auth::id();
+         $query = LuongNhanVien::where('nguoi_dung_id', $nguoiDungId)
+            ->orderByDesc('created_at');
+             if ($request->thang) {
+            $query->whereMonth('created_at', $request->thang);
+        }
+
+        if ($request->nam) {
+            $query->whereYear('created_at', $request->nam);
+        }
+
+        $luongs = $query->get();
+
+        return view('employe.luong.list', compact('luongs'));
+
+    }
 
 }
