@@ -1,6 +1,6 @@
-@extends('layoutsEmploye.master')
+@extends('layoutsAdmin.master')
 
-@section('content-employee')
+@section('content')
     <style>
         .containerr {
             max-width: 1200px;
@@ -382,7 +382,7 @@
                                 <td class="date-cell">{{ $item->updated_at }}</td>
                             </tr>
                         @endforeach
-                        
+
                     </tbody>
                 </table>
             </div>

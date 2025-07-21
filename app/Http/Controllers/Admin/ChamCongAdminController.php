@@ -193,7 +193,7 @@ class ChamCongAdminController extends Controller
                    Carbon::parse($request->start_date)->format('d-m-Y') . '-den-' .
                    Carbon::parse($request->end_date)->format('d-m-Y');
 
-        if ($request->format === 'excel') {
+        if ($request->get('format') === 'excel') {
             return Excel::download(
                 new ChamCongExport($chamCong, $statistics),
                 $fileName . '.xlsx'
