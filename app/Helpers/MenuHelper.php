@@ -21,7 +21,7 @@ class MenuHelper
                 'phongban',
                 'luong',
                 'chamcong',
-                // 'ungvien',
+                'ungvien',
                 'hopdong',
                 // 'tintuyendung',
                 // 'thongbao',
@@ -45,6 +45,7 @@ class MenuHelper
             ],
             'department' => [
                 'dashboard',
+                'yeucautuyendung',
                 'hoso',
                 'chamcong',
                 'duyetdon',

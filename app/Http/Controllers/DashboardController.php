@@ -16,11 +16,17 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
+        // dd($user);
         if (!$user->da_hoan_thanh_ho_so) {
 
             $hoSo = HoSoNguoiDung::with('nguoiDung')->where('nguoi_dung_id', $user->id)->first();
             // dd($hoSo);
             return view('employe.complete-profile', compact('hoSo'));
+        }
+        // dd($user->vai_tro);
+        $tenVaiTro = optional($user->vaiTro)->ten;
+        if (!in_array($tenVaiTro, ['admin', 'hr'])) {
+            return redirect()->route('personal.department.dashboard' );
         }
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
@@ -120,7 +126,7 @@ class DashboardController extends Controller
                 $counts[$monthName][$user->id] = round($attendanceRate, 2);
             }
         }
-        // dd($attendanceRate);
+        // dd($counts);
         $averageAttendanceRate = [];
         foreach ($counts as $month => $userRates) {
             // Tính tỷ lệ chấm công trung bình của tất cả nhân viên trong tháng
@@ -269,16 +275,37 @@ class DashboardController extends Controller
     public function personalStats($nguoiDungId = null)
 {
     // Nếu không truyền ID, lấy ID của user đang đăng nhập
-    if (!$nguoiDungId) {
-        $user = auth()->user();
-        $nguoiDungId = $user->id;
-        if (empty($user->da_hoan_thanh_ho_so)) {
+    // if (!$nguoiDungId) {
+    //     $user = auth()->user();
+    //     $nguoiDungId = $user->id;
+    //     // if (empty($user->da_hoan_thanh_ho_so)) {
 
-            $hoSo = HoSoNguoiDung::with('nguoiDung')->where('nguoi_dung_id', $nguoiDungId)->first();
-            // dd($hoSo);
-            return view('employe.complete-profile', compact('hoSo'));
+    //     //     $hoSo = HoSoNguoiDung::with('nguoiDung')->where('nguoi_dung_id', $nguoiDungId)->first();
+    //     //     // dd($hoSo);
+    //     //     return view('employe.complete-profile', compact('hoSo'));
+    //     // }
+    // }else{
+
+    // }
+   $user = auth()->user();
+   $tenVaiTro = optional($user->vaiTro)->ten;
+    // dd($tenVaiTro);
+    // Kiểm tra vai trò là 'employee' hoặc 'department'
+    if (in_array($tenVaiTro, ['employee', 'department'])) {
+        // Nếu không truyền ID thì gán ID người đang đăng nhập
+        // dd($nguoiDungId);
+        if (!$nguoiDungId) {
+            $nguoiDungId = $user->id;
         }
+
+        // Nếu có truyền ID mà khác với ID đang đăng nhập → chặn
+        if ($nguoiDungId != $user->id) {
+            abort(403, 'Bạn không có quyền truy cập hồ sơ của người khác.');
+        }
+    }else{
+        abort(403, 'Bạn không có quyền truy cập hồ sơ.');
     }
+
 
     $nguoiDung = NguoiDung::with(['hoSo', 'hopDongLaoDongMoiNhat', 'phongBan'])->find($nguoiDungId);
 
@@ -422,8 +449,9 @@ class DashboardController extends Controller
     $dongNghiepCungPhongBan = NguoiDung::where('phong_ban_id', $nguoiDung->phong_ban_id)
         ->where('id', '!=', $nguoiDung->id)
         ->where('trang_thai', 1)
+        ->has('hoSo') // <- Chỉ lấy những người có hồ sơ
         ->get();
-
+    // dd($dongNghiepCungPhongBan);
     $rankingData = [];
     foreach ($dongNghiepCungPhongBan as $dongNghiep) {
         $chamCongDongNghiep = $dongNghiep->chamCong()
@@ -433,12 +461,18 @@ class DashboardController extends Controller
         $tyLeDongNghiep = $soNgayLamViecTrongThang > 0
             ? round(($chamCongDongNghiep / $soNgayLamViecTrongThang) * 100, 1)
             : 0;
-
-        $rankingData[] = [
-            'ten' => $dongNghiep->hoSo->ho . ' ' . $dongNghiep->hoSo->ten,
+            // dump($dongNghiep->hoSo->ho);
+            $hoSo = optional($dongNghiep->hoSo);
+            // dump(isset($hoSo->ho));
+        if(isset($hoSo->ho) && isset($hoSo->ten)) {
+            $rankingData[] = [
+            'ten' => $hoSo->ho . ' ' . $hoSo->ten,
             'ty_le_cham_cong' => $tyLeDongNghiep
-        ];
+            ];
+        }
+
     }
+    // dd($rankingData);
 
     // Thêm bản thân vào ranking
     $rankingData[] = [

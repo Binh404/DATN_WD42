@@ -400,15 +400,15 @@
                                             <p class="card-subtitle-dash">Phân tích tỷ lệ chấm công theo từng tháng trong năm</p>
                                         </div>
                                         <div class="dropdown">
-                                            <button class="btn btn-light dropdown-toggle" type="button"
+                                            <button class="btn btn-light " type="button"
                                                     data-bs-toggle="dropdown">
-                                                Tháng này
+                                                Năm nay
                                             </button>
-                                            <ul class="dropdown-menu">
+                                            {{-- <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="#">Tháng này</a></li>
                                                 <li><a class="dropdown-item" href="#">Tháng trước</a></li>
                                                 <li><a class="dropdown-item" href="#">Năm này</a></li>
-                                            </ul>
+                                            </ul> --}}
                                         </div>
                                     </div>
 

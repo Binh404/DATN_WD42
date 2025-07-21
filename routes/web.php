@@ -287,7 +287,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
 });
 Route::prefix('department')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department'])->group(function () {
-     Route::get('/dashboard',[DashboardController::class, 'personalStats'])->name('department.dashboard');
+     Route::get('/dashboard',[DashboardController::class, 'index'])->name('department.dashboard');
+     Route::get('/dashboardcn',[DashboardController::class, 'personalStats'])->name('personal.department.dashboard');
 });
 
 // Employee routes
@@ -469,7 +470,7 @@ Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
 // Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
 
 
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr,admin'])->group(function () {
     // Hr Ứng Tuyển
     Route::get('/ungvien.index', [UngTuyenController::class, 'index'])->name('ungvien.index');
     Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');

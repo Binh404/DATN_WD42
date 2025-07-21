@@ -316,6 +316,15 @@
             </a>
         </li>
         @endif
+        {{-- Loại nghỉ phép - admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('yeucautuyendung'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('department.yeucautuyendung.create') }}">
+                <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
+                <span class="menu-title">Yêu cầu tuyển đụng</span>
+            </a>
+        </li>
+        @endif
     </ul>
 </nav>
 
