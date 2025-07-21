@@ -53,7 +53,7 @@
                                             <div class="card-body">
                                                 <div class="d-sm-flex justify-content-between align-items-start">
                                                     <div>
-                                                        <h4 class="card-title card-title-dash">Bảng đơn đăng ký tăng ca</h4>
+                                                        <h4 class="card-title card-title-dash">Bảng đơn đăng ký nghỉ phép</h4>
                                                         <p class="card-subtitle card-subtitle-dash" id="tongSoBanGhi">Bảng
                                                             có
                                                             bản ghi

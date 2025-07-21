@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\ChamCongTangCaExport;
 use App\Http\Controllers\Controller;
+use App\Imports\ChamCongImport;
+use App\Imports\ChamCongTangCaImport;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 
 class ThucHienTangCaAdminController extends Controller
@@ -416,4 +420,8 @@ class ThucHienTangCaAdminController extends Controller
             });
         }
     }
+
+
+
+
 }

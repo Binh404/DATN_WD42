@@ -21,7 +21,7 @@ class MenuHelper
                 'phongban',
                 'luong',
                 'chamcong',
-                // 'ungvien',
+                'ungvien',
                 'hopdong',
                 // 'tintuyendung',
                 // 'thongbao',
@@ -45,6 +45,7 @@ class MenuHelper
             ],
             'department' => [
                 'dashboard',
+                'yeucautuyendung',
                 'hoso',
                 'chamcong',
                 'duyetdon',
@@ -76,7 +77,7 @@ class MenuHelper
         $subMenuPermissions = [
             'admin' => [
                 'hoso' => ['qlhoso'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung'],
                 'luong' => ['luong', 'phieuluong'],
@@ -85,14 +86,16 @@ class MenuHelper
             ],
             'hr' => [
                 'hoso' => ['qlhoso', 'hosocn'],
+                'luong' => ['luong', 'phieuluong'],
+
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'importcc'],
                 'duyetdon' => [ 'xinnghiphep'],
                 'xinnghiphep' => ['danhsach']
 
             ],
             'department' => [
-                'hoso' => ['qlhoso', 'hosocn'],
+                'hoso' => [ 'hosocn'],
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
                 'duyetdon' => ['xinnghiphep'],

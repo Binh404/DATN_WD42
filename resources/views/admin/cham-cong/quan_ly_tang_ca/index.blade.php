@@ -318,6 +318,14 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @php
+                                                                $kiemTra = false;
+                                                                $user = auth()->user();
+                                                                if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+                                                                    $kiemTra = true;
+                                                                }
+
+                                                            @endphp
                                                             @forelse($danhSachTangCa as $index => $cc)
                                                                 @php
                                                                     $avatar = $cc->dangKyTangCa->nguoiDung->hoSo->anh_dai_dien
@@ -414,6 +422,7 @@
                                                                                         tiết
                                                                                     </a>
                                                                                 </li>
+                                                                                @if ($kiemTra)
                                                                                 <li>
                                                                                     <a class="dropdown-item"
                                                                                         href="{{ route('admin.chamcong.tangCa.edit', $cc->id) }}">
@@ -432,6 +441,7 @@
                                                                                         <i class="mdi mdi-delete me-2"></i>Xóa
                                                                                     </a>
                                                                                 </li>
+                                                                                @endif
                                                                             </ul>
                                                                         </div>
                                                                     </td>

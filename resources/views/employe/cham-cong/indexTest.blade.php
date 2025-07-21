@@ -392,7 +392,7 @@
                     const data = await response.json();
                     COMPANY_LOCATION = data;
 
-                    console.log("Dữ liệu vị trí công ty:", COMPANY_LOCATION);
+                    // console.log("Dữ liệu vị trí công ty:", COMPANY_LOCATION);
                     // Bây giờ bạn có thể dùng: COMPANY_LOCATION.latitude, .longitude, .allowedRadius
 
                 } catch (error) {
@@ -400,14 +400,46 @@
                 }
             }
 
-            const WORK_SCHEDULE = {
-                startTime: '08:30',
-                endTime: '17:30',
-                lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
-                earlyThreshold: 15, // Số phút được phép về sớm mà không cần lý do
-                overtimeThreshold: '18:30' // Giờ bắt đầu chấm công tăng ca
+            let WORK_SCHEDULE = {
+                // startTime: '08:30',
+                // endTime: '17:30',
+                // lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
+                // earlyThreshold: 15, // Số phút được phép về sớm mà không cần lý do
+                // overtimeThreshold: '18:30' // Giờ bắt đầu chấm công tăng ca
             };
+            async function loadWorkSchedule() {
+            try {
+                const response = await fetch('{{ route('cham-cong.work-schedule') }}', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
 
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API lấy lịch làm việc');
+                }
+
+                const data = await response.json();
+                // WORK_SCHEDULE = data;
+                WORK_SCHEDULE = {
+                    startTime: data.start_time,
+                    endTime: data.end_time,
+                    lateThreshold: data.late_threshold,
+                    earlyThreshold: data.early_leave_threshold,
+                    overtimeThreshold: data.overtime_threshold
+                };
+
+                console.log("Dữ liệu lịch làm việc:", WORK_SCHEDULE);
+
+
+                // Bạn có thể truy cập WORK_SCHEDULE.start_time, end_time, v.v
+
+            } catch (error) {
+                console.error('Lỗi khi tải lịch làm việc:', error);
+            }
+        }
             function needsReason(type, isDayOff = false, date = new Date()) {
                 const timeString = date.toTimeString().slice(0, 5); // HH:MM
                 console.log(isDayOff, date, timeString);
@@ -430,6 +462,7 @@
                     return date.getTime() > lateThresholdMs; // Đi muộn cần lý do
                 } else if (type === 'out') {
                     // Kiểm tra về sớm
+                    console.log(WORK_SCHEDULE)
                     const [endHour, endMin] = WORK_SCHEDULE.endTime.split(':');
                     const endTimeMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMin).getTime();
                     const earlyThresholdMs = endTimeMs - (WORK_SCHEDULE.earlyThreshold * 60 * 1000);
@@ -444,6 +477,7 @@
                 // Ẩn nút ban đầu
                 document.getElementById("checkinBtn").style.display = "none";
                 loadCompanyLocation();
+                loadWorkSchedule();
                 await checkAttendanceStatus();
                 loadCalendarData();
             });
@@ -464,13 +498,13 @@
                     if (data.success) {
                         // Xác định loại chấm công dựa vào thời gian và ngày
                         const currentTime = new Date();
-                        const isAfter1830 = currentTime.getHours() > 18 || (currentTime.getHours() === 18 && currentTime.getMinutes() >= 30);
+                        const [overtimeHour, overtimeMin] = WORK_SCHEDULE.overtimeThreshold.split(':').map(Number);
+                        const isAfterOvertime  = currentTime.getHours() > overtimeHour  || (currentTime.getHours() === overtimeHour  && currentTime.getMinutes() >= overtimeMin);
                         const isWeekend = currentTime.getDay() === 0 || currentTime.getDay() === 6; // 0 = Chủ nhật, 6 = Thứ 7
-
                         // Kiểm tra có phải chấm công tăng ca không
-                        const isOvertimeAttendance = isWeekend || data.is_holiday || (data.has_approved_overtime );
+                        const isOvertimeAttendance = isWeekend || data?.is_holiday || (data?.has_approved_overtime && isAfterOvertime)  ;
                         console.log('isOvertimeAttendance', isOvertimeAttendance);
-                        if (isOvertimeAttendance === true) {
+                            if (isOvertimeAttendance === true) {
                             // console.log( isOvertimeAttendance);
                             // Xử lý trạng thái chấm công tăng ca
                             if (data.overtime_data) {

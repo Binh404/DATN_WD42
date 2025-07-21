@@ -14,7 +14,7 @@ class TaiKhoanController extends Controller
 {
     public function getall(Request $request)
     {
-        $taikhoan = NguoiDung::with('vaiTro','chucVu', 'PhongBan')->get();
+        $taikhoan = NguoiDung::with('vaiTro','chucVu', 'PhongBan')->paginate(20);
         return view('admin.taikhoan.index', compact('taikhoan'));
     }
     public function edit($id)
@@ -33,7 +33,7 @@ class TaiKhoanController extends Controller
             'ten_dang_nhap' => 'required|max:255',
             'email' => 'required|email',
             'trang_thai' => 'required|boolean',
-            'trang_thai_cong_viec' => 'required|in:dang_lam,da_nghi',
+            // 'trang_thai_cong_viec' => 'required|in:dang_lam,da_nghi',
             'vai_tro_id' => 'required|exists:vai_tro,id',
         ]);
 
@@ -42,7 +42,7 @@ class TaiKhoanController extends Controller
             'ten_dang_nhap' => $request->ten_dang_nhap,
             'email' => $request->email,
             'trang_thai' => $request->trang_thai,
-            'trang_thai_cong_viec' => $request->trang_thai_cong_viec,
+            // 'trang_thai_cong_viec' => $request->trang_thai_cong_viec,
             'vai_tro_id' => $request->vai_tro_id, // nếu bạn còn dùng cột này
         ]);
 
