@@ -18,64 +18,72 @@
 
 .create-btn:hover {
     background-color: #4338ca; /* Tối hơn khi hover */
+    
 }
 
-
-
+.content-wrapper{
+    padding-left: 10px !important;
+}
+.main-wrapper {
+    transform: scale(0.9);          /* Thu nhỏ 90% */
+    transform-origin: top left;     /* Căn chỉnh góc hiển thị */
+}
 </style>
 @section('content')
-    <div class="container mt-4">
-        <h2>Danh sách tài khoản người dùng</h2>
-        <a class="create-btn" href="{{route('register')}}">Tạo tài khoản</a>
+    <div class="main-wrapper">
+        <div class="container mt-4">
+            <h2>Danh sách tài khoản người dùng</h2>
+            <a class="create-btn" href="{{route('register')}}">Tạo tài khoản</a>
 
 
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên đăng nhập</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Trạng thái</th>
-                    <th>Trạng thái công việc</th>
-                    <th>Lần đăng nhập cuối</th>
-                    <th>IP đăng nhập cuối</th>
-                    <th>Phòng ban</th>
-                    <th>Chức vụ</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($taikhoan as $item)
-                    @if ($item->id != Auth::id())
-                        <tr>
-                            <td>{{ $item->id }}</td>
-                            <td>{{ $item->ten_dang_nhap }}</td>
-                            <td>{{ $item->email }}</td>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Trạng thái công việc</th>
+                        <th>Lần đăng nhập cuối</th>
 
-                            <td>{{ $item->vaiTro->ten }}</td>
+                        <th>Phòng ban</th>
+                        <th>Chức vụ</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($taikhoan as $item)
+                        {{-- @if ($item->id != Auth::id()) --}}
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->ten_dang_nhap }}</td>
+                                <td>{{ $item->email }}</td>
 
-                            <td>{{ $item->trang_thai == 1 ? 'Hoạt động' : 'Ngưng hoạt động' }}</td>
-                            <td>
-                                @if ($item->trang_thai_cong_viec == 'dang_lam')
-                                    Đang làm
-                                @elseif ($item->trang_thai_cong_viec == 'da_nghi')
-                                    Đã nghỉ
-                                @endif
-                            </td>
-                            <td>{{ $item->lan_dang_nhap_cuoi }}</td>
-                            <td>{{ $item->ip_dang_nhap_cuoi }}</td>
-                            <td>{{ $item->phongBan->ten_phong_ban }}</td>
-                            <td>{{ $item->chucVu->ten }}</td>
-                            <td>
-                                <a href="{{ route('tkedit', $item->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
+                                <td>{{ $item->vaiTro->ten }}</td>
+
+                                <td>{{ $item->trang_thai == 1 ? 'Hoạt động' : 'Ngưng hoạt động' }}</td>
+                                <td>
+                                    @if ($item->trang_thai_cong_viec == 'dang_lam')
+                                        Đang làm
+                                    @elseif ($item->trang_thai_cong_viec == 'da_nghi')
+                                        Đã nghỉ
+                                    @endif
+                                </td>
+                                <td>{{ $item->lan_dang_nhap_cuoi }}</td>
+                                {{-- <td>{{ $item->ip_dang_nhap_cuoi }}</td> --}}
+                                <td style="color: rgb(150, 42, 42)">{{ $item->phongBan->ten_phong_ban }}</td>
+                                <td style="color: rgb(44, 72, 163)">{{ $item->chucVu->ten }}</td>
+                                <td>
+                                    <a href="{{ route('tkedit', $item->id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                                </td>
+                            </tr>
+                        {{-- @endif --}}
+                    @endforeach
 
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection

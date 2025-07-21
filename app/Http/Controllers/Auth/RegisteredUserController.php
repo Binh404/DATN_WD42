@@ -21,7 +21,7 @@ use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
-    /**
+    /**Q
      * Display the registration view.
      */
 
