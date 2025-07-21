@@ -140,7 +140,6 @@
                                 <option value="">-- Chọn --</option>
                                 <option value="nam" {{ old('gioi_tinh', $hoSo->gioi_tinh ?? '') == 'nam' ? 'selected' : '' }}>Nam</option>
                                 <option value="nu" {{ old('gioi_tinh', $hoSo->gioi_tinh ?? '') == 'nu' ? 'selected' : '' }}>Nữ</option>
-                                <option value="khac" {{ old('gioi_tinh', $hoSo->gioi_tinh ?? '') == 'khac' ? 'selected' : '' }}>Khác</option>
                             </select>
                             @error('gioi_tinh')
                                 <div class="text-danger">{{ $message }}</div>

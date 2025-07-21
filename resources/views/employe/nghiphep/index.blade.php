@@ -122,7 +122,7 @@
                                                                         <a href="{{ route('nghiphep.cancel', $item->id) }}" class="btn btn-danger"
                                                                             title="Xoá"
                                                                             onclick="return confirm('Bạn có chắc chắn muốn hủy đơn nghỉ phép này không?')">
-                                                                            <i class="mdi mdi-delete"></i>
+                                                                            <i class="fas fa-times"></i>
                                                                         </a>
 
 

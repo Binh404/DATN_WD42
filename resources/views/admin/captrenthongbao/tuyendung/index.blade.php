@@ -211,7 +211,7 @@
                                         Chức vụ
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        Phòng ban
+                                        Trạng thái
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
                                         Ngày Tạo
@@ -233,9 +233,18 @@
                                         <td class="px-4 py-3 align-middle">
                                             <span>{{ $item->chucVu->ten }}</span>
                                         </td>
-
                                         <td class="px-4 py-3 align-middle">
-                                            phòng ban
+                                            @if ($item->trang_thai_dang == 'chua_dang')
+                                                <span
+                                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2">
+                                                    Chưa đăng
+                                                </span>
+                                            @elseif($item->trang_thai_dang === 'da_dang')
+                                                <span
+                                                    class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                                    Đã đăng
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3 align-middle">
                                             {{ $item->created_at }}
@@ -243,12 +252,6 @@
 
                                         <td class="px-4 py-3 align-middle">
                                             <div class="d-flex gap-2 justify-content-center">
-                                                <a href="{{ route('hr.tintuyendung.create-from-request', $item->id) }}"
-                                                    class="btn btn-outline-warning btn-sm rounded-pill"
-                                                    data-bs-toggle="tooltip">
-                                                    <i class="fas fa-plus-circle"></i>
-                                                </a>
-
                                                 <a href="{{ route('hr.captrenthongbao.tuyendung.show', ['id' => $item->id]) }}"
                                                     class="btn btn-outline-success btn-sm rounded-pill"
                                                     data-bs-toggle="tooltip" title="Chi tiết">

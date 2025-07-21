@@ -18,7 +18,7 @@ class LichSuDuyetDonXinNghiController extends Controller
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
 
-        if (!$vaiTro || !in_array($vaiTro->ten, ['department', 'hr'])) {
+        if (!$vaiTro || !in_array($vaiTro->ten, ['department', 'hr', 'admin'])) {
             return redirect()->back()->with('error', 'Bạn không có quyền duyệt đơn.');
         }
 
@@ -27,7 +27,7 @@ class LichSuDuyetDonXinNghiController extends Controller
         $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
         // dd($ngayBatDau, $ngayKetThuc);
         // Gán cấp duyệt theo vai trò
-        $capDuyet = $vaiTro->ten === 'department' ? 1 : 2;
+        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
 
         // Kiểm tra đã duyệt cấp này chưa
         $daDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)
@@ -52,12 +52,13 @@ class LichSuDuyetDonXinNghiController extends Controller
         if ($capDuyet == 1) {
             // Trưởng phòng duyệt xong → đẩy lên HR
             $donXinNghi->cap_duyet_hien_tai = 2;
-        } elseif ($capDuyet == 2) {
-            // HR duyệt xong → duyệt hoàn tất
+        } elseif ($capDuyet == 2 || $capDuyet == 3) {
+            // HR hoặc Admin duyệt xong → duyệt hoàn tất
             $donXinNghi->trang_thai = 'da_duyet';
 
             // cập nhật lại số dư nghỉ phép cho nhân viên
             SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
                 ->update([
                     'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                     'so_ngay_da_dung'   => DB::raw('so_ngay_da_dung + ' . $donXinNghi->so_ngay_nghi),
@@ -74,7 +75,7 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'trang_thai' => 'nghi_phep',
                     'trang_thai_duyet' => 1
                 ]);
-          }
+            }
         }
 
         $donXinNghi->save();
@@ -92,7 +93,7 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
-        $capDuyet = $vaiTro->ten === 'department' ? 1 : 2;
+        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
 
