@@ -58,16 +58,13 @@
                             </button>
                         </div>
                     </form>
-                       @foreach ($luongs as $luong)
-    <form action="{{ route('luong.gui-mail-luong', [
-        'user_id' => $luong->nguoiDung->id,
-        'thang' => $thang,
-        'nam' => $nam
-    ]) }}" method="POST">
-        @csrf
-        <button type="submit">Gửi phiếu lương cho {{ $luong->nguoiDung->ten }}</button>
-    </form>
-@endforeach
+                      <form action="{{ route('luong.gui-mail-tat-ca') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="thang" value="{{ $thang }}">
+                            <input type="hidden" name="nam" value="{{ $nam }}">
+                            <button type="submit" class="btn btn-primary">Gửi tất cả phiếu lương</button>
+                        </form>
+
 
 
 
@@ -130,11 +127,11 @@
 
                                     </td>
                                     <td>
-                                         {{-- <form action="{{ route('luong.delete', $luong->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bạn có chắc muốn xoá?')">
+                                         <form action="{{ route('luong.delete', $luong->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bạn có chắc muốn xoá?')">
                                             @csrf
                                             @method('DELETE')
                                             <button onclick="return confirm('Bạn có chắc muốn xoá?')" class="btn btn-danger btn-sm">Xoá</button>
-                                        </form> --}}
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

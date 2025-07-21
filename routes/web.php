@@ -269,18 +269,14 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
         Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
-        // Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
+        Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
-        Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
-
-
+        // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
+        Route::post('/luong/gui-mail-luong', [LuongController::class, 'guiTatCaMailLuong'])->name('gui-mail-tat-ca');
         // Route::get('/api/bang-luong-json', function () {
         //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
         // });
-
-
-
     });
 
       Route::prefix('chucvu')->name('chucvu.')->controller(ChucVuController::class)->group(function () {

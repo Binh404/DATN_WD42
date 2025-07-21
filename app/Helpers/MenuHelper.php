@@ -54,7 +54,8 @@ class MenuHelper
                 'dashboard',
                 'hoso',
                 'chamcong',
-                'xinnghiphep'
+                'xinnghiphep',
+                'luong'
             ]
         ];
 
@@ -101,7 +102,8 @@ class MenuHelper
             'employee' => [
                 'chamcong' => [ 'chamcong', 'donxintangca'],
                 'hoso' => ['hosocn'],
-                'xinnghiphep' => ['donxinnghiphep']
+                'xinnghiphep' => ['donxinnghiphep'],
+                'luong' => ['phieuluong', 'xemluong']
 
             ]
         ];
