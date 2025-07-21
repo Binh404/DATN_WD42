@@ -101,7 +101,16 @@
             </a>
             <div class="collapse" id="tables">
                 <ul class="nav flex-column sub-menu">
-
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
+                    </li>
+                    @endif
                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.chamcong.index') }}">Danh sách chấm công</a>
@@ -119,25 +128,17 @@
                         <a class="nav-link" href="{{ route('admin.chamcong.tangCa.index') }}">Danh sách tăng ca</a>
                     </li>
                     @endif
-
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'vitri'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.locations.index') }}">Quản lý vị trí</a>
-                    </li>
-                    @endif
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
-                    </li>
-                    @endif
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
-                    </li>
-                    @endif
                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'importcc'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('chamcong.import.form') }}">Import chấm công</a>
+                    </li>
+                    @endif
+                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'vitri'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.locations.index') }}">Quản lý vị trí</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.giolamviec.index') }}">Quản lý thời gian</a>
                     </li>
                     @endif
 

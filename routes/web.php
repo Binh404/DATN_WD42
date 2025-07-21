@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyLocationController;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\employee\DangKyTangCaController;
 use App\Http\Controllers\Admin\ImportChamCongController;
+use App\Http\Controllers\GioLamViecController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
@@ -128,6 +129,11 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
         Route::get('/{id}/edit', [CompanyLocationController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [CompanyLocationController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [CompanyLocationController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('gio-lam-viec')->name('admin.giolamviec.')->group(function(){
+        Route::get('/', [GioLamViecController::class, 'index'])->name('index');
+        Route::get('/edit', [GioLamViecController::class, 'edit'])->name('edit');
+        Route::put('/update', [GioLamViecController::class, 'update'])->name('update');
     });
 });
 
@@ -307,6 +313,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::get('/trang-thai-full', [ChamCongController::class, 'trangThaiChamCong'])->name('trang-thai');
         //lấy địa chỉ công ty
         Route::get('/company-location', [CompanyLocationController::class, 'getLocation'])->name('company-location');
+        //lấy thời gian công ty
+        Route::get('/work-schedule', [GioLamViecController::class, 'workSchedule'])->name('work-schedule');
         // Lịch sử chấm công
         Route::get('/lich-su', [ChamCongController::class, 'lichSuChamCong'])->name('lich-su');
 
