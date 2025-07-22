@@ -33,16 +33,15 @@
     </div>
 
     <div class="mb-3">
-    <label class="form-label">Số ngày công</label>
-    <input type="text" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}">
-</div>
+        <label class="form-label">Số ngày công</label>
+        <input type="text" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}">
+    </div>
     <div class="mb-3">
         <label class="form-label">Số ngày công OT</label>
         <input type="number" name="so_cong_tang_ca" id="soCongTangCaInput" class="form-control" value="{{ old('so_ngay_cong_tang_ca') }}">
-
     </div>
 
-    </div>
+
 
 
     {{-- <div class="mb-3">
@@ -53,11 +52,11 @@
         </div>
     </div> --}}
 
-   <div class="mb-3">
-    <label class="form-label">Ngày tính lương</label>
-    <input type="date" class="form-control" name="ngay_tinh_luong"
+    <div class="mb-3">
+        <label class="form-label">Ngày tính lương</label>
+        <input type="date" class="form-control" name="ngay_tinh_luong"
         value="{{ old('ngay_tinh_luong', \Carbon\Carbon::now()->toDateString()) }}">
-</div>
+    </div>
 
 
     <div class="mb-3">

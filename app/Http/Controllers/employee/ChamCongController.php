@@ -7,6 +7,7 @@ use App\Models\ChamCong;
 use App\Models\DangKyTangCa;
 use App\Models\thucHienTangCa;
 use App\Models\NguoiDung;
+use App\Services\GioLamViecService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,15 @@ use Illuminate\Support\Facades\DB;
 
 class ChamCongController extends Controller
 {
+    protected $workScheduleService;
+
+    public function __construct(GioLamViecService $workScheduleService)
+    {
+        $this->workScheduleService = $workScheduleService;
+    }
     public function index()
     {
+
         $user = Auth::user();
         $today = now()->format('Y-m-d');
 
@@ -63,7 +71,9 @@ class ChamCongController extends Controller
             $currentTime = now();
             // dd($today->format('Y-m-d'));
             $isOvertime = false;
-            $overtimeStartTime = now()->setTime(18, 30); // 18:45
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
             //kiểm tra xem có đã duyệt đơn tăng ca chưa
@@ -193,7 +203,9 @@ class ChamCongController extends Controller
             $today = now();
             $currentTime = now();
             $isOvertime = false;
-            $overtimeStartTime = now()->setTime(18, 45); // 18:45
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
             //kiểm tra xem có đã duyệt đơn tăng ca chưa
@@ -450,7 +462,8 @@ class ChamCongController extends Controller
             $user = Auth::user();
             $today = now();
             $currentTime = now();
-            $overtimeStartTime = now()->setTime(18, 30); // 18:30
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']);
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
 

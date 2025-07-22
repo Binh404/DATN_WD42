@@ -3,50 +3,22 @@
 
 @section('content')
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .header {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             color: white;
         }
 
         .header h1 {
-            font-size: 2.2em;
-            font-weight: 600;
+            font-size: 25px;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .header p {
+            font-size: 17px;
             opacity: 0.9;
-            font-size: 1.1em;
         }
 
         .form-container {
@@ -55,389 +27,400 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
+        .form-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
         }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
+        .section-title {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: #333;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #4facfe;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
             margin-bottom: 8px;
-            font-size: 0.95em;
+            font-weight: 500;
+            color: #2d3748;
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 9px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 16px;
+        .required {
+            color: #e53e3e;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
             transition: all 0.3s ease;
-            background: #fafbfc;
+            background: white;
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: #4facfe;
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.2);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            transform: translateY(-1px);
         }
 
-        .form-group textarea {
+        textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 5px;
+            margin-top: 10px;
         }
 
         .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #4facfe;
+            width: auto;
+            margin: 0;
         }
 
-        .color-input {
-            width: 60px;
-            height: 50px;
-            border-radius: 12px;
-            border: 2px solid #e1e5e9;
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: #4facfe;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-skill {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-skill input {
+            flex: 1;
+        }
+
+        .add-skill button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .color-input:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .add-skill button:hover {
+            background: #38a169;
+            transform: translateY(-1px);
         }
 
-        .button-group {
+        .status-buttons {
             display: flex;
             gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+        .status-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-primary {
+        .status-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            margin: 0 -40px -40px -40px;
+        }
+
+        .submit-btn {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #6c757d;
-            border: 2px solid #e9ecef;
-        }
-
-        .btn-secondary:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .required {
-            color: #e74c3c;
-        }
-
-        .form-section {
-            margin-bottom: 35px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .form-section:last-child {
-            border-bottom: none;
-        }
-
-        .section-title {
-            font-size: 1.3em;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
         }
 
-        .section-icon {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .draft-btn {
+            background: #718096;
+            margin-right: 15px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .preview-btn {
+            background: #805ad5;
+            margin-left: 15px;
         }
 
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
 
-            .container {
-                margin: 10px;
-                border-radius: 15px;
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
             }
 
             .form-container {
                 padding: 20px;
             }
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
         }
 
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
-            display: none;
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 
-    <div class="container">
-        <div class="header">
-            <h1>🏖️ Cập nhật Loại Nghỉ Phép</h1>
-            <p>Cấu hình loại nghỉ phép mới cho hệ thống</p>
+    <div class="container-fluid px-4">
+        <div class="col-md-4">
+            <h2 class="fw-bold text-primary mb-2">
+                Loại nghỉ phép
+            </h2>
         </div>
 
-        <div class="form-container">
-            <div class="success-message" id="successMessage">
-                ✅ Thêm loại nghỉ phép thành công!
-            </div>
+    </div>
 
-            <form id="leaveTypeForm" action="{{ route('hr.loainghiphep.update', $loaiNghiPhep->id) }}" method="POST">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    Cập nhật loại nghỉ phép
+                </h5>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form class="forms-sample ml-5 row g-3" id="leaveTypeForm"
+                action="{{ route('hr.loainghiphep.update', $loaiNghiPhep->id) }}" method="POST" class="form-container">
                 @csrf
                 @method('PUT')
 
-                <!-- Thông tin cơ bản -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <div class="section-icon">1</div>
-                        Thông tin cơ bản
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="ten">Tên loại nghỉ phép <span class="required">*</span></label>
-                            <input type="text" id="ten" name="ten" value="{{ $loaiNghiPhep->ten }}"
-                                placeholder="VD: Nghỉ phép năm">
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4" class="form-label">Tên<span class="required">*</span></label>
+                    <input type="text" class="form-control" id="ten" name="ten"
+                        value="{{ $loaiNghiPhep->ten }}" placeholder="VD: Nghỉ phép năm">
+                    @error('ten')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
 
-                            @error('ten')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-
-                        </div>
-                        <div class="form-group">
-                            <label for="ma">Mã loại nghỉ phép <span class="required">*</span></label>
-                            <input type="text" id="ma" name="ma" value="{{ $loaiNghiPhep->ma }}"
-                                placeholder="VD: NPN" maxlength="10">
-                            @error('ma')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group full-width">
-                            <label for="mo_ta">Mô tả</label>
-                            <textarea id="mo_ta" name="mo_ta"
-                                placeholder="Mô tả chi tiết về loại nghỉ phép này...">{{ $loaiNghiPhep->mo_ta }}</textarea>
-                            @error('mo_ta')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Cấu hình ngày -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <div class="section-icon">2</div>
-                        Cấu hình ngày nghỉ
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="so_ngay_nam">Số ngày/năm</label>
-                            <input type="number" id="so_ngay_nam" name="so_ngay_nam"
-                                value="{{ $loaiNghiPhep->so_ngay_nam }}" min="0" max="365" placeholder="12">
+                <div class="form-group col-md-6">
+                    <label for="exampleInputEmail1">Giới tính áp dụng<span class="required">*</span></label>
+                    <select class="form-select" id="gioi_tinh_ap_dung" name="gioi_tinh_ap_dung"
+                        class="{{ $errors->has('gioi_tinh_ap_dung') ? 'error' : '' }} form-control">
+                        <option {{ $loaiNghiPhep->ten === 'tat_ca' ? 'selected' : '' }} value="tat_ca">Tất cả
+                        </option>
+                        <option {{ $loaiNghiPhep->ten === 'nam' ? 'selected' : '' }} value="nam">Nam</option>
+                        <option {{ $loaiNghiPhep->ten === 'nu' ? 'selected' : '' }} value="nu">Nữ</option>
+                    </select>
+                    @error('gioi_tinh_ap_dung')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
 
-                            @error('so_ngay_nam')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="toi_da_ngay_lien_tiep">Tối đa ngày liên tiếp</label>
-                            <input type="number" id="toi_da_ngay_lien_tiep" name="toi_da_ngay_lien_tiep"
-                                value="{{ $loaiNghiPhep->toi_da_ngay_lien_tiep }}" min="0" max="365"
-                                placeholder="5">
-
-                            @error('toi_da_ngay_lien_tiep')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="so_ngay_bao_truoc">Số ngày báo trước tối thiểu</label>
-                            <input type="number" id="so_ngay_bao_truoc" name="so_ngay_bao_truoc"
-                                value="{{ $loaiNghiPhep->so_ngay_bao_truoc }}" min="0" max="30"
-                                placeholder="3">
-
-                            @error('so_ngay_bao_truoc')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="toi_da_ngay_chuyen">Tối đa ngày chuyển</label>
-                            <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen"
-                                value="{{ $loaiNghiPhep->toi_da_ngay_chuyen }}" min="0" max="365"
-                                placeholder="5">
-
-                            @error('toi_da_ngay_chuyen')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Điều kiện áp dụng -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <div class="section-icon">3</div>
-                        Điều kiện áp dụng
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="gioi_tinh_ap_dung">Giới tính áp dụng</label>
-                            <select id="gioi_tinh_ap_dung" name="gioi_tinh_ap_dung">
-                                <option {{ $loaiNghiPhep->ten === 'tat_ca' ? 'selected' : '' }} value="tat_ca">Tất cả
-                                </option>
-                                <option {{ $loaiNghiPhep->ten === 'nam' ? 'selected' : '' }} value="nam">Nam</option>
-                                <option {{ $loaiNghiPhep->ten === 'nu' ? 'selected' : '' }} value="nu">Nữ</option>
-                            </select>
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Số ngày trên năm<span class="required">*</span></label>
+                    <input type="number" id="so_ngay_nam" name="so_ngay_nam" value="{{ $loaiNghiPhep->so_ngay_nam }}"
+                        min="0" max="365" placeholder="12" class="form-control">
+                    @error('so_ngay_nam')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
 
-                            @error('gioi_tinh_ap_dung')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Cấu hình khác -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <div class="section-icon">4</div>
-                        Cấu hình khác
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="hidden" name="cho_phep_chuyen_nam" value="0">
-                                <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam"
-                                    value="1" {{ $loaiNghiPhep->cho_phep_chuyen_nam == 1 ? 'checked' : '' }} >
-                                <label for="cho_phep_chuyen_nam">Cho phép chuyển năm</label>
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Tối đa ngày liên tiếp<span class="required">*</span></label>
+                    <input type="number" id="toi_da_ngay_lien_tiep" name="toi_da_ngay_lien_tiep"
+                        value="{{ $loaiNghiPhep->toi_da_ngay_lien_tiep }}" min="0" max="365" placeholder="5"
+                        class="form-control">
 
-                                @error('cho_phep_chuyen_nam')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="hidden" name="yeu_cau_giay_to" value="0">
-                                <input type="checkbox" id="yeu_cau_giay_to" name="yeu_cau_giay_to" value="1"
-                                    {{ $loaiNghiPhep->yeu_cau_giay_to == 1 ? 'checked' : '' }}>
-                                <label for="yeu_cau_giay_to">Yêu cầu giấy tờ</label>
+                    @error('toi_da_ngay_lien_tiep')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
 
-                                @error('yeu_cau_giay_to')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="hidden" name="co_luong" value="0">
-                                <input type="checkbox" id="co_luong" name="co_luong" value="1"
-                                    {{ $loaiNghiPhep->co_luong == 1 ? 'checked' : '' }}>
-                                <label for="co_luong">Có lương</label>
-
-                                @error('co_luong')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="hidden" name="trang_thai" value="0">
-                                <input type="checkbox" id="trang_thai" name="trang_thai" value="1"
-                                    {{ $loaiNghiPhep->trang_thai == 1 ? 'checked' : '' }}>
-                                <label for="trang_thai">Trạng thái hoạt động</label>
-
-                                @error('trang_thai')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="button-group">
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Làm mới</button>
-                    <button type="submit" class="btn btn-primary">💾 Lưu loại nghỉ phép</button>
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Số ngày báo trước<span class="required">*</span></label>
+                    <input type="number" id="so_ngay_bao_truoc" name="so_ngay_bao_truoc"
+                        value="{{ $loaiNghiPhep->so_ngay_bao_truoc }}" min="0" max="30" placeholder="3"
+                        class="form-control">
+                    @error('so_ngay_bao_truoc')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
                 </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Tối đa ngày chuyển<span class="required">*</span></label>
+                    <input type="number" id="toi_da_ngay_chuyen" name="toi_da_ngay_chuyen"
+                        value="{{ $loaiNghiPhep->toi_da_ngay_chuyen }}" min="0" max="365" placeholder="5"
+                        class="form-control">
+                    @error('toi_da_ngay_chuyen')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Cho phép chuyển năm</label>
+                    <input type="hidden" name="cho_phep_chuyen_nam" value="0">
+
+                    <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam" value="1"
+                        {{ $loaiNghiPhep->cho_phep_chuyen_nam == 1 ? 'checked' : '' }}>
+                    @error('cho_phep_chuyen_nam')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Yêu cầu giấy tờ</label>
+                    <input type="hidden" name="yeu_cau_giay_to" value="0">
+
+                    <input type="checkbox" id="yeu_cau_giay_to" name="yeu_cau_giay_to" value="1"
+                        {{ $loaiNghiPhep->yeu_cau_giay_to == 1 ? 'checked' : '' }}>
+                    @error('yeu_cau_giay_to')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Có lương</label>
+                    <input type="hidden" name="co_luong" value="0">
+
+                    <input type="checkbox" id="co_luong" name="co_luong" value="1"
+                        {{ $loaiNghiPhep->co_luong == 1 ? 'checked' : '' }}>
+
+                    @error('co_luong')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="inputEmail4" class="form-label">Trạng thái hoạt động</label>
+                    <input type="hidden" name="trang_thai" value="0">
+                    <input type="checkbox" id="trang_thai" name="trang_thai" value="1"
+                        {{ $loaiNghiPhep->trang_thai == 1 ? 'checked' : '' }}>
+                    @error('trang_thai')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label for="inputEmail4" class="form-label">Mô tả</label>
+                    <textarea class="form-textarea" id="mo_ta" name="mo_ta" value="{{ old('mo_ta') }}"
+                        placeholder="Mô tả chi tiết về loại nghỉ phép này...">{{ $loaiNghiPhep->mo_ta }}</textarea>
+
+                    @error('mo_ta')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                <button class="btn btn-light">Hủy</button>
             </form>
         </div>
     </div>
-
-    <script>
-
-        function resetForm() {
-            document.getElementById('leaveTypeForm').reset();
-            document.getElementById('co_luong').checked = true;
-            document.getElementById('trang_thai').checked = true;
-            document.getElementById('mau_sac').value = '#4facfe';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-    </script>
 
 @endsection

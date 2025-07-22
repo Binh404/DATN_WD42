@@ -179,7 +179,7 @@ class DangKyTangCa extends Model
     /**
      * Tính toán số giờ tăng ca
      */
-    private function tinhSoGioTangCa()
+    public function tinhSoGioTangCa()
     {
         if ($this->attributes['gio_bat_dau'] && $this->attributes['gio_ket_thuc']) {
             $gioBatDau = Carbon::createFromFormat('H:i', $this->attributes['gio_bat_dau']);

@@ -353,7 +353,7 @@
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm"
                                                             onclick="bulkDelete()">
-                                                            <i class="mdi mdi-delete"></i> Xóa hàng loạt
+                                                            <i class="mdi mdi-delete"></i> Hủy hàng loạt
                                                         </button>
                                                     </div>
 
@@ -384,11 +384,24 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            @php
+                                                                $userTrangThai = false;
+                                                                $user = auth()->user();
+                                                                if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+                                                                    $userTrangThai = true;
+                                                                }
+                                                                // dd($userTrangThai);
+                                                            @endphp
                                                             @forelse($chamCong as $index => $cc)
                                                                 @php
-                                                                    $avatar = $cc->nguoiDung->hoSo->anh_dai_dien
-                                                                        ? asset($cc->nguoiDung->hoSo->anh_dai_dien)
-                                                                        : asset('assets/images/default.png'); // Đặt ảnh mặc định trong public/images/
+                                                                // dd($cc);
+                                                                $hoSo = $cc->nguoiDung->hoSo ?? null;
+                                                                    $avatar = $hoSo && $hoSo->anh_dai_dien
+                                                                        ? asset($hoSo->anh_dai_dien)
+                                                                        : asset('assets/images/default.png');
+                                                                    // $avatar = $cc->nguoiDung->hoSo->anh_dai_dien
+                                                                    //     ? asset($cc->nguoiDung->hoSo->anh_dai_dien)
+                                                                    //     : asset('assets/images/default.png'); // Đặt ảnh mặc định trong public/images/
                                                                 @endphp
                                                                 <tr>
                                                                     <td>
@@ -522,6 +535,8 @@
                                                                             <span class="badge bg-success">Đã duyệt</span>
                                                                         @elseif($cc->trang_thai_duyet == 2)
                                                                             <span class="badge bg-danger">Từ chối</span>
+                                                                        @elseif($cc->trang_thai_duyet == 4)
+                                                                            <span class="badge bg-dark">Hủy</span>
                                                                         @else
                                                                             <span class="badge bg-secondary">Chưa gửi lý do</span>
                                                                         @endif
@@ -535,6 +550,7 @@
                                                                                 <i class="mdi mdi-dots-vertical"></i>
                                                                             </button>
                                                                             <ul class="dropdown-menu">
+
                                                                                 <li>
                                                                                     <a class="dropdown-item"
                                                                                         href="{{ route('admin.chamcong.show', $cc->id) }}">
@@ -542,6 +558,7 @@
                                                                                         tiết
                                                                                     </a>
                                                                                 </li>
+                                                                                @if($userTrangThai)
                                                                                 <li>
                                                                                     <a class="dropdown-item"
                                                                                         href="{{ route('admin.chamcong.edit', $cc->id) }}">
@@ -549,7 +566,8 @@
                                                                                         sửa
                                                                                     </a>
                                                                                 </li>
-                                                                                @if($cc->trang_thai_duyet == 3 || !$cc->trang_thai_duyet)
+                                                                                @endif
+                                                                                @if($cc->trang_thai_duyet == 3 || !$cc->trang_thai_duyet || $cc->trang_thai_duyet == 4)
                                                                                     <li>
                                                                                         <hr class="dropdown-divider">
                                                                                     </li>
@@ -570,16 +588,19 @@
                                                                                         </a>
                                                                                     </li>
                                                                                 @endif
+                                                                                @if(!$cc->trang_thai_duyet == 4)
+
                                                                                 <li>
                                                                                     <hr class="dropdown-divider">
                                                                                 </li>
                                                                                 <li>
                                                                                     <a class="dropdown-item text-danger"
                                                                                         href="#"
-                                                                                        onclick="showConfirmDelete({{ $cc->id }})">
-                                                                                        <i class="mdi mdi-delete me-2"></i>Xóa
+                                                                                        onclick="pheDuyet({{ $cc->id }},4)">
+                                                                                        <i class="mdi mdi-delete me-2"></i>Hủy
                                                                                     </a>
                                                                                 </li>
+                                                                                @endif
                                                                             </ul>
                                                                         </div>
                                                                     </td>
@@ -840,8 +861,8 @@
                     return;
                 }
 
-                if (confirm(`Bạn có chắc chắn muốn xóa ${ids.length} đơn tăng ca đã chọn? Hành động này không thể hoàn tác!`)) {
-                    bulkAction(ids, 'delete', 'Xóa hàng loạt thành công!');
+                if (confirm(`Bạn có chắc chắn muốn Hủy ${ids.length} đơn tăng ca đã chọn? Hành động này không thể hoàn tác!`)) {
+                    bulkAction(ids, 4, 'Hủy hàng loạt thành công!');
                 }
             };
         });
@@ -894,6 +915,10 @@
                 btnPheDuyet.textContent = 'Từ chối';
                 btnPheDuyet.className = 'btn btn-warning';
                 modalTitle.textContent = 'Từ chối chấm công';
+            } else if (trangThai === 3) {
+                btnPheDuyet.textContent = 'Hủy';
+                btnPheDuyet.className = 'btn btn-danger';
+                modalTitle.textContent = 'Hủy chấm công';
             }
 
             // Reset form và hiển thị modal

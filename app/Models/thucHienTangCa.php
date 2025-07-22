@@ -32,6 +32,7 @@ class thucHienTangCa extends Model
         return self::where('dang_ky_tang_ca_id', $donTangCaId)
         ->first();
     }
+
     public static function layBanGhiTheoDonTangCaById($donTangCaId)
     {
         return self::where('id', $donTangCaId)

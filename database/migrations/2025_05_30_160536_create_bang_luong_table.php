@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('loai_bang_luong', ['hang_thang', 'thuong', 'phu_cap_dac_biet'])->default('hang_thang');
             $table->year('nam');
             $table->tinyInteger('thang');
-            // $table->date('ngay_tra_luong');
+            $table->date('ngay_tra_luong');
             $table->enum('trang_thai', ['dang_xu_ly', 'cho_duyet', 'da_duyet', 'da_tra'])->default('dang_xu_ly');
             $table->foreignId('nguoi_xu_ly_id')->nullable()->constrained('nguoi_dung');
             $table->timestamp('thoi_gian_xu_ly')->nullable();
