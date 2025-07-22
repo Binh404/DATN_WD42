@@ -168,6 +168,7 @@
                                 <option value="">-- Chọn trạng thái ký --</option>
                                 <option value="cho_ky" {{ old('trang_thai_ky', $hopDong->trang_thai_ky) == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
                                 <option value="da_ky" {{ old('trang_thai_ky', $hopDong->trang_thai_ky) == 'da_ky' ? 'selected' : '' }}>Đã ký</option>
+                                <option value="tu_choi_ky" {{ old('trang_thai_ky', $hopDong->trang_thai_ky) == 'tu_choi_ky' ? 'selected' : '' }}>Từ chối ký</option>
                             </select>
                             @error('trang_thai_ky')
                                 <div class="invalid-feedback">{{ $message }}</div>

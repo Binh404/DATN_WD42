@@ -40,6 +40,9 @@ use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Admin\LuongController;
 use App\Http\Controllers\admin\TaiKhoanController;
 
+use App\Http\Controllers\NotificationController;
+use Illuminate\Notifications\DatabaseNotification;
+
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
     Route::get('/verify-otp', function () {
@@ -501,3 +504,8 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
     Route::get('/ungvien/test-vai-tro/{id}', [UngTuyenController::class, 'testVaiTro'])->name('ungvien.test-vai-tro');
 });
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+
+Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+
+Route::post('/hopdong/{id}/xac-nhan-ky', [NotificationController::class, 'xacNhanKy'])->name('hopdong.xacnhanky');
+Route::post('/hopdong/{id}/tu-choi-ky', [NotificationController::class, 'tuChoiKy'])->name('hopdong.tuchoiky');

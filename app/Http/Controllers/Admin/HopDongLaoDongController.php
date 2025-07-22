@@ -430,6 +430,11 @@ class HopDongLaoDongController extends Controller
                 'trang_thai_ky' => 'cho_ky'
             ]);
 
+            $nhanVien = $hopDong->nguoiDung; // Quan hệ tới model NguoiDung
+            if ($nhanVien) {
+                $nhanVien->notify(new \App\Notifications\HopDongApprovedNotification($hopDong));
+            }
+
             return redirect()->route('hopdong.show', $hopDong->id)
                 ->with('success', 'Phê duyệt hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Chưa hiệu lực" và sẵn sàng để ký.');
                 
@@ -467,6 +472,14 @@ class HopDongLaoDongController extends Controller
                 'nguoi_ky_id' => Auth::id(),
                 'thoi_gian_ky' => now()
             ]);
+
+            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+                $q->where('ten', 'hr');
+            })->get();
+
+            foreach ($hrUsers as $hr) {
+                $hr->notify(new \App\Notifications\HopDongSignedNotification($hopDong));
+            }
 
             return redirect()->route('hopdong.show', $hopDong->id)
                 ->with('success', 'Ký hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Hiệu lực".');

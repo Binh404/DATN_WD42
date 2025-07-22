@@ -112,6 +112,8 @@
                                                     <span class="badge badge-warning">Chờ ký</span>
                                                 @elseif($hopDong->trang_thai_ky == 'da_ky')
                                                     <span class="badge badge-primary">Đã ký</span>
+                                                @elseif($hopDong->trang_thai_ky == 'tu_choi_ky')
+                                                    <span class="badge badge-danger">Từ chối ký</span>
                                                 @else
                                                     <span class="badge badge-light">Không xác định</span>
                                                 @endif

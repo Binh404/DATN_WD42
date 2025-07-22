@@ -64,6 +64,7 @@
                                                         <option value="">Tất cả</option>
                                                         <option value="cho_ky" {{ request('trang_thai_ky') == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
                                                         <option value="da_ky" {{ request('trang_thai_ky') == 'da_ky' ? 'selected' : '' }}>Đã ký</option>
+                                                        <option value="tu_choi_ky" {{ request('trang_thai_ky') == 'tu_choi_ky' ? 'selected' : '' }}>Từ chối ký</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -200,6 +201,8 @@
                                                                         <span class="badge badge-warning">Chờ ký</span>
                                                                     @elseif($hopDong->trang_thai_ky == 'da_ky')
                                                                         <span class="badge badge-success">Đã ký</span>
+                                                                    @elseif($hopDong->trang_thai_ky == 'tu_choi_ky')
+                                                                        <span class="badge badge-danger">Từ chối ký</span>
                                                                     @endif
                                                                 </td>
                                                                 <td>
