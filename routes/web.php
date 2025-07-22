@@ -274,10 +274,15 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('/tinh-luong', [LuongController::class, 'tinhLuongVaLuu'])->name('store');
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
-        Route::get('luong/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
+        Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
         Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
-
-
+        // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
+        // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
+        // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
+        Route::post('/luong/gui-mail-luong', [LuongController::class, 'guiTatCaMailLuong'])->name('gui-mail-tat-ca');
+        // Route::get('/api/bang-luong-json', function () {
+        //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
+        // });
     });
 
       Route::prefix('chucvu')->name('chucvu.')->controller(ChucVuController::class)->group(function () {
@@ -379,6 +384,8 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::post('/tai-khoan/cap-nhat', [ProfileController::class, 'capNhatTaiKhoan'])->name('tai-khoan.cap-nhat');
         Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
+        Route::get('/luong-employee', [LuongController::class, 'listEmploy'])->name('danh-sach-luong');
+    // Route::get('/luong/download/{id}', [LuongController::class, 'download'])->name('nhanvien.luong.download');
 });
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,hr'])->group(function () {
 

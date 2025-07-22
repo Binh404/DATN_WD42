@@ -389,9 +389,9 @@
                         </div>
                         <div class="info-item">
                             <div class="info-label">Mức lương</div>
-                            <div class="info-value highlight">{{ $tuyenDung->luong_toi_thieu }} -
-                                {{ $tuyenDung->luong_toi_da }}
-                                VND
+                            <div class="info-value highlight">{{ number_format($tuyenDung->luong_toi_thieu, 0, ',', '.') }}
+                                -
+                                {{ number_format($tuyenDung->luong_toi_da, 0, ',', '.') }} VND
                             </div>
                         </div>
                     </div>

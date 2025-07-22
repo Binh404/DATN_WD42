@@ -63,6 +63,23 @@
         </li>
         @endif
 
+        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-office-building-outline"></i>
+                <span class="menu-title">Thông báo tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="form-elements">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}">Danh sách phòng ban</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        @endif
+
         {{-- Lương - Chỉ admin có quyền --}}
         @if(MenuHelper::hasMenuPermission('luong'))
         <li class="nav-item">
@@ -83,6 +100,11 @@
                     @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương</a>
                     </li>
                     @endif
 

@@ -215,7 +215,8 @@
                                 @foreach ($donXinNghis as $item)
                                     <tr class="border-bottom">
                                         <td class="px-4 py-3 align-middle">
-                                            <code class="bg-light text-dark px-2 py-1 rounded">2</code>
+                                            <code
+                                                class="bg-light text-dark px-2 py-1 rounded">{{ $item->ma_don_nghi }}</code>
                                         </td>
                                         <td class="px-4 py-3 align-middle">
                                             <span>{{ $item->nguoiDung->hoSo->ho . ' ' . $item->nguoiDung->hoSo->ten }}</span>
@@ -236,7 +237,9 @@
 
                                         <td class="px-4 py-3 align-middle">
                                             @php
-                                                $ketQua = $item->ketQuaDuyetTheoCap($vaiTro->ten === 'hr' ? 2 : 1);
+                                                $ketQua = $item->ketQuaDuyetTheoCap(
+                                                    $vaiTro->ten == 'hr' ? 2 : ($vaiTro->ten == 'admin' ? 3 : 1),
+                                                );
                                             @endphp
 
                                             @if ($ketQua === 'da_duyet')
@@ -293,7 +296,7 @@
                             <div class="mb-4">
                                 <i class="fas fa-search fa-3x text-muted opacity-50"></i>
                             </div>
-                            <h5 class="text-muted mb-3">Không tìm thấy đơn  xin nghỉ nào</h5>
+                            <h5 class="text-muted mb-3">Không tìm thấy đơn xin nghỉ nào</h5>
                             @if (request('search'))
                                 <p class="text-muted mb-4">
                                     Không có kết quả nào cho từ khóa: <strong>"{{ request('search') }}"</strong>
@@ -302,7 +305,7 @@
                                     <i class="fas fa-list me-1"></i>Xem tất cả
                                 </a>
                             @else
-                                <p class="text-muted mb-4">Chưa có đơn  xin nghỉ nào được tạo.</p>
+                                <p class="text-muted mb-4">Chưa có đơn xin nghỉ nào được tạo.</p>
                             @endif
 
                         </div>
