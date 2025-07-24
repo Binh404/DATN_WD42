@@ -55,13 +55,19 @@ class YeuCauTuyenDungController extends Controller
         abort(403, 'Bạn không có quyền truy cập trang này.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
+    private function generateUniqueMaDonNghi()
+    {
+        do {
+            $code = 'YCTD' . mt_rand(100000, 999999);
+        } while (YeuCauTuyenDung::where('ma', $code)->exists());
+
+        return $code;
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'ma' => 'required|string|max:20|unique:yeu_cau_tuyen_dung,ma',
             'so_luong' => 'required|integer|min:1',
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'loai_hop_dong' => 'required|in:thu_viec,xac_dinh_thoi_han,khong_xac_dinh_thoi_han',
@@ -77,8 +83,19 @@ class YeuCauTuyenDungController extends Controller
             'yeu_cau' => 'required|string',
             'ky_nang_yeu_cau' => 'required|string',
             'ghi_chu' => 'nullable|string',
+        ],  [
+            'required' => ':attribute không được để trống.',
+            'string' => ':attribute phải là chuỗi.',
+            'integer' => ':attribute phải là số nguyên.',
+            'numeric' => ':attribute phải là số.',
+            'min' => ':attribute phải lớn hơn hoặc bằng :min.',
+            'max' => ':attribute không được vượt quá :max ký tự.',
+            'in' => ':attribute không hợp lệ.',
+            'exists' => ':attribute không tồn tại trong hệ thống.',
+            'gte' => ':attribute phải lớn hơn hoặc bằng :value.',
         ]);
 
+        $validated['ma'] = $this->generateUniqueMaDonNghi();
         $validated['ky_nang_yeu_cau'] = array_map('trim', explode(',', $validated['ky_nang_yeu_cau']));
 
         $user = Auth::user();
@@ -114,6 +131,11 @@ class YeuCauTuyenDungController extends Controller
     {
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
 
+        if ($yeuCau->trang_thai !== 'cho_duyet') {
+            return redirect()->route('department.yeucautuyendung.index')
+                ->with('error', 'Chỉ có thể cập nhật yêu cầu đang ở trạng thái chờ duyệt!');
+        }
+
         $chucVus = ChucVu::where('phong_ban_id', auth()->user()->phong_ban_id)->get();
 
         return view('admin.yeucautuyendung.edit', compact('yeuCau', 'chucVus'));
@@ -147,7 +169,7 @@ class YeuCauTuyenDungController extends Controller
 
         $validated['ky_nang_yeu_cau'] = array_map('trim', explode(',', $validated['ky_nang_yeu_cau']));
 
-        if($yeuCau->trang_thai === 'cho_duyet'){
+        if ($yeuCau->trang_thai === 'cho_duyet') {
             $yeuCau->update($validated);
 
             return redirect()->route('department.yeucautuyendung.index')
@@ -156,9 +178,6 @@ class YeuCauTuyenDungController extends Controller
 
         return redirect()->route('department.yeucautuyendung.index')
             ->with('error', 'Chỉ có thể cập nhật yêu cầu đang ở trạng thái chờ duyệt!');
-
-
-        
     }
 
     public function cancel($id)

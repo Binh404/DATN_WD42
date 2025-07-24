@@ -7,32 +7,13 @@
 
     <!-- Header Section -->
     <div class="row align-items-center mb-4">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h2 class="fw-bold text-primary mb-0">
                 <i class="fas fa-building me-2"></i>Yêu cầu tuyển dụng
             </h2>
         </div>
 
-
-        <div class="col-md-5">
-            <form method="GET" action="/yeu$yeuCauTuyenDung">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text"
-                        class="form-control border-start-0"
-                        name="search"
-                        placeholder="Tìm kiếm yêu cầu..."
-                        value="{{ request('search') }}">
-                    <button class="btn btn-outline-primary" type="submit">
-                        Tìm kiếm
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="col-md-3 text-end">
+        <div class="col-md-6 text-end">
             <a href="{{ route('department.yeucautuyendung.create') }}" class="btn btn-primary btn-lg">
                 <i class="fas fa-plus me-2"></i>Tạo yêu cầu
             </a>

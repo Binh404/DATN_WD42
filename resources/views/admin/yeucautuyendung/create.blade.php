@@ -26,15 +26,15 @@
                 onsubmit="return validateForm(event)">
                 @csrf
 
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="inputEmail4" class="form-label">Mã yêu cầu<span class="required">*</span></label>
                     <input type="text" id="ma" name="ma" placeholder="VD: YC001" value="{{ old('ma') }}"
                         class="form-control">
                     @error('ma')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
-                </div>
-                <div class="form-group col-md-3">
+                </div> --}}
+                <div class="form-group col-md-4">
                     <label for="inputPassword4" class="form-label">Số lượng cần tuyển<span class="required">*</span></label>
                     <input type="text" id="so_luong" name="so_luong" value="{{ old('so_luong') }}" class="form-control">
                     @error('so_luong')
@@ -42,7 +42,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Chức vụ<span class="required">*</span></label>
                     <select class="form-select" id="chuc_vu_id" name="chuc_vu_id">
                         <option value="">-- Chọn Chức Vụ --</option>
@@ -55,12 +55,10 @@
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputPassword4" class="form-label">Loại hợp đồng<span class="required">*</span></label>
                     <select class="form-select" id="loai_hop_dong" name="loai_hop_dong">
                         <option value="">-- Chọn Loại Hợp Đồng --</option>
-                        <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử Việc
-                        </option>
                         <option value="xac_dinh_thoi_han"
                             {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác Định Thời Hạn</option>
                         <option value="khong_xac_dinh_thoi_han"
@@ -93,7 +91,7 @@
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="inputEmail4" class="form-label">Kinh nghiệm tối thiểu<span class="required">*</span></label>
+                    <label for="inputEmail4" class="form-label">Kinh nghiệm tối thiểu (năm)<span class="required">*</span></label>
                     <input type="number" id="kinh_nghiem_toi_thieu" name="kinh_nghiem_toi_thieu"
                         value="{{ old('kinh_nghiem_toi_thieu') }}" min="0" class="form-control">
                     @error('kinh_nghiem_toi_thieu')
@@ -102,7 +100,7 @@
 
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="exampleInputEmail1">Kinh nghiệm tối đa<span class="required">*</span></label>
+                    <label for="exampleInputEmail1">Kinh nghiệm tối đa (năm)<span class="required">*</span></label>
                     <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da"
                         value="{{ old('kinh_nghiem_toi_da') }}" min="0" class="form-control">
                     @error('kinh_nghiem_toi_da')
@@ -171,7 +169,6 @@
 
     <script>
         function validateForm(event) {
-            const ma = document.getElementById('ma').value.trim();
             const soLuong = document.getElementById('so_luong').value.trim();
             const chucVu = document.getElementById('chuc_vu_id').value.trim();
             const loaiHopDong = document.getElementById('loai_hop_dong').value.trim();
@@ -191,15 +188,6 @@
             });
 
             let isValid = true;
-
-            // Validate mã (bắt buộc, ít nhất 3 ký tự)
-            if (ma === '') {
-                showValidationError('ma', 'Mã yêu cầu không được để trống');
-                isValid = false;
-            } else if (ma.length < 3) {
-                showValidationError('ma', 'Mã yêu cầu phải có ít nhất 3 ký tự');
-                isValid = false;
-            }
 
             // Validate số lượng (bắt buộc, số nguyên > 0)
             if (soLuong === '') {
@@ -292,7 +280,7 @@
             }
 
             // Scroll to first error if any
-            if (!isValid) {
+            if (!isValid) {            
                 event.preventDefault();
                 const firstError = document.querySelector('.validation-error');
                 if (firstError) {

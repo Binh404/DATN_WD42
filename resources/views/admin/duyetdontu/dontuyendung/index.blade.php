@@ -14,49 +14,7 @@
 
                 </div>
 
-                <div>
-                    <div class="btn-wrapper">
-                        {{-- <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i>
-                            Share</a>
-                        <a href="#" class="btn btn-otline-dark" onclick="window.print()"><i class="icon-printer"></i>
-                            Print</a>
-                        <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal"
-                            data-bs-target="#reportModal"><i class="icon-download"></i>
-                            Báo cáo</a> --}}
-                        <form method="GET" action="/yeu$yeuCauTuyenDung">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8 mb-1">
-                                        {{-- <label for="search" class="form-label">Tìm theo
-                                            tên, họ, email</label> --}}
-                                        <div class="input-group rodund-start mt-4">
-                                            <span class="input-group-text rounded-start">
-                                                <i class="mdi mdi-magnify"></i>
-                                            </span>
-                                            <input type="text" class="form-control form-control-sm roudnd-end" name="search"
-                                                placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                                            {{-- <button class="btn btn-primary ms-2 rodund-5" type="submit">
-                                                Tìm kiếm
-                                            </button> --}}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-1">
-                                        <div class="d-flex gap-2 mt-4">
-                                            <button type="submit" class="btn btn-primary btn-sm py-2">
-                                                <i class="mdi mdi-magnify me-1"></i> Tìm kiếm
-                                            </button>
-                                            {{-- <a href="{{ route('hoso.all') }}" class="btn btn-secondary btn-sm py-2">
-                                                <i class="mdi mdi-refresh me-1"></i> Làm mới
-                                            </a> --}}
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                
             </div>
             <div class="row">
                 <div class="col-lg-12 d-flex flex-column">
@@ -166,8 +124,6 @@
                                                                     href="{{ route('admin.duyetdon.tuyendung.show', ['id' => $item->id]) }}">
                                                                     <button class="btn btn-info btn-sm">Xem chi tiết</button>
                                                                 </a>
-
-
                                                             </div>
                                                         </td>
 
