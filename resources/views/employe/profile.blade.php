@@ -74,13 +74,13 @@
 
                                         <!-- Số điện thoại -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Số điện thoại</label>
+                                            <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="mdi mdi-phone"></i></span>
                                                 <input type="text" name="so_dien_thoai" class="form-control @error('so_dien_thoai') is-invalid @enderror" value="{{ old('so_dien_thoai', $hoSo->so_dien_thoai) }}">
                                             </div>
                                             @error('so_dien_thoai')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -152,13 +152,13 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label">CMND/CCCD</label>
+                                            <label class="form-label">CMND/CCCD <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="mdi mdi-card-account-details"></i></span>
                                                 <input type="text" name="cmnd_cccd" class="form-control @error('cmnd_cccd') is-invalid @enderror" value="{{ old('cmnd_cccd', $hoSo->cmnd_cccd) }}">
                                             </div>
                                             @error('cmnd_cccd')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -191,10 +191,11 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="mdi mdi-account"></i></span>
                                                 <input type="text" name="lien_he_khan_cap" class="form-control @error('lien_he_khan_cap') is-invalid @enderror" value="{{ old('lien_he_khan_cap', $hoSo->lien_he_khan_cap) }}">
-                                            </div>
-                                            @error('lien_he_khan_cap')
+                                                @error('lien_he_khan_cap')
                                                 <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                                @enderror
+                                            </div>
+                                            
                                         </div>
 
                                         <div class="col-md-4">
@@ -202,10 +203,11 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="mdi mdi-phone"></i></span>
                                                 <input type="text" name="sdt_khan_cap" class="form-control @error('sdt_khan_cap') is-invalid @enderror" value="{{ old('sdt_khan_cap', $hoSo->sdt_khan_cap) }}">
-                                            </div>
-                                            @error('sdt_khan_cap')
+                                                @error('sdt_khan_cap')
                                                 <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                                @enderror
+                                            </div>
+                                            
                                         </div>
 
                                         <div class="col-md-4">
@@ -213,10 +215,11 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="mdi mdi-account"></i></span>
                                                 <input type="text" name="quan_he_khan_cap" class="form-control @error('quan_he_khan_cap') is-invalid @enderror" value="{{ old('quan_he_khan_cap', $hoSo->quan_he_khan_cap) }}">
-                                            </div>
-                                            @error('quan_he_khan_cap')
+                                                @error('quan_he_khan_cap')
                                                 <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                                @enderror
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +237,7 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <label class="form-label">Chọn ảnh mới</label>
-                                            <input type="file" name="anh_dai_dien" class="form-control @error('anh_dai_dien') is-invalid @enderror" accept="image/*">
+                                            <input type="file" id="inputImage" name="anh_dai_dien" class="form-control @error('anh_dai_dien') is-invalid @enderror" accept="image/*">
                                             @error('anh_dai_dien')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -244,7 +247,7 @@
                                             <div class="col-md-4">
                                                 <label class="form-label">Ảnh hiện tại</label>
                                                 <div class="text-center">
-                                                    <img src="{{ asset($hoSo->anh_dai_dien) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                    <img id="previewImage" src="{{ asset($hoSo->anh_dai_dien) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
                                                 </div>
                                             </div>
                                         @endif
@@ -269,7 +272,20 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('inputImage').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
 
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
     <style>
         .card {
             border: none;

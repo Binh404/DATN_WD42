@@ -123,41 +123,60 @@ public function update(Request $request, $id)
 {
     $hoSo = HoSoNguoiDung::findOrFail($id);
 
-    $validated = $request->validate([
+     $validated = $request->validate([
         'ho' => 'required|string|max:50',
         'ten' => 'required|string|max:50',
-        'so_dien_thoai' => 'required|string|max:20|regex:/^[0-9]{9,15}$/',
-        'ngay_sinh' => 'required|date',
+        'so_dien_thoai' => ['required',
+                            'regex:/^0[0-9]{9}$/',
+                            Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id, 'nguoi_dung_id')],
+        'ngay_sinh' => [
+            'required',
+            'date',
+            'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            'after_or_equal:' . now()->subYears(50)->format('Y-m-d'),
+        ],
         'gioi_tinh' => 'required|in:nam,nu,khac',
         'dia_chi_hien_tai' => 'required|string|max:255',
         'dia_chi_thuong_tru' => 'required|string|max:255',
         'cmnd_cccd' => [
-            'required', 'string', 'regex:/^[0-9]{9,12}$/',
+            'required',
+            'string',
+            'regex:/^[0-9]{12}$/', // CCCD 12 số theo chuẩn mới Việt Nam
             Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
         ],
         'so_ho_chieu' => 'nullable|string|max:20',
         'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
         'anh_dai_dien' => 'nullable|image|max:2048',
         'lien_he_khan_cap' => 'nullable|string|max:100',
-        'sdt_khan_cap' => 'nullable|string|max:20|regex:/^[0-9]{9,15}$/',
+        'sdt_khan_cap'        => ['nullable','regex:/^0[0-9]{9}$/',
+                                    function ($attribute, $value, $fail) use ($request) {
+                                        if ($value && $value === $request->so_dien_thoai) {
+                                            $fail('Số điện thoại khẩn cấp không được trùng với số điện thoại chính.');
+                                        }
+                                    }],   
         'quan_he_khan_cap' => 'nullable|string|max:50',
     ], [
         'ho.required' => 'Vui lòng nhập họ.',
         'ten.required' => 'Vui lòng nhập tên.',
         'so_dien_thoai.required' => 'Vui lòng nhập số điện thoại.',
-        'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
+        'so_dien_thoai.regex' => 'Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.',
+        'so_dien_thoai.unique' => 'Số điện thoại đã tồn tại trong hệ thống.',
         'ngay_sinh.required' => 'Vui lòng chọn ngày sinh.',
         'ngay_sinh.date' => 'Ngày sinh không hợp lệ.',
+        'ngay_sinh.before_or_equal' => 'Người dùng phải từ 18 tuổi trở lên.',
+        'ngay_sinh.after_or_equal' => 'Người dùng không được quá 50 tuổi.',
         'gioi_tinh.required' => 'Vui lòng chọn giới tính.',
+        'gioi_tinh.in' => 'Giới tính không hợp lệ.',
         'dia_chi_hien_tai.required' => 'Vui lòng nhập địa chỉ hiện tại.',
         'dia_chi_thuong_tru.required' => 'Vui lòng nhập địa chỉ thường trú.',
-        'cmnd_cccd.required' => 'Vui lòng nhập CMND/CCCD.',
-        'cmnd_cccd.regex' => 'CMND/CCCD không đúng định dạng.',
-        'cmnd_cccd.unique' => 'CMND/CCCD đã tồn tại trong hệ thống.',
+        'cmnd_cccd.required' => 'Vui lòng nhập căn cước công dân.',
+        'cmnd_cccd.regex' => 'CCCD phải gồm 12 chữ số theo định dạng Việt Nam.',
+        'cmnd_cccd.unique' => 'CCCD đã tồn tại trong hệ thống.',
         'tinh_trang_hon_nhan.required' => 'Vui lòng chọn tình trạng hôn nhân.',
+        'tinh_trang_hon_nhan.in' => 'Tình trạng hôn nhân không hợp lệ.',
         'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
         'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
-        'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
+        'sdt_khan_cap.regex' => 'SĐT khẩn cấp phải có 10 chữ số và bắt đầu bằng số 0.',
     ]);
 
     // Không cho sửa các trường đặc biệt
