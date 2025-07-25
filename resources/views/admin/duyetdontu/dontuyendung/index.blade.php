@@ -14,25 +14,28 @@
 
                 </div>
 
-                
+
             </div>
             <div class="row">
                 <div class="col-lg-12 d-flex flex-column">
 
                     <!-- Alert Messages -->
-                    @if(session('success'))
+                    @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
                             <i class="bi bi-check-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
                             <div>{{ session('success') }}</div>
-                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                aria-label="Đóng"></button>
                         </div>
                     @endif
 
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center"
+                            role="alert">
                             <i class="bi bi-exclamation-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
                             <div>{{ session('error') }}</div>
-                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                aria-label="Đóng"></button>
                         </div>
                     @endif
                 </div>
@@ -52,19 +55,13 @@
                                                 <span id="totalRecords"></span> bản ghi
                                             </p>
                                         </div>
-                                        {{-- <div>
-                                            <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i
-                                                    class="mdi mdi-account-plus"></i>Add
-                                                new member</button>
-                                        </div> --}}
+
                                     </div>
 
                                     <div class="table-responsive  mt-1">
                                         <table class="table table-hover align-middle text-nowrap">
                                             <thead class="table-light">
                                                 <tr>
-
-                                                    <th>ID</th>
                                                     <th>MÃ YÊU CẦU</th>
                                                     <th>PHÒNG BAN</th>
                                                     <th>CHỨC VỤ</th>
@@ -75,43 +72,38 @@
                                             </thead>
                                             <tbody>
                                                 @forelse($yeuCaus as $index => $item)
-
                                                     <tr>
-
-                                                        <td class="text-muted">{{ $item->id }}</td>
                                                         <td class="text-muted">{{ $item->ma }}</td>
                                                         <td class="text-muted">
                                                             {{ $item->phongBan->ten_phong_ban ?? 'Không có chức vụ' }}</td>
-                                                        <td class="text-muted">{{ $item->chucVu->ten ?? 'Không có chức vụ' }}
+                                                        <td class="text-muted">
+                                                            {{ $item->chucVu->ten ?? 'Không có chức vụ' }}
                                                         </td>
                                                         <td class="">
-                                                            @if($item->trang_thai == 'cho_duyet')
+                                                            @if ($item->trang_thai == 'cho_duyet')
                                                                 <span
                                                                     class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2">
                                                                     Chờ duyệt
                                                                 </span>
-
                                                             @elseif($item->trang_thai === 'da_duyet')
                                                                 <span
-                                                                    class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
-                                                                    <i class="fas fa-times-circle me-1"></i>Đã duyệt
+                                                                    class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                                                    <i class="fas fa-check-circle"></i> Đã duyệt
                                                                 </span>
                                                             @elseif($item->trang_thai === 'bi_tu_choi')
                                                                 <span class="badge bg-danger text-light px-3 py-2">
                                                                     <i class="fas fa-times-circle me-1"></i> Bị từ chối
                                                                 </span>
-
                                                             @elseif($item->trang_thai === 'huy_bo')
                                                                 <span
                                                                     class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2">
                                                                     <i class="fas fa-times-circle me-1"></i>Đã hủy
                                                                 </span>
-
                                                             @endif
                                                         </td>
                                                         <td class="">
                                                             <div class="text-muted small">
-                                                                @if($item->created_at)
+                                                                @if ($item->created_at)
                                                                     {{ date('d/m/Y H:i:s', strtotime($item->created_at)) }}
                                                                 @else
                                                                     N/A
@@ -122,7 +114,8 @@
                                                             <div class="d-flex gap-2 justify-content-center">
                                                                 <a
                                                                     href="{{ route('admin.duyetdon.tuyendung.show', ['id' => $item->id]) }}">
-                                                                    <button class="btn btn-info btn-sm">Xem chi tiết</button>
+                                                                    <button class="btn btn-info btn-sm">Xem chi
+                                                                        tiết</button>
                                                                 </a>
                                                             </div>
                                                         </td>
@@ -142,23 +135,12 @@
                                                 @endforelse
                                             </tbody>
                                         </table>
+                                        <div class="pl-3 mt-3">
+                                            {{ $yeuCaus->links() }}
+                                        </div>
                                     </div>
                                 </div>
-                                {{-- @if($nguoiDungs->hasPages())
-                                <div class="card-footer bg-white border-top">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                        <small class="text-muted">
-                                            Hiển thị {{ $nguoiDungs->firstItem() }} đến
-                                            {{ $nguoiDungs->lastItem() }} trong tổng số
-                                            {{ $nguoiDungs->total() }}
-                                            bản ghi
-                                        </small>
-                                        <nav>
-                                            {{ $nguoiDungs->links('pagination::bootstrap-5') }}
-                                        </nav>
-                                    </div>
-                                </div>
-                                @endif --}}
+
 
                             </div>
                         </div>

@@ -325,11 +325,16 @@
             </div>
 
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex justify-content-between align-items-center">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <div class="">
                         <h5 class="mb-0 fw-semibold">
                             Chi tiết
                         </h5>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.duyetdon.tuyendung.index') }}" class="btn btn-light">
+                            <i class="mdi mdi-arrow-left me-1"></i> Quay lại
+                        </a>
                     </div>
                 </div>
 
@@ -362,7 +367,7 @@
                                     <div class="info-value">Có thời hạn</div>
                                 @elseif($yeuCau->loai_hop_dong === 'khong_xac_dinh_thoi_han')
                                     <div class="info-value">Không xác định thời hạn</div>
-                               @endif
+                                @endif
 
                             </div>
                             <div class="info-item">
@@ -453,25 +458,25 @@
                     </div>
 
 
-                    <div class="actions">
-                        <form action="{{ route('admin.duyetdon.tuyendung.duyet', $yeuCau->id) }}" method="POST"
-                            class="d-inline">
-                            @csrf
-                            <button class="btn btn-success btn-sm" onclick="return confirm('Duyệt đơn này?')">Duyệt</button>
-                        </form>
+                    @if ($yeuCau->trang_thai == 'cho_duyet')
+                        <div class="actions">
+                            <form action="{{ route('admin.duyetdon.tuyendung.duyet', $yeuCau->id) }}" method="POST"
+                                class="d-inline">
+                                @csrf
+                                <button class="btn btn-success btn-sm"
+                                    onclick="return confirm('Duyệt đơn này?')">Duyệt</button>
+                            </form>
 
-                        <form action="{{ route('admin.duyetdon.tuyendung.tuchoi', $yeuCau->id) }}" method="POST"
-                            style="display:inline-block">
-                            @csrf
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Từ chối đơn này?')">Từ
-                                chối</button>
-                        </form>
+                            <form action="{{ route('admin.duyetdon.tuyendung.tuchoi', $yeuCau->id) }}" method="POST"
+                                style="display:inline-block">
+                                @csrf
+                                <button class="btn btn-danger btn-sm" onclick="return confirm('Từ chối đơn này?')">Từ
+                                    chối</button>
+                            </form>
 
-                        <a href="{{ route('admin.duyetdon.tuyendung.index') }}" class="btn btn-light">
-                            <i class="mdi mdi-arrow-left me-1"></i> Quay lại
-                        </a>
+                        </div>
+                    @endif
 
-                    </div>
                 </div>
 
 
