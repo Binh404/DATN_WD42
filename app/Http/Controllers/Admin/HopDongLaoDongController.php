@@ -47,7 +47,7 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', request('trang_thai_ky'));
         }
 
-        $hopDongs = $query->latest()->get();
+        $hopDongs = $query->latest()->paginate(20);
 
         foreach ($hopDongs as $hopDong) {
             if (
@@ -94,7 +94,7 @@ class HopDongLaoDongController extends Controller
             })
             ->with('hoSo')
             ->get();
-        
+
         // Nếu có một nhân viên được chỉ định để tái ký nhưng không nằm trong danh sách trên
         // (trường hợp hiếm), hãy thêm họ vào danh sách.
         if ($selectedNhanVienId && !$nhanViens->contains('id', $selectedNhanVienId)) {
@@ -153,23 +153,24 @@ class HopDongLaoDongController extends Controller
     public function show($id)
     {
         $hopDong = HopDongLaoDong::with([
-            'hoSoNguoiDung', 
-            'nguoiKy', 
-            'chucVu', 
+            'hoSoNguoiDung',
+            'nguoiDung.phongBan',
+            'nguoiKy.hoSo',
+            'chucVu',
             'nguoiHuy.hoSo',
             'phuLucs' => function($query) {
                 $query->orderBy('ngay_hieu_luc', 'desc');
             }
         ])->findOrFail($id);
-        
+
         return view('admin.hopdong.show', compact('hopDong'));
     }
 
     public function edit($id)
     {
         $hopDong = HopDongLaoDong::with([
-            'hoSoNguoiDung', 
-            'chucVu', 
+            'hoSoNguoiDung',
+            'chucVu',
             'phuLucs' => function($query) {
                 $query->orderBy('ngay_hieu_luc', 'desc');
             }
@@ -272,7 +273,7 @@ class HopDongLaoDongController extends Controller
         // Kiểm tra quyền hủy hợp đồng (chỉ admin và HR mới có quyền)
         $user = Auth::user();
         $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-        
+
         if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
             return redirect()->back()->with('error', 'Bạn không có quyền hủy hợp đồng');
         }
@@ -296,7 +297,7 @@ class HopDongLaoDongController extends Controller
     public function kyHopDong($id)
     {
         $hopDong = HopDongLaoDong::findOrFail($id);
-        
+
         if ($hopDong->trang_thai_ky !== 'cho_ky') {
             return response()->json([
                 'status' => 'error',
@@ -384,4 +385,4 @@ class HopDongLaoDongController extends Controller
         return redirect()->route('hopdong.show', $hopDong->id)
             ->with('success', 'Tạo phụ lục hợp đồng thành công!');
     }
-} 
+}

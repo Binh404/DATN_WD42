@@ -13,9 +13,17 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = Auth::user();
+        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+        // dd(...$vaiTro);
 
-        if (!$user) {
-            abort(401); // chưa đăng nhập
+        Log::info('Đang kiểm tra role cho route: ' . $request->path());
+        Log::info('User Roles: ' . json_encode($userRoles));
+
+
+        foreach ($roles as $role) {
+            if (in_array($role, $userRoles)) {
+                return $next($request);
+            }
         }
 
         // Nếu quan hệ belongsTo

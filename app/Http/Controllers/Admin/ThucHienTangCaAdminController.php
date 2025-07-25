@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\ChamCongTangCaExport;
 use App\Http\Controllers\Controller;
+use App\Imports\ChamCongImport;
+use App\Imports\ChamCongTangCaImport;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 
 class ThucHienTangCaAdminController extends Controller
@@ -17,18 +21,17 @@ class ThucHienTangCaAdminController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-        $user = auth()->user();
-        if ($user->coVaiTro('admin') || $user->coVaiTro('HR')) {
             $query = thucHienTangCa::with([
                 'dangKyTangCa' => function ($q) {
                     $q->select('id', 'ngay_tang_ca', 'nguoi_duyet_id', 'nguoi_dung_id'); // chỉ chọn cột cần thiết
                     $q->with([
                         'nguoiDuyet:id,email', // thay bằng cột bạn cần
                         'nguoiDung' => function ($q2) {
-                            $q2->select('id', 'email', 'phong_ban_id'); // chọn các cột cần dùng
+                            $q2->select('id', 'email', 'phong_ban_id','vai_tro_id'); // chọn các cột cần dùng
                             $q2->with([
                                 'phongBan:id,ten_phong_ban',
-                                'hoSo:id,nguoi_dung_id,ma_nhan_vien,ho,ten,anh_dai_dien' // ví dụ: chỉ chọn vài trường từ hồ sơ
+                                'hoSo:id,nguoi_dung_id,ma_nhan_vien,ho,ten,anh_dai_dien', // ví dụ: chỉ chọn vài trường từ hồ sơ
+                                'vaiTro:id,ten_hien_thi',
                             ]);
                         }
                     ]);
@@ -101,6 +104,32 @@ class ThucHienTangCaAdminController extends Controller
                 'hoan_thanh' => 'Hoàn thành',
                 'khong_hoan_thanh' => 'Không hoàn thành',
             ];
+            $user = auth()->user();
+            if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+                // Admin và HR xem tất cả dữ liệu, không giới hạn
+            } else if ($user->coVaiTro('department')) {
+                $phongBanId = $user->phong_ban_id;
+                $userId = $user->id;
+
+                $query->whereHas('dangKyTangCa.nguoiDung', function ($q) use ($phongBanId, $userId) {
+                    $q->where('phong_ban_id', $phongBanId)
+                    ->where('id', '<>', $userId)
+                    ->whereHas('vaiTro', function ($v) {
+                        $v->whereNotIn('ten', ['Admin', 'HR', 'department']); // loại vai trò không hợp lệ
+                    })
+                    ;
+                });
+
+                // // Lọc chỉ những người cùng phòng ban và không lấy user hiện tại
+                // $query->whereHas('nguoiDung', function ($q) use ($phongBanId, $userId) {
+                //     $q->where('phong_ban_id', $phongBanId)
+                //     ->where('id', '<>', $userId);
+                // });
+            } else {
+                // Nếu không phải Admin, HR, department thì không có quyền xem
+                abort(403, 'Bạn  có quyền truy cập.');
+            }
+
             $danhSachTangCa = $query
             ->orderBy('created_at', 'desc')
             ->paginate(10)
@@ -119,13 +148,31 @@ class ThucHienTangCaAdminController extends Controller
                  'phongBan', 'trangThaiList',
                  'danhSachTangCa', 'soLuongTangCa', 'tyLeChuaHoanThanh',
                  'tyLeHoanThanh', 'soGioTangCa'));
-        }
-        abort(403, 'Bạn không có quyền truy cập trang này');
+
     }
     public function show($id)
     {
         $chamCongTangCa = thucHienTangCa::with('dangKyTangCa')->find($id);
         $chamCongTangCa->load(['dangKyTangCa.nguoiDung.hoSo', 'dangKyTangCa.nguoiDung.phongBan','dangKyTangCa.nguoiDung']);
+        $user = auth()->user();
+
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+             $target = $chamCongTangCa->dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
+        }
         // dd($chamCongTangCa->nguoiDung);
         return view('admin.cham-cong.quan_ly_tang_ca.show', compact('chamCongTangCa'));
     }
@@ -133,6 +180,25 @@ class ThucHienTangCaAdminController extends Controller
     {
         $thucHienTangCa = thucHienTangCa::with(['dangKyTangCa', 'dangKyTangCa.nguoiDung.hoSo', 'dangKyTangCa.nguoiDung.phongBan','dangKyTangCa.nguoiDung'])->findOrFail($id);
         // dd($chamCong->gio_vao);
+        $user = auth()->user();
+
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+             $target = $thucHienTangCa->dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
+        }
         // Lấy danh sách nhân viên với thông tin hồ sơ và phòng ban
         // $nhanVien = NguoiDung::with(['hoSo', 'phongBan'])
         //     ->whereHas('hoSo')
@@ -152,7 +218,25 @@ class ThucHienTangCaAdminController extends Controller
     public function update(Request $request, $id)
     {
         $thucHienTangCa = thucHienTangCa::layBanGhiTheoDonTangCaById($id);
+        $user = auth()->user();
 
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+             $target = $thucHienTangCa->dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
+        }
         if (!$thucHienTangCa) {
             return back()->withErrors(['error' => 'Bản ghi tăng ca không tồn tại'])->withInput();
         }
@@ -218,12 +302,12 @@ class ThucHienTangCaAdminController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.chamcong.xemChiTietTangCa', $thucHienTangCa->id)
+            return redirect()->route('admin.chamcong.tangCa.show', $thucHienTangCa->id)
                 ->with('success', 'Cập nhật bản ghi chấm công thành công!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Lỗi cập nhật chấm công: ' . $e->getMessage());
+            // \Log::error('Lỗi cập nhật chấm công: ' . $e->getMessage());
 
             return back()->withErrors([
                 'error' => 'Có lỗi xảy ra khi cập nhật. Vui lòng thử lại!'
@@ -236,6 +320,26 @@ class ThucHienTangCaAdminController extends Controller
         if(!$thucHienTangCa){
             return redirect()->route('admin.chamcong.tangCa.index')
             ->with('error', 'Bản ghi chấm công khôn tại!');
+        }
+        $user = auth()->user();
+
+        if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
+            // Admin, HR xem được hết
+        } else if ($user->coVaiTro('department')) {
+            // Department chỉ xem được nếu cùng phòng ban và không phải chính họ
+            $target = $thucHienTangCa->dangKyTangCa->nguoiDung;
+
+                if (
+                    $target->phong_ban_id !== $user->phong_ban_id || // khác phòng ban
+                    $target->id === $user->id ||                     // chính họ
+                    $target->coVaiTro('Admin') ||                    // loại bỏ Admin
+                    $target->coVaiTro('HR') ||                       // loại bỏ HR
+                    $target->coVaiTro('department')                  // loại bỏ trưởng phòng
+                ) {
+                    abort(403, 'Bạn không có quyền xem bản ghi này.');
+                }
+        } else {
+            abort(403, 'Bạn không có quyền xem bản ghi này.');
         }
         $thucHienTangCa->delete();
         return redirect()->route('admin.chamcong.tangCa.index')
@@ -316,4 +420,8 @@ class ThucHienTangCaAdminController extends Controller
             });
         }
     }
+
+
+
+
 }

@@ -1,3 +1,13 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $nguoiDung = Auth::user();
+    $avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');
+    // dd($avatar);
+    $ten     = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
+    $email   = $nguoiDung->email ?? 'N/A';
+    $vaiTro  = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
+@endphp
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <div class="me-3">
@@ -6,23 +16,25 @@
       </button>
     </div>
     <div>
-      <a class="navbar-brand brand-logo" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo.svg')}}" alt="logo" />
+      <a class="navbar-brand brand-logo" href="{{route('admin.dashboard')}}">
+        {{-- <img src="{{asset('assets/admin/images/logo.png' )}}" alt="logo" /> --}}
+        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" />
+        <span class="text-dark fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
       </a>
-      <a class="navbar-brand brand-logo-mini" href="../index.html">
-        <img src="{{asset('assets/admin/images/logo-mini.svg')}}" alt="logo" />
+      <a class="navbar-brand brand-logo-mini" href="{{route('admin.dashboard')}}">
+        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" class="rounded-circle" />
       </a>
     </div>
   </div>
   <div class="navbar-menu-wrapper d-flex align-items-top">
-    <ul class="navbar-nav">
+    {{-- <ul class="navbar-nav">
       <li class="nav-item fw-semibold d-none d-lg-block ms-0">
         <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
         <h3 class="welcome-sub-text">Your performance summary this week </h3>
       </li>
-    </ul>
+    </ul> --}}
     <ul class="navbar-nav ms-auto">
-      <li class="nav-item dropdown d-none d-lg-block">
+      {{-- <li class="nav-item dropdown d-none d-lg-block">
         <a class="nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Select Category </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
           <a class="dropdown-item py-3">
@@ -54,7 +66,7 @@
             </div>
           </a>
         </div>
-      </li>
+      </li> --}}
       <li class="nav-item d-none d-lg-block">
         <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
           <span class="input-group-addon input-group-prepend border-right">
@@ -66,7 +78,7 @@
       <li class="nav-item">
         <form class="search-form" action="#">
           <i class="icon-search"></i>
-          <input type="search" class="form-control" placeholder="Search Here" title="Search here">
+          <input type="search" class="form-control" placeholder="Tìm kiếm ..." title="Search here">
         </form>
       </li>
       <li class="nav-item dropdown">
@@ -108,7 +120,7 @@
           </a>
         </div>
       </li>
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="icon-mail icon-lg"></i>
         </a>
@@ -146,27 +158,30 @@
             </div>
           </a>
         </div>
-      </li>
+      </li> --}}
       <li class="nav-item dropdown d-none d-lg-block user-dropdown">
         <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="img-xs rounded-circle" src="{{ $nguoiDungs->hoSo->anh_dai_dien ?? 'N/A' }}" alt="Profile image" onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"> </a>
+            <img class="img-xs rounded-circle"
+                src="{{ asset($avatar)  }}"
+                onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
+                alt="Ảnh đại diện">
+        </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
           <div class="dropdown-header text-center">
-            <img class="img-md rounded-circle" src="{{ $nguoiDungs->hoSo->anh_dai_dien ?? 'N/A' }}" alt="Profile image" onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';" width="50" height="50">
-            <p class="mb-1 mt-3 fw-semibold">{{ $nguoiDungs->hoSo->ten ?? 'N/A' }}</p>
-            <p class="fw-light text-muted mb-0">{{ $nguoiDungs->email ?? 'N/A' }}</p>
-          </div>
-          <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
+             <img class="img-md rounded-circle"
+                src="{{ asset($avatar) }}"
+                onerror="this.onerror=null; this.src='{{ asset('assets/images/default.png') }}';"
+                alt="Ảnh đại diện" width="50" height="50">
+            <p class="mb-1 mt-3 fw-semibold">{{ $ten }}</p>
+            <p class="fw-light text-muted mb-0">{{ $email }}</p>
+                <p class="fw-light text-muted mb-0">{{ $vaiTro }}</p>
+            </div>
+          <a class="dropdown-item" href="{{ route('employee.profile.show') }}"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
           {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a> --}}
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="dropdown-item">
-              <i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Đăng xuất
-            </button>
-          </form>
-        
+          <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
+
         </div>
       </li>
     </ul>
@@ -175,3 +190,6 @@
     </button>
   </div>
 </nav>
+<form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">
+  @csrf
+</form>

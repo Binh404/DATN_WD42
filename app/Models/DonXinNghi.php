@@ -28,6 +28,7 @@ class DonXinNghi extends Model
         'nguoi_duyet_id',
         'thoi_gian_duyet',
         'ly_do_tu_choi',
+        'cap_duyet_hien_tai'
     ];
 
     protected $casts = [

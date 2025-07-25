@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use App\Services\GioLamViecService;
 
 class ChamCong extends Model
 {
@@ -122,7 +123,8 @@ class ChamCong extends Model
 
         // Trừ 1 giờ nghỉ trưa nếu làm trên 6 giờ
         if ($soGio > 6) {
-            $soGio -= 1;
+            $gioNghiTrua = app(GioLamViecService::class)->getWorkingHours()['lunch_break'] ?? 1;
+            $soGio -= $gioNghiTrua;
         }
 
         return round($soGio, 2);
@@ -133,7 +135,7 @@ class ChamCong extends Model
         $soGioLam = $this->so_gio_lam;
         if ($soGioLam < 3.5) {
             return 0;
-        } else if ($soGioLam < 7) {
+        } else if ($soGioLam < 7.5) {
             return 0.5;
         } else {
             return 1;
@@ -147,7 +149,8 @@ class ChamCong extends Model
     {
         if (!$this->gio_vao)
             return false;
-        $gioVaoQuyDinh = Carbon::createFromFormat('H:i', config('chamcong.working_hours.start_time', '08:30'));
+
+        $gioVaoQuyDinh = Carbon::parse(app(GioLamViecService::class)->getWorkingHours()['start_time'] ?? '08:30:00');
         // $gioVaoQuyDinh = Carbon::parse('08:30');
         $gioVaoThucTe = Carbon::parse($this->gio_vao);
 
@@ -158,9 +161,10 @@ class ChamCong extends Model
     {
         if (!$this->gio_ra)
             return false;
+        $gioRaQuyDinh = Carbon::parse(app(GioLamViecService::class)->getWorkingHours()['end_time'] ?? '17:30:00');
 
         // $gioRaQuyDinh = Carbon::parse('17:30');
-        $gioRaQuyDinh = Carbon::createFromFormat('H:i', config('chamcong.working_hours.end_time', '17:30'));
+
         $gioRaThucTe = Carbon::parse($this->gio_ra);
 
         return $gioRaThucTe->lt($gioRaQuyDinh);
@@ -168,17 +172,20 @@ class ChamCong extends Model
 
     public function capNhatTrangThai($trangThai = null)
     {
+        $service = app(GioLamViecService::class);
+        $startTime = $service->getWorkingHours()['start_time'] ?? '08:30:00';
+        $endTime = $service->getWorkingHours()['end_time'] ?? '17:30:00';
         if (!$trangThai) {
             $trangThai = 'binh_thuong';
             if ($this->kiemTraDiMuon()) {
                 $trangThai = 'di_muon';
-                $gioChuan = Carbon::createFromFormat('H:i', config('chamcong.working_hours.start_time', '8:30'));
+                $gioChuan = $startTime;
                 $this->phut_di_muon = Carbon::parse($gioChuan)->diffInMinutes(Carbon::parse($this->gio_vao));
             }
 
             if ($this->kiemTraVeSom()) {
                 $trangThai = $trangThai === 'di_muon' ? 'di_muon' : 've_som';
-                $gioChuan = Carbon::createFromFormat('H:i', config('chamcong.working_hours.end_time', '17:30'));
+                $gioChuan = $endTime;
                 $this->phut_ve_som = Carbon::parse($this->gio_ra)->diffInMinutes(Carbon::parse($gioChuan));
             }
         }

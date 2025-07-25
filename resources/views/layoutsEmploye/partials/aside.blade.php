@@ -19,7 +19,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/salary')}}" class="nav-link" data-section="salary">
+            <a href="{{url('employe/luong')}}" class="nav-link" data-section="salary">
                 <i class="fas fa-money-bill-wave"></i>
                 <span>Bảng lương</span>
             </a>
@@ -36,7 +36,7 @@
                 <span>Hồ sơ cá nhân</span>
             </a>
         </li>
-       
+
         <li class="nav-item">
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>
@@ -45,7 +45,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/cham-cong')}}" class="nav-link" data-section="attendance">
+            <a href="{{route('cham-cong.index')}}" class="nav-link" data-section="attendance">
                 <i class="fas fa-clock"></i>
                 <span>Chấm công</span>
             </a>

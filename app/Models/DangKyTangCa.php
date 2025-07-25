@@ -89,10 +89,14 @@ class DangKyTangCa extends Model
     /**
      * Scope để lọc theo tháng
      */
-    public function scopeByThang($query, $thang, $nam)
+    public function scopeByNgayTangCa($query, $ngayTangCa)
     {
-        return $query->whereMonth('ngay_tang_ca', $thang)
-                    ->whereYear('ngay_tang_ca', $nam);
+        return $query->where('ngay_tang_ca', $ngayTangCa);
+    }
+    public function scopeByThang($query, $thang)
+    {
+        return $query->whereMonth('ngay_tang_ca', $thang);
+                    // ->whereYear('ngay_tang_ca', $nam);
     }
     public function scopeByNam($query, $nam)
     {
@@ -175,7 +179,7 @@ class DangKyTangCa extends Model
     /**
      * Tính toán số giờ tăng ca
      */
-    private function tinhSoGioTangCa()
+    public function tinhSoGioTangCa()
     {
         if ($this->attributes['gio_bat_dau'] && $this->attributes['gio_ket_thuc']) {
             $gioBatDau = Carbon::createFromFormat('H:i', $this->attributes['gio_bat_dau']);
@@ -189,5 +193,8 @@ class DangKyTangCa extends Model
             $soGio = $gioBatDau->diffInMinutes($gioKetThuc) / 60;
             $this->attributes['so_gio_tang_ca'] = round($soGio, 2);
         }
+    }
+    public function thucHienTangCa(){
+        return $this->hasOne(ThucHienTangCa::class, 'dang_ky_tang_ca_id');
     }
 }

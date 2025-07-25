@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,7 +19,7 @@ class BangLuongSeeder extends Seeder
                 'loai_bang_luong' => 'hang_thang',
                 'nam' => 2024,
                 'thang' => 11,
-                'ngay_tra_luong' => '2024-11-30',
+                // 'ngay_tra_luong' => '2024-11-30',
                 'trang_thai' => 'da_tra',
                 'nguoi_xu_ly_id' => 1,
                 'thoi_gian_xu_ly' => '2024-11-25 10:00:00',
@@ -33,7 +33,7 @@ class BangLuongSeeder extends Seeder
                 'loai_bang_luong' => 'hang_thang',
                 'nam' => 2024,
                 'thang' => 12,
-                'ngay_tra_luong' => '2024-12-31',
+                // 'ngay_tra_luong' => '2024-12-31',
                 'trang_thai' => 'da_duyet',
                 'nguoi_xu_ly_id' => 1,
                 'thoi_gian_xu_ly' => '2024-12-25 09:15:00',
@@ -47,7 +47,7 @@ class BangLuongSeeder extends Seeder
                 'loai_bang_luong' => 'thuong',
                 'nam' => 2025,
                 'thang' => 1,
-                'ngay_tra_luong' => '2025-01-20',
+                // 'ngay_tra_luong' => '2025-01-20',
                 'trang_thai' => 'cho_duyet',
                 'nguoi_xu_ly_id' => 1,
                 'thoi_gian_xu_ly' => '2025-01-15 11:00:00',

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,6 +27,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => false,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -43,6 +44,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => true,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -59,6 +61,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => true,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -75,6 +78,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => true,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -91,6 +95,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => true,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -107,6 +112,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => false,
                 'co_luong' => false,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -123,6 +129,7 @@ class LoaiNghiPhepSeeder extends Seeder
                 'yeu_cau_giay_to' => false,
                 'co_luong' => true,
                 'trang_thai' => true,
+                'tinh_theo_ty_le' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

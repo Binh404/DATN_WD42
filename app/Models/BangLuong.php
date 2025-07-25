@@ -33,7 +33,14 @@ class BangLuong extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+    public static function generateUniqueMaLuong(): string
+    {
+        do {
+            $code = 'DVT' . mt_rand(1000000, 9999999);
+        } while (self::where('ma_bang_luong', $code)->exists());
 
+        return $code;
+    }
     public function luongNhanVien()
     {
         // hehe

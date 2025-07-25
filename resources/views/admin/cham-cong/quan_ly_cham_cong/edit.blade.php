@@ -317,6 +317,9 @@
                                             <option value="3" {{ old('trang_thai_duyet', $chamCong->trang_thai_duyet) == 3 ? 'selected' : '' }}>
                                                 Chờ duyệt
                                             </option>
+                                            <option value="4" {{ old('trang_thai_duyet', $chamCong->trang_thai_duyet) == 4 ? 'selected' : '' }}>
+                                                Hủy Đơn
+                                            </option>
                                         </select>
                                         @error('trang_thai_duyet')
                                             <div class="invalid-feedback">{{ $message }}</div>

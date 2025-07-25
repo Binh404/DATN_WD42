@@ -36,4 +36,9 @@ class VaiTro extends SpatieRole
         return $this->belongsToMany(NguoiDung::class, 'nguoi_dung_vai_tro', 'vai_tro_id', 'nguoi_dung_id')
                     ->withTimestamps();
     }
+
+    public function nguoiDung()
+    {
+        return $this->hasMany(NguoiDung::class, 'vai_tro_id');
+    }
 }

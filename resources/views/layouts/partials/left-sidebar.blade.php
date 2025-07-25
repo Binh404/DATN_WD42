@@ -54,7 +54,6 @@
                     </a>
                 </li>
 
-<<<<<<< HEAD
         <!-- account Section -->
         <li class="nav-item">
           <a href="#" class="nav-link">
@@ -80,33 +79,6 @@
                 <p>Quản lý vai trò</p>
               </a>
             </li>
-=======
-                <!-- account Section -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-laptop"></i>
-                        <p>Tài Khoản<i class="right fas fa-angle-left"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Danh sách</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('register') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tạo tài khoản mới</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Quản lý vai trò</p>
-                            </a>
-                        </li>
->>>>>>> 00995b6441629123acc3004268d0c1981ebf72a3
 
                     </ul>
                 </li>
@@ -336,40 +308,40 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('hr.loainghiphep.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>Loại nghỉ phép</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>Lương <i class="fas fa-angle-left right"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('luong.index') }} " class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Lương</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('phieuluong.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Phiếu lương</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <!-- Sidebar Footer Items -->
-    <hr>
-    <!-- <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
+        <li class="nav-item">
+          <a href="{{route('hr.loainghiphep.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Loại nghỉ phép</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>Lương <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              {{-- <a href="{{route('luong.index')}} " class="nav-link"> --}}
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lương</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              {{-- <a href="{{route('phieuluong.index')}}" class="nav-link"> --}}
+                <i class="far fa-circle nav-icon"></i>
+                <p>Phiếu lương</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <!-- Sidebar Footer Items -->
+  <hr>
+  <!-- <div class="row col-12 justify-content-between bg-primary pb-2 pt-2 pl-3 pr-3" style="position: absolute; bottom: 0px; left: 0px; margin-left: 0px; padding-left: 0px;">
     <a href="#" class="link text-center text-light" title="Account Setting">
       <i class="fas fa-cog"></i>
     </a>
