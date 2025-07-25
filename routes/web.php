@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ChamCongAdminController;
 use App\Http\Controllers\Admin\DangKyTangCaAdminController;
 use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\CompanyLocationController;
+use App\Http\Controllers\DonDeXuatController;
 use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\employee\DangKyTangCaController;
 use App\Http\Controllers\Admin\ImportChamCongController;
@@ -336,6 +337,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::get('/tao-don-xin-tang-ca', [DangKyTangCaController::class, 'index'])->name('tao-don-xin-tang-ca');
         Route::post('/tao-don-xin-tang-ca', [DangKyTangCaController::class, 'store'])->name('tao-don-xin-tang-ca.store');
     });
+
 });
 
 Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckRole::class . ':employee,department,hr,admin'])->group(function () {
@@ -386,6 +388,11 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
     });
         Route::get('/luong-employee', [LuongController::class, 'listEmploy'])->name('danh-sach-luong');
     // Route::get('/luong/download/{id}', [LuongController::class, 'download'])->name('nhanvien.luong.download');
+    Route::prefix('de-xuat')->name('de-xuat.')->group(function () {
+        Route::get('/index.dexuat', [DonDeXuatController::class, 'index'])->name('index');
+        Route::post('/create', [DonDeXuatController::class, 'store'])->name('store');
+        Route::post('/pheDuyet/{id}', [DonDeXuatController::class, 'pheDuyet'])->name('pheDuyet');
+    });
 });
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,hr'])->group(function () {
 
