@@ -13,9 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class YeuCauTuyenDungController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
+    // danh sách đã tạo của trưởng phòng
     public function danhSachYeuCauTuyenDung(Request $request)
     {
         $user = auth()->user();
@@ -29,6 +28,7 @@ class YeuCauTuyenDungController extends Controller
         abort(403, 'Bạn không có quyền truy cập trang này.');
     }
 
+    // thông báo tới hr
     public function danhSachThongBaoTuyenDung()
     {
         $user = auth()->user();
