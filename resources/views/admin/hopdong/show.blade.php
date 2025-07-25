@@ -1,5 +1,9 @@
 @extends('layoutsAdmin.master')
 
+@php
+use Illuminate\Support\Facades\Auth;
+@endphp
+
 @section('title', 'Chi tiết hợp đồng')
 
 @section('content')
