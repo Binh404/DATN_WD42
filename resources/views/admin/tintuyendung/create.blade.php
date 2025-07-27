@@ -6,7 +6,7 @@
     <div class="container-fluid px-4">
         <div class="col-md-4">
             <h2 class="fw-bold text-primary mb-2">
-                Yêu cầu tuyển dụng
+                Đăng tin tuyển dụng
             </h2>
         </div>
 
@@ -16,12 +16,12 @@
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-semibold">
-                    Tạo đơn
+                    Tạo tin
                 </h5>
             </div>
         </div>
         <div class="card-body">
-            @if ($errors->any())
+            {{-- @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -29,20 +29,20 @@
                         @endforeach
                     </ul>
                 </div>
-            @endif
+            @endif --}}
             <form class="forms-sample ml-5 row g-3" action="{{ route('hr.tintuyendung.store') }}" method="POST"
                 class="form-container" id="jobPostingForm" onsubmit="return validateForm(event)">
                 @csrf
 
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="inputEmail4" class="form-label">Mã yêu cầu<span class="required">*</span></label>
                     <input type="text" id="ma" name="ma" placeholder="VD: JOB-2024-001"
                         value="{{ old('ma') }}" class="{{ $errors->has('ma') ? 'error' : '' }} form-control">
                     @error('ma')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
-                </div>
-                <div class="form-group col-md-3">
+                </div> --}}
+                <div class="form-group col-md-4">
                     <label for="inputPassword4" class="form-label">Tiêu đề<span class="required">*</span></label>
                     <input type="text" id="tieu_de" name="tieu_de" placeholder="VD: Senior Frontend Developer"
                         value="{{ old('tieu_de') }}" class="{{ $errors->has('tieu_de') ? 'error' : '' }} form-control">
@@ -51,7 +51,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputEmail4" class="form-label">Số lượng<span class="required">*</span></label>
                     <input type="number" id="so_vi_tri" name="so_vi_tri"
                         value="{{ old('so_vi_tri', $yeuCau->so_luong ?? '') }}"
@@ -61,7 +61,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputPassword4" class="form-label">Phòng ban<span class="required">*</span></label>
                     <select id="phong_ban_id" name="phong_ban_id"
                         class="{{ $errors->has('phong_ban_id') ? 'error' : '' }} form-control">
@@ -116,10 +116,10 @@
                     <select id="loai_hop_dong" name="loai_hop_dong"
                         class="{{ $errors->has('loai_hop_dong') ? 'error' : '' }} form-control">
                         <option value="">Chọn loại hợp đồng</option>
-                        <option value="thu_viec"
+                        {{-- <option value="thu_viec"
                             {{ old('loai_hop_dong') == 'thu_viec' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'thu_viec') ? 'selected' : '' }}>
                             Thử việc
-                        </option>
+                        </option> --}}
                         <option value="xac_dinh_thoi_han"
                             {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' || (isset($yeuCau) && $yeuCau->loai_hop_dong === 'xac_dinh_thoi_han') ? 'selected' : '' }}>
                             Xác định thời hạn
