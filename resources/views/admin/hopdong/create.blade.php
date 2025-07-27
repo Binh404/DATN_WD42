@@ -9,7 +9,7 @@
     </div>
 
     <!-- Content Row -->
-    <div class="card shadow mb-4">
+    <div class="card shadow mb-4 mx-auto" style="max-width: 800px;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
@@ -73,7 +73,7 @@
                                 <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
                                 <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
                                 <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-                                <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option>
+                                <!-- <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option> -->
                             </select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>

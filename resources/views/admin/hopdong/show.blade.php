@@ -7,8 +7,8 @@
        
         <div class="container-fluid">
             
-
-            <div class="row">
+        
+        <div class="card shadow mb-4 mx-auto" style="max-width: 800px;">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">

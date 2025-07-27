@@ -238,29 +238,7 @@
                                                                             </a>
                                                                         @endif
 
-                                                                        @if($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong !== 'het_han' && $hopDong->trang_thai_hop_dong !== 'huy_bo')
-                                                                            <form action="{{ route('hopdong.ky', $hopDong->id) }}" method="POST" style="display: inline;">
-                                                                                @csrf
-                                                                                <button type="submit"
-                                                                                        class="btn btn-success btn-sm"
-                                                                                        onclick="return confirm('Bạn có chắc chắn muốn ký hợp đồng này?')"
-                                                                                        title="Ký hợp đồng">
-                                                                                    <i class="fas fa-signature"></i>
-                                                                                </button>
-                                                                            </form>
-                                                                        @endif
-
-                                                                        <!-- @if($hopDong->trang_thai_hop_dong == 'het_han')
-                                                                            <form action="{{ route('hopdong.huy', $hopDong->id) }}" method="POST" style="display: inline;">
-                                                                                @csrf
-                                                                                <button type="submit"
-                                                                                        class="btn btn-danger btn-sm"
-                                                                                        onclick="return confirm('Bạn có chắc chắn muốn hủy hợp đồng này?')"
-                                                                                        title="Hủy hợp đồng">
-                                                                                    <i class="mdi mdi-close"></i> Hủy
-                                                                                </button>
-                                                                            </form>
-                                                                        @endif -->
+                                                                       
                                                                     </div>
                                                                 </td>
                                                             </tr>
