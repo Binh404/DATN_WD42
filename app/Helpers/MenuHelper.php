@@ -27,7 +27,9 @@ class MenuHelper
                 // 'thongbao',
                 'duyetdon',
                 // 'xinnghiphep',
-                'loainghiphep'
+                'loainghiphep',
+                'dondexuat'
+
             ],
             'hr' => [
                 'dashboard',
@@ -42,7 +44,7 @@ class MenuHelper
                 'duyetdon',
                 'xinnghiphep',
                 'loainghiphep',
-                'thongbaotuyendung'
+                'dondexuat'
             ],
             'department' => [
                 'dashboard',
@@ -50,7 +52,8 @@ class MenuHelper
                 'hoso',
                 'chamcong',
                 'duyetdon',
-                'xinnghiphep'
+                'xinnghiphep',
+                'dondexuat'
             ],
             'employee' => [
                 'dashboard',
@@ -77,11 +80,13 @@ class MenuHelper
         // dd($userRole);
         $subMenuPermissions = [
             'admin' => [
-                'hoso' => ['qlhoso'],
+                'hoso' => ['qlhoso','qltk'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong'],
+                'dondexuat' => ['danhsach'],
+
                 // 'xinnghiphep' => ['danhsach']
 
             ],
@@ -93,7 +98,9 @@ class MenuHelper
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
-                'thongbaotuyendung' => ['danhsach']
+                'thongbaotuyendung' => ['danhsach'],
+                'dondexuat' => ['guidexuat'],
+
 
             ],
             'department' => [
@@ -101,7 +108,8 @@ class MenuHelper
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
                 'duyetdon' => ['xinnghiphep'],
-                'xinnghiphep' => ['danhsach', 'donxinnghiphep']
+                'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
+                'dondexuat' => ['guidexuat'],
 
             ],
             'employee' => [

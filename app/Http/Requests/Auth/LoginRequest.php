@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -61,7 +62,9 @@ class LoginRequest extends FormRequest
                 'email' => 'Tài khoản của bạn đã bị vô hiệu hóa hãy liên hệ quản trị viên.',
             ]);
         }
-
+        $user->lan_dang_nhap_cuoi = Carbon::now('Asia/Ho_Chi_Minh');
+        $user->ip_dang_nhap_cuoi = request()->ip();
+        $user->save();
        
         RateLimiter::clear($this->throttleKey());
     }

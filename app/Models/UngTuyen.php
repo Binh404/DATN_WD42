@@ -56,7 +56,7 @@ class UngTuyen extends Model
         return $this->belongsTo(NguoiDung::class, 'nguoi_cap_nhat_id');
     }
 
-  
+
     public function tinTuyenDung()
     {
         return $this->belongsTo(TinTuyenDung::class, 'tin_tuyen_dung_id');

@@ -260,7 +260,7 @@
                                 </td> -->
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="/ungvien/show/{{ $uv->id }}?from=trung-tuyen" class="btn btn-sm btn-info text-white">
+                                        <a href="/ungvien/{{ $uv->id }}/show/?from=trung-tuyen" class="btn btn-sm btn-info text-white">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <!-- <button type="button" class="btn btn-sm btn-primary"

@@ -37,5 +37,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('nguoiDung', $nguoiDung)->with('hoSo', $hoSo);
         }
     });
+    View::composer('layoutsAdmin.*', function ($view) {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $notifications = $user->notifications()->take(5)->get();
+            $unreadCount = $user->unreadNotifications()->count();
+            $view->with(compact('notifications', 'unreadCount'));
+        }
+    });
     }
 }

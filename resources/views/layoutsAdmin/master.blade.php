@@ -28,10 +28,12 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.png') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+  @if (auth()->user()?->theme === 'dark')
+        <link rel="stylesheet" href="{{ asset('assets/admin/css/dark.css') }}">
+    @endif
     @yield('style')
   </head>
-  <body>
+  <body class="{{ auth()->user()?->theme === 'dark' ? 'dark-mode' : '' }}">
     <div class="container-scroller">
       <!-- partial:../../partials/_navbar.html -->
       @include('layoutsAdmin.partials._navbar')

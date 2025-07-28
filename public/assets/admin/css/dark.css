@@ -1,0 +1,245 @@
+/* === Dark Mode - Toàn bộ giao diện === */
+body.dark-mode {
+  --bs-body-bg: #1e1e2f;
+  --bs-body-color: #f1f1f1;
+  --bs-card-bg: #2a2a3f;
+  --bs-border-color: #444;
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+/* ======================= */
+/* 🔷 Navbar + Sidebar + Menu */
+/* ======================= */
+body.dark-mode .navbar,
+body.dark-mode .sidebar,
+body.dark-mode .sidebar .nav,
+body.dark-mode .sidebar .nav-item,
+body.dark-mode .sidebar .nav-link,
+body.dark-mode .sidebar .menu-title,
+body.dark-mode .sidebar .collapse,
+body.dark-mode .sidebar .nav.sub-menu,
+body.dark-mode .sidebar .nav-category,
+body.dark-mode .sidebar .sidebar-brand-wrapper {
+  background-color: #1a1a2f !important;
+  color: #f1f1f1 !important;
+  border-color: #444 !important;
+}
+
+body.dark-mode .sidebar .nav-link.active,
+body.dark-mode .sidebar .nav-link:hover {
+  background-color: #2c2c45 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .sidebar .nav .menu-icon,
+body.dark-mode .sidebar i,
+body.dark-mode .sidebar svg {
+  color: #f1f1f1 !important;
+}
+
+/* ======================= */
+/* 🔷 Typography + Text */
+/* ======================= */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode span,
+body.dark-mode a,
+body.dark-mode li,
+body.dark-mode td,
+body.dark-mode th,
+body.dark-mode div,
+body.dark-mode small,
+body.dark-mode strong {
+  color: #e6e6e6 !important;
+}
+
+/* ======================= */
+/* 🔷 Form Control */
+/* ======================= */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode .form-control {
+  background-color: #2e2e45 !important;
+  color: #fff !important;
+  border-color: #555 !important;
+}
+
+/* Placeholder */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #aaa !important;
+}
+
+/* ======================= */
+/* 🔷 Button */
+/* ======================= */
+body.dark-mode .btn,
+body.dark-mode .btn-primary,
+body.dark-mode .btn-secondary,
+body.dark-mode .btn-light,
+body.dark-mode .btn-dark {
+  background-color: #3a3a50 !important;
+  color: #fff !important;
+  border-color: #666 !important;
+}
+
+/* ======================= */
+/* 🔷 Table */
+/* ======================= */
+body.dark-mode table,
+body.dark-mode .table,
+body.dark-mode .table th,
+body.dark-mode .table td {
+  background-color: #2c2c3f !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+/* ======================= */
+/* 🔷 Card, box, section */
+/* ======================= */
+body.dark-mode .card,
+body.dark-mode .content-wrapper,
+body.dark-mode .section,
+body.dark-mode .bg-white,
+body.dark-mode .card-body,
+body.dark-mode .form-group,
+body.dark-mode .table-responsive,
+body.dark-mode .modal-content {
+  background-color: #2b2b3f !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+/* ======================= */
+/* 🔷 Misc & Utility */
+/* ======================= */
+body.dark-mode .dropdown-menu,
+body.dark-mode .dropdown-item,
+body.dark-mode .alert,
+body.dark-mode .badge,
+body.dark-mode .pagination,
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+  background-color: #2b2b3f !important;
+  color: #f1f1f1 !important;
+  border-color: #444 !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: #3d3d5c !important;
+}
+
+/* Scrollbar */
+body.dark-mode ::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+  background: #1a1a2f;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+}
+/* ========== Navbar fix cho dark mode ========== */
+body.dark-mode .navbar,
+body.dark-mode .navbar .navbar-menu-wrapper,
+body.dark-mode .navbar .navbar-brand-wrapper {
+  background-color: #1e1e2f !important;
+  color: #f1f1f1 !important;
+  border-bottom: 1px solid #444;
+}
+
+/* Logo + Text */
+body.dark-mode .navbar .navbar-brand span {
+  color: #f1f1f1 !important;
+}
+
+/* Navbar icon & nav-link */
+body.dark-mode .navbar .nav-link,
+body.dark-mode .navbar i,
+body.dark-mode .navbar svg,
+body.dark-mode .navbar .icon-bell,
+body.dark-mode .navbar .mdi-menu {
+  color: #f1f1f1 !important;
+}
+
+/* Toggle nút, input search */
+body.dark-mode .navbar input.form-control,
+body.dark-mode .navbar .form-control,
+body.dark-mode .navbar .search-form input {
+  background-color: #2e2e45 !important;
+  border: 1px solid #555 !important;
+  color: #fff !important;
+}
+
+/* Nút đổi theme */
+body.dark-mode .navbar .btn-outline-secondary {
+  border-color: #666 !important;
+  background-color: #3a3a50 !important;
+  color: #fff !important;
+}
+
+/* Dropdown trong navbar */
+body.dark-mode .navbar .dropdown-menu,
+body.dark-mode .navbar .dropdown-menu .dropdown-item {
+  background-color: #2e2e45 !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .navbar .dropdown-item:hover {
+  background-color: #3a3a50 !important;
+}
+
+/* ========== Footer fix cho dark mode ========== */
+body.dark-mode .footer,
+body.dark-mode footer {
+  background-color: #1e1e2f !important;
+  border-top: 1px solid #444;
+  color: #f1f1f1 !important;
+}
+
+/* Footer text */
+body.dark-mode .footer span,
+body.dark-mode .footer strong {
+  color: #f1f1f1 !important;
+}
+
+/* Nền tối cho input-group addon (khung chứa icon) */
+body.dark-mode .input-group-text {
+  background-color: #2e2e45 !important;
+  color: #ffffff !important;
+  border-color: #555 !important;
+}
+
+/* Icon trong addon sáng rõ hơn */
+body.dark-mode .input-group-text i {
+  color: #90caf9 !important; /* xanh dương nhạt nổi bật */
+}
+body.dark-mode .navbar .search-form > i.icon-search {
+  color: #90caf9 !important;
+  font-size: 1rem !important; /* nếu cần chỉnh size */
+}
+/* Nền tối cho icon ô tìm kiếm */
+body.dark-mode .search-form .input-group-text {
+  background-color: #2e2e45 !important;
+  border: 1px solid #555 !important;
+  color: #90caf9 !important;
+}
+
+/* Input cũng đồng bộ */
+body.dark-mode .search-form .form-control {
+  background-color: #2e2e45 !important;
+  color: #fff !important;
+  border: 1px solid #555 !important;
+}
+

@@ -23,7 +23,7 @@ use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
-    /**
+    /**Q
      * Display the registration view.
      */
 
@@ -67,8 +67,6 @@ class RegisteredUserController extends Controller
             'nguoi_dung_id' => $user->id,
             'vai_tro_id' => $request->vai_tro_id,
             'model_type' => NguoiDung::class,
-            'created_at' => now(),
-            'updated_at' => now()
         ]);
         event(new Registered($user));
 
@@ -97,6 +95,7 @@ class RegisteredUserController extends Controller
             }
         }
 
-        return redirect(route('hr.dashboard', absolute: false));
+        return redirect(route('tkall', absolute: false))->with('success', 'Tạo tài khoản thành công!');
+       
     }
 }
