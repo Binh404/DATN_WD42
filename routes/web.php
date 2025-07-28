@@ -1,44 +1,45 @@
 <?php
 
-use App\Http\Controllers\Admin\ChamCongAdminController;
-use App\Http\Controllers\Admin\DangKyTangCaAdminController;
-use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
-use App\Http\Controllers\CompanyLocationController;
-use App\Http\Controllers\employee\ChamCongController;
-use App\Http\Controllers\employee\DangKyTangCaController;
 use App\Http\Middleware\CheckRole;
-use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Admin\ChucVuController;
+use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\ExportController;
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\DonTuController;
+
+use App\Http\Controllers\Admin\LuongController;
+use App\Http\Controllers\Admin\ChucVuController;
 use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
-use App\Http\Controllers\Admin\DonTuController;
-use App\Http\Controllers\Admin\LoaiNghiPhepController;
 use App\Http\Controllers\Admin\PhongBanController;
+use App\Http\Controllers\admin\TaiKhoanController;
+use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Client\UngTuyenController;
+use App\Http\Controllers\CompanyLocationController;
 use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Auth\PasswordOTPController;
 use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
-
+use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\Admin\HoSoNhanVienController;
-use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
+
+use App\Http\Controllers\Admin\LoaiNghiPhepController;
 use App\Http\Controllers\employee\BangLuongController;
 use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Admin\ChamCongAdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
-use App\Http\Controllers\Admin\YeuCauTuyenDungController;
-
 use App\Http\Controllers\Admin\HopDongLaoDongController;
 
-use App\Http\Controllers\Client\NghiPhepController;
-use App\Http\Controllers\Admin\LuongController;
-use App\Http\Controllers\admin\TaiKhoanController;
+use App\Http\Controllers\Admin\YeuCauTuyenDungController;
+
+use App\Http\Controllers\employee\DangKyTangCaController;
+use App\Http\Controllers\Admin\DangKyTangCaAdminController;
+use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
+use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -221,7 +222,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('/hoso')->group(function () {
         Route::get('/admin/hoso', [HoSoNhanVienController::class, 'indexAll'])->name('hoso.all');
         Route::get('/admin/hoso/da-nghi', [HoSoNhanVienController::class, 'indexResigned'])->name('hoso.resigned');
-
+Route::post('/admin/ho-so/{id}/nhac-nho', [HoSoNhanVienController::class, 'remindToCompleteProfile'])
+     ->name('admin.hoso.remind');
         Route::patch('/nghi-viec/{id}', [HoSoNhanVienController::class, 'markResigned'])->name('hoso.markResigned');
         Route::patch('/khoi-phuc/{id}', [HoSoNhanVienController::class, 'restore'])->name('hoso.restore');
         Route::get('/create', [HoSoNhanVienController::class, 'create'])->name('hoso.create');
@@ -499,3 +501,5 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr'])
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
 });
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+
+Route::get('/toggle-theme', [ThemeController::class, 'toggle'])->name('toggle.theme');
