@@ -367,6 +367,8 @@ public function tinhLuongVaLuu(Request $request)
 {
     // Tạo mã bảng lương
     $maBangLuong = $request->ma_bang_luong;
+    $thang = $request->thang ?? now()->month;
+    $nam = $request->nam ?? now()->year;
 
     // Tạo bảng lương
     $bangLuong = BangLuong::create([
@@ -379,18 +381,20 @@ public function tinhLuongVaLuu(Request $request)
         'thoi_gian_xu_ly' => Carbon::now(),
     ]);
 
-    $thang = $request->thang ?? now()->month;
-    $nam = $request->nam ?? now()->year;
 
-    $nguoiDung = NguoiDung::with('chucVu')->find($request->nguoi_dung_id);
 
-    if (!$nguoiDung || !$nguoiDung->chucVu) {
-        return back()->with('error', 'Không tìm thấy thông tin người dùng hoặc chức vụ.');
-    }
+        $nguoiDung = NguoiDung::with('chucVu', 'hopDongLaoDongMoiNhat')->find($request->nguoi_dung_id);
 
-    $chucVu = $nguoiDung->chucVu;
-    $luongCoBan = $chucVu->luong_co_ban;
-    $heSoLuong = $chucVu->he_so_luong ?? 1;
+        if (!$nguoiDung || !$nguoiDung->chucVu) {
+            return back()->with('error', 'Không tìm thấy thông tin người dùng hoặc chức vụ.');
+        }
+        $chucVu = $nguoiDung->chucVu;
+        $heSoLuong = $chucVu->he_so_luong;
+
+
+        $luongCoBan = $nguoiDung->hopDongLaoDongMoiNhat->luong_co_ban;
+        // dd($luongCoBan, $heSoLuong);
+
 
     // ======= 1. SỐ NGÀY CÔNG =======
     if ($request->filled('so_ngay_cong')) {

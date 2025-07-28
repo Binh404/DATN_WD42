@@ -68,7 +68,7 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     }
     public function hopDongLaoDongMoiNhat()
     {
-        return $this->hasOne(HopDongLaoDong::class)->latestOfMany(); // ✅ chỉ trả về 1 record
+        return $this->hasOne(HopDongLaoDong::class)->latestOfMany('ngay_bat_dau'); // ✅ chỉ trả về 1 record
     }
 
     public function luongNhanVien()
