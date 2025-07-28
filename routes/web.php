@@ -261,6 +261,10 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
         Route::get('tkall', [TaiKhoanController::class, 'getall'])
             ->name('tkall');
+        Route::get('/chuc-vu/{phong_ban_id}', function ($phong_ban_id) {
+            return \App\Models\ChucVu::where('phong_ban_id', $phong_ban_id)->get();
+        });
+
         Route::get('tkedit/{id}/edit', [TaiKhoanController::class, 'edit'])
             ->name('tkedit');
         Route::put('tkedit/{id}/update', [TaiKhoanController::class, 'update'])
