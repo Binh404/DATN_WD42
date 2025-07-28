@@ -851,7 +851,7 @@
                 ngayTangCaInput.min = today;
             }
         });
-         function confirmDelete(id, trangThai) {
+        function confirmDelete(id, trangThai) {
             if (confirm('Bạn có chắc chắn muốn hủy đơn này không này?')) {
                  document.getElementById('trangThaiDuyet').value = trangThai;
                 const form = document.getElementById('pheDuyetForm');

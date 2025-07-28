@@ -339,10 +339,10 @@ class DashboardController extends Controller
         ->get();
 
     $soNgayChamCongThangNay = $chamCongThangNay->count();
-    $soNgayDiTreThangNay = $chamCongThangNay->where('trang_thai', 'di_tre')->count();
+    $soNgayDiTreThangNay = $chamCongThangNay->where('trang_thai', 'di_muon')->count();
     $soNgayVeSlmThangNay = $chamCongThangNay->where('trang_thai', 've_som')->count();
     $soNgayNghiPhepThangNay = $chamCongThangNay->where('trang_thai', 'nghi_phep')->count();
-    $soNgayDungGioThangNay = $chamCongThangNay->where('trang_thai', 'dung_gio')->count();
+    $soNgayDungGioThangNay = $chamCongThangNay->where('trang_thai', 'binh_thuong')->count();
 
     // Tính số ngày làm việc trong tháng (loại trừ thứ 7, chủ nhật)
     $soNgayLamViecTrongThang = 0;
@@ -374,7 +374,7 @@ class DashboardController extends Controller
         ->get();
 
     $soNgayChamCongNamNay = $chamCongNamNay->count();
-    $soNgayDiTreNamNay = $chamCongNamNay->where('trang_thai', 'di_tre')->count();
+    $soNgayDiTreNamNay = $chamCongNamNay->where('trang_thai', 'di_muon')->count();
     $soNgayVeSomNamNay = $chamCongNamNay->where('trang_thai', 've_som')->count();
     $soNgayNghiPhepNamNay = $chamCongNamNay->where('trang_thai', 'nghi_phep')->count();
 
@@ -403,7 +403,7 @@ class DashboardController extends Controller
         $thongKeTheoThang[$monthName] = [
             'tong_cham_cong' => $chamCongThang->count(),
             'dung_gio' => $chamCongThang->where('trang_thai', 'dung_gio')->count(),
-            'di_tre' => $chamCongThang->where('trang_thai', 'di_tre')->count(),
+            'di_tre' => $chamCongThang->where('trang_thai', 'di_muon')->count(),
             've_som' => $chamCongThang->where('trang_thai', 've_som')->count(),
             'nghi_phep' => $chamCongThang->where('trang_thai', 'nghi_phep')->count(),
             'ty_le_cham_cong' => $workingDays > 0 ? round(($chamCongThang->count() / $workingDays) * 100, 1) : 0
@@ -415,29 +415,14 @@ class DashboardController extends Controller
     $tongGioLamViecNamNay = 0;
 
     foreach ($chamCongThangNay as $chamCong) {
-        if ($chamCong->gio_vao && $chamCong->gio_ra) {
-            $gioVao = Carbon::parse($chamCong->gio_vao);
-            $gioRa = Carbon::parse($chamCong->gio_ra);
-            // $tongGioLamViecThangNay += $gioRa->diffInHours($gioVao);
+        $tongGioLamViecThangNay += $chamCong->so_gio_lam;
 
-            if ($gioRa->greaterThan($gioVao)) {
-                $tongGioLamViecThangNay += $gioVao->diffInHours($gioRa);
-            }else {
-                $tongGioLamViecThangNay += $gioRa->diffInHours($gioVao);
-            }
-        }
     }
 
     foreach ($chamCongNamNay as $chamCong) {
-        if ($chamCong->gio_vao && $chamCong->gio_ra) {
-            $gioVao = Carbon::parse($chamCong->gio_vao);
-            $gioRa = Carbon::parse($chamCong->gio_ra);
-            if ($gioRa->greaterThan($gioVao)) {
-                $tongGioLamViecNamNay += $gioVao->diffInHours($gioRa);
-            }else {
-                $tongGioLamViecNamNay += $gioRa->diffInHours($gioVao);
-            }
-        }
+
+                $tongGioLamViecNamNay += $chamCong->so_gio_lam;
+
     }
     // 7. Lịch sử chấm công gần đây (7 ngày)
     $lichSuChamCongGanDay = $nguoiDung->chamCong()

@@ -278,7 +278,7 @@
                                         <td>{{ $chamCong->gio_ra ? Carbon\Carbon::parse($chamCong->gio_ra)->format('H:i') : '--' }}</td>
                                         <td>
                                             @if($chamCong->gio_vao && $chamCong->gio_ra)
-                                                {{ Carbon\Carbon::parse($chamCong->gio_vao)->diffInHours(Carbon\Carbon::parse($chamCong->gio_ra)) }}h
+                                                {{ $chamCong->so_gio_lam }}h
                                             @else
                                                 --
                                             @endif

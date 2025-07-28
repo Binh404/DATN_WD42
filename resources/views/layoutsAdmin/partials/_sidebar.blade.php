@@ -29,6 +29,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
                     </li>
+                    @endif
+
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qltk'))
+
                     <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
                     </li>
                      <li class="nav-item">
@@ -67,22 +71,7 @@
         </li>
         @endif
 
-        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-office-building-outline"></i>
-                <span class="menu-title">Thông báo tuyển dụng</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}">Danh sách phòng ban</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        @endif
+
 
         {{-- Lương - Chỉ admin có quyền --}}
         @if(MenuHelper::hasMenuPermission('luong'))
@@ -345,6 +334,31 @@
                 <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
                 <span class="menu-title">Yêu cầu tuyển đụng</span>
             </a>
+        </li>
+        @endif
+         @if(MenuHelper::hasMenuPermission('dondexuat'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#dondexuat" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-file-outline"></i>
+                <span class="menu-title">Đơn đề xuất</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="dondexuat">
+                <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('dondexuat', 'guidexuat'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('de-xuat.index')}}">Gửi đề xuất</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('dondexuat', 'danhsach'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('de-xuat.index')}}">Danh sách đề xuất</a>
+                    </li>
+                    @endif
+                </ul>
+            </div>
         </li>
         @endif
     </ul>
