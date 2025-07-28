@@ -48,15 +48,15 @@ class UngTuyen extends Model
 
     public function nguoiCapNhat()
     {
-        return $this->belongsTo(User::class, 'nguoi_cap_nhat');
+        return $this->belongsTo(NguoiDung::class, 'nguoi_cap_nhat');
     }
 
     public function nguoiCapNhatTrangThai()
     {
-        return $this->belongsTo(User::class, 'nguoi_cap_nhat_id');
+        return $this->belongsTo(NguoiDung::class, 'nguoi_cap_nhat_id');
     }
 
-  
+
     public function tinTuyenDung()
     {
         return $this->belongsTo(TinTuyenDung::class, 'tin_tuyen_dung_id');

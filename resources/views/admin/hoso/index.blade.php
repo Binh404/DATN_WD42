@@ -31,31 +31,7 @@
                         </div>
                     </div>
                     <div class="tab-content tab-content-basic">
-                        <div class="row">
-                            <div class="col-lg-12 d-flex flex-column">
-
-                                <!-- Alert Messages -->
-                                @if(session('success'))
-                                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center"
-                                        role="alert">
-                                        <i class="bi bi-check-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
-                                        <div>{{ session('success') }}</div>
-                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                                            aria-label="Đóng"></button>
-                                    </div>
-                                @endif
-
-                                @if(session('error'))
-                                    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center"
-                                        role="alert">
-                                        <i class="bi bi-exclamation-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
-                                        <div>{{ session('error') }}</div>
-                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                                            aria-label="Đóng"></button>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <div class="col-lg-12 grid-margin stretch-card mt-4">
                                 <div class="card">
@@ -105,6 +81,31 @@
                                 </div>
                             </div>
                         </div>
+            <div class="row">
+                            <div class="col-lg-12 d-flex flex-column">
+
+                                <!-- Alert Messages -->
+                                @if(session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center"
+                                        role="alert">
+                                        <i class="bi bi-check-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
+                                        <div>{{ session('success') }}</div>
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                            aria-label="Đóng"></button>
+                                    </div>
+                                @endif
+
+                                @if(session('error'))
+                                    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center"
+                                        role="alert">
+                                        <i class="bi bi-exclamation-circle-fill me-2"></i> {{-- Dùng Bootstrap Icons --}}
+                                        <div>{{ session('error') }}</div>
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                                            aria-label="Đóng"></button>
+                                    </div>
+                                @endif
+                            </div>
+            </div>
                         <div class="row">
 
                             <div class="col-lg-12 d-flex flex-column">
@@ -176,6 +177,36 @@
                                                                                     </div>
                                                                                     <div><i class="mdi mdi-email me-1"></i>
                                                                                         Email: {{ $cc->email }}</div>
+
+                                                                                    @if(isset($cc->percent))
+                                                                                        @php
+                                                                                            $percent = $cc->percent;
+                                                                                            $barColor = 'bg-success'; // xanh lá
+
+                                                                                            if ($percent < 50) {
+                                                                                                $barColor = 'bg-danger'; // đỏ
+                                                                                            } elseif ($percent < 80) {
+                                                                                                $barColor = 'bg-warning'; // cam
+                                                                                            }
+                                                                                        @endphp
+                                                                                        <div class="mt-1" data-bs-toggle="tooltip" data-bs-html="true"
+                                                                                            title="
+                                                                                            @if(isset($cc->missingFields) && count($cc->missingFields) > 0)
+                                                                                                Thiếu:<br>
+                                                                                                @foreach($cc->missingFields as $field)
+                                                                                                    - {{ $field }}&#10; <br>
+                                                                                                @endforeach
+                                                                                            @else
+                                                                                                Đã hoàn thiện hồ sơ!
+                                                                                            @endif
+                                                                                            ">
+                                                                                            <small class="text-muted">Hoàn thành hồ sơ: {{ $percent }}%</small>
+                                                                                            <div class="progress" style="height: 5px; max-width: 150px;">
+                                                                                                <div class="progress-bar {{ $barColor }}" role="progressbar"
+                                                                                                    style="width: {{ $percent }}%" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    @endif
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -219,6 +250,15 @@
                                                                                     <i class="mdi mdi-account-off"></i>
                                                                                 </button>
                                                                             </form>
+
+@if($cc->hoSo->tien_do < 100)
+    <form action="{{ route('admin.hoso.remind', $cc->hoSo->id) }}" method="POST" style="display:inline;">
+        @csrf
+        <button class="btn btn-warning btn-sm" onclick="return confirm('Gửi nhắc nhở tới nhân viên này?')">
+            Gửi nhắc nhở
+        </button>
+    </form>
+@endif                                                                            
                                                                         @else
                                                                             <span class="text-muted fst-italic">Chưa có hồ sơ</span>
                                                                         @endif
@@ -274,28 +314,13 @@
 
     {{-- SCRIPT TÌM KIẾM --}}
     <script>
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     const input = document.getElementById('searchInput');
-        //     const form = document.getElementById('autoSearchForm');
-        //     const tbody = document.querySelector('tbody');
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+    
+</script>
 
-        //     let timeout = null;
-
-        //     input.addEventListener('input', function () {
-        //         clearTimeout(timeout);
-        //         timeout = setTimeout(() => {
-        //             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
-        //             form.submit();
-        //         }, 600);
-        //     });
-
-        //     input.addEventListener('keydown', function (e) {
-        //         if (e.key === 'Enter') {
-        //             e.preventDefault();
-        //             tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
-        //             form.submit();
-        //         }
-        //     });
-        // });
-    </script>
 @endsection

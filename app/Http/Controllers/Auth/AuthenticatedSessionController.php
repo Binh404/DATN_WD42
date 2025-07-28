@@ -29,6 +29,12 @@ class AuthenticatedSessionController extends Controller
 
 
         $user = Auth::user();
+        if ($user->trang_thai_cong_viec === 'da_nghi') {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Tài khoản này đã nghỉ việc, không thể đăng nhập.',
+            ]);
+        }
     // Đảm bảo đã load vai trò
         // dd($request->session()->get('_token'));
 
@@ -50,6 +56,7 @@ class AuthenticatedSessionController extends Controller
             'email' => 'Tài khoản không có quyền truy cập hệ thống.',
         ]);
     }
+    
 
     /**
      * Đăng xuất khỏi phiên đăng nhập.

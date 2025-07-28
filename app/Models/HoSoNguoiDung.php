@@ -29,6 +29,8 @@ class HoSoNguoiDung extends Model
         'lien_he_khan_cap',
         'sdt_khan_cap',
         'quan_he_khan_cap',
+        'anh_cccd_truoc',
+        'anh_cccd_sau',
     ];
 
     protected $casts = [
