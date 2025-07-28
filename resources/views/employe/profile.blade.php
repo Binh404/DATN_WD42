@@ -255,6 +255,66 @@
                                 </div>
                             </div>
 
+                            <!-- Ảnh cccd trước -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">
+                                        <i class="mdi mdi-account me-2"></i>
+                                        Ảnh CCCD Trước
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Chọn ảnh mới</label>
+                                            <input type="file" id="inputImage" name="anh_cccd_truoc" class="form-control @error('anh_cccd_truoc') is-invalid @enderror" accept="image/*">
+                                            @error('anh_cccd_truoc')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 2MB</div>
+                                        </div>
+                                        @if($hoSo->anh_cccd_truoc)
+                                            <div class="col-md-4">
+                                                <label class="form-label">Ảnh hiện tại</label>
+                                                <div class="text-center">
+                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_truoc) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ảnh cccd sau -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">
+                                        <i class="mdi mdi-account me-2"></i>
+                                        Ảnh CCCD Sau
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Chọn ảnh mới</label>
+                                            <input type="file" id="inputImage" name="anh_cccd_sau" class="form-control @error('anh_cccd_sau') is-invalid @enderror" accept="image/*">
+                                            @error('anh_cccd_sau')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 2MB</div>
+                                        </div>
+                                        @if($hoSo->anh_cccd_sau)
+                                            <div class="col-md-4">
+                                                <label class="form-label">Ảnh hiện tại</label>
+                                                <div class="text-center">
+                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_sau) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Nút submit -->
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button type="reset" class="btn btn-outline-secondary me-md-2">

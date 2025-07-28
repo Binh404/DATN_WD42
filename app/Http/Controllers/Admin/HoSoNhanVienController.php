@@ -8,6 +8,7 @@ use App\Models\HoSoNguoiDung;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NhacNhoHoSo;
 
 class HoSoNhanVienController extends Controller
 {
@@ -32,6 +33,51 @@ class HoSoNhanVienController extends Controller
         })
         ->orderByDesc('created_at')
         ->paginate(10);
+
+        foreach ($nguoiDungs as $nguoiDung) {
+            $hoSo = $nguoiDung->hoSo;
+
+            if (!$hoSo) {
+                $nguoiDung->percent = 0;
+                $nguoiDung->missingFields = [];
+                continue;
+            }
+
+
+            $fields = [
+                'ho' => 'Họ',
+                'ten' => 'Tên',
+                'so_dien_thoai' => 'Số điện thoại',
+                'ngay_sinh' => 'Ngày sinh',
+                'gioi_tinh' => 'Giới tính',
+                'dia_chi_hien_tai' => 'Địa chỉ hiện tại',
+                'dia_chi_thuong_tru' => 'Địa chỉ thường trú',
+                'cmnd_cccd' => 'CMND/CCCD',
+                'so_ho_chieu' => 'Số hộ chiếu',
+                'tinh_trang_hon_nhan' => 'Tình trạng hôn nhân',
+                'anh_dai_dien' => 'Ảnh đại diện',
+                'anh_cccd_truoc' => 'Ảnh CCCD mặt trước',
+                'anh_cccd_sau' => 'Ảnh CCCD mặt sau',
+                'lien_he_khan_cap' => 'Tên liên hệ khẩn cấp',
+                'sdt_khan_cap' => 'SĐT khẩn cấp',
+                'quan_he_khan_cap' => 'Quan hệ khẩn cấp',
+
+            ];
+
+            $filled = 0;
+            $missingFields = [];
+
+            foreach ($fields as $field => $label) {
+                if (!empty($hoSo->$field)) {
+                    $filled++;
+                } else {
+                    $missingFields[] = $label;
+                }
+            }
+
+            $nguoiDung->percent = round(($filled / count($fields)) * 100);
+            $nguoiDung->missingFields = $missingFields;
+        }
 
     return view('admin.hoso.index', compact('nguoiDungs', 'keyword'));
 }
@@ -82,7 +128,17 @@ public function restore($id)
 
     return redirect()->route('hoso.resigned')->with('success', 'Đã khôi phục nhân viên về trạng thái đang làm.');
 }
+public function remindToCompleteProfile($id)
+{
+    $hoSo = HoSoNguoiDung::findOrFail($id);
+    $user = $hoSo->nguoiDung; // đảm bảo có quan hệ hasOne('nguoiDung') trong model
 
+    if ($user) {
+        $user->notify(new NhacNhoHoSo());
+    }
+
+    return redirect()->back()->with('success', 'Đã gửi nhắc nhở tới nhân viên.');
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -147,6 +203,9 @@ public function update(Request $request, $id)
         'so_ho_chieu' => 'nullable|string|max:20',
         'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
         'anh_dai_dien' => 'nullable|image|max:2048',
+        'anh_cccd_truoc' => 'nullable|image|max:2048',
+        'anh_cccd_sau' => 'nullable|image|max:2048',
+
         'lien_he_khan_cap' => 'nullable|string|max:100',
         'sdt_khan_cap'        => ['nullable','regex:/^0[0-9]{9}$/',
                                     function ($attribute, $value, $fail) use ($request) {
@@ -176,6 +235,10 @@ public function update(Request $request, $id)
         'tinh_trang_hon_nhan.in' => 'Tình trạng hôn nhân không hợp lệ.',
         'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
         'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
+        'anh_cccd_truoc.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+        'anh_cccd_truoc.max' => 'Ảnh đại diện tối đa 2MB.',
+        'anh_cccd_sau.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+        'anh_cccd_sau.max' => 'Ảnh đại diện tối đa 2MB.',
         'sdt_khan_cap.regex' => 'SĐT khẩn cấp phải có 10 chữ số và bắt đầu bằng số 0.',
     ]);
 
@@ -199,6 +262,38 @@ public function update(Request $request, $id)
         $hoSo->anh_dai_dien = 'storage/anh_dai_dien/' . $filename;
         $hoSo->save();
     }
+    // Nếu có CCCD mặt trước
+if ($request->hasFile('anh_cccd_truoc')) {
+    $file = $request->file('anh_cccd_truoc');
+    $filename = time() . '_front.' . $file->getClientOriginalExtension();
+    $path = storage_path('app/public/cccd/' . $filename);
+
+    if (!file_exists(dirname($path))) {
+        mkdir(dirname($path), 0777, true);
+    }
+
+    file_put_contents($path, file_get_contents($file));
+
+    $hoSo->anh_cccd_truoc = 'storage/cccd/' . $filename;
+}
+
+// Nếu có CCCD mặt sau
+if ($request->hasFile('anh_cccd_sau')) {
+    $file = $request->file('anh_cccd_sau');
+    $filename = time() . '_back.' . $file->getClientOriginalExtension();
+    $path = storage_path('app/public/cccd/' . $filename);
+
+    if (!file_exists(dirname($path))) {
+        mkdir(dirname($path), 0777, true);
+    }
+
+    file_put_contents($path, file_get_contents($file));
+
+    $hoSo->anh_cccd_sau = 'storage/cccd/' . $filename;
+}
+
+$hoSo->save();
+
 
     return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
 }

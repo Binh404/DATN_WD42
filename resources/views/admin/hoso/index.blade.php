@@ -177,6 +177,36 @@
                                                                                     </div>
                                                                                     <div><i class="mdi mdi-email me-1"></i>
                                                                                         Email: {{ $cc->email }}</div>
+
+                                                                                    @if(isset($cc->percent))
+                                                                                        @php
+                                                                                            $percent = $cc->percent;
+                                                                                            $barColor = 'bg-success'; // xanh lá
+
+                                                                                            if ($percent < 50) {
+                                                                                                $barColor = 'bg-danger'; // đỏ
+                                                                                            } elseif ($percent < 80) {
+                                                                                                $barColor = 'bg-warning'; // cam
+                                                                                            }
+                                                                                        @endphp
+                                                                                        <div class="mt-1" data-bs-toggle="tooltip" data-bs-html="true"
+                                                                                            title="
+                                                                                            @if(isset($cc->missingFields) && count($cc->missingFields) > 0)
+                                                                                                Thiếu:<br>
+                                                                                                @foreach($cc->missingFields as $field)
+                                                                                                    - {{ $field }}&#10; <br>
+                                                                                                @endforeach
+                                                                                            @else
+                                                                                                Đã hoàn thiện hồ sơ!
+                                                                                            @endif
+                                                                                            ">
+                                                                                            <small class="text-muted">Hoàn thành hồ sơ: {{ $percent }}%</small>
+                                                                                            <div class="progress" style="height: 5px; max-width: 150px;">
+                                                                                                <div class="progress-bar {{ $barColor }}" role="progressbar"
+                                                                                                    style="width: {{ $percent }}%" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    @endif
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -220,6 +250,15 @@
                                                                                     <i class="mdi mdi-account-off"></i>
                                                                                 </button>
                                                                             </form>
+
+@if($cc->hoSo->tien_do < 100)
+    <form action="{{ route('admin.hoso.remind', $cc->hoSo->id) }}" method="POST" style="display:inline;">
+        @csrf
+        <button class="btn btn-warning btn-sm" onclick="return confirm('Gửi nhắc nhở tới nhân viên này?')">
+            Gửi nhắc nhở
+        </button>
+    </form>
+@endif                                                                            
                                                                         @else
                                                                             <span class="text-muted fst-italic">Chưa có hồ sơ</span>
                                                                         @endif
@@ -274,4 +313,14 @@
     {{-- </div> --}}
 
     {{-- SCRIPT TÌM KIẾM --}}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+    
+</script>
+
 @endsection

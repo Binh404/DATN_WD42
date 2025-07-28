@@ -186,9 +186,55 @@
                     @error('anh_dai_dien') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6 text-center">
-                    @if (!empty($hoSo->anh_dai_dien))
-                        <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Ảnh đại diện" class="img-thumbnail" width="120">
-                    @endif
+                    <img id="preview_anh_dai_dien"
+                        src=""
+                        alt="Ảnh đại diện"
+                        class="img-thumbnail"
+                        width="120">
+                </div>
+            </div>
+        </div>
+
+        {{-- Ảnh CCCD Trước --}}
+        <div class="card shadow mb-4 rounded-4">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-image-fill me-2"></i>Ảnh CCCD Trước
+            </div>
+            <div class="card-body row g-3 align-items-center">
+                <div class="col-md-6">
+                    <label for="anh_cccd_truoc" class="form-label">Chọn ảnh mới</label>
+                    <input type="file" class="form-control" id="anh_cccd_truoc" name="anh_cccd_truoc">
+                    <small class="text-muted">Định dạng: JPG, PNG, GIF. Tối đa: 2MB.</small>
+                    @error('anh_cccd_truoc') <div class="text-danger">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="preview_anh_cccd_truoc"
+                        src=""
+                        alt="Ảnh CCCD trước"
+                        class="img-thumbnail"
+                        width="120">
+                </div>
+            </div>
+        </div>
+
+        {{-- Ảnh CCCD Sau --}}
+        <div class="card shadow mb-4 rounded-4">
+            <div class="card-header bg-light fw-bold">
+                <i class="bi bi-image-fill me-2"></i>Ảnh CCCD Sau
+            </div>
+            <div class="card-body row g-3 align-items-center">
+                <div class="col-md-6">
+                    <label for="anh_cccd_sau" class="form-label">Chọn ảnh mới</label>
+                    <input type="file" class="form-control" id="anh_cccd_sau" name="anh_cccd_sau">
+                    <small class="text-muted">Định dạng: JPG, PNG, GIF. Tối đa: 2MB.</small>
+                    @error('anh_cccd_sau') <div class="text-danger">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-6 text-center">
+                    <img id="preview_anh_cccd_sau"
+                        src=""
+                        alt="Ảnh CCCD sau"
+                        class="img-thumbnail"
+                        width="120">
                 </div>
             </div>
         </div>
@@ -199,4 +245,37 @@
         </div>
     </form>
 </div>
+
+<script>
+    function previewImage(input, previewId) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById(previewId);
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline'; // hiện ảnh nếu bị ẩn
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('anh_dai_dien')?.addEventListener('change', function () {
+            previewImage(this, 'preview_anh_dai_dien');
+        });
+
+        document.getElementById('anh_cccd_truoc')?.addEventListener('change', function () {
+            previewImage(this, 'preview_anh_cccd_truoc');
+        });
+
+        document.getElementById('anh_cccd_sau')?.addEventListener('change', function () {
+            previewImage(this, 'preview_anh_cccd_sau');
+        });
+    });
+</script>
+
+
 @endsection

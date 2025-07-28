@@ -100,7 +100,7 @@ class ProfileController extends Controller
         'ten'                 => ['required','string','max:50'],
         'so_dien_thoai'       => ['required',
                                   'regex:/^0[0-9]{9}$/',
-                                  Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id, 'nguoi_dung_id')],                     // 10 số, bắt đầu 0
+                                  Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id)],                     // 10 số, bắt đầu 0
         'ngay_sinh'           => [
                                     'required',
                                     'date',
@@ -121,6 +121,8 @@ class ProfileController extends Controller
         // Cho phép bỏ trống nhưng phải đúng định dạng khi có
         'so_ho_chieu'         => ['nullable','string','max:20'],
         'anh_dai_dien'        => ['nullable','image','max:2048'],
+        'anh_cccd_truoc' => ['nullable|image|max:2048'],
+        'anh_cccd_sau' => ['nullable|image|max:2048'],
         'lien_he_khan_cap'    => ['nullable','string','max:100'],
         'sdt_khan_cap'        => ['nullable','regex:/^0[0-9]{9}$/',
                                     function ($attribute, $value, $fail) use ($request) {
@@ -150,6 +152,10 @@ class ProfileController extends Controller
         'sdt_khan_cap.regex'          => 'SĐT khẩn cấp phải gồm 10 chữ số và bắt đầu bằng 0.',
         'anh_dai_dien.image'          => 'Ảnh đại diện phải là tệp hình ảnh (jpg, png, gif…).',
         'anh_dai_dien.max'            => 'Ảnh đại diện tối đa 2 MB.',
+        'anh_cccd_truoc.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+        'anh_cccd_truoc.max' => 'Ảnh đại diện tối đa 2MB.',
+        'anh_cccd_sau.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+        'anh_cccd_sau.max' => 'Ảnh đại diện tối đa 2MB.',
     ]);
 
 
@@ -171,6 +177,36 @@ class ProfileController extends Controller
             $hoSo->anh_dai_dien = 'storage/anh_dai_dien/' . $filename;
         }
 
+
+        // Nếu có CCCD mặt trước
+        if ($request->hasFile('anh_cccd_truoc')) {
+            $file = $request->file('anh_cccd_truoc');
+            $filename = time() . '_front.' . $file->getClientOriginalExtension();
+            $path = storage_path('app/public/cccd/' . $filename);
+
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+
+            file_put_contents($path, file_get_contents($file));
+
+            $hoSo->anh_cccd_truoc = 'storage/cccd/' . $filename;
+        }
+
+        // Nếu có CCCD mặt sau
+        if ($request->hasFile('anh_cccd_sau')) {
+            $file = $request->file('anh_cccd_sau');
+            $filename = time() . '_back.' . $file->getClientOriginalExtension();
+            $path = storage_path('app/public/cccd/' . $filename);
+
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+
+            file_put_contents($path, file_get_contents($file));
+
+            $hoSo->anh_cccd_sau = 'storage/cccd/' . $filename;
+        }
         $hoSo->save();
 
         return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');

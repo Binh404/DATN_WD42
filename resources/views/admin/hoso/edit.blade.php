@@ -154,8 +154,8 @@
                             <div class="col-md-6">
                                 <label class="form-label">Ảnh đại diện</label><br>
                                 <div class="avatar-wrapper">
-                                    <img src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar">
-                                    <input type="file" name="anh_dai_dien" class="@error('anh_dai_dien') is-invalid @enderror">
+                                    <img id="previewImage" src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar">
+                                    <input type="file" id="inputImage" name="anh_dai_dien" class="@error('anh_dai_dien') is-invalid @enderror">
                                 </div>
                                 @error('anh_dai_dien') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
@@ -163,6 +163,33 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Khung thông tin CCCD --}}
+<div class="card mb-3">
+    <div class="card-header fw-bold">Ảnh CCCD</div>
+    <div class="card-body row">
+        <!-- Mặt trước CCCD -->
+<div class="col-md-6 mb-3">
+    <label for="anh_cccd_truoc" class="form-label">Mặt trước CCCD</label>
+    <input class="form-control" type="file" name="anh_cccd_truoc" id="anh_cccd_truoc" accept="image/*">
+    <img id="preview_truoc" 
+         src="{{ $hoSo->anh_cccd_truoc ? asset($hoSo->anh_cccd_truoc) : '' }}" 
+         class="img-fluid mt-2 border" 
+         style="max-height: 200px; {{ $hoSo->anh_cccd_truoc ? '' : 'display:none;' }}">
+</div>
+
+<!-- Mặt sau CCCD -->
+<div class="col-md-6 mb-3">
+    <label for="anh_cccd_sau" class="form-label">Mặt sau CCCD</label>
+    <input class="form-control" type="file" name="anh_cccd_sau" id="anh_cccd_sau" accept="image/*">
+    <img id="preview_sau" 
+         src="{{ $hoSo->anh_cccd_sau ? asset($hoSo->anh_cccd_sau) : '' }}" 
+         class="img-fluid mt-2 border" 
+         style="max-height: 200px; {{ $hoSo->anh_cccd_sau ? '' : 'display:none;' }}">
+</div>
+    </div>
+</div>
+
 
             {{-- -------- Liên hệ khẩn cấp -------- --}}
             <div class="col-12">
@@ -203,4 +230,41 @@
         </div>
     </form>
 </div>
+
+    <script>
+        document.getElementById('inputImage').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        function previewImage(input, previewId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Gắn sự kiện onchange bằng JS nếu chưa làm inline
+    document.getElementById('anh_cccd_truoc').addEventListener('change', function () {
+        previewImage(this, 'preview_truoc');
+    });
+
+    document.getElementById('anh_cccd_sau').addEventListener('change', function () {
+        previewImage(this, 'preview_sau');
+    });
+    </script>
 @endsection

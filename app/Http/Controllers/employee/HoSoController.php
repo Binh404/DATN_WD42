@@ -73,6 +73,8 @@ class HoSoController extends Controller
     'so_ho_chieu' => 'nullable|string|max:20',
     'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
     'anh_dai_dien' => 'nullable|image|max:2048',
+    'anh_cccd_truoc' => 'nullable|image|max:2048',
+    'anh_cccd_sau' => 'nullable|image|max:2048',
     'lien_he_khan_cap' => 'nullable|string|max:100',
     'sdt_khan_cap' => [
     'nullable',
@@ -107,6 +109,10 @@ class HoSoController extends Controller
     'email_cong_ty.email' => 'Email công ty không đúng định dạng.',
     'anh_dai_dien.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
     'anh_dai_dien.max' => 'Ảnh đại diện tối đa 2MB.',
+    'anh_cccd_truoc.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+    'anh_cccd_truoc.max' => 'Ảnh đại diện tối đa 2MB.',
+    'anh_cccd_sau.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
+    'anh_cccd_sau.max' => 'Ảnh đại diện tối đa 2MB.',
     'sdt_khan_cap.regex' => 'SĐT khẩn cấp không đúng định dạng.',
 ]);
 
@@ -127,6 +133,35 @@ class HoSoController extends Controller
         file_put_contents($path, file_get_contents($file));
         $validated['anh_dai_dien'] = 'storage/anh_dai_dien/' . $filename;
     }
+    // Nếu có CCCD mặt trước
+            if ($request->hasFile('anh_cccd_truoc')) {
+            $file = $request->file('anh_cccd_truoc');
+            $filename = time() . '_front.' . $file->getClientOriginalExtension();
+            $path = storage_path('app/public/cccd/' . $filename);
+
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+
+            file_put_contents($path, file_get_contents($file));
+
+            $validated['anh_cccd_truoc'] = 'storage/cccd/' . $filename;
+        }
+
+        // Nếu có CCCD mặt sau
+        if ($request->hasFile('anh_cccd_sau')) {
+            $file = $request->file('anh_cccd_sau');
+            $filename = time() . '_back.' . $file->getClientOriginalExtension();
+            $path = storage_path('app/public/cccd/' . $filename);
+
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+
+            file_put_contents($path, file_get_contents($file));
+
+            $validated['anh_cccd_sau'] = 'storage/cccd/' . $filename;
+        }
 
     HoSoNguoiDung::updateOrCreate(
         ['nguoi_dung_id' => $user->id],
