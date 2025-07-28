@@ -15,7 +15,7 @@ class DuyetDonTuController extends Controller
     {
         $user = auth()->user();
         if ($user->coVaiTro('admin')) {
-            $yeuCaus = YeuCauTuyenDung::where('trang_thai', 'cho_duyet')->get();
+            $yeuCaus = YeuCauTuyenDung::orderBy('created_at', 'desc')->paginate(10);
             return view('admin.duyetdontu.dontuyendung.index', compact('yeuCaus'));
         }
         abort(403, 'Bạn không có quyền truy cập trang này.');
