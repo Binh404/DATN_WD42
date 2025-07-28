@@ -42,7 +42,7 @@ class UngTuyen extends Model
         parent::boot();
 
         static::creating(function ($ungTuyen) {
-            $ungTuyen->trang_thai_pv = 'chưa phỏng vấn';
+            $ungTuyen->trang_thai_pv = 'Chưa phỏng vấn';
         });
     }
 

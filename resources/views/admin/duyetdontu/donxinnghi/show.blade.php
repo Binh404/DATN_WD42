@@ -662,7 +662,7 @@
                             <span class="info-label">Cấp duyệt hiện tại:</span>
                             <span class="info-value">
                                 <span class="approval-level" id="approvalLevel">
-                                    {{-- {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : 'HR' }} --}}
+                                    {{ $donNghiPhep->cap_duyet_hien_tai == 1 ? 'Trưởng phòng' : ($donNghiPhep->cap_duyet_hien_tai == 2 ? 'HR' : 'Giám đốc') }}
                                 </span>
                             </span>
                         </div>

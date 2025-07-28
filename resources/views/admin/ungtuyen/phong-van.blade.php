@@ -338,7 +338,7 @@
         const diemInput = document.getElementById('diem_phong_van');
         const diemGroup = document.getElementById('diemPhongVanGroup');
 
-        if (['đã phỏng vấn', 'pass', 'fail'].includes(status)) {
+        if (['Đã phỏng vấn', 'Đạt', 'Khó'].includes(status)) {
             diemGroup.style.display = 'block';
             diemInput.required = true;
         } else {
@@ -396,14 +396,14 @@
                         // Cập nhật trạng thái
                         let badgeHtml = '';
                         switch (trangThai) {
-                            case 'đã phỏng vấn':
+                            case 'Đã phỏng vấn':
                                 badgeHtml = '<span class="badge bg-info">Đã phỏng vấn</span>';
                                 break;
-                            case 'pass':
-                                badgeHtml = '<span class="badge bg-success">Pass</span>';
+                            case 'Đạt':
+                                badgeHtml = '<span class="badge bg-success">Đạt</span>';
                                 break;
-                            case 'fail':
-                                badgeHtml = '<span class="badge bg-danger">Fail</span>';
+                            case 'Khó':
+                                badgeHtml = '<span class="badge bg-danger">Khó</span>';
                                 break;
                             default:
                                 badgeHtml = '<span class="badge bg-warning text-dark">Chưa phỏng vấn</span>';

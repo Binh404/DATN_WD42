@@ -71,7 +71,16 @@
         </li>
         @endif
 
+        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-office-building-outline"></i>
+                <span class="menu-title">Thông báo tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
 
+        </li>
+        @endif
 
         {{-- Lương - Chỉ admin có quyền --}}
         @if(MenuHelper::hasMenuPermission('luong'))
@@ -221,7 +230,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
+                    </li>
                 </ul>
 
             </div>
@@ -330,7 +341,7 @@
         {{-- Loại nghỉ phép - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('yeucautuyendung'))
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('department.yeucautuyendung.create') }}">
+            <a class="nav-link" href="{{ route('department.yeucautuyendung.index') }}">
                 <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
                 <span class="menu-title">Yêu cầu tuyển đụng</span>
             </a>

@@ -43,6 +43,9 @@ use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Admin\LuongController;
 use App\Http\Controllers\admin\TaiKhoanController;
 
+use App\Http\Controllers\NotificationController;
+use Illuminate\Notifications\DatabaseNotification;
+
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
     Route::get('/verify-otp', function () {
@@ -145,12 +148,16 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Hợp đồng lao động
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
+        Route::get('/luu-tru', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
+        Route::get('/export', [HopDongLaoDongController::class, 'export'])->name('export');
+        Route::get('/export-luu-tru', [HopDongLaoDongController::class, 'exportLuuTru'])->name('export-luu-tru');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
         Route::post('/store', [HopDongLaoDongController::class, 'store'])->name('store');
         Route::get('/{id}/show', [HopDongLaoDongController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [HopDongLaoDongController::class, 'edit'])->name('edit');
         Route::put('/{id}', [HopDongLaoDongController::class, 'update'])->name('update');
         Route::delete('/{id}', [HopDongLaoDongController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/phe-duyet', [HopDongLaoDongController::class, 'pheDuyetHopDong'])->name('phe-duyet');
         Route::post('/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('ky');
         Route::post('/{id}/huy', [HopDongLaoDongController::class, 'huyHopDong'])->name('huy');
         Route::get('/{hopDong}/phu-luc/create', [HopDongLaoDongController::class, 'createPhuLuc'])->name('phuluc.create');
@@ -521,5 +528,15 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr,ad
     Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
+    
+    // Route test vai_tro_id
+    Route::get('/ungvien/test-vai-tro/{id}', [UngTuyenController::class, 'testVaiTro'])->name('ungvien.test-vai-tro');
 });
 Route::post('/ungtuyen/store', [UngTuyenController::class, 'store']);
+
+
+Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+
+Route::post('/hopdong/{id}/xac-nhan-ky', [NotificationController::class, 'xacNhanKy'])->name('hopdong.xacnhanky');
+Route::post('/hopdong/{id}/tu-choi-ky', [NotificationController::class, 'tuChoiKy'])->name('hopdong.tuchoiky');
+

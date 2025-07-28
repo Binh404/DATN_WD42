@@ -141,7 +141,7 @@ $avatar = optional($taikhoan->hoSo)->anh_dai_dien
                                         <label for="email" class="form-label fw-bold">Email</label>
                                         <input type="email" name="email" id="email" class="form-control"
                                             value="{{ $taikhoan->email ?? null}}" required>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="trang_thai" class="form-label fw-bold">Trạng thái</label>
                                         <select name="trang_thai" id="trang_thai" class="form-select" required>
@@ -205,7 +205,7 @@ $avatar = optional($taikhoan->hoSo)->anh_dai_dien
 
                                 <div class="mt-4">
                                     <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
-                                    <a href="{{ route('tkall') }}" class="btn btn-secondary">Quay lại</a>
+                                    {{-- <a href="{{ route('tkall') }}" class="btn btn-secondary">Quay lại</a> --}}
                                 </div>
                             </form>
                         </div>

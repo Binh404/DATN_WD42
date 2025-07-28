@@ -125,12 +125,14 @@
         </td>
     </tr>
 @endforeach
-<div class="mt-3">
-    {{ $chucvus->links() }}
-</div>
+
 </tbody>
 
+
             </table>
+            <div class="mt-3">
+                {{ $chucvus->links() }}
+            </div>
         </div>
     </div>
 

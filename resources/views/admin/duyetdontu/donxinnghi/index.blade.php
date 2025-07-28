@@ -179,10 +179,10 @@
                 </div>
             </div>
 
-            <div class="card-body p-0">
+            <div class="card-body pl-4">
                 <div class="table-responsive">
                     @if ($donXinNghis->count() > 0)
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover align-middle text-nowrap">
                             <thead class="table-light">
                                 <tr>
                                     <th class="px-4 py-3 fw-semibold text-muted">
@@ -290,6 +290,9 @@
 
                             </tbody>
                         </table>
+                        <div class="ml-3 mt-3">
+                            {{ $donXinNghis->links() }}
+                        </div>
                     @else
                         <!-- Thông báo không tìm thấy -->
                         <div class="text-center py-5">

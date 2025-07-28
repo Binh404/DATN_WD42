@@ -24,7 +24,7 @@ class MenuHelper
                 'ungvien',
                 'hopdong',
                 // 'tintuyendung',
-                'thongbao',
+                // 'thongbao',
                 'duyetdon',
                 // 'xinnghiphep',
                 'loainghiphep',

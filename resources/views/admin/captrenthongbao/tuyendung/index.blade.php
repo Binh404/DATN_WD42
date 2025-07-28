@@ -152,27 +152,6 @@
                 </h2>
             </div>
 
-
-            <div class="col-md-5">
-                <form method="GET" action="/yeu$yeuCauTuyenDung">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" name="search"
-                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            {{-- <div class="col-md-3 text-end">
-        <a href="{{ route('department.yeucautuyendung.create') }}" class="btn btn-primary btn-lg">
-            <i class="fas fa-plus me-2"></i>Tạo yêu cầu
-        </a>
-    </div> --}}
         </div>
 
         @if (session('success'))
@@ -195,7 +174,7 @@
                     </h5>
                 </div>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body pl-3">
                 <div class="table-responsive">
                     @if ($TuyenDungs->count() > 0)
                         <table class="table table-hover mb-0">
@@ -263,6 +242,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="pl-3 mt-3">
+                            {{ $TuyenDungs->links() }}
+                        </div>
                     @else
                         <!-- Thông báo không tìm thấy -->
                         <div class="text-center py-5">
