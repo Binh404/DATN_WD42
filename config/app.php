@@ -126,6 +126,7 @@ return [
     ],
     'aliases' => [
         'MenuHelper' => App\Helpers\MenuHelper::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ]
 
 ];

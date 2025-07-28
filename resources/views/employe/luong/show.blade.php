@@ -252,11 +252,23 @@
             <div class="header_salary-info">
                 <div class="info-item">
                     <h3>Nhân viên</h3>
-                    <p>{{ $hoSo->ho. ' ' . $hoSo->ten }}</p>
+                    <p>
+                        @if($hoSo)
+                            {{ $hoSo->ho . ' ' . $hoSo->ten }}
+                        @else
+                            <span class="text-danger">Chưa có hồ sơ</span>
+                        @endif
+                    </p>
                 </div>
                 <div class="info-item">
                     <h3>Mã nhân viên</h3>
-                    <p>{{ $hoSo->ma_nhan_vien }}</p>
+                    <p>
+                        @if($hoSo)
+                            {{ $hoSo->ma_nhan_vien }}
+                        @else
+                            <span class="text-danger">Chưa có hồ sơ</span>
+                        @endif
+                    </p>
                 </div>
                 <div class="info-item">
                     <h3>Phòng ban</h3>

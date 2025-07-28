@@ -155,7 +155,7 @@
                             @else
                                 <p class="text-muted mb-4">Chưa có yêu cầu nào được tạo.</p>
                             @endif
-                            <a href="/yeu$yeuCauTuyenDung/create" class="btn btn-primary">
+                            <a href="{{ route('department.yeucautuyendung.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-1"></i>Thêm yêu cầu đầu tiên
                             </a>
                         </div>

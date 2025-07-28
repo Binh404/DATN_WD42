@@ -75,31 +75,76 @@
           <input type="text" class="form-control">
         </div>
       </li>
-      <li class="nav-item">
-        <form class="search-form" action="#">
-          <i class="icon-search"></i>
-          <input type="search" class="form-control" placeholder="Tìm kiếm ..." title="Search here">
+      <li class="nav-item position-relative">
+          <a href="#" class="nav-link" id="toggle-search">
+              <i class="fas fa-search"></i>
+          </a>
+          <form class="search-form d-none position-absolute" id="search-form" style="top: 100%; right: 0; z-index: 1000;">
+              <div class="input-group mt-2">
+                  <input type="search" class="form-control" placeholder="Tìm kiếm ..." title="Search here">
+                  <button class="btn btn-primary" type="submit"><i class="fas fa-arrow-right"></i></button>
+              </div>
+          </form>
+      </li>
+      <li class="nav-item d-flex align-items-center">
+        <form action="{{ route('toggle.theme') }}" method="GET" class="me-3">
+          @csrf
+          <button type="submit" class="btn btn-sm btn-outline-secondary">
+            {{ auth()->user()?->theme === 'dark' ? '☀️ Sáng' : '🌙 Tối' }}
+          </button>
         </form>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
           <i class="icon-bell"></i>
-          <span class="count"></span>
+          {{-- <span class="count">
+            {{ auth()->user()->unreadNotifications->count() > 0 ? auth()->user()->unreadNotifications->count() : '' }}
+          </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
+            <a class="dropdown-item py-3 border-bottom">
+                <p class="mb-0 fw-medium float-start">
+                    Bạn có {{ auth()->user()->unreadNotifications->count() }} thông báo mới
+                </p>
+                <span class="badge badge-pill badge-primary float-end">Xem tất cả</span>
+            </a>
+            @forelse(auth()->user()->unreadNotifications as $notification)
+                <a class="dropdown-item preview-item py-3" href="{{ route('notifications.show', $notification->id) }}">
+                    <div class="preview-thumbnail">
+                        <i class="mdi mdi-bell m-auto text-primary"></i>
+                    </div>
+                    <div class="preview-item-content">
+                        <h6 class="preview-subject fw-normal text-dark mb-1">
+                            {{ $notification->data['message'] }}
+                        </h6>
+                        <p class="fw-light small-text mb-0">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </p>
+                    </div>
+                </a>
+            @empty
+                <span class="dropdown-item">Không có thông báo mới</span>
+            @endforelse --}}
+          @if($unreadCount > 0)
+                  <span class="count">{{ $unreadCount }}</span>
+          @endif
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
           <a class="dropdown-item py-3 border-bottom">
-            <p class="mb-0 fw-medium float-start">You have 4 new notifications </p>
+            <p class="mb-0 fw-medium float-start">Bạn có {{ $unreadCount }} thông báo</p>
             <span class="badge badge-pill badge-primary float-end">View all</span>
           </a>
-          <a class="dropdown-item preview-item py-3">
-            <div class="preview-thumbnail">
-              <i class="mdi mdi-alert m-auto text-primary"></i>
-            </div>
-            <div class="preview-item-content">
-              <h6 class="preview-subject fw-normal text-dark mb-1">Application Error</h6>
-              <p class="fw-light small-text mb-0"> Just now </p>
-            </div>
-          </a>
+            @foreach($notifications as $noti)
+                  <a class="dropdown-item preview-item py-3">
+                      <div class="preview-thumbnail">
+                          <i class="mdi mdi-alert m-auto text-primary"></i>
+                      </div>
+                      <div class="preview-item-content">
+                          {{-- <h6 class="preview-subject fw-normal text-dark mb-1">{{ $noti->data['title'] }}</h6> --}}
+                          <p class="fw-light small-text mb-0">{{ $noti->created_at->diffForHumans() }}</p>
+                      </div>
+                  </a>
+              @endforeach
           <a class="dropdown-item preview-item py-3">
             <div class="preview-thumbnail">
               <i class="mdi mdi-lock-outline m-auto text-primary"></i>

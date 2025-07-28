@@ -260,7 +260,7 @@
                                 </td> -->
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="/ungvien/show/{{ $uv->id }}?from=trung-tuyen" class="btn btn-sm btn-info text-white">
+                                        <a href="/ungvien/{{ $uv->id }}/show/?from=trung-tuyen" class="btn btn-sm btn-info text-white">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <!-- <button type="button" class="btn btn-sm btn-primary"
@@ -350,7 +350,7 @@
         const diemInput = document.getElementById('diem_phong_van');
         const diemGroup = document.getElementById('diemPhongVanGroup');
 
-        if (['đã phỏng vấn', 'pass', 'fail'].includes(status)) {
+        if (['Đã phỏng vấn', 'Đạt', 'Khó'].includes(status)) {
             diemGroup.style.display = 'block';
             diemInput.required = true;
         } else {
@@ -408,14 +408,14 @@
                         // Cập nhật trạng thái
                         let badgeHtml = '';
                         switch (trangThai) {
-                            case 'đã phỏng vấn':
+                            case 'Đã phỏng vấn':
                                 badgeHtml = '<span class="badge bg-info">Đã phỏng vấn</span>';
                                 break;
-                            case 'pass':
-                                badgeHtml = '<span class="badge bg-success">Pass</span>';
+                            case 'Đạt':
+                                badgeHtml = '<span class="badge bg-success">Đạt</span>';
                                 break;
-                            case 'fail':
-                                badgeHtml = '<span class="badge bg-danger">Fail</span>';
+                            case 'Khó':
+                                badgeHtml = '<span class="badge bg-danger">Khó</span>';
                                 break;
                             default:
                                 badgeHtml = '<span class="badge bg-warning text-dark">Chưa phỏng vấn</span>';
