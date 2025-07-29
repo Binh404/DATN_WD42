@@ -162,7 +162,7 @@ $avatar = optional($taikhoan->hoSo)->anh_dai_dien
                                     </div> --}}
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="vai_tro_id" class="form-label fw-bold">Vai trò</label>
+                                        <label for="vai_tro_id" class="form-label fw-bold">Quyền</label>
                                         <select name="vai_tro_id" id="vai_tro_id" class="form-select" required>
                                             <option value="">-- Chọn vai trò --</option>
                                             @foreach ($ds_vaitro as $vaitro)

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HopDongLaoDong;
 use Illuminate\Notifications\DatabaseNotification;
-
+use App\Models\User;
+use App\Notifications\NewMessageNotification;
 class NotificationController extends Controller
 {
     public function show($id)
@@ -35,7 +36,7 @@ class NotificationController extends Controller
             'thoi_gian_ky' => now(),
         ]);
         // Gửi thông báo cho HR
-        $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+        $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
             $q->where('ten', 'hr');
         })->get();
         foreach ($hrUsers as $hr) {
@@ -54,7 +55,7 @@ class NotificationController extends Controller
             ]);
 
             // Gửi thông báo cho HR
-            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
                 $q->where('ten', 'hr');
             })->get();
 
@@ -67,4 +68,14 @@ class NotificationController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy hợp đồng!');
         }
     }
-} 
+    public function sendNotification()
+    {
+        $users = User::all(); // hoặc chỉ định người nhận
+
+        foreach ($users as $user) {
+            $user->notify(new NewMessageNotification("Có cập nhật mới từ Admin!"));
+        }
+
+        return "Đã gửi thông báo";
+    }
+}
