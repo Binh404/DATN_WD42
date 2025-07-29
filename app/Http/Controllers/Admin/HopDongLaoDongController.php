@@ -444,51 +444,51 @@ class HopDongLaoDongController extends Controller
         }
     }
 
-    public function kyHopDong($id)
-    {
-        try {
-            $hopDong = HopDongLaoDong::findOrFail($id);
+    // public function kyHopDong($id)
+    // {
+    //     try {
+    //         $hopDong = HopDongLaoDong::findOrFail($id);
             
-            // Kiểm tra quyền ký (chỉ admin và HR mới có quyền)
-            $user = Auth::user();
-            $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+    //         // Kiểm tra quyền ký (chỉ admin và HR mới có quyền)
+    //         $user = Auth::user();
+    //         $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
             
-            if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
-                return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng');
-            }
+    //         if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
+    //             return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng');
+    //         }
             
-            if ($hopDong->trang_thai_hop_dong !== 'chua_hieu_luc') {
-                return redirect()->back()->with('error', 'Hợp đồng phải ở trạng thái "Chưa hiệu lực" để có thể ký');
-            }
+    //         if ($hopDong->trang_thai_hop_dong !== 'chua_hieu_luc') {
+    //             return redirect()->back()->with('error', 'Hợp đồng phải ở trạng thái "Chưa hiệu lực" để có thể ký');
+    //         }
 
-            if ($hopDong->trang_thai_ky !== 'cho_ky') {
-                return redirect()->back()->with('error', 'Hợp đồng đã được ký trước đó');
-            }
+    //         if ($hopDong->trang_thai_ky !== 'cho_ky') {
+    //             return redirect()->back()->with('error', 'Hợp đồng đã được ký trước đó');
+    //         }
 
-            // Cập nhật trạng thái: từ "chưa hiệu lực" → "hiệu lực", trạng thái ký từ "chờ ký" → "đã ký"
-            $hopDong->update([
-                'trang_thai_hop_dong' => 'hieu_luc',
-                'trang_thai_ky' => 'da_ky',
-                'nguoi_ky_id' => Auth::id(),
-                'thoi_gian_ky' => now()
-            ]);
+    //         // Cập nhật trạng thái: từ "chưa hiệu lực" → "hiệu lực", trạng thái ký từ "chờ ký" → "đã ký"
+    //         $hopDong->update([
+    //             'trang_thai_hop_dong' => 'hieu_luc',
+    //             'trang_thai_ky' => 'da_ky',
+    //             'nguoi_ky_id' => Auth::id(),
+    //             'thoi_gian_ky' => now()
+    //         ]);
 
-            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
-                $q->where('ten', 'hr');
-            })->get();
+    //         $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+    //             $q->where('ten', 'hr');
+    //         })->get();
 
-            foreach ($hrUsers as $hr) {
-                $hr->notify(new \App\Notifications\HopDongSignedNotification($hopDong));
-            }
+    //         foreach ($hrUsers as $hr) {
+    //             $hr->notify(new \App\Notifications\HopDongSignedNotification($hopDong));
+    //         }
 
-            return redirect()->route('hopdong.show', $hopDong->id)
-                ->with('success', 'Ký hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Hiệu lực".');
+    //         return redirect()->route('hopdong.show', $hopDong->id)
+    //             ->with('success', 'Ký hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Hiệu lực".');
                 
-        } catch (\Exception $e) {
-            \Log::error('Lỗi ký hợp đồng: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi ký hợp đồng: ' . $e->getMessage());
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         \Log::error('Lỗi ký hợp đồng: ' . $e->getMessage());
+    //         return redirect()->back()->with('error', 'Có lỗi xảy ra khi ký hợp đồng: ' . $e->getMessage());
+    //     }
+    // }
 
    
 
