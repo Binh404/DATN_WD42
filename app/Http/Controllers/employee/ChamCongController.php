@@ -288,6 +288,7 @@ class ChamCongController extends Controller
                 $chamCong->update([
                     'gio_ra' => $currentTime,
                     'vi_tri_check_out' => $this->layViTri($request),
+                    'ghi_chu' => $this->layLyDo($request),
                     'trang_thai_duyet' => $trangThaiDuyet
                 ]);
 
