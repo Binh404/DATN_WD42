@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('duong_dan_file')->nullable();
             $table->text('dieu_khoan')->nullable();
             $table->enum('trang_thai_hop_dong', ['chua_hieu_luc', 'hieu_luc', 'het_han', 'huy_bo'])->default('chua_hieu_luc');
-            $table->enum('trang_thai_ky', ['cho_ky', 'da_ky'])->default('cho_ky');
+            $table->enum('trang_thai_ky', ['cho_ky', 'da_ky', 'tu_choi_ky'])->default('cho_ky');
             $table->foreignId('nguoi_ky_id')->nullable()->constrained('nguoi_dung');
             $table->timestamp('thoi_gian_ky')->nullable();
             $table->timestamps();

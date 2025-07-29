@@ -233,7 +233,7 @@ class UngTuyenController extends Controller
         $ungViens = $ungVienQuery->get()->map(function ($uv) {
             // Nếu trang_thai_pv là null, set là chưa phỏng vấn
             if ($uv->trang_thai_pv === null) {
-                $uv->update(['trang_thai_pv' => 'chưa phỏng vấn']);
+                $uv->update(['trang_thai_pv' => 'Chưa phỏng vấn']);
             }
             return $uv;
         });
@@ -244,20 +244,20 @@ class UngTuyenController extends Controller
     public function capNhatDiemPhongVan(Request $request, $id)
     {
         $rules = [
-            'trang_thai_pv' => 'required|in:chưa phỏng vấn,đã phỏng vấn,pass,fail',
+            'trang_thai_pv' => 'required|in:Chưa phỏng vấn,Đã phỏng vấn,Đạt,Khó',
             'ghi_chu' => 'nullable|string',
             'diem_phong_van' => 'required|nullable|numeric|min:0|max:10'
         ];
 
-        // Yêu cầu điểm phỏng vấn khi trạng thái là đã phỏng vấn, pass hoặc fail
-        if (in_array($request->trang_thai_pv, ['đã phỏng vấn', 'pass', 'fail'])) {
+        // Yêu cầu điểm phỏng vấn khi trạng thái là đã phỏng vấn, đạt hoặc khó
+        if (in_array($request->trang_thai_pv, ['Đã phỏng vấn', 'Đạt', 'Khó'])) {
             $rules['diem_phong_van'] = 'required|numeric|min:0|max:10';
         }
 
         $request->validate($rules);
 
         try {
-            $ungVien = UngTuyen::findOrFail($id);
+            $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
 
             $data = [
                 'trang_thai_pv' => $request->trang_thai_pv,
@@ -265,10 +265,27 @@ class UngTuyenController extends Controller
             ];
 
             // Xử lý điểm phỏng vấn dựa trên trạng thái
-            if (in_array($request->trang_thai_pv, ['đã phỏng vấn', 'pass', 'fail'])) {
+            if (in_array($request->trang_thai_pv, ['Đã phỏng vấn', 'Đạt', 'Khó'])) {
                 $data['diem_phong_van'] = $request->diem_phong_van;
             } else {
                 $data['diem_phong_van'] = null;
+            }
+
+            // Nếu trạng thái là "Đạt", cập nhật thông tin phòng ban, chức vụ, vai trò từ tin tuyển dụng
+            if ($request->trang_thai_pv === 'Đạt' && $ungVien->tinTuyenDung) {
+                $tinTuyenDung = $ungVien->tinTuyenDung;
+                
+                if ($tinTuyenDung->phong_ban_id) {
+                    $data['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
+                }
+                
+                if ($tinTuyenDung->chuc_vu_id) {
+                    $data['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
+                }
+                
+                if ($tinTuyenDung->vai_tro_id) {
+                    $data['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
+                }
             }
 
             // Log để debug
@@ -368,10 +385,9 @@ class UngTuyenController extends Controller
             'dat_lich.after' => 'Thời gian gửi phải sau thời điểm hiện tại'
         ]);
 
-
         // Lọc các ứng viên chưa gửi email
-        $ungviens = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro'])
-            ->where('trang_thai_pv', 'pass')
+        $ungviens = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro', 'tinTuyenDung'])
+            ->where('trang_thai_pv', 'Đạt')
             ->where('trang_thai_email_trungtuyen', 'chua_gui')->get();
 
         // Kiểm tra nếu không có ứng viên nào cần gửi
@@ -382,6 +398,39 @@ class UngTuyenController extends Controller
 
         // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
+            // Cập nhật thông tin phòng ban, chức vụ, vai trò từ tin tuyển dụng nếu chưa có
+            if (!$ungvien->phong_ban_id || !$ungvien->chuc_vu_id || !$ungvien->vai_tro_id) {
+                $tinTuyenDung = $ungvien->tinTuyenDung;
+                if ($tinTuyenDung) {
+                    $updateData = [];
+                    
+                    if (!$ungvien->phong_ban_id && $tinTuyenDung->phong_ban_id) {
+                        $updateData['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
+                    }
+                    
+                    if (!$ungvien->chuc_vu_id && $tinTuyenDung->chuc_vu_id) {
+                        $updateData['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
+                    }
+                    
+                    if (!$ungvien->vai_tro_id && $tinTuyenDung->vai_tro_id) {
+                        $updateData['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
+                        Log::info('Cập nhật vai_tro_id từ tin tuyển dụng:', [
+                            'tin_tuyen_dung_vai_tro_id' => $tinTuyenDung->vai_tro_id
+                        ]);
+                    }
+                    
+                    if (!empty($updateData)) {
+                        $ungvien->update($updateData);
+                        // Reload relationships sau khi update
+                        $ungvien->load(['phongBan', 'chucVu', 'vaiTro']);
+                        Log::info('Đã cập nhật ứng viên từ tin tuyển dụng:', [
+                            'update_data' => $updateData,
+                            'sau_khi_update_vai_tro_id' => $ungvien->vai_tro_id
+                        ]);
+                    }
+                }
+            }
+            
             // Tạo email và mật khẩu
             $emailPrefix = Str::slug($ungvien->ten_ung_vien, '');
             $maSo = substr($ungvien->ma_ung_tuyen, 2); // bỏ 'ut'
@@ -389,60 +438,188 @@ class UngTuyenController extends Controller
             $password = Str::random(10);
             $tenDangNhap = Str::slug($ungvien->ten_ung_vien);
 
-            // Gửi thông tin đến webhook
+            // Gửi thông tin đến webhook (bỏ qua lỗi nếu có)
+            try {
+                Http::withOptions(['verify' => false])->timeout(5)->post('https://danganh123.app.n8n.cloud/webhook-test/email-di-lam', [
+                    'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                    'ten_dang_nhap' => $email,
+                    'email' => $ungvien->email,
+                    'name' => $ungvien->ten_ung_vien,
+                    'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
+                    'lich' => $request->dat_lich,
+                    'mat_khau' => $password
+                ]);
+            } catch (\Exception $e) {
+                // Log lỗi nhưng không dừng quá trình
+                Log::warning('Không thể gửi webhook đầu tiên: ' . $e->getMessage());
+            }
 
-            Http::withOptions(['verify' => false])->post('https://quocbinh1.app.n8n.cloud/webhook/email-di-lam', [
-                'ma_ung_vien' => $ungvien->ma_ung_tuyen,
-                'ten_dang_nhap' => $email,
-                'email' => $ungvien->email,
-                'name' => $ungvien->ten_ung_vien,
-                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
-                'lich' => $request->dat_lich,
-                'mat_khau' => $password // nếu muốn gửi mật khẩu cho webhook
-            ]);
+            // Kiểm tra xem tài khoản đã tồn tại chưa
+            $existingUser = NguoiDung::where('email', $email)->first();
 
-            // Tạo tài khoản nhân viên mới
-            $nguoiDung = NguoiDung::create([
-                'ten_dang_nhap' => $tenDangNhap,
-                'name' => $ungvien->ten_ung_vien,
-                'email' => $email,
-                'password' => Hash::make($password),
-                'ma_ung_tuyen' => $ungvien->ma_ung_tuyen,
-                'vai_tro_id' => $ungvien->vai_tro_id,
-            ]);
+            if ($existingUser) {
+                // Nếu tài khoản đã tồn tại, sử dụng tài khoản cũ
+                $nguoiDung = $existingUser;
+                $password = 'Đã có tài khoản';
+                
+                // Cập nhật thông tin phòng ban, chức vụ nếu chưa có
+                $updateData = [];
+                if ($ungvien->phong_ban_id && !$existingUser->phong_ban_id) {
+                    $updateData['phong_ban_id'] = $ungvien->phong_ban_id;
+                }
+                if ($ungvien->chuc_vu_id && !$existingUser->chuc_vu_id) {
+                    $updateData['chuc_vu_id'] = $ungvien->chuc_vu_id;
+                }
+                if ($ungvien->vai_tro_id && !$existingUser->vai_tro_id) {
+                    $updateData['vai_tro_id'] = $ungvien->vai_tro_id;
+                }
+                
+                if (!empty($updateData)) {
+                    $existingUser->update($updateData);
+                    Log::info('Đã cập nhật thông tin người dùng hiện có:', [
+                        'nguoi_dung_id' => $existingUser->id,
+                        'email' => $existingUser->email,
+                        'update_data' => $updateData
+                    ]);
+                }
+            } else {
+                // Tạo tài khoản nhân viên mới với đầy đủ thông tin
+                $nguoiDungData = [
+                    'ten_dang_nhap' => $tenDangNhap,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                ];
+                
+                // Thêm thông tin phòng ban, chức vụ nếu có
+                if ($ungvien->phong_ban_id) {
+                    $nguoiDungData['phong_ban_id'] = $ungvien->phong_ban_id;
+                }
+                if ($ungvien->chuc_vu_id) {
+                    $nguoiDungData['chuc_vu_id'] = $ungvien->chuc_vu_id;
+                }
+                if ($ungvien->vai_tro_id) {
+                    $nguoiDungData['vai_tro_id'] = $ungvien->vai_tro_id;
+                    Log::info('Thêm vai_tro_id vào dữ liệu tạo tài khoản:', [
+                        'vai_tro_id' => $ungvien->vai_tro_id,
+                        'nguoiDungData' => $nguoiDungData
+                    ]);
+                } else {
+                    Log::info('Không có vai_tro_id để thêm:', [
+                        'ungvien_vai_tro_id' => $ungvien->vai_tro_id
+                    ]);
+                }
+                $nguoiDung = NguoiDung::create($nguoiDungData);
+                
+                Log::info('Đã tạo tài khoản mới với thông tin đầy đủ:', [
+                    'nguoi_dung_id' => $nguoiDung->id,
+                    'email' => $nguoiDung->email,
+                    'ten_dang_nhap' => $nguoiDung->ten_dang_nhap,
+                    'phong_ban_id' => $nguoiDung->phong_ban_id,
+                    'chuc_vu_id' => $nguoiDung->chuc_vu_id,
+                    'vai_tro_id' => $nguoiDung->vai_tro_id,
+                    'create_data' => $nguoiDungData
+                ]);
+            }
 
+            // Lấy thông tin phòng ban, chức vụ, vai trò
             $phongBan = $ungvien->phongBan->ten_phong_ban ?? 'Chưa rõ';
             $chucVu = $ungvien->chucVu->ten ?? 'Chưa rõ';
             $vaiTro = $ungvien->vaiTro->ten ?? 'Chưa rõ';
-
-
-            // Gán vai trò cho người dùng
-            $nguoiDungVT = NguoiDungVaiTro::create([
-                'nguoi_dung_id' => $nguoiDung->id,
-                'vai_tro_id' => $ungvien->vai_tro_id,
-                'model_type' => NguoiDung::class,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-
-            // Gửi thông tin đến webhook
-            Http::post('https://workflow.aichatbot360.io.vn/webhook-test/email-di-lam', [
+            
+            // Log để debug
+            Log::info('Thông tin ứng viên trúng tuyển:', [
                 'ma_ung_vien' => $ungvien->ma_ung_tuyen,
-                'ten_dang_nhap' => $email,
-                'email' => $ungvien->email,
-                'name' => $ungvien->ten_ung_vien,
-                'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
-                'lich' => $request->dat_lich,
-                'mat_khau' => $password,
+                'ten_ung_vien' => $ungvien->ten_ung_vien,
+                'phong_ban_id' => $ungvien->phong_ban_id,
+                'chuc_vu_id' => $ungvien->chuc_vu_id,
+                'vai_tro_id' => $ungvien->vai_tro_id,
                 'phong_ban' => $phongBan,
                 'chuc_vu' => $chucVu,
+                'vai_tro' => $vaiTro,
+                'existing_user' => $existingUser ? 'Có' : 'Không',
+                'nguoi_dung_id' => $nguoiDung->id ?? null
             ]);
 
-            $ungvien->trang_thai_email_trungtuyen = 'Đã gửi';
+
+            // Gán vai trò cho người dùng (chỉ khi tạo tài khoản mới)
+            if (!$existingUser && $ungvien->vai_tro_id) {
+                // Kiểm tra xem vai trò đã được gán chưa
+                $existingRole = NguoiDungVaiTro::where('nguoi_dung_id', $nguoiDung->id)
+                    ->where('vai_tro_id', $ungvien->vai_tro_id)
+                    ->first();
+                
+                if (!$existingRole) {
+                    NguoiDungVaiTro::create([
+                        'nguoi_dung_id' => $nguoiDung->id,
+                        'vai_tro_id' => $ungvien->vai_tro_id,
+                        'model_type' => NguoiDung::class,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            }
+
+            // Gửi thông tin đến webhook (bỏ qua lỗi nếu có)
+            try {
+                Http::timeout(5)->post('https://workflow.aichatbot360.io.vn/webhook-test/email-di-lam', [
+                    'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                    'ten_dang_nhap' => $email,
+                    'email' => $ungvien->email,
+                    'name' => $ungvien->ten_ung_vien,
+                    'vi_tri' => $ungvien->tinTuyenDung->tieu_de,
+                    'lich' => $request->dat_lich,
+                    'mat_khau' => $password,
+                    'phong_ban' => $phongBan,
+                    'chuc_vu' => $chucVu,
+                    'vai_tro' => $vaiTro,
+                ]);
+            } catch (\Exception $e) {
+                // Log lỗi nhưng không dừng quá trình
+                Log::warning('Không thể gửi webhook: ' . $e->getMessage());
+            }
+
+            $ungvien->trang_thai_email_trungtuyen = 'da_gui';
             $ungvien->save();
         }
 
         return redirect('/ungvien/trung-tuyen')->with('success', 'Đã gửi email cho tất cả ứng viên.');
+    }
+
+    // Method test đơn giản để kiểm tra vai_tro_id
+    public function testVaiTro($ungVienId)
+    {
+        try {
+            $ungvien = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro', 'tinTuyenDung'])
+                ->findOrFail($ungVienId);
+            
+            $tinTuyenDung = $ungvien->tinTuyenDung;
+            
+            return response()->json([
+                'ungvien' => [
+                    'id' => $ungvien->id,
+                    'ma_ung_vien' => $ungvien->ma_ung_tuyen,
+                    'ten_ung_vien' => $ungvien->ten_ung_vien,
+                    'phong_ban_id' => $ungvien->phong_ban_id,
+                    'chuc_vu_id' => $ungvien->chuc_vu_id,
+                    'vai_tro_id' => $ungvien->vai_tro_id,
+                ],
+                'tin_tuyen_dung' => $tinTuyenDung ? [
+                    'id' => $tinTuyenDung->id,
+                    'tieu_de' => $tinTuyenDung->tieu_de,
+                    'phong_ban_id' => $tinTuyenDung->phong_ban_id,
+                    'chuc_vu_id' => $tinTuyenDung->chuc_vu_id,
+                    'vai_tro_id' => $tinTuyenDung->vai_tro_id,
+                ] : null,
+                'relationships' => [
+                    'phong_ban' => $ungvien->phongBan ? $ungvien->phongBan->ten_phong_ban : null,
+                    'chuc_vu' => $ungvien->chucVu ? $ungvien->chucVu->ten : null,
+                    'vai_tro' => $ungvien->vaiTro ? $ungvien->vaiTro->ten : null,
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Lỗi: ' . $e->getMessage()]);
+        }
     }
 
     public function danhSachLuuTru(Request $request)
@@ -451,7 +628,7 @@ class UngTuyenController extends Controller
         $ungVienQuery = UngTuyen::with(['tinTuyenDung', 'nguoiCapNhatTrangThai'])
             ->where(function ($query) {
                 $query->where('trang_thai', 'tu_choi')
-                    ->orWhere('trang_thai_pv', 'fail');
+                    ->orWhere('trang_thai_pv', 'Khó');
             })
             ->orderBy('ngay_cap_nhat', 'desc');
 
@@ -505,7 +682,7 @@ class UngTuyenController extends Controller
         $ungViens = $ungVienQuery->get()->map(function ($uv) {
             // Nếu trang_thai_pv là null, set là chưa phỏng vấn
             if ($uv->trang_thai_pv === null) {
-                $uv->update(['trang_thai_pv' => 'chưa phỏng vấn']);
+                $uv->update(['trang_thai_pv' => 'Chưa phỏng vấn']);
             }
             return $uv;
         });
@@ -518,7 +695,8 @@ class UngTuyenController extends Controller
     public function danhSachTrungTuyen(Request $request)
     {
         $viTriList = TinTuyenDung::pluck('tieu_de', 'id');
-        $ungVienQuery = UngTuyen::with('tinTuyenDung')->where('trang_thai_pv', 'pass');
+        $ungVienQuery = UngTuyen::with(['tinTuyenDung', 'phongBan', 'chucVu', 'vaiTro'])
+            ->where('trang_thai_pv', 'Đạt');
 
         // Apply filters
         if ($request->filled('ten_ung_vien')) {
@@ -547,5 +725,53 @@ class UngTuyenController extends Controller
         $ungViens = $ungVienQuery->get();
 
         return view('admin.ungtuyen.trungtuyen', compact('ungViens', 'viTriList'));
+    }
+
+    // Method để cập nhật thông tin phòng ban, chức vụ, vai trò cho ứng viên trúng tuyển
+    public function capNhatThongTinTrungTuyen($id)
+    {
+        try {
+            $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
+            
+            if ($ungVien->trang_thai_pv !== 'Đạt') {
+                return redirect()->back()->with('error', 'Ứng viên chưa đạt phỏng vấn');
+            }
+
+            $tinTuyenDung = $ungVien->tinTuyenDung;
+            if (!$tinTuyenDung) {
+                return redirect()->back()->with('error', 'Không tìm thấy thông tin tin tuyển dụng');
+            }
+
+            $updateData = [];
+            
+            if ($tinTuyenDung->phong_ban_id) {
+                $updateData['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
+            }
+            
+            if ($tinTuyenDung->chuc_vu_id) {
+                $updateData['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
+            }
+            
+            if ($tinTuyenDung->vai_tro_id) {
+                $updateData['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
+            }
+
+            if (!empty($updateData)) {
+                $ungVien->update($updateData);
+                Log::info('Đã cập nhật thông tin trúng tuyển cho ứng viên:', [
+                    'ma_ung_vien' => $ungVien->ma_ung_tuyen,
+                    'ten_ung_vien' => $ungVien->ten_ung_vien,
+                    'update_data' => $updateData
+                ]);
+                
+                return redirect()->back()->with('success', 'Đã cập nhật thông tin phòng ban, chức vụ, vai trò thành công!');
+            } else {
+                return redirect()->back()->with('warning', 'Không có thông tin để cập nhật');
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Lỗi cập nhật thông tin trúng tuyển: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật thông tin: ' . $e->getMessage());
+        }
     }
 }

@@ -2,6 +2,11 @@
 @section('title', 'chấm công')
 @section('style')
 <style>
+    .bg-orange {
+    background-color: #fd7e14 !important; /* Bootstrap orange */
+    color: #fff !important;
+}
+
     .notification {
     position: fixed;
     top: 20px;
@@ -321,6 +326,8 @@
                         <span class="badge bg-info">Về sớm</span>
                         <span class="badge bg-secondary">Nghỉ phép</span>
                         <span class="badge bg-danger">Vắng mặt</span>
+                        <span class="badge bg-orange">Tăng ca</span>
+
                     </div>
                 </div>
             </div>
@@ -519,11 +526,13 @@
                                     attendanceStatus = 'out';
                                     attendanceType = 'overtime';
                                 }
-                                updateNormalDisplayData(data.normal_data)
+                                if(data.normal_data){
+                                    updateNormalDisplayData(data.normal_data)
+                                }
                                 updateOvertimeDisplayData(data.overtime_data);
 
                             } else {
-                                console.log('data.overtime_data');
+                                // console.log('data.overtime_data');
                                 // Chưa có bản ghi tăng ca hoặc chưa được duyệt
                                 attendanceStatus = 'out';
                                 attendanceType = 'overtime';
@@ -1049,6 +1058,8 @@
         // Prepare attendance data
         const attendanceData = {
             ...window.pendingAttendanceData,
+            latitude: window.pendingAttendanceData.location.latitude,
+            longitude: window.pendingAttendanceData.location.longitude,
             reason_detail: detail
         };
 
@@ -1216,12 +1227,12 @@
             function chamCongVao(location, isNormalAttendance = true) {
                 // console.log(location.location);
                 const latitude = location?.latitude !== undefined
-                    ? parseFloat(location.latitude.toFixed(8))
-                    : parseFloat(location.location.latitude.toFixed(8));
+                    ? parseFloat(location.latitude)
+                    : parseFloat(location.location.latitude);
 
                 const longitude = location?.longitude !== undefined
-                    ? parseFloat(location.longitude.toFixed(8))
-                    : parseFloat(location.location.longitude.toFixed(8));
+                    ? parseFloat(location.longitude)
+                    : parseFloat(location.location.longitude);
                 // const latitude = null;
                 // const longitude = null;
                 const requestData = {
@@ -1285,10 +1296,10 @@
 
             // Chấm công ra
             function chamCongRa(location, isNormalAttendance = true) {
-                // console.log(location);
+                console.log(location);
                 const requestData = {
-                    latitude: location.location.latitude || null,
-                    longitude: location.location.longitude || null,
+                    latitude: location.latitude || null,
+                    longitude: location.longitude || null,
                     address: location.address || "Không xác định được địa chỉ chi tiết",
                     trang_thai_duyet: isNormalAttendance ? 1 : 3,
                     ...(location.reason_detail && { reason_detail: location.reason_detail })
@@ -1726,8 +1737,8 @@
                 lichChamCong.forEach((ngay, index) => {
                     let titleAttr = '';
                     let onclickAttr = '';
-                    // console.log(ngay.class);
-                    if (ngay.cham_cong) {
+                    console.log(ngay.tang_ca);
+                    if (ngay.cham_cong ) {
                         if (ngay.cham_cong.trang_thai_text === 'Nghỉ phép') {
                             titleAttr = `title="${ngay.cham_cong.trang_thai_text}"`;
                         } else {
@@ -1736,6 +1747,8 @@
                         if (ngay.class !== 'text-muted') {
                             onclickAttr = `onclick="fetchAttendanceData('${ngay.id}')"`;
                         }
+                    } else if(ngay.tang_ca) {
+                        onclickAttr = `onclick="fetchAttendanceData('${ngay.id}')"`;
                     }
 
 
