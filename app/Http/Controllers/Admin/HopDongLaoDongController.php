@@ -193,7 +193,7 @@ class HopDongLaoDongController extends Controller
             'so_hop_dong' => 'required|string|unique:hop_dong_lao_dong,so_hop_dong',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
-            'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
+            // 'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
             'hinh_thuc_lam_viec' => 'required|string',
@@ -308,7 +308,7 @@ class HopDongLaoDongController extends Controller
         if ($hopDong->trang_thai_hop_dong === 'chua_hieu_luc') {
             $ngayBatDau = \Carbon\Carbon::parse($request->ngay_bat_dau);
             $ngayHienTai = \Carbon\Carbon::today();
-            
+
             if ($ngayBatDau->lt($ngayHienTai)) {
                 return redirect()->back()->withErrors(['ngay_bat_dau' => 'Ngày bắt đầu phải từ ngày hôm nay trở đi khi hợp đồng ở trạng thái chưa hiệu lực.'])->withInput();
             }
@@ -411,15 +411,15 @@ class HopDongLaoDongController extends Controller
     {
         try {
             $hopDong = HopDongLaoDong::findOrFail($id);
-            
+
             // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
             $user = Auth::user();
             $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-            
+
             if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
                 return redirect()->back()->with('error', 'Bạn không có quyền phê duyệt hợp đồng');
             }
-            
+
             if ($hopDong->trang_thai_hop_dong !== 'tao_moi') {
                 return redirect()->back()->with('error', 'Hợp đồng không ở trạng thái tạo mới');
             }
@@ -437,7 +437,7 @@ class HopDongLaoDongController extends Controller
 
             return redirect()->route('hopdong.show', $hopDong->id)
                 ->with('success', 'Phê duyệt hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Chưa hiệu lực" và sẵn sàng để ký.');
-                
+
         } catch (\Exception $e) {
             \Log::error('Lỗi phê duyệt hợp đồng: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi phê duyệt hợp đồng: ' . $e->getMessage());
@@ -490,7 +490,7 @@ class HopDongLaoDongController extends Controller
     //     }
     // }
 
-   
+
 
     public function createPhuLuc(HopDongLaoDong $hopDong)
     {
