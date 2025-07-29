@@ -132,15 +132,17 @@
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
           <a class="dropdown-item py-3 border-bottom">
             <p class="mb-0 fw-medium float-start">Bạn có {{ $unreadCount }} thông báo</p>
-            <span class="badge badge-pill badge-primary float-end">View all</span>
+            <span class="badge badge-pill badge-primary float-end">Thông báo</span>
           </a>
             @foreach($notifications as $noti)
-                  <a class="dropdown-item preview-item py-3">
+                  <a class="dropdown-item preview-item py-3" href="{{ route('notifications.show', $noti->id) }}">
                       <div class="preview-thumbnail">
                           <i class="mdi mdi-alert m-auto text-primary"></i>
                       </div>
                       <div class="preview-item-content">
-                          {{-- <h6 class="preview-subject fw-normal text-dark mb-1">{{ $noti->data['title'] }}</h6> --}}
+                          <h6 class="preview-subject fw-normal text-dark mb-1">
+                              {{ $noti->data['message'] ?? 'Thông báo mới' }}
+                          </h6>
                           <p class="fw-light small-text mb-0">{{ $noti->created_at->diffForHumans() }}</p>
                       </div>
                   </a>

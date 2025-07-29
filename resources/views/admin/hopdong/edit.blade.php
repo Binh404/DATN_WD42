@@ -9,7 +9,7 @@
     </div>
 
     <!-- Content Row -->
-    <div class="card shadow mb-4 mx-auto" style="max-width: 800px;">
+    <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
@@ -62,7 +62,7 @@
     <option value="thu_viec" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
     <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
     <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-    <option value="mua_vu" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option>
+    
 </select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -88,7 +88,8 @@
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
     id="ngay_ket_thuc" name="ngay_ket_thuc"
-    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" 
+    @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -224,6 +225,37 @@
                     </a>
                 </div>
             </form>
+            
+            <script>
+                setTimeout(function() {
+                    var loaiHopDong = document.getElementById('loai_hop_dong');
+                    var ngayKetThuc = document.getElementById('ngay_ket_thuc');
+                    var trangThaiHopDong = '{{ $hopDong->trang_thai_hop_dong }}';
+                    
+                    if (loaiHopDong && ngayKetThuc) {
+                        // Xử lý khi thay đổi loại hợp đồng
+                        loaiHopDong.addEventListener('change', function() {
+                            // Chỉ xử lý khi hợp đồng có thể chỉnh sửa
+                            if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
+                                if (this.value === 'khong_xac_dinh_thoi_han') {
+                                    ngayKetThuc.disabled = true;
+                                    ngayKetThuc.value = '';
+                                } else {
+                                    ngayKetThuc.disabled = false;
+                                }
+                            }
+                        });
+                        
+                        // Chạy lần đầu
+                        if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
+                            if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
+                                ngayKetThuc.disabled = true;
+                                ngayKetThuc.value = '';
+                            }
+                        }
+                    }
+                }, 100);
+            </script>
         </div>
     </div>
 
@@ -273,7 +305,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('script')
 <script>
     $(document).ready(function() {
         // Validate ngày kết thúc phải sau ngày bắt đầu
