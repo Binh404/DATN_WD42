@@ -8,6 +8,7 @@ use App\Models\NguoiDung;
 use App\Models\ChucVu;
 use App\Models\HoSoNguoiDung;
 use App\Models\PhuLucHopDong;
+use App\Models\PhongBan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -651,6 +652,107 @@ class HopDongLaoDongController extends Controller
         $fileName = 'hop_dong_luu_tru_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
         return Excel::download(new HopDongExport($hopDongs), $fileName);
+    }
+
+    public function thongKe(Request $request)
+    {
+        // Lấy tham số thời gian từ request
+        $tuNgay = $request->input('tu_ngay');
+        $denNgay = $request->input('den_ngay');
+        
+        // Tạo query builder cơ bản
+        $query = HopDongLaoDong::query();
+        
+        // Áp dụng filter thời gian nếu có
+        if ($tuNgay && $denNgay) {
+            $query->whereBetween('hop_dong_lao_dong.created_at', [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59']);
+        }
+        
+        // Thống kê tổng quan
+        $tongHopDong = (clone $query)->count();
+        $hopDongHieuLuc = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'hieu_luc')->count();
+        $hopDongChuaHieuLuc = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'chua_hieu_luc')->count();
+        $hopDongHetHan = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'het_han')->count();
+        $hopDongHuyBo = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'huy_bo')->count();
+        $hopDongTaoMoi = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'tao_moi')->count();
+        
+        // Thống kê theo loại hợp đồng
+        $thongKeLoaiHopDong = (clone $query)->selectRaw('hop_dong_lao_dong.loai_hop_dong, COUNT(*) as so_luong')
+            ->groupBy('hop_dong_lao_dong.loai_hop_dong')
+            ->get()
+            ->keyBy('loai_hop_dong');
+        
+        // Thống kê theo trạng thái ký
+        $thongKeTrangThaiKy = (clone $query)->selectRaw('hop_dong_lao_dong.trang_thai_ky, COUNT(*) as so_luong')
+            ->groupBy('hop_dong_lao_dong.trang_thai_ky')
+            ->get()
+            ->keyBy('trang_thai_ky');
+        
+        // Thống kê theo tháng trong năm hiện tại hoặc năm được chọn
+        $namHienTai = $tuNgay ? date('Y', strtotime($tuNgay)) : now()->year;
+        $thongKeTheoThang = (clone $query)->selectRaw('MONTH(hop_dong_lao_dong.created_at) as thang, COUNT(*) as so_luong')
+            ->whereYear('hop_dong_lao_dong.created_at', $namHienTai)
+            ->groupBy('thang')
+            ->orderBy('thang')
+            ->get();
+        
+        // Thống kê theo phòng ban
+        $thongKeTheoPhongBan = (clone $query)->join('nguoi_dung', 'hop_dong_lao_dong.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->selectRaw('phong_ban.ten_phong_ban, COUNT(*) as so_luong')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('so_luong', 'desc')
+            ->get();
+        
+        // Thống kê hợp đồng sắp hết hạn (30 ngày tới)
+        $hopDongSapHetHan = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')
+            ->where('ngay_ket_thuc', '>', now())
+            ->where('ngay_ket_thuc', '<=', now()->addDays(30))
+            ->with(['hoSoNguoiDung', 'chucVu'])
+            ->get();
+        
+        // Thống kê hợp đồng mới trong tháng
+        $hopDongMoiTrongThang = (clone $query)->whereMonth('hop_dong_lao_dong.created_at', now()->month)
+            ->whereYear('hop_dong_lao_dong.created_at', now()->year)
+            ->count();
+        
+        // Thống kê hợp đồng hết hạn trong tháng
+        $hopDongHetHanTrongThang = (clone $query)->whereMonth('hop_dong_lao_dong.ngay_ket_thuc', now()->month)
+            ->whereYear('hop_dong_lao_dong.ngay_ket_thuc', now()->year)
+            ->where('hop_dong_lao_dong.trang_thai_hop_dong', 'het_han')
+            ->count();
+        
+        // Thống kê lương trung bình theo loại hợp đồng
+        $luongTrungBinhTheoLoai = (clone $query)->selectRaw('hop_dong_lao_dong.loai_hop_dong, AVG(hop_dong_lao_dong.luong_co_ban) as luong_trung_binh')
+            ->groupBy('hop_dong_lao_dong.loai_hop_dong')
+            ->get();
+        
+        // Thống kê theo năm
+        $thongKeTheoNam = HopDongLaoDong::selectRaw('YEAR(created_at) as nam, COUNT(*) as so_luong')
+            ->groupBy('nam')
+            ->orderBy('nam', 'desc')
+            ->get();
+        
+        return view('admin.hopdong.thong-ke', compact(
+            'tongHopDong',
+            'hopDongHieuLuc',
+            'hopDongChuaHieuLuc',
+            'hopDongHetHan',
+            'hopDongHuyBo',
+            'hopDongTaoMoi',
+            'thongKeLoaiHopDong',
+            'thongKeTrangThaiKy',
+            'thongKeTheoThang',
+            'thongKeTheoPhongBan',
+            'hopDongSapHetHan',
+            'hopDongMoiTrongThang',
+            'hopDongHetHanTrongThang',
+            'luongTrungBinhTheoLoai',
+            'thongKeTheoNam',
+            'namHienTai',
+            'tuNgay',
+            'denNgay'
+        ));
     }
 
     private function getLoaiHopDongText($loaiHopDong)

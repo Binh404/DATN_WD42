@@ -231,6 +231,9 @@
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Thống kê</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
                     </li>
                 </ul>

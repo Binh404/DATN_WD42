@@ -86,14 +86,7 @@
               </div>
           </form>
       </li>
-      <li class="nav-item d-flex align-items-center">
-        <form action="{{ route('toggle.theme') }}" method="GET" class="me-3">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-outline-secondary">
-            {{ auth()->user()?->theme === 'dark' ? '☀️ Sáng' : '🌙 Tối' }}
-          </button>
-        </form>
-      </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
           <i class="icon-bell"></i>
