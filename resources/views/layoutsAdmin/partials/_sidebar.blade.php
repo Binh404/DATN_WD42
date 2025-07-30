@@ -12,10 +12,17 @@
                 <span class="menu-title">Thống kê</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('chat.index') }}">
+                <i class="mdi mdi-view-dashboard-outline menu-icon"></i>
+                <span class="menu-title">Nhắn tin</span>
+            </a>
+        </li>
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         <li class="nav-item nav-category">Các chức năng</li>
+
         @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">

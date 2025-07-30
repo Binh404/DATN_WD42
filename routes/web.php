@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DonDeXuatController;
 
 use App\Http\Controllers\Admin\ImportChamCongController;
@@ -550,3 +551,10 @@ Route::post('/hopdong/{id}/xac-nhan-ky', [NotificationController::class, 'xacNha
 Route::post('/hopdong/{id}/tu-choi-ky', [NotificationController::class, 'tuChoiKy'])->name('hopdong.tuchoiky');
 
 Route::get('/toggle-theme', [ThemeController::class, 'toggle'])->name('toggle.theme');
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{user}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('api/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
+});
