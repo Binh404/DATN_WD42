@@ -11,11 +11,7 @@
                             <h2 class="fw-bold mb-1">Quản lý hợp đồng lao động</h2>
                             <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi hợp đồng</p>
                         </div>
-                        <div>
-                            <a href="{{ route('hopdong.thong-ke') }}" class="btn btn-info">
-                                <i class="mdi mdi-chart-line me-1"></i> Thống kê
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
                 

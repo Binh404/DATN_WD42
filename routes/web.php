@@ -102,6 +102,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
         ->name('chamcong.export');
     Route::prefix('cham-cong')->name('admin.chamcong.')->group(function () {
         Route::get('/index-', [ChamCongAdminController::class, 'index'])->name('index');
+        Route::get('/thong-ke', [ChamCongAdminController::class, 'thongKe'])->name('thong-ke');
         // Route::get('/create', [ChamCongAdminController::class, 'create'])->name('.create');
         Route::post('/{id}/pheDuyet', [ChamCongAdminController::class, 'pheDuyet'])->name('pheDuyet');
         Route::get('/{id}/show', [ChamCongAdminController::class, 'show'])->name('show');
