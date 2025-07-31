@@ -15,8 +15,32 @@ class TaiKhoanController extends Controller
 {
     public function getall(Request $request)
     {
-        $taikhoan = NguoiDung::with('vaiTro', 'chucVu', 'PhongBan')->paginate(20);
-        return view('admin.taikhoan.index', compact('taikhoan'));
+        $query = NguoiDung::with(['vaiTro', 'chucVu', 'PhongBan', 'hoSo']);
+
+        // Tìm kiếm theo họ tên hoặc mã nhân viên
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->whereHas('hoSo', function ($q) use ($keyword) {
+                $q->where('ho', 'like', "%$keyword%")
+                    ->orWhere('ten', 'like', "%$keyword%")
+                    ->orWhere('ma_nhan_vien', 'like', "%$keyword%");
+            });
+        }
+
+        // Lọc theo phòng ban
+        if ($request->filled('phong_ban')) {
+            $query->where('phong_ban_id', $request->phong_ban);
+        }
+
+        // Lọc theo trạng thái
+        if ($request->filled('trang_thai')) {
+            $query->where('trang_thai', $request->trang_thai);
+        }
+
+        $taikhoan = $query->paginate(20)->appends($request->query());
+        $phongBans = PhongBan::all();
+
+        return view('admin.taikhoan.index', compact('taikhoan', 'phongBans'));
     }
 
     public function edit($id)

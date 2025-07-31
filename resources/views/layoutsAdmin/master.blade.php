@@ -33,6 +33,42 @@
         <link rel="stylesheet" href="{{ asset('assets/admin/css/dark.css') }}">
     @endif
     @yield('style')
+        <style>
+        /* Override active style cho menu thống kê */
+        .sidebar .nav .nav-item.active > .nav-link[href*="thong-ke"] {
+            background: transparent !important;
+            color: inherit !important;
+        }
+        .sidebar .nav .nav-item.active > .nav-link[href*="thong-ke"] i,
+        .sidebar .nav .nav-item.active > .nav-link[href*="thong-ke"] .menu-title {
+            color: inherit !important;
+        }
+        
+        /* Đảm bảo font và hover giống với Đơn đề xuất */
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"] {
+            font-size: 14px !important;
+            font-weight: 400 !important;
+            color: #484848 !important;
+        }
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"] .menu-title {
+            font-size: 14px !important;
+            font-weight: 400 !important;
+            color: #484848 !important;
+        }
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"] i {
+            color: #484848 !important;
+        }
+        
+        /* Hover effect giống với Đơn đề xuất */
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"]:hover {
+            background: #fff !important;
+            color: #1F3BB3 !important;
+        }
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"]:hover .menu-title,
+        .sidebar .nav .nav-item > .nav-link[href*="thong-ke"]:hover i {
+            color: #1F3BB3 !important;
+        }
+    </style>
   </head>
   @livewireScripts
 
