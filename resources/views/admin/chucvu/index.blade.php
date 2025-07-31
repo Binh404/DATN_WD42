@@ -56,7 +56,7 @@
                         <th>#</th>
                         <th>Tên</th>
                         <th>Mã</th>
-                        <th>Lương cơ bản</th>
+                        {{-- <th>Lương cơ bản</th> --}}
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
@@ -69,7 +69,7 @@
 
         <td>{{ $chucvu->ten }}</td>
         <td>{{ $chucvu->ma }}</td>
-        <td>{{ number_format($chucvu->luong_co_ban) }} đ</td>
+        {{-- <td>{{ number_format($chucvu->luong_co_ban) }} đ</td> --}}
         <td>
             <span class="badge bg-{{ $chucvu->trang_thai ? 'success' : 'secondary' }}">
                 {{ $chucvu->trang_thai ? 'Hoạt động' : 'Ẩn' }}
@@ -106,10 +106,10 @@
                         <label class="form-label">Mô tả</label>
                         <textarea name="mo_ta" class="form-control" rows="2">{{ $chucvu->mo_ta }}</textarea>
                     </div>
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <label class="form-label">Lương cơ bản</label>
                         <input type="number" name="luong_co_ban" class="form-control" value="{{ $chucvu->luong_co_ban }}" required>
-                    </div>
+                    </div> --}}
                     <div class="col-md-6">
                         <label class="form-label">Trạng thái</label>
                         <select name="trang_thai" class="form-select">

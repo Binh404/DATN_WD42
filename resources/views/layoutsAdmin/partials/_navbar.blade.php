@@ -1,12 +1,12 @@
 @php
-    use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
-    $nguoiDung = Auth::user();
-    $avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');
-    // dd($avatar);
-    $ten     = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
-    $email   = $nguoiDung->email ?? 'N/A';
-    $vaiTro  = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
+$nguoiDung = Auth::user();
+$avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');
+// dd($avatar);
+$ten = $nguoiDung->hoSo->ten ?? 'Chưa cập nhật';
+$email = $nguoiDung->email ?? 'N/A';
+$vaiTro = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
 @endphp
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
@@ -18,11 +18,11 @@
     <div>
       <a class="navbar-brand brand-logo" href="{{route('admin.dashboard')}}">
         {{-- <img src="{{asset('assets/admin/images/logo.png' )}}" alt="logo" /> --}}
-        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" />
+        <img src="{{asset('assets/images/dvlogo.png')}}" alt="logo" />
         <span class="text-dark fw-bold fs-5">DV <span class="text-primary">TECH</span></span>
       </a>
       <a class="navbar-brand brand-logo-mini" href="{{route('admin.dashboard')}}">
-        <img src="{{asset('assets/images/dvlogo.png' )}}" alt="logo" class="rounded-circle" />
+        <img src="{{asset('assets/images/dvlogo.png')}}" alt="logo" class="rounded-circle" />
       </a>
     </div>
   </div>
@@ -75,9 +75,10 @@
           <input type="text" class="form-control">
         </div>
       </li>
+
       <li class="nav-item position-relative">
-          <a href="#" class="nav-link" id="toggle-search">
-              <i class="fas fa-search"></i>
+          <a href="{{ route('chat.index') }}" class="nav-link" id="toggle-search">
+              <i class="mdi mdi-message-text-outline menu-icon"></i>
           </a>
           <form class="search-form d-none position-absolute" id="search-form" style="top: 100%; right: 0; z-index: 1000;">
               <div class="input-group mt-2">
@@ -86,14 +87,7 @@
               </div>
           </form>
       </li>
-      <li class="nav-item d-flex align-items-center">
-        <form action="{{ route('toggle.theme') }}" method="GET" class="me-3">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-outline-secondary">
-            {{ auth()->user()?->theme === 'dark' ? '☀️ Sáng' : '🌙 Tối' }}
-          </button>
-        </form>
-      </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
           <i class="icon-bell"></i>
@@ -130,6 +124,7 @@
           @endif
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
+
           <a class="dropdown-item py-3 border-bottom">
             <p class="mb-0 fw-medium float-start">Bạn có {{ $unreadCount }} thông báo</p>
             <span class="badge badge-pill badge-primary float-end">Thông báo</span>

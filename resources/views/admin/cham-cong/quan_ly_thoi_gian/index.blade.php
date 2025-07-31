@@ -144,9 +144,9 @@
                                                                 <td colspan="9" class="text-center py-5">
                                                                     <div class="text-center py-4">
                                                                         <p class="text-muted mb-4">Chưa có giờ công ty nào được thêm.</p>
-                                                                        <a href="{{ route('admin.locations.create') }}" class="btn btn-primary btn-lg text-white mb-0 me-0">
+                                                                        {{-- <a href="{{ route('admin.locations.create') }}" class="btn btn-primary btn-lg text-white mb-0 me-0">
                                                                             <i class="mdi mdi-plus-circle-outline me-2"></i> Thêm địa chỉ đầu tiên
-                                                                        </a>
+                                                                        </a> --}}
                                                                     </div>
                                                                 </td>
 

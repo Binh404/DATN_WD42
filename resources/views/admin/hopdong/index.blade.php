@@ -11,6 +11,7 @@
                             <h2 class="fw-bold mb-1">Quản lý hợp đồng lao động</h2>
                             <p class="mb-0 opacity-75">Thông tin chi tiết bản ghi hợp đồng</p>
                         </div>
+                        
                     </div>
                 </div>
                 

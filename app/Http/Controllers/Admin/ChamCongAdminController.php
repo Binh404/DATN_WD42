@@ -809,4 +809,116 @@ class ChamCongAdminController extends Controller
 
     //     return view('dashboard.cham-cong', compact('thongKe'));
     // }
+
+    public function thongKe(Request $request)
+    {
+        // Lấy tham số thời gian từ request
+        $tuNgay = $request->input('tu_ngay');
+        $denNgay = $request->input('den_ngay');
+        
+        // Tạo query builder cơ bản
+        $query = ChamCong::query();
+        
+        // Áp dụng filter thời gian nếu có
+        if ($tuNgay && $denNgay) {
+            $query->whereBetween('ngay_cham_cong', [$tuNgay, $denNgay]);
+        }
+        
+        // Thống kê tổng quan
+        $tongChamCong = (clone $query)->count();
+        $chamCongDungGio = (clone $query)->where('trang_thai', 'dung_gio')->count();
+        $chamCongDiMuon = (clone $query)->where('trang_thai', 'di_muon')->count();
+        $chamCongVeSom = (clone $query)->where('trang_thai', 've_som')->count();
+        $chamCongVang = (clone $query)->where('trang_thai', 'vang')->count();
+        $chamCongChuaDuyet = (clone $query)->where('trang_thai_duyet', 'chua_duyet')->count();
+        $chamCongDaDuyet = (clone $query)->where('trang_thai_duyet', 'da_duyet')->count();
+        $chamCongTuChoi = (clone $query)->where('trang_thai_duyet', 'tu_choi')->count();
+        
+        // Thống kê theo trạng thái chấm công
+        $thongKeTrangThai = (clone $query)->selectRaw('trang_thai, COUNT(*) as so_luong')
+            ->groupBy('trang_thai')
+            ->get()
+            ->keyBy('trang_thai');
+        
+        // Thống kê theo trạng thái duyệt
+        $thongKeTrangThaiDuyet = (clone $query)->selectRaw('trang_thai_duyet, COUNT(*) as so_luong')
+            ->groupBy('trang_thai_duyet')
+            ->get()
+            ->keyBy('trang_thai_duyet');
+        
+        // Thống kê theo tháng trong năm hiện tại hoặc năm được chọn
+        $namHienTai = $tuNgay ? date('Y', strtotime($tuNgay)) : now()->year;
+        $thongKeTheoThang = (clone $query)->selectRaw('MONTH(ngay_cham_cong) as thang, COUNT(*) as so_luong')
+            ->whereYear('ngay_cham_cong', $namHienTai)
+            ->groupBy('thang')
+            ->orderBy('thang')
+            ->get();
+        
+        // Thống kê theo phòng ban
+        $thongKeTheoPhongBan = (clone $query)->join('nguoi_dung', 'cham_cong.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->selectRaw('phong_ban.ten_phong_ban, COUNT(*) as so_luong')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('so_luong', 'desc')
+            ->get();
+        
+        // Thống kê theo ngày trong tuần
+        $thongKeTheoNgayTrongTuan = (clone $query)->selectRaw('DAYOFWEEK(ngay_cham_cong) as ngay_trong_tuan, COUNT(*) as so_luong')
+            ->groupBy('ngay_trong_tuan')
+            ->orderBy('ngay_trong_tuan')
+            ->get();
+        
+        // Thống kê giờ vào trung bình theo phòng ban
+        $gioVaoTrungBinhTheoPhongBan = (clone $query)->join('nguoi_dung', 'cham_cong.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->selectRaw('phong_ban.ten_phong_ban, AVG(TIME_TO_SEC(gio_vao)) as gio_vao_trung_binh_giay')
+            ->whereNotNull('gio_vao')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->get()
+            ->map(function ($item) {
+                $item->gio_vao_trung_binh = gmdate('H:i:s', $item->gio_vao_trung_binh_giay);
+                return $item;
+            });
+        
+        // Thống kê theo năm
+        $thongKeTheoNam = ChamCong::selectRaw('YEAR(ngay_cham_cong) as nam, COUNT(*) as so_luong')
+            ->groupBy('nam')
+            ->orderBy('nam', 'desc')
+            ->get();
+        
+        // Thống kê chấm công hôm nay
+        $chamCongHomNay = (clone $query)->whereDate('ngay_cham_cong', today())->count();
+        
+        // Thống kê chấm công tuần này
+        $chamCongTuanNay = (clone $query)->whereBetween('ngay_cham_cong', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        
+        // Thống kê chấm công tháng này
+        $chamCongThangNay = (clone $query)->whereMonth('ngay_cham_cong', now()->month)
+            ->whereYear('ngay_cham_cong', now()->year)
+            ->count();
+        
+        return view('admin.chamcong.thong-ke', compact(
+            'tongChamCong',
+            'chamCongDungGio',
+            'chamCongDiMuon',
+            'chamCongVeSom',
+            'chamCongVang',
+            'chamCongChuaDuyet',
+            'chamCongDaDuyet',
+            'chamCongTuChoi',
+            'thongKeTrangThai',
+            'thongKeTrangThaiDuyet',
+            'thongKeTheoThang',
+            'thongKeTheoPhongBan',
+            'thongKeTheoNgayTrongTuan',
+            'gioVaoTrungBinhTheoPhongBan',
+            'thongKeTheoNam',
+            'chamCongHomNay',
+            'chamCongTuanNay',
+            'chamCongThangNay',
+            'namHienTai',
+            'tuNgay',
+            'denNgay'
+        ));
+    }
 }

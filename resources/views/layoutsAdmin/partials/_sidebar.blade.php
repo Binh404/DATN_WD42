@@ -12,10 +12,17 @@
                 <span class="menu-title">Thống kê</span>
             </a>
         </li>
+        {{-- <li class="nav-item">
+            <a class="nav-link" href="{{ route('chat.index') }}">
+                <i class="mdi mdi-message-text-outline menu-icon"></i>
+                <span class="menu-title">Nhắn tin</span>
+            </a>
+        </li> --}}
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         <li class="nav-item nav-category">Các chức năng</li>
+
         @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
@@ -230,6 +237,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
                     </li>
@@ -338,6 +346,7 @@
         </li>
 
         @endif
+
         {{-- Loại nghỉ phép - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('yeucautuyendung'))
         <li class="nav-item">
@@ -372,6 +381,40 @@
             </div>
         </li>
         @endif
+
+        {{-- Thống kê hợp đồng - admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('thongke'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-clock-check"></i>
+                <span class="menu-title">Thống kê</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="thongke">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Hợp đồng</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">Chấm công</a>
+                    </li>
+
+                </ul>
+            </div>
+        </li>
+
+        @endif
+
+        {{-- Thống kê chấm công - admin, hr có quyền
+        @if(MenuHelper::hasMenuPermission('chamcong'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">
+                <i class="menu-icon mdi mdi-clock-check"></i>
+                <span class="menu-title">Thống kê chấm công</span>
+            </a>
+        </li>
+        @endif --}}
     </ul>
 </nav>
 
