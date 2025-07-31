@@ -24,6 +24,7 @@ class HopDongLaoDong extends Model
         'hinh_thuc_lam_viec',
         'dia_diem_lam_viec',
         'duong_dan_file',
+        'file_hop_dong_da_ky',
         'dieu_khoan',
         'trang_thai_hop_dong',
         'trang_thai_ky',

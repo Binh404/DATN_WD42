@@ -178,6 +178,37 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('phu-luc')->name('phuluc.')->group(function () {
         Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
     });
+});
+
+// Hợp đồng của tôi - Tất cả role đều có quyền
+Route::middleware(['auth', PreventBackHistory::class])->group(function () {
+    Route::get('/hop-dong/cua-toi', [HopDongLaoDongController::class, 'cuaToi'])->name('hopdong.cua-toi');
+    
+    // Routes ký hợp đồng
+    Route::get('/hop-dong/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('hopdong.ky');
+    Route::post('/hop-dong/{id}/xu-ly-ky', [HopDongLaoDongController::class, 'xuLyKyHopDong'])->name('hopdong.xu-ly-ky');
+    Route::post('/hop-dong/{id}/tu-choi-ky', [HopDongLaoDongController::class, 'tuChoiKy'])->name('hopdong.tu-choi-ky');
+    
+    // Route test để kiểm tra role
+    Route::get('/test-role', function() {
+        $user = auth()->user();
+        $roles = optional($user->vaiTros)->pluck('ten')->toArray();
+        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0] ?? null;
+        
+        return response()->json([
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'roles_array' => $roles,
+            'user_role' => $userRole,
+            'has_roles' => !empty($roles),
+            'has_role' => !empty($userRole),
+            'has_hopdong_permission' => \App\Helpers\MenuHelper::hasMenuPermission('hopdong')
+        ]);
+    })->name('test.role');
+});
+
+// HR, ADMIN, DEPARTMENT routes (tiếp tục)
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr,department'])->group(function () {
     Route::prefix('phong-ban')->name('phongban.')->group(function () {
         Route::get('/', [PhongBanController::class, 'index'])->name('index');
         Route::get('/create', [PhongBanController::class, 'create'])->name('create');

@@ -64,6 +64,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="{{ route('hopdong.index') }}" class="nav-link" data-section="contract">
+                <i class="fas fa-file-contract"></i>
+                <span>Hợp đồng</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="{{url('employee/task')}}" class="nav-link" data-section="tasks">
                 <i class="fas fa-tasks"></i>
                 <span>Công việc phòng ban</span>
