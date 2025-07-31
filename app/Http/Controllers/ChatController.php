@@ -167,6 +167,7 @@ class ChatController extends Controller
             'receiver_id' => 'required|exists:nguoi_dung,id',
             'message' => 'nullable|string|max:1000',
             'files.*' => 'file|mimes:jpeg,png,jpg,gif,pdf,doc,docx,mp3,mp4|max:10240', // file tùy chỉnh theo bạn
+            'audio' => 'nullable|file|max:20480',
         ]);
         // dd($request->all());
         if ($validator->fails()) {
@@ -179,16 +180,73 @@ class ChatController extends Controller
 
         // dd($request->all());
         //   try {
+            // ✅ Xử lý audio
+            if ($request->hasFile('audio')) {
+                $audio = $request->file('audio');
 
+                // Tạo hash để tránh file trùng
+                $fileHash = md5_file($audio->getRealPath());
+                $fileName = $fileHash.'.'.$audio->getClientOriginalExtension();
+                $path = 'chat_audio/'.$fileName;
+
+                // Nếu chưa tồn tại thì lưu
+                if (!Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->put($path, file_get_contents($audio));
+                }
+
+                // Tạo message audio
+                $msg = Message::create([
+                    'sender_id' => Auth::id(),
+                    'receiver_id' => $request->receiver_id,
+                    'message_type' => 'audio',
+                    'file_url' => $path,
+                    'is_read' => 0
+                ]);
+                $msg->load(['sender.hoSo', 'receiver.hoSo']);
+
+                $messages[] = [
+                    'id' => $msg->id,
+                    'message_type' => $msg->message_type,
+                    'file_url' => $msg->file_url ? asset('storage/'.$msg->file_url) : null,
+                    'sender_id' => $msg->sender_id,
+                    'receiver_id' => $msg->receiver_id,
+                    'is_read' => $msg->is_read,
+                    'created_at' => $msg->created_at->format('H:i'),
+                    'created_at_full' => $msg->created_at->format('Y-m-d H:i:s'),
+                    'sender' => [
+                        'id' => $msg->sender->id,
+                        'name' => ($msg->sender->hoSo->ho ?? '') . ' ' . ($msg->sender->hoSo->ten ?? ''),
+                        'avatar' => $msg->sender->hoSo->anh_dai_dien ?? 'assets/images/default.png'
+                    ],
+                    'is_own_message' => true
+                ];
+
+                $fullPath = storage_path('app/public/'.$path);
+                if (file_exists($fullPath)) {
+                    broadcast(new MessageSent($msg));
+                }
+            }
             // Nếu có files, lưu file và tạo record phụ (có thể lưu file vào bảng khác hoặc thêm bản ghi message cho từng file)
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     // dump($file->);
                      // Tạo hash (md5/sha1) để kiểm tra file trùng
                     $fileHash = md5_file($file->getRealPath());
-                    $fileName = $fileHash.'.'.$file->getClientOriginalExtension();
-                    $path = 'chat_files/'.$fileName;
-
+                    $extension = $file->getClientOriginalExtension();
+                    // $path = 'chat_files/'.$fileName;
+                    $fileMime = $file->getMimeType();
+                    if (str_contains($fileMime, 'image')) {
+                        $type = 'image';
+                        $folder = 'chat_images';
+                    } elseif (str_contains($fileMime, 'audio')) {
+                        $type = 'audio';
+                        $folder = 'chat_audio';
+                    } else {
+                        $type = 'file';
+                        $folder = 'chat_files';
+                    }
+                    $fileName = $fileHash . '.' . $extension;
+                    $path = $folder . '/' . $fileName;
                     // Nếu file chưa tồn tại thì mới lưu
                     if (!Storage::disk('public')->exists($path)) {
                         Storage::disk('public')->put($path, file_get_contents($file));
@@ -196,7 +254,7 @@ class ChatController extends Controller
                     // $path = $file->store('chat_files', 'public'); // lưu trong storage/app/public/chat_files
                     // dump($path);
                     // Kiểm tra loại file để set message_type
-                    $type = str_contains($file->getMimeType(), 'image') ? 'image' : 'file';
+                    // $type = str_contains($file->getMimeType(), 'image') ? 'image' : 'file';
                     // dump($type);
                     // Tạo message file, hoặc bạn có bảng riêng lưu file attach
                     $msg = Message::create([

@@ -136,7 +136,7 @@
                     <!-- Typing indicator -->
                     <div id="typingIndicator" class="px-3 py-1 bg-light border-bottom" style="display: none;">
                         <small class="text-muted">
-                            <span id="typingUserName">Người dùng</span> đang nhập...
+                            <span id="typingUserName">Người dùng</span> đang soạn tin...
                             <div class="typing-dots d-inline-block ms-2">
                                 <span></span><span></span><span></span>
                             </div>
@@ -516,6 +516,7 @@
         let selectedFiles = [];
         let lastMessageId = null;
         let recordedAudioBlob = null;
+        let recordedAudioFile = null;
         // let receiverId = null;
         // DOM elements
         const emojiBtn = document.getElementById('emojiBtn');
@@ -898,7 +899,16 @@ function initializeChat() {
             } else if (message.message_type === 'file' && message.file_url) {
                 const fileName = message.file_url.split('/').pop();
                 messageBody = `<a href="${message.file_url}" target="_blank" class="text-decoration-none">📎 ${fileName}</a>`;
-            } else {
+            } else if (message.message_type === 'audio' && message.file_url) {
+                messageBody = `
+                    <audio controls style="max-width: 200px;">
+                        <source src="${message.file_url}" type="audio/mpeg">
+                        <source src="${message.file_url}" type="audio/wav">
+                        <source src="${message.file_url}" type="audio/ogg">
+                        Bạn khóa tài liệu này.
+                    </audio>
+                `;
+            } else{
                 const content = message.message || message.content || '';
                 messageBody = `<p class="mb-0">${content}</p>`;
             }
@@ -1160,7 +1170,9 @@ function initializeChat() {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     // You can send this audio blob to server
                     // console.log('Voice message recorded:', audioBlob);
-                       recordedAudioBlob = audioBlob;
+                       recordedAudioBlob = new File([audioBlob], 'voice.wav', { type: 'audio/wav' });
+                    //  recordedAudioFile =
+                    console.log(recordedAudioBlob);
 
                     const audioURL = URL.createObjectURL(audioBlob);
 
@@ -1170,11 +1182,11 @@ function initializeChat() {
                         <div class="d-flex align-items-center justify-content-between">
                             <audio controls src="${audioURL}" style="flex:1;"></audio>
                             <div class="ms-2">
-                                <button class="btn btn-sm btn-success" onclick="sendVoiceMessage()">Gửi</button>
                                 <button class="btn btn-sm btn-danger" onclick="cancelVoiceMessage()">Xoá</button>
                             </div>
                         </div>
                     `;
+                    audioChunks = [];
                 };
 
                 mediaRecorder.start();
@@ -1195,6 +1207,7 @@ function initializeChat() {
         }
         function cancelVoiceMessage() {
             recordedAudioBlob = null;
+
             const previewDiv = document.getElementById('voicePreview');
             previewDiv.style.display = 'none';
             previewDiv.innerHTML = '';
@@ -1211,11 +1224,13 @@ function initializeChat() {
         async function sendMessage() {
             const message = messageInput.value.trim();
             const nguoiNhanId = document.getElementById('nguoiNhanId').value;
-
-            if ((!message && selectedFiles.length === 0) || !nguoiNhanId) {
+            console.log(recordedAudioBlob);
+            if ((!message && selectedFiles.length === 0 && !recordedAudioBlob) || !nguoiNhanId ) {
                 if (!nguoiNhanId) {
                     showToast('Vui lòng chọn người để nhắn tin', 'warning');
                 }
+                console.log('lỗi');
+
                 return;
             }
 
@@ -1235,21 +1250,27 @@ function initializeChat() {
             const formData = new FormData();
             formData.append('receiver_id', nguoiNhanId);
             formData.append('message', message);
-
+            if(recordedAudioBlob){
+                formData.append('audio', recordedAudioBlob, 'voice.wav');
+            }
             selectedFiles.forEach((file, index) => {
                 formData.append('files[]', file);
             });
-            for (let pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
+            // for (let pair of formData.entries()) {
+            //     console.log(pair[0], pair[1]);
+            // }
 
+            console.log(formData);
 
             // Clear input and files
             messageInput.value = '';
             selectedFiles = [];
+            recordedAudioBlob = null;
             displayFilePreview();
             adjustTextareaHeight(messageInput);
-            console.log(selectedFiles);
+            cancelVoiceMessage()
+            recordedAudioBlob = null;
+            // console.log(recordedAudioBlob);
 
             // Send to server
             const sentMessage = await sendMessageAPI(formData);
