@@ -425,15 +425,15 @@ Route::get('/chuc-vus/{phongBanId}', action: [ChucVuController::class, 'getByPho
 
 });
 
-Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
-    Route::get('/', function () {
-        return view('auth.login');
-    })->name('login');
+// Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
+//     Route::get('/', function () {
+//         return view('auth.login');
+//     })->name('login');
 
-    Route::get('/login', function () {
-        return view('auth.login');
-    });
-});
+//     Route::get('/login', function () {
+//         return view('auth.login');
+//     });
+// });
 
 require __DIR__ . '/auth.php';
 
@@ -557,4 +557,7 @@ Route::middleware('auth')->group(function () {
     Route::post('api/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
+
 });
+Route::post('/chat/typing', [ChatController::class, 'typing'])->middleware('auth');
+Route::post('/chat/stopped-typing', [ChatController::class, 'stoppedTyping'])->middleware('auth');

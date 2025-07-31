@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sender_id')->constrained('nguoi_dung')->onDelete('cascade');
             $table->foreignId('receiver_id')->constrained('nguoi_dung')->onDelete('cascade');
-            $table->text('message');
+            $table->enum('message_type', ['text', 'image', 'file', 'audio'])->default('text');
+            $table->text('message')->nullable();
+            $table->string('file_url')->nullable();
             $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message');
+        Schema::dropIfExists('messages');
     }
 };
