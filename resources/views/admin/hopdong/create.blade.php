@@ -9,7 +9,7 @@
     </div>
 
     <!-- Content Row -->
-    <div class="card shadow mb-4">
+    <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
@@ -73,7 +73,7 @@
                                 <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
                                 <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
                                 <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-                                <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option>
+                                <!-- <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option> -->
                             </select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -98,7 +98,8 @@
                         <div class="form-group">
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
-                                   id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}">
+                                   id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}"
+                                   {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'disabled' : '' }}>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -155,30 +156,15 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="trang_thai_hop_dong">Trạng thái hợp đồng <span class="text-danger">*</span></label>
-                            <select name="trang_thai_hop_dong" id="trang_thai_hop_dong" class="form-control @error('trang_thai_hop_dong') is-invalid @enderror" required>
-                                <option value="chua_hieu_luc" {{ old('trang_thai_hop_dong') == 'chua_hieu_luc' ? 'selected' : '' }}>Chưa hiệu lực</option>
-                                <option value="hieu_luc" {{ old('trang_thai_hop_dong') == 'hieu_luc' ? 'selected' : '' }}>Đang hiệu lực</option>
-                                <option value="het_han" {{ old('trang_thai_hop_dong') == 'het_han' ? 'selected' : '' }}>Hết hạn</option>
-                                <option value="huy_bo" {{ old('trang_thai_hop_dong') == 'huy_bo' ? 'selected' : '' }}>Đã hủy</option>
-                            </select>
-                            @error('trang_thai_hop_dong')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="trang_thai_ky">Trạng thái ký <span class="text-danger">*</span></label>
-                            <select name="trang_thai_ky" id="trang_thai_ky" class="form-control @error('trang_thai_ky') is-invalid @enderror" required>
-                                <option value="cho_ky" {{ old('trang_thai_ky', 'cho_ky') == 'cho_ky' ? 'selected' : '' }}>Chờ ký</option>
-                                <option value="da_ky" {{ old('trang_thai_ky') == 'da_ky' ? 'selected' : '' }}>Đã ký</option>
-                            </select>
-                            @error('trang_thai_ky')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Lưu ý:</strong> 
+                            <ul class="mb-0 mt-2">
+                                <li>Hợp đồng mới tạo sẽ ở trạng thái <strong>"Tạo mới"</strong></li>
+                                <li>Sau khi tạo, HR/Admin cần <strong>phê duyệt</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
+                                <li>Sau khi phê duyệt, HR/Admin có thể <strong>ký hợp đồng</strong> để chuyển sang trạng thái <strong>"Hiệu lực"</strong></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -193,9 +179,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="file_hop_dong">File hợp đồng</label>
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
-                           id="file_hop_dong" name="file_hop_dong">
+                    <label for="file_hop_dong">File hợp đồng <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
+                           id="file_hop_dong" name="file_hop_dong" required>
                     <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
                     @error('file_hop_dong')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -225,25 +211,54 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('script')
 <script>
-    $(document).ready(function() {
-        // Validate ngày kết thúc phải sau ngày bắt đầu
-        $('#ngay_ket_thuc').on('change', function() {
-            var ngayBatDau = new Date($('#ngay_bat_dau').val());
-            var ngayKetThuc = new Date($(this).val());
+    // Xử lý enable/disable ngày kết thúc dựa trên loại hợp đồng
+    setTimeout(function() {
+        var loaiHopDong = document.getElementById('loai_hop_dong');
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc');
+        
+        if (loaiHopDong && ngayKetThuc) {
+            // Xử lý khi thay đổi loại hợp đồng
+            loaiHopDong.addEventListener('change', function() {
+                if (this.value === 'khong_xac_dinh_thoi_han') {
+                    ngayKetThuc.disabled = true;
+                    ngayKetThuc.value = '';
+                } else {
+                    ngayKetThuc.disabled = false;
+                }
+            });
+            
+            // Chạy lần đầu
+            if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
+                ngayKetThuc.disabled = true;
+                ngayKetThuc.value = '';
+            }
+        }
+    }, 100);
+
+    // Validate ngày kết thúc phải sau ngày bắt đầu
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('ngay_ket_thuc').addEventListener('change', function() {
+            var ngayBatDau = new Date(document.getElementById('ngay_bat_dau').value);
+            var ngayKetThuc = new Date(this.value);
 
             if (ngayKetThuc < ngayBatDau) {
                 alert('Ngày kết thúc phải sau ngày bắt đầu');
-                $(this).val('');
+                this.value = '';
             }
         });
 
         // Format số tiền
-        $('#luong_co_ban, #phu_cap').on('input', function() {
-            var value = $(this).val();
-            if (value < 0) {
-                $(this).val(0);
+        document.getElementById('luong_co_ban').addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+
+        document.getElementById('phu_cap').addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
             }
         });
     });

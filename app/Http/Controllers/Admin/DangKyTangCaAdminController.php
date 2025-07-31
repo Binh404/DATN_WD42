@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TangCaApprovalMail;
 use App\Models\DangKyTangCa;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class DangKyTangCaAdminController extends Controller
@@ -140,7 +142,7 @@ class DangKyTangCaAdminController extends Controller
     }
 
     public function pheDuyet(Request $request, $id){
-        // dd($request->all());
+        // dd($request->trang_thai == 'huy');
         $dangKyTangCa = DangKyTangCa::where('id', $id)->first();
         $user = auth()->user();
 
@@ -158,7 +160,10 @@ class DangKyTangCaAdminController extends Controller
                 ) {
                     abort(403, 'Bạn không có quyền xem bản ghi này.');
                 }
-        } else {
+        } else if($user->coVaiTro('employee') && $request->trang_thai == 'huy'){
+            // $target = $dangKyTangCa->nguoiDung;
+
+        }else{
             abort(403, 'Bạn không có quyền xem bản ghi này.');
         }
         // $trangThai = $dangKyTangCa->trang_thai;
@@ -177,6 +182,7 @@ class DangKyTangCaAdminController extends Controller
         //     $chamCong->gio_ra = '17:30';
         // }
 
+
         DB::beginTransaction();
         try {
             $dangKyTangCa->update([
@@ -191,7 +197,11 @@ class DangKyTangCaAdminController extends Controller
             // $chamCong->capNhatTrangThai($trangThai);
             // $chamCong->tinhSoCong();
             $dangKyTangCa->save();
+         // Gửi mail thông báo
+            if($dangKyTangCa->trang_thai !== 'huy'){
+                $this->sendApprovalNotification($dangKyTangCa, $user);
 
+            }
             DB::commit();
             if($dangKyTangCa->trang_thai == 'tu_choi'){
                 $message = 'Từ chối chấm công!';
@@ -215,14 +225,7 @@ class DangKyTangCaAdminController extends Controller
             ])->withInput();
         }
     }
-    // public function destroy($id)
-    // {
-    //     $dangKyTangCa = DangKyTangCa::findOrFail($id);
-    //     $dangKyTangCa->delete();
 
-    //     return redirect()->route('admin.chamcong.xemPheDuyetTangCa')
-    //         ->with('success', 'Xóa bản ghi chấm công thành công!');
-    // }
     /**
      * Bulk actions for multiple records
      */
@@ -231,7 +234,7 @@ class DangKyTangCaAdminController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'ids' => 'required|json',
-                'action' => 'required|in:da_duyet,tu_choi,delete',
+                'action' => 'required|in:da_duyet,tu_choi,huy',
                 'reason' => 'nullable|string|max:500'
             ]);
 
@@ -272,8 +275,20 @@ class DangKyTangCaAdminController extends Controller
                     $updateData['ly_do_tu_choi'] = $request->reason;
                 }
 
+                // Lấy danh sách đăng ký trước khi update để gửi mail
+                $dangKyList = DangKyTangCa::with('nguoiDung')->whereIn('id', $ids)->get();
+
                 $count = DangKyTangCa::whereIn('id', $ids)->update($updateData);
+
+                // Gửi mail cho từng đăng ký sau khi update thành công
+                $user = auth()->user();
+                foreach ($dangKyList as $dangKy) {
+                    // Reload để có dữ liệu mới nhất
+                    $dangKy->refresh();
+                    $this->sendApprovalNotification($dangKy, $user);
+                }
                 $message = "Đã {$actionTextMap[$request->action]} {$count} bản ghi thành công!";
+
             }
 
             DB::commit();
@@ -286,4 +301,50 @@ class DangKyTangCaAdminController extends Controller
             return response()->json(['success' => false, 'message' => 'Lỗi hệ thống, vui lòng thử lại!'], 500);
         }
     }
+    /**
+ * Gửi mail thông báo phê duyệt
+ */
+private function sendApprovalNotification($dangKyTangCa, $approver)
+{
+    try {
+        // Lấy thông tin người đăng ký
+        $nguoiDangKy = $dangKyTangCa->nguoiDung;
+
+        // Kiểm tra email có tồn tại không
+        if (!$nguoiDangKy->email) {
+            \Log::warning('Không có email để gửi thông báo cho user ID: ' . $nguoiDangKy->id);
+            return;
+        }
+
+        // Chuẩn bị dữ liệu cho mail
+        $mailData = [
+            'ten_nhan_vien' => $nguoiDangKy->hoSo->ho . ' ' . $nguoiDangKy->hoSo->ten,
+            'ngay_tang_ca' => $dangKyTangCa->ngay_tang_ca->format('d/m/Y'),
+            'gio_bat_dau' => $dangKyTangCa->gio_bat_dau,
+            'gio_ket_thuc' => $dangKyTangCa->gio_ket_thuc,
+            'trang_thai' => $dangKyTangCa->trang_thai,
+            'ly_do_tu_choi' => $dangKyTangCa->ly_do_tu_choi,
+            'nguoi_duyet' => $approver->hoSo->ho . ' ' . $approver->hoSo->ten,
+            'thoi_gian_duyet' => $dangKyTangCa->thoi_gian_duyet
+        ];
+
+        // Gửi mail
+        Mail::to($nguoiDangKy->email)->queue(new TangCaApprovalMail($mailData));
+
+        Log::info('Đã gửi mail thông báo phê duyệt tăng ca cho: ' . $nguoiDangKy->email);
+
+    } catch (\Exception $e) {
+        Log::error('Lỗi gửi mail thông báo phê duyệt: ' . $e->getMessage());
+        // Không throw exception để không ảnh hưởng đến flow chính
+    }
+}
+
+    // public function destroy($id)
+    // {
+    //     $dangKyTangCa = DangKyTangCa::findOrFail($id);
+    //     $dangKyTangCa->delete();
+
+    //     return redirect()->route('admin.chamcong.xemPheDuyetTangCa')
+    //         ->with('success', 'Xóa bản ghi chấm công thành công!');
+    // }
 }

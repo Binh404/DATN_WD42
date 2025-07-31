@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Employee;
 
 
-use App\Http\Controllers\Controller;
+use App\Models\NguoiDung;
+use App\Models\LoaiNghiPhep;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\HoSoNguoiDung;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use App\Models\SoDuNghiPhepNhanVien;
+use Illuminate\Support\Facades\Auth;
 
 
 class HoSoController extends Controller
@@ -86,7 +89,7 @@ class HoSoController extends Controller
         }
     }
 ],
-    'quan_he_khan_cap' => 'nullable|string|max:50',
+'quan_he_khan_cap' => 'nullable|string|max:50',
     'email_cong_ty' => 'required|email|max:255',
 ], [
     'ho.required' => 'Vui lòng nhập họ.',
@@ -141,7 +144,7 @@ class HoSoController extends Controller
 
             if (!file_exists(dirname($path))) {
                 mkdir(dirname($path), 0777, true);
-            }
+                }
 
             file_put_contents($path, file_get_contents($file));
 
@@ -171,6 +174,32 @@ class HoSoController extends Controller
     $user->da_hoan_thanh_ho_so = true;
     $user->save();
 
-    return redirect()->route('employee.dashboard')->with('success', 'Bạn đã cập nhật hồ sơ thành công.');
+    // Kiểm tra giới tính để giữ hoặc xóa loại nghỉ phép thai sản
+        $gioiTinh = $validated['gioi_tinh'];
+
+        if ($gioiTinh === 'nam') {
+            // Lấy ID loại nghỉ phép "nghỉ thai sản"
+            $thaiSanId = LoaiNghiPhep::whereRaw('LOWER(ten) = ?', ['nghỉ thai sản'])->value('id');
+
+            if ($thaiSanId) {
+                // Xóa số dư nghỉ phép "nghỉ thai sản" của user hiện tại
+                SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
+                    ->where('loai_nghi_phep_id', $thaiSanId)
+                    ->delete();
+            }
+        }
+
+    // trỏ về dashboard theo vai trò
+    if ($user->coVaiTro('admin')) {
+        return redirect()->route('admin.dashboard')->with('success', 'Bạn đã cập nhật hồ sơ thành công.');
+    } elseif ($user->coVaiTro('employee')) {
+        return redirect()->route('employee.dashboard')->with('success', 'Bạn đã cập nhật hồ sơ thành công.');
+    } elseif ($user->coVaiTro('hr')) {
+        return redirect()->route('hr.dashboard')->with('success', 'Bạn đã cập nhật hồ sơ thành công.');
+    } else if ($user->coVaiTro('department')) {
+        return redirect()->route('department.dashboard')->with('success', 'Bạn đã cập nhật hồ sơ thành công.');
+    }
+
+
     }
 }

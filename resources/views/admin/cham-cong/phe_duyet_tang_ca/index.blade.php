@@ -237,7 +237,7 @@
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm"
                                                             onclick="bulkDelete()">
-                                                            <i class="mdi mdi-delete"></i> Xóa hàng loạt
+                                                            <i class="mdi mdi-delete"></i> Hủy hàng loạt
                                                         </button>
                                                     </div>
 

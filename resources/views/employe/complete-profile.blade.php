@@ -43,7 +43,7 @@
 @endpush
 @section('content')
 <div class="container my-4">
-    <form action="{{ route('employee.complete-profile.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('employee.complete-profile.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         {{-- Thông tin cá nhân --}}
@@ -107,7 +107,7 @@
             @error('tinh_trang_hon_nhan') <div class="text-danger">{{ $message }}</div> @enderror
         </div>
     </div>
-</div>
+    </div>
 
         {{-- Địa chỉ & giấy tờ --}}
         <div class="card shadow mb-4 rounded-4">
@@ -139,6 +139,7 @@
                     @error('so_ho_chieu') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
             </div>
+
         </div>
 
         {{-- Liên hệ khẩn cấp --}}
@@ -160,7 +161,7 @@
                     <input type="text" class="form-control" id="sdt_khan_cap" name="sdt_khan_cap" value="{{ old('sdt_khan_cap', $hoSo->sdt_khan_cap ?? '') }}">
                     @error('sdt_khan_cap')
                         <div class="text-danger mt-1">{{ $message }}</div>
-                    @enderror          
+                    @enderror
                 </div>
 
                 <div class="col-md-4">

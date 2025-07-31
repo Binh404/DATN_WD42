@@ -66,6 +66,10 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(HopDongLaoDong::class, 'nguoi_dung_id');
     }
+    public function hopDongLaoDongMoiNhat()
+    {
+        return $this->hasOne(HopDongLaoDong::class)->latestOfMany('ngay_bat_dau'); // ✅ chỉ trả về 1 record
+    }
 
     public function luongNhanVien()
     {
@@ -129,5 +133,19 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
      public function dangKyTangCa()
     {
         return $this->hasOne(DangKyTangCa::class, 'nguoi_dung_id');
+    }
+    public function cacDeXuatTao()
+    {
+        return $this->hasMany(DonDeXuat::class, 'nguoi_tao_id');
+    }
+
+    public function cacDeXuatNhan()
+    {
+        return $this->hasMany(DonDeXuat::class, 'nguoi_duoc_de_xuat_id');
+    }
+
+    public function cacDeXuatDuyet()
+    {
+        return $this->hasMany(DonDeXuat::class, 'nguoi_duyet_id');
     }
 }

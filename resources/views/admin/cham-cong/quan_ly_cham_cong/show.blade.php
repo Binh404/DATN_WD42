@@ -286,6 +286,12 @@
                                                             Đang chờ phê duyệt
                                                         </h6>
                                                         <span class="status-badge bg-warning rounded-pill px-2 py-1">Chờ duyệt</span>
+                                                    @elseif($chamCong->trang_thai_duyet == 4)
+                                                        <h6 class="card-title">
+                                                            <i class="mdi mdi-clock text-dark me-2"></i>
+                                                            Đang bị hủy
+                                                        </h6>
+                                                        <span class="status-badge bg-dark text-white rounded-pill px-2 py-1">Hủy</span>
                                                     @endif
                                                     <p class="card-text text-muted mb-1 mt-2">
                                                         Cập nhật bởi: {{ $chamCong->nguoiPheDuyet->hoSo->ho ?? 'Hệ thống' }}
@@ -423,9 +429,7 @@
 
 @endsection
 
-@push('styles')
 
-@endpush
 
 @section('script')
 
@@ -489,13 +493,13 @@
 
             document.getElementById('pheDuyetForm').reset();
         }
-        function confirmDelete(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa bản ghi chấm công này?')) {
-                const form = document.getElementById('deleteForm');
-                form.action = `{{ route('admin.chamcong.destroy', ':id') }}`.replace(':id', id);
-                form.sub    mit();
-            }
-        }
+        // function confirmDelete(id) {
+        //     if (confirm('Bạn có chắc chắn muốn xóa bản ghi chấm công này?')) {
+        //         const form = document.getElementById('deleteForm');
+        //         form.action = `{{ route('admin.chamcong.destroy', ':id') }}`.replace(':id', id);
+        //         form.submit();
+        //     }
+        // }
 
     </script>
 @endsection

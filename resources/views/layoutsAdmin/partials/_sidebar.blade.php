@@ -20,7 +20,7 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
-                <span class="menu-title">Hồ sơ</span>
+                <span class="menu-title">Người dùng</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-hoso">
@@ -29,16 +29,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
                     </li>
+                    @endif
+
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qltk'))
+
                     <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
                     </li>
-
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{route('chucvu.index')}}">
+                           Chức vụ
+                        </a>
+                    </li>
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{url('employee/profile')}}">Hồ sơ cá nhân</a>
+                        <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
-
-
                     @endif
                 </ul>
 
@@ -65,6 +71,17 @@
         </li>
         @endif
 
+        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-office-building-outline"></i>
+                <span class="menu-title">Thông báo tuyển dụng</span>
+                <i class="menu-arrow"></i>
+            </a>
+
+        </li>
+        @endif
+
         {{-- Lương - Chỉ admin có quyền --}}
         @if(MenuHelper::hasMenuPermission('luong'))
         <li class="nav-item">
@@ -87,6 +104,11 @@
                         <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương</a>
+                    </li>
+                    @endif
 
                 </ul>
             </div>
@@ -103,6 +125,16 @@
             </a>
             <div class="collapse" id="tables">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
+                    </li>
+                    @endif
                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.chamcong.index') }}">Danh sách chấm công</a>
@@ -120,22 +152,20 @@
                         <a class="nav-link" href="{{ route('admin.chamcong.tangCa.index') }}">Danh sách tăng ca</a>
                     </li>
                     @endif
-
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'vitri'))
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'importcc'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('chamcong.import.form') }}">Import chấm công</a>
+                    </li>
+                    @endif
+                     @if(MenuHelper::hasSubMenuPermission('chamcong', 'vitri'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.locations.index') }}">Quản lý vị trí</a>
                     </li>
-                    @endif
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'chamcong'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cham-cong.index') }}">Chấm công</a>
+                        <a class="nav-link" href="{{ route('admin.giolamviec.index') }}">Quản lý thời gian</a>
                     </li>
                     @endif
-                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'donxintangca'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cham-cong.tao-don-xin-tang-ca') }}">Đơn xin tăng ca</a>
-                    </li>
-                    @endif
+
 
                 </ul>
             </div>
@@ -200,7 +230,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
+                    </li>
                 </ul>
 
             </div>
@@ -304,11 +336,40 @@
                 <span class="menu-title">Loại nghỉ phép</span>
             </a>
         </li>
+
+        @endif
+        {{-- Loại nghỉ phép - admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('yeucautuyendung'))
         <li class="nav-item">
-            <a class="nav-link" href="{{route('chucvu.index')}}">
-                <i class="menu-icon mdi mdi-file-document"></i>
-                <span class="menu-title">Chức vụ </span>
+            <a class="nav-link" href="{{ route('department.yeucautuyendung.index') }}">
+                <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
+                <span class="menu-title">Yêu cầu tuyển đụng</span>
             </a>
+        </li>
+        @endif
+         @if(MenuHelper::hasMenuPermission('dondexuat'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#dondexuat" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-file-outline"></i>
+                <span class="menu-title">Đơn đề xuất</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="dondexuat">
+                <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('dondexuat', 'guidexuat'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('de-xuat.index')}}">Gửi đề xuất</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('dondexuat', 'danhsach'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('de-xuat.index')}}">Danh sách đề xuất</a>
+                    </li>
+                    @endif
+                </ul>
+            </div>
         </li>
         @endif
     </ul>

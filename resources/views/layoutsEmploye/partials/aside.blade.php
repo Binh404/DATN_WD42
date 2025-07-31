@@ -19,7 +19,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url('employee/salary')}}" class="nav-link" data-section="salary">
+            <a href="{{url('employe/luong')}}" class="nav-link" data-section="salary">
                 <i class="fas fa-money-bill-wave"></i>
                 <span>Bảng lương</span>
             </a>
@@ -36,7 +36,7 @@
                 <span>Hồ sơ cá nhân</span>
             </a>
         </li>
-       
+
         <li class="nav-item">
             <a href="{{url('employee/notification')}}" class="nav-link" data-section="notifications">
                 <i class="fas fa-bell"></i>
@@ -73,8 +73,7 @@
             <form method="POST" action="{{ route('logout') }}" id="logout-form">
                 @csrf
 
-                <button type="submit" class="dropdown-item d-flex align-items-center"
-                    style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
+                <button type="submit" class="nav-link" style="all: unset; display: flex; width: 100%; padding: 0.5rem 1rem;">
                     <i class="fas fa-sign-out-alt mr-2"></i>
                     <span>Đăng xuất</span>
                 </button>

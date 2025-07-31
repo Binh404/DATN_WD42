@@ -97,6 +97,34 @@
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
           <i class="icon-bell"></i>
+          {{-- <span class="count">
+            {{ auth()->user()->unreadNotifications->count() > 0 ? auth()->user()->unreadNotifications->count() : '' }}
+          </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
+            <a class="dropdown-item py-3 border-bottom">
+                <p class="mb-0 fw-medium float-start">
+                    Bạn có {{ auth()->user()->unreadNotifications->count() }} thông báo mới
+                </p>
+                <span class="badge badge-pill badge-primary float-end">Xem tất cả</span>
+            </a>
+            @forelse(auth()->user()->unreadNotifications as $notification)
+                <a class="dropdown-item preview-item py-3" href="{{ route('notifications.show', $notification->id) }}">
+                    <div class="preview-thumbnail">
+                        <i class="mdi mdi-bell m-auto text-primary"></i>
+                    </div>
+                    <div class="preview-item-content">
+                        <h6 class="preview-subject fw-normal text-dark mb-1">
+                            {{ $notification->data['message'] }}
+                        </h6>
+                        <p class="fw-light small-text mb-0">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </p>
+                    </div>
+                </a>
+            @empty
+                <span class="dropdown-item">Không có thông báo mới</span>
+            @endforelse --}}
           @if($unreadCount > 0)
                   <span class="count">{{ $unreadCount }}</span>
           @endif
@@ -104,15 +132,17 @@
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
           <a class="dropdown-item py-3 border-bottom">
             <p class="mb-0 fw-medium float-start">Bạn có {{ $unreadCount }} thông báo</p>
-            <span class="badge badge-pill badge-primary float-end">View all</span>
+            <span class="badge badge-pill badge-primary float-end">Thông báo</span>
           </a>
             @foreach($notifications as $noti)
-                  <a class="dropdown-item preview-item py-3">
+                  <a class="dropdown-item preview-item py-3" href="{{ route('notifications.show', $noti->id) }}">
                       <div class="preview-thumbnail">
                           <i class="mdi mdi-alert m-auto text-primary"></i>
                       </div>
                       <div class="preview-item-content">
-                          <h6 class="preview-subject fw-normal text-dark mb-1">{{ $noti->data['title'] }}</h6>
+                          <h6 class="preview-subject fw-normal text-dark mb-1">
+                              {{ $noti->data['message'] ?? 'Thông báo mới' }}
+                          </h6>
                           <p class="fw-light small-text mb-0">{{ $noti->created_at->diffForHumans() }}</p>
                       </div>
                   </a>
@@ -193,7 +223,7 @@
             <p class="fw-light text-muted mb-0">{{ $email }}</p>
                 <p class="fw-light text-muted mb-0">{{ $vaiTro }}</p>
             </div>
-          <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
+          <a class="dropdown-item" href="{{ route('employee.profile.show') }}"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ cá nhân </a>
           {{-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
           <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a> --}}

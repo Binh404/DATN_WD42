@@ -26,7 +26,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="card shadow mb-4">
+    <div class="card shadow mb-4mx-auto" style="max-width: 800px;">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Chi tiết phụ lục: {{ $phuLuc->so_phu_luc }}</h6>
             <a href="{{ route('hopdong.show', $phuLuc->hop_dong_id) }}" class="btn btn-secondary btn-sm">

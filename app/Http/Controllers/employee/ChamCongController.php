@@ -7,6 +7,7 @@ use App\Models\ChamCong;
 use App\Models\DangKyTangCa;
 use App\Models\thucHienTangCa;
 use App\Models\NguoiDung;
+use App\Services\GioLamViecService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,15 @@ use Illuminate\Support\Facades\DB;
 
 class ChamCongController extends Controller
 {
+    protected $workScheduleService;
+
+    public function __construct(GioLamViecService $workScheduleService)
+    {
+        $this->workScheduleService = $workScheduleService;
+    }
     public function index()
     {
+
         $user = Auth::user();
         $today = now()->format('Y-m-d');
 
@@ -63,7 +71,9 @@ class ChamCongController extends Controller
             $currentTime = now();
             // dd($today->format('Y-m-d'));
             $isOvertime = false;
-            $overtimeStartTime = now()->setTime(18, 30); // 18:45
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
             //kiểm tra xem có đã duyệt đơn tăng ca chưa
@@ -83,7 +93,7 @@ class ChamCongController extends Controller
                         'message' => 'Không thể chấm công, nếu không có đơn tăng ca được duyệt!'
                     ]);
                 }
-                // dd($donTangCa->id);
+                // $donTangCa->id);
                 $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
                 // dd($chamCongTangCa->gio_bat_dau_thuc_te);
                 if ($chamCongTangCa && $chamCongTangCa->gio_bat_dau_thuc_te) {
@@ -193,7 +203,9 @@ class ChamCongController extends Controller
             $today = now();
             $currentTime = now();
             $isOvertime = false;
-            $overtimeStartTime = now()->setTime(18, 45); // 18:45
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
             //kiểm tra xem có đã duyệt đơn tăng ca chưa
@@ -450,7 +462,8 @@ class ChamCongController extends Controller
             $user = Auth::user();
             $today = now();
             $currentTime = now();
-            $overtimeStartTime = now()->setTime(18, 30); // 18:30
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']);
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
 
@@ -576,11 +589,25 @@ class ChamCongController extends Controller
                 ->where('trang_thai', 'da_duyet')
                 ->first();
             // dd($donTangCa);
+
+            $chamCongTangCa = null;
+            if ($donTangCa) {
+                $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
+            }
             // Mặc định trạng thái và class
             if ($ngayHienTai->lessThan(now())) {
-                $trangThai = 'vang_mat';
+
+                if ($chamCongTangCa) {
+                    $trangThai = 'tang_ca';
+                    // $class = 'day-overtime';
+                    $class = 'bg-orange text-white fw-bold';
+                }else{
+                    $trangThai = 'vang_mat';
                 // $class = 'day-absent';
                 $class = 'bg-danger text-white fw-bold';
+                }
+
+
             } else {
                 $trangThai = 'chua_cham_cong';
                 // $class = 'day-normal';
@@ -594,14 +621,13 @@ class ChamCongController extends Controller
                 $class = 'bg-light text-dark fw-bold';
 
                 // Nếu có đơn tăng ca được duyệt
-                if ($donTangCa) {
-                    $chamCongTangCa = thucHienTangCa::layBanGhiTheoDonTangCa($donTangCa->id);
+
                     if ($chamCongTangCa) {
                         $trangThai = 'tang_ca';
                         // $class = 'day-overtime';
-                        $class = 'bg-success text-white fw-bold';
+                        $class = 'bg-orange text-dark fw-bold';
                     }
-                }
+
             } elseif ($chamCong) {
                 // Xử lý các trạng thái chấm công thường
                 switch ($chamCong->trang_thai) {
@@ -626,11 +652,22 @@ class ChamCongController extends Controller
                         $class = 'bg-secondary text-white fw-bold';
                         break;
                     case 'vang_mat':
-                        $trangThai = 'vang_mat';
-                        // $class = 'day-absent';
-                        $class = 'bg-danger text-white fw-bold';
+                        // dump($donTangCa);
+
+                            if ($chamCongTangCa) {
+                                $trangThai = 'tang_ca';
+                                // $class = 'day-overtime';
+                                $class = 'bg-orange text-white fw-bold';
+                            }
+                        else {
+                            $trangThai = 'vang_mat';
+                            // $class = 'day-absent';
+                            $class = 'bg-danger text-white fw-bold';
+                        }
+
                         break;
                 }
+
             }
             $lich[] = [
                 'id' => $chamCong ? \Carbon\Carbon::parse($chamCong->ngay_cham_cong)->format('Y-m-d') : ($donTangCa ? \Carbon\Carbon::parse($donTangCa->ngay_tang_ca)->format('Y-m-d') : ''),

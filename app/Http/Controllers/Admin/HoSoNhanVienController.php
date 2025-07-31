@@ -15,7 +15,7 @@ class HoSoNhanVienController extends Controller
     /**
      * Display a listing of the resource.
      */
-  public function indexAll(Request $request)
+public function indexAll(Request $request)
 {
     $keyword = $request->input('search');
 
@@ -87,7 +87,7 @@ public function indexResigned(Request $request)
     $keyword = $request->input('search');
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-        ->where('trang_thai_cong_viec', 'da_nghi') // <-- lọc ở đây mới đúng
+        ->where('trang_thai', 0) // <-- lọc ở đây mới đúng
         ->when($keyword, function ($query) use ($keyword) {
             $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
                 $subQuery->where('ho', 'like', "%$keyword%")
@@ -109,7 +109,7 @@ public function markResigned($id)
     $nguoiDung = $hoSo->nguoiDung; // lấy bản ghi liên kết từ bảng nguoi_dung
 
     if ($nguoiDung) {
-        $nguoiDung->trang_thai_cong_viec = 'da_nghi';
+        $nguoiDung->trang_thai = 0;
         $nguoiDung->save();
     }
 
@@ -118,12 +118,18 @@ public function markResigned($id)
 // Khôi phục nhân viên
 public function restore($id)
 {
-    $hoSo = HoSoNguoiDung::findOrFail($id);
-    $nguoiDung = $hoSo->nguoiDung;
+    // $hoSo = HoSoNguoiDung::findOrFail($id);
+    // $nguoiDung = $hoSo->nguoiDung;
 
+    // if ($nguoiDung) {
+    //     $nguoiDung->trang_thai_cong_viec = 'dang_lam';
+    //     $nguoiDung->save();
+    // }
+
+    $nguoiDung = NguoiDung::findOrFail($id);
     if ($nguoiDung) {
-        $nguoiDung->trang_thai_cong_viec = 'dang_lam';
-        $nguoiDung->save();
+    $nguoiDung->trang_thai = 1;
+    $nguoiDung->save();
     }
 
     return redirect()->route('hoso.resigned')->with('success', 'Đã khôi phục nhân viên về trạng thái đang làm.');
@@ -212,7 +218,7 @@ public function update(Request $request, $id)
                                         if ($value && $value === $request->so_dien_thoai) {
                                             $fail('Số điện thoại khẩn cấp không được trùng với số điện thoại chính.');
                                         }
-                                    }],   
+                                    }],
         'quan_he_khan_cap' => 'nullable|string|max:50',
     ], [
         'ho.required' => 'Vui lòng nhập họ.',

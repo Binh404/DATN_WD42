@@ -2,6 +2,12 @@
 @section('title', 'Lương')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+
+@endif
 <!-- Breadcrumbs Start -->
 {{-- <div class="content-header">
   <div class="container-fluid">
@@ -52,6 +58,23 @@
                             </button>
                         </div>
                     </form>
+                      <form action="{{ route('luong.gui-mail-tat-ca') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="thang" value="{{ $thang }}">
+                            <input type="hidden" name="nam" value="{{ $nam }}">
+                            <button type="submit" class="btn btn-primary">Gửi tất cả phiếu lương</button>
+                        </form>
+
+
+
+
+                        {{-- <form action="{{ route('luong.gui-mail-luong', $id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-primary">Gửi phiếu lương</button>
+                        </form> --}}
+
+
+
                 </div>
 
                 <div class="table-responsive">

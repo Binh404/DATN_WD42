@@ -193,7 +193,7 @@ class ChamCongAdminController extends Controller
                    Carbon::parse($request->start_date)->format('d-m-Y') . '-den-' .
                    Carbon::parse($request->end_date)->format('d-m-Y');
 
-        if ($request->format === 'excel') {
+        if ($request->get('format') === 'excel') {
             return Excel::download(
                 new ChamCongExport($chamCong, $statistics),
                 $fileName . '.xlsx'
@@ -286,7 +286,7 @@ class ChamCongAdminController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'ids' => 'required|json',
-                'action' => 'required|in:1,2,delete',
+                'action' => 'required|in:1,2,4',
                 'reason' => 'nullable|string|max:500'
             ]);
 
@@ -514,7 +514,7 @@ class ChamCongAdminController extends Controller
             'so_gio_lam' => 'nullable|numeric|min:0|max:24',
             'so_cong' => 'nullable|numeric|min:0|max:1',
             'trang_thai' => 'required|in:binh_thuong,di_muon,ve_som,vang_mat,nghi_phep',
-            'trang_thai_duyet' => 'nullable|in:0,1,2,3',
+            'trang_thai_duyet' => 'nullable|in:0,1,2,3,4',
             'ghi_chu' => 'nullable|string|max:1000',
             'ghi_chu_duyet' => 'nullable|string|max:500',
 
@@ -745,9 +745,10 @@ class ChamCongAdminController extends Controller
         ]);
 
         $trangThaiDuyet = (int) $validated['trang_thai_duyet'];
-
+        // dd($trangThaiDuyet);
         // Nếu không có giờ ra thì đặt mặc định là 17:30
-        if (empty($chamCong->gio_ra)) {
+        if (empty($chamCong->gio_ra) && $trangThaiDuyet == 1) {
+
             $chamCong->gio_ra = '17:30';
         }
 

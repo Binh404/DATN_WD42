@@ -349,12 +349,10 @@
                             <div class="info-label">Loại hợp đồng</div>
                             @if ($tuyenDung->loai_hop_dong === 'thu_viec')
                                 <div class="info-value">Thử việc</div>
-                            @elseif($tuyenDung->loai_hop_dong === 'co_thoi_han')
-                                <div class="info-value">Có thời hạn</div>
-                            @elseif($tuyenDung->loai_hop_dong === 'khong_co_thoi_han')
-                                <div class="info-value">Thời vụ</div>
-                            @elseif($tuyenDung->loai_hop_dong === 'thoi_han')
-                                <div class="info-value">Không thời hạn</div>
+                            @elseif($tuyenDung->loai_hop_dong === 'xac_dinh_thoi_han')
+                                <div class="info-value">Xác định thời hạn</div>
+                            @elseif($tuyenDung->loai_hop_dong === 'khong_xac_dinh_thoi_han')
+                                <div class="info-value">Không xác định thời hạn</div>
                             @endif
 
                         </div>
@@ -389,9 +387,9 @@
                         </div>
                         <div class="info-item">
                             <div class="info-label">Mức lương</div>
-                            <div class="info-value highlight">{{ $tuyenDung->luong_toi_thieu }} -
-                                {{ $tuyenDung->luong_toi_da }}
-                                VND
+                            <div class="info-value highlight">{{ number_format($tuyenDung->luong_toi_thieu, 0, ',', '.') }}
+                                -
+                                {{ number_format($tuyenDung->luong_toi_da, 0, ',', '.') }} VND
                             </div>
                         </div>
                     </div>

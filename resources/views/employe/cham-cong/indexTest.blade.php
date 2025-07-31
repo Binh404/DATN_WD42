@@ -2,6 +2,11 @@
 @section('title', 'chấm công')
 @section('style')
 <style>
+    .bg-orange {
+    background-color: #fd7e14 !important; /* Bootstrap orange */
+    color: #fff !important;
+}
+
     .notification {
     position: fixed;
     top: 20px;
@@ -321,6 +326,8 @@
                         <span class="badge bg-info">Về sớm</span>
                         <span class="badge bg-secondary">Nghỉ phép</span>
                         <span class="badge bg-danger">Vắng mặt</span>
+                        <span class="badge bg-orange">Tăng ca</span>
+
                     </div>
                 </div>
             </div>
@@ -392,7 +399,7 @@
                     const data = await response.json();
                     COMPANY_LOCATION = data;
 
-                    console.log("Dữ liệu vị trí công ty:", COMPANY_LOCATION);
+                    // console.log("Dữ liệu vị trí công ty:", COMPANY_LOCATION);
                     // Bây giờ bạn có thể dùng: COMPANY_LOCATION.latitude, .longitude, .allowedRadius
 
                 } catch (error) {
@@ -400,14 +407,46 @@
                 }
             }
 
-            const WORK_SCHEDULE = {
-                startTime: '08:30',
-                endTime: '17:30',
-                lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
-                earlyThreshold: 15, // Số phút được phép về sớm mà không cần lý do
-                overtimeThreshold: '18:30' // Giờ bắt đầu chấm công tăng ca
+            let WORK_SCHEDULE = {
+                // startTime: '08:30',
+                // endTime: '17:30',
+                // lateThreshold: 15,  // Số phút được phép muộn mà không cần lý do
+                // earlyThreshold: 15, // Số phút được phép về sớm mà không cần lý do
+                // overtimeThreshold: '18:30' // Giờ bắt đầu chấm công tăng ca
             };
+            async function loadWorkSchedule() {
+            try {
+                const response = await fetch('{{ route('cham-cong.work-schedule') }}', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
 
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API lấy lịch làm việc');
+                }
+
+                const data = await response.json();
+                // WORK_SCHEDULE = data;
+                WORK_SCHEDULE = {
+                    startTime: data.start_time,
+                    endTime: data.end_time,
+                    lateThreshold: data.late_threshold,
+                    earlyThreshold: data.early_leave_threshold,
+                    overtimeThreshold: data.overtime_threshold
+                };
+
+                console.log("Dữ liệu lịch làm việc:", WORK_SCHEDULE);
+
+
+                // Bạn có thể truy cập WORK_SCHEDULE.start_time, end_time, v.v
+
+            } catch (error) {
+                console.error('Lỗi khi tải lịch làm việc:', error);
+            }
+        }
             function needsReason(type, isDayOff = false, date = new Date()) {
                 const timeString = date.toTimeString().slice(0, 5); // HH:MM
                 console.log(isDayOff, date, timeString);
@@ -430,6 +469,7 @@
                     return date.getTime() > lateThresholdMs; // Đi muộn cần lý do
                 } else if (type === 'out') {
                     // Kiểm tra về sớm
+                    console.log(WORK_SCHEDULE)
                     const [endHour, endMin] = WORK_SCHEDULE.endTime.split(':');
                     const endTimeMs = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMin).getTime();
                     const earlyThresholdMs = endTimeMs - (WORK_SCHEDULE.earlyThreshold * 60 * 1000);
@@ -444,6 +484,7 @@
                 // Ẩn nút ban đầu
                 document.getElementById("checkinBtn").style.display = "none";
                 loadCompanyLocation();
+                loadWorkSchedule();
                 await checkAttendanceStatus();
                 loadCalendarData();
             });
@@ -464,13 +505,13 @@
                     if (data.success) {
                         // Xác định loại chấm công dựa vào thời gian và ngày
                         const currentTime = new Date();
-                        const isAfter1830 = currentTime.getHours() > 18 || (currentTime.getHours() === 18 && currentTime.getMinutes() >= 30);
+                        const [overtimeHour, overtimeMin] = WORK_SCHEDULE.overtimeThreshold.split(':').map(Number);
+                        const isAfterOvertime  = currentTime.getHours() > overtimeHour  || (currentTime.getHours() === overtimeHour  && currentTime.getMinutes() >= overtimeMin);
                         const isWeekend = currentTime.getDay() === 0 || currentTime.getDay() === 6; // 0 = Chủ nhật, 6 = Thứ 7
-
                         // Kiểm tra có phải chấm công tăng ca không
-                        const isOvertimeAttendance = isWeekend || data.is_holiday || (data.has_approved_overtime );
+                        const isOvertimeAttendance = isWeekend || data?.is_holiday || (data?.has_approved_overtime && isAfterOvertime)  ;
                         console.log('isOvertimeAttendance', isOvertimeAttendance);
-                        if (isOvertimeAttendance === true) {
+                            if (isOvertimeAttendance === true) {
                             // console.log( isOvertimeAttendance);
                             // Xử lý trạng thái chấm công tăng ca
                             if (data.overtime_data) {
@@ -485,11 +526,13 @@
                                     attendanceStatus = 'out';
                                     attendanceType = 'overtime';
                                 }
-                                updateNormalDisplayData(data.normal_data)
+                                if(data.normal_data){
+                                    updateNormalDisplayData(data.normal_data)
+                                }
                                 updateOvertimeDisplayData(data.overtime_data);
 
                             } else {
-                                console.log('data.overtime_data');
+                                // console.log('data.overtime_data');
                                 // Chưa có bản ghi tăng ca hoặc chưa được duyệt
                                 attendanceStatus = 'out';
                                 attendanceType = 'overtime';
@@ -1015,6 +1058,8 @@
         // Prepare attendance data
         const attendanceData = {
             ...window.pendingAttendanceData,
+            latitude: window.pendingAttendanceData.location.latitude,
+            longitude: window.pendingAttendanceData.location.longitude,
             reason_detail: detail
         };
 
@@ -1182,12 +1227,12 @@
             function chamCongVao(location, isNormalAttendance = true) {
                 // console.log(location.location);
                 const latitude = location?.latitude !== undefined
-                    ? parseFloat(location.latitude.toFixed(8))
-                    : parseFloat(location.location.latitude.toFixed(8));
+                    ? parseFloat(location.latitude)
+                    : parseFloat(location.location.latitude);
 
                 const longitude = location?.longitude !== undefined
-                    ? parseFloat(location.longitude.toFixed(8))
-                    : parseFloat(location.location.longitude.toFixed(8));
+                    ? parseFloat(location.longitude)
+                    : parseFloat(location.location.longitude);
                 // const latitude = null;
                 // const longitude = null;
                 const requestData = {
@@ -1251,10 +1296,10 @@
 
             // Chấm công ra
             function chamCongRa(location, isNormalAttendance = true) {
-                // console.log(location);
+                console.log(location);
                 const requestData = {
-                    latitude: location.location.latitude || null,
-                    longitude: location.location.longitude || null,
+                    latitude: location.latitude || null,
+                    longitude: location.longitude || null,
                     address: location.address || "Không xác định được địa chỉ chi tiết",
                     trang_thai_duyet: isNormalAttendance ? 1 : 3,
                     ...(location.reason_detail && { reason_detail: location.reason_detail })
@@ -1692,8 +1737,8 @@
                 lichChamCong.forEach((ngay, index) => {
                     let titleAttr = '';
                     let onclickAttr = '';
-                    // console.log(ngay.class);
-                    if (ngay.cham_cong) {
+                    console.log(ngay.tang_ca);
+                    if (ngay.cham_cong ) {
                         if (ngay.cham_cong.trang_thai_text === 'Nghỉ phép') {
                             titleAttr = `title="${ngay.cham_cong.trang_thai_text}"`;
                         } else {
@@ -1702,6 +1747,8 @@
                         if (ngay.class !== 'text-muted') {
                             onclickAttr = `onclick="fetchAttendanceData('${ngay.id}')"`;
                         }
+                    } else if(ngay.tang_ca) {
+                        onclickAttr = `onclick="fetchAttendanceData('${ngay.id}')"`;
                     }
 
 

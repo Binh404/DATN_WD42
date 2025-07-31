@@ -7,23 +7,27 @@ use App\Models\VaiTro;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\ChucVu;
+use App\Models\PhongBan;
 use Illuminate\Support\Facades\DB;
 
 class TaiKhoanController extends Controller
 {
     public function getall(Request $request)
     {
-        $taikhoan = NguoiDung::with('vaiTro','chucVu', 'PhongBan')->get();
+        $taikhoan = NguoiDung::with('vaiTro', 'chucVu', 'PhongBan')->paginate(20);
         return view('admin.taikhoan.index', compact('taikhoan'));
     }
+
     public function edit($id)
     {
 
         $taikhoan = NguoiDung::findOrFail($id);
         // $taikhoan = NguoiDung::with('vaiTro')->get();
         $ds_vaitro = VaiTro::all();
-        return view('admin.taikhoan.edit', compact('taikhoan', 'ds_vaitro'));
+        $ds_phongban = PhongBan::all();
+        $ds_chucvu = ChucVu::all();
+        return view('admin.taikhoan.edit', compact('taikhoan', 'ds_vaitro', 'ds_phongban', 'ds_chucvu'));
     }
     public function update(Request $request, $id)
     {
@@ -31,22 +35,27 @@ class TaiKhoanController extends Controller
 
         $request->validate([
             'ten_dang_nhap' => 'required|max:255',
-            'email' => 'required|email',
-            'trang_thai' => 'required|boolean',
-            'trang_thai_cong_viec' => 'required|in:dang_lam,da_nghi',
-            'vai_tro_id' => 'required|exists:vai_tro,id',
+            'email'         => 'required|email',
+            'trang_thai'    => 'required|boolean',
+            'vai_tro_id'    => 'required|exists:vai_tro,id',
+            'phong_ban_id'  => 'required|exists:phong_ban,id',
+            'chuc_vu_id'    => 'required|exists:chuc_vu,id',
+           
         ]);
 
         // 1. Cập nhật bảng nguoi_dung
         $taikhoan->update([
             'ten_dang_nhap' => $request->ten_dang_nhap,
-            'email' => $request->email,
-            'trang_thai' => $request->trang_thai,
-            'trang_thai_cong_viec' => $request->trang_thai_cong_viec,
-            'vai_tro_id' => $request->vai_tro_id, // nếu bạn còn dùng cột này
+            'email'         => $request->email,
+            'trang_thai'    => $request->trang_thai,
+            'vai_tro_id'    => $request->vai_tro_id,    
+            'phong_ban_id'  => $request->phong_ban_id,
+            'chuc_vu_id'    => $request->chuc_vu_id,
+           
         ]);
 
-        // 2. Cập nhật bảng nguoi_dung_vai_tro (nhiều – nhiều)
+
+
         DB::table('nguoi_dung_vai_tro')
             ->where('nguoi_dung_id', $id)
             ->update([

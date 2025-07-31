@@ -101,7 +101,7 @@
                                 <td>{{ $nv->hoSo->email_cong_ty ?? 'N/A' }}</td>
                                 <td>{{ $nv->created_at ? $nv->created_at->format('d/m/Y') : 'N/A' }}</td>
                                 <td>
-                                    <form action="{{ route('hoso.restore', $nv->hoSo->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('hoso.restore', $nv->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="btn btn-sm btn-outline-success rounded-pill"

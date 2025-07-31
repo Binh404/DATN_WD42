@@ -152,27 +152,6 @@
                 </h2>
             </div>
 
-
-            <div class="col-md-5">
-                <form method="GET" action="/yeu$yeuCauTuyenDung">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" name="search"
-                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            {{-- <div class="col-md-3 text-end">
-        <a href="{{ route('department.yeucautuyendung.create') }}" class="btn btn-primary btn-lg">
-            <i class="fas fa-plus me-2"></i>Tạo yêu cầu
-        </a>
-    </div> --}}
         </div>
 
         @if (session('success'))
@@ -195,7 +174,7 @@
                     </h5>
                 </div>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body pl-3">
                 <div class="table-responsive">
                     @if ($TuyenDungs->count() > 0)
                         <table class="table table-hover mb-0">
@@ -211,7 +190,7 @@
                                         Chức vụ
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        Phòng ban
+                                        Trạng thái
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
                                         Ngày Tạo
@@ -233,9 +212,18 @@
                                         <td class="px-4 py-3 align-middle">
                                             <span>{{ $item->chucVu->ten }}</span>
                                         </td>
-
                                         <td class="px-4 py-3 align-middle">
-                                            phòng ban
+                                            @if ($item->trang_thai_dang == 'chua_dang')
+                                                <span
+                                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2">
+                                                    Chưa đăng
+                                                </span>
+                                            @elseif($item->trang_thai_dang === 'da_dang')
+                                                <span
+                                                    class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                                    Đã đăng
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3 align-middle">
                                             {{ $item->created_at }}
@@ -243,12 +231,6 @@
 
                                         <td class="px-4 py-3 align-middle">
                                             <div class="d-flex gap-2 justify-content-center">
-                                                <a href="{{ route('hr.tintuyendung.create-from-request', $item->id) }}"
-                                                    class="btn btn-outline-warning btn-sm rounded-pill"
-                                                    data-bs-toggle="tooltip">
-                                                    <i class="fas fa-plus-circle"></i>
-                                                </a>
-
                                                 <a href="{{ route('hr.captrenthongbao.tuyendung.show', ['id' => $item->id]) }}"
                                                     class="btn btn-outline-success btn-sm rounded-pill"
                                                     data-bs-toggle="tooltip" title="Chi tiết">
@@ -260,6 +242,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="pl-3 mt-3">
+                            {{ $TuyenDungs->links() }}
+                        </div>
                     @else
                         <!-- Thông báo không tìm thấy -->
                         <div class="text-center py-5">

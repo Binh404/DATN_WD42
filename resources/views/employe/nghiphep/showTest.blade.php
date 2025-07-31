@@ -140,7 +140,7 @@
                                 <div class="card-body">
                                     <div class="row mb-3">
                                         <div class="col-sm-6 fw-semibold text-muted">Bàn giao cho:</div>
-                                        <div class="col-sm-6">{{ $donNghiPhep->banGiaoCho->ten_dang_nhap }}</div>
+                                        <div class="col-sm-6">{{ $donNghiPhep->ban_giao_cho->ten_dang_nhap ?? 'Chưa cập nhật' }}</div>
                                     </div>
                                     <div class="row mb-0">
                                         <div class="col-sm-6 fw-semibold text-muted">Ghi chú bàn giao:</div>

@@ -219,6 +219,7 @@
                                                                 <th>Lý do</th>
                                                                 <th>Trạng thái</th>
                                                                 <th>Phản hồi</th>
+                                                                <th>Thao tác</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -242,12 +243,23 @@
                                                                         @elseif ($item->trang_thai == 'tu_choi')
                                                                             <span class="badge badge-danger">Từ chối</span>
                                                                         @elseif ($item->trang_thai == 'huy')
-                                                                            <span class="badge badge-secondary">Hủy bỏ</span>
+                                                                            <span class="badge badge-dark">Hủy bỏ</span>
                                                                         @else
                                                                             <span class="status-badge">-</span>
                                                                         @endif
                                                                     </td>
                                                                     <td>{{ $item->ly_do_tu_choi ?? 'Bạn chưa có phản hổi' }}
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($item->trang_thai == 'cho_duyet')
+                                                                        <a class="btn btn-danger btn-sm"
+                                                                            href="#"
+                                                                            onclick="confirmDelete({{ $item->id }}, 'huy')">
+                                                                            <i class="mdi mdi-delete me-2"></i>Hủy đơn
+                                                                        </a>
+                                                                        @else
+                                                                        <span class="status-badge">Không thể thao tác</span>
+                                                                        @endif
                                                                     </td>
 
                                                                 </tr>
@@ -365,6 +377,13 @@
             </div>
         </div>
     </div>
+    <form id="pheDuyetForm" method="POST" style="display: none;">
+    @csrf
+    <div class="modal-body">
+        <input type="hidden" name="trang_thai" id="trangThaiDuyet">
+    </div>
+
+</form>
 @endsection
 
 @section('script')
@@ -832,6 +851,14 @@
                 ngayTangCaInput.min = today;
             }
         });
+        function confirmDelete(id, trangThai) {
+            if (confirm('Bạn có chắc chắn muốn hủy đơn này không này?')) {
+                 document.getElementById('trangThaiDuyet').value = trangThai;
+                const form = document.getElementById('pheDuyetForm');
+                form.action = `{{ route('admin.chamcong.pheDuyetTangCaTrangThai', ':id') }}`.replace(':id', id);
+                form.submit();
+            }
+        }
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function (event) {
