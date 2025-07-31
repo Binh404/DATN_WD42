@@ -444,7 +444,7 @@
                 // Bạn có thể truy cập WORK_SCHEDULE.start_time, end_time, v.v
 
             } catch (error) {
-                console.error('Lỗi khi tải lịch làm việc:', error);
+                console.error('Lịch làm việc chưa được cập nhật');
             }
         }
             function needsReason(type, isDayOff = false, date = new Date()) {

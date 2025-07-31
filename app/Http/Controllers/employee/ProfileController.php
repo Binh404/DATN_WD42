@@ -22,12 +22,15 @@ class ProfileController extends Controller
         $nguoiDungId = Auth::id();
         $hoSo = HoSoNguoiDung::where('nguoi_dung_id', $nguoiDungId)->first();
         $taiKhoan = NguoiDung::findOrFail(Auth::id());
-        $phongbans = NguoiDung::findOrFail(Auth::id());
+        $phongbans = NguoiDung::with('phongBan')->findOrFail(Auth::id());
+        $chucvus = NguoiDung::with('chucVu')->findOrFail(Auth::id());
+        $vaitros = NguoiDung::with('vaiTro')->findOrFail(Auth::id());
+
         if (!$hoSo) {
             return redirect()->back()->with('error', 'Chưa có hồ sơ.');
         }
 
-        return view('employe.profile', compact('hoSo', 'taiKhoan', 'phongbans'));
+        return view('employe.profile', compact('hoSo', 'taiKhoan', 'phongbans', 'chucvus', 'vaitros'));
     }
     public function capNhatTaiKhoan(Request $request)
     {
@@ -95,34 +98,36 @@ class ProfileController extends Controller
         }
 
         $validated = $request->validate([
-        // Bắt buộc nhập
-        'ho'                  => ['required','string','max:50'],
-        'ten'                 => ['required','string','max:50'],
-        'so_dien_thoai'       => ['required',
-                                  'regex:/^0[0-9]{9}$/',
-                                  Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id)],                     // 10 số, bắt đầu 0
-        'ngay_sinh'           => [
-                                    'required',
-                                    'date',
-                                    'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
-                                    'after_or_equal:' . now()->subYears(50)->format('Y-m-d'),
-                                ],
-        'gioi_tinh'           => ['required', Rule::in(['nam','nu','khac'])],
-        'dia_chi_hien_tai'    => ['required','string','max:255'],
-        'dia_chi_thuong_tru'  => ['required','string','max:255'],
-        'cmnd_cccd'           => [
-            'required',
-            'regex:/^(?:[0-9]{12}|[0-9]{9})$/',                                         // 12 số (CCCD) hoặc 9 số (CMND)
-            Rule::unique('ho_so_nguoi_dung','cmnd_cccd')->ignore($hoSo->id),
-        ],
-        'tinh_trang_hon_nhan' => ['required', Rule::in(['doc_than','da_ket_hon','ly_hon','goa'])],
-        'email_cong_ty'       => ['required','email','max:255'],
+            // Bắt buộc nhập
+            'ho'                  => ['required', 'string', 'max:50'],
+            'ten'                 => ['required', 'string', 'max:50'],
+            'so_dien_thoai'       => [
+                'required',
+                'regex:/^0[0-9]{9}$/',
+                Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id)
+            ],                     // 10 số, bắt đầu 0
+            'ngay_sinh'           => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+                'after_or_equal:' . now()->subYears(50)->format('Y-m-d'),
+            ],
+            'gioi_tinh'           => ['required', Rule::in(['nam', 'nu', 'khac'])],
+            'dia_chi_hien_tai'    => ['required', 'string', 'max:255'],
+            'dia_chi_thuong_tru'  => ['required', 'string', 'max:255'],
+            'cmnd_cccd'           => [
+                'required',
+                'regex:/^(?:[0-9]{12}|[0-9]{9})$/',                                         // 12 số (CCCD) hoặc 9 số (CMND)
+                Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
+            ],
+            'tinh_trang_hon_nhan' => ['required', Rule::in(['doc_than', 'da_ket_hon', 'ly_hon', 'goa'])],
+            'email_cong_ty'       => ['required', 'email', 'max:255'],
 
         // Cho phép bỏ trống nhưng phải đúng định dạng khi có
         'so_ho_chieu'         => ['nullable','string','max:20'],
         'anh_dai_dien'        => ['nullable','image','max:2048'],
-        'anh_cccd_truoc' => ['nullable|image|max:2048'],
-        'anh_cccd_sau' => ['nullable|image|max:2048'],
+        'anh_cccd_truoc' => ['nullable','image','max:2048'],
+        'anh_cccd_sau' => ['nullable','image','max:2048'],
         'lien_he_khan_cap'    => ['nullable','string','max:100'],
         'sdt_khan_cap'        => ['nullable','regex:/^0[0-9]{9}$/',
                                     function ($attribute, $value, $fail) use ($request) {

@@ -29,7 +29,8 @@ class MenuHelper
                 'duyetdon',
                 // 'xinnghiphep',
                 'loainghiphep',
-                'dondexuat'
+                'dondexuat',
+                'thongke'
 
             ],
             'hr' => [
@@ -90,8 +91,12 @@ class MenuHelper
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong'],
                 'dondexuat' => ['danhsach'],
+
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
+
+                'thongke' => ['hopdong', 'chamcong'],
+
 
                 // 'xinnghiphep' => ['danhsach']
 

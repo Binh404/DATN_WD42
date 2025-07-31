@@ -148,4 +148,13 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(DonDeXuat::class, 'nguoi_duyet_id');
     }
+    public function senderMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receiverMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
 }
