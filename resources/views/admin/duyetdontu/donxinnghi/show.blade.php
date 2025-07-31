@@ -626,7 +626,8 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Số ngày nghỉ:</span>
-                            <span class="info-value" id="totalDays">{{ number_format($donNghiPhep->so_ngay_nghi) }} ngày</span>
+                            <span class="info-value" id="totalDays">{{ number_format($donNghiPhep->so_ngay_nghi) }}
+                                ngày</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ngày tạo:</span>
@@ -692,11 +693,11 @@
                         </h3>
                         <div class="info-row">
                             <span class="info-label">Bàn giao cho:</span>
-                            <span class="info-value" id="handoverTo">{{ $donNghiPhep->banGiaoCho->ten_dang_nhap }}</span>
+                            <span class="info-value" id="handoverTo">{{ $donNghiPhep->banGiaoCho ? $donNghiPhep->banGiaoCho->ten_dang_nhap : 'Không có' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ghi chú bàn giao:</span>
-                            <span class="info-value" id="handoverNote">{{ $donNghiPhep->ghi_chu_ban_giao }}</span>
+                            <span class="info-value" id="handoverNote">{{ $donNghiPhep->ghi_chu_ban_giao ? $donNghiPhep->ghi_chu_ban_giao : 'Không có'  }}</span>
                         </div>
                     </div>
                 </div>
@@ -712,99 +713,6 @@
                     </div>
                 </div>
 
-                {{-- tiến trình xử lý --}}
-                {{-- <div class="tracking-section">
-                    <h3><i class="fas fa-route"></i> Tiến trình xử lý</h3>
-                    <div class="progress-timeline">
-                        <div class="timeline-step">
-                            <div class="step-indicator step-completed">
-                                <i class="fas fa-paper-plane"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">Đã gửi đơn</div>
-                                <div class="step-description">Đơn nghỉ phép đã được tạo và gửi đi</div>
-                            </div>
-                        </div>
-                        <div class="timeline-line"></div>
-
-
-                        <div class="timeline-step">
-                            @php
-                                $lichSuTruongPhongDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere(
-                                    'cap_duyet',
-                                    1,
-                                );
-                                $lichSuHRDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 2);
-
-                                $trPhongTuChoi = $lichSuTruongPhongDuyet?->ket_qua === 'tu_choi';
-                                $trPhongDuyet = $lichSuTruongPhongDuyet?->ket_qua === 'da_duyet';
-
-                                $hrTuChoi = $lichSuHRDuyet?->ket_qua === 'tu_choi';
-                                $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
-                            @endphp
-
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Chờ trưởng phòng duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng từ chối'
-                                    : 'Trưởng phòng đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng đã từ chối đơn nghỉ'
-                                    : 'Trưởng phòng đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-                <div class="timeline-step">
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet
-                                ? 'HR đang xem xét đơn nghỉ'
-                                : ($hrTuChoi
-                                    ? 'HR đã từ chối đơn nghỉ'
-                                    : 'HR đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-
-                        <div class="timeline-step">
-                            <div
-                                class="step-indicator {{ $donNghiPhep->trang_thai == 'da_duyet' ? 'step-completed' : 'step-pending' }}">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">Hoàn tất</div>
-                                <div class="step-description">Đơn nghỉ phép được chấp thuận và có hiệu lực</div>
-                            </div>
-
-                        </div>
-                        <div class="timeline-line"></div>
-                    </div>
-                </div> --}}
-
-                <!-- Tài liệu hỗ trợ -->
                 <div class="description-card">
                     <h3>
                         <i data-lucide="paperclip"></i>
