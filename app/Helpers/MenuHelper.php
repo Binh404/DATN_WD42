@@ -28,7 +28,8 @@ class MenuHelper
                 'duyetdon',
                 // 'xinnghiphep',
                 'loainghiphep',
-                'dondexuat'
+                'dondexuat',
+                'thongke'
 
             ],
             'hr' => [
@@ -86,6 +87,7 @@ class MenuHelper
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong'],
                 'dondexuat' => ['danhsach'],
+                'thongke' => ['hopdong', 'chamcong'],
 
                 // 'xinnghiphep' => ['danhsach']
 

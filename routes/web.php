@@ -1,59 +1,60 @@
 <?php
 
-use App\Http\Controllers\Admin\ChamCongAdminController;
-use App\Http\Controllers\Admin\DangKyTangCaAdminController;
-use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
-use App\Http\Controllers\CompanyLocationController;
-use App\Http\Controllers\employee\ChamCongController;
-use App\Http\Controllers\employee\DangKyTangCaController;
-use App\Http\Controllers\Admin\ImportChamCongController;
-use App\Http\Controllers\GioLamViecController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\ExportController;
-
-
-use App\Http\Controllers\Admin\ChucVuController;
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DonDeXuatController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\GioLamViecController;
 use App\Http\Controllers\Admin\DonTuController;
-
 use App\Http\Controllers\Admin\LuongController;
 
+
+use App\Http\Controllers\Admin\ChucVuController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Employee\HoSoController;
 use App\Http\Controllers\Admin\CongViecController;
-
-use App\Http\Controllers\Admin\LoaiNghiPhepController;
 use App\Http\Controllers\Admin\PhongBanController;
 use App\Http\Controllers\admin\TaiKhoanController;
+
+use Illuminate\Notifications\DatabaseNotification;
+
 use App\Http\Controllers\Client\NghiPhepController;
 use App\Http\Controllers\Client\UngTuyenController;
 
+use App\Http\Controllers\CompanyLocationController;
 use App\Http\Controllers\Admin\DuyetDonTuController;
 use App\Http\Controllers\Auth\PasswordOTPController;
 use App\Http\Controllers\employee\ProfileController;
 use App\Http\Middleware\PreventLoginCacheMiddleware;
 
+use App\Http\Controllers\employee\ChamCongController;
 use App\Http\Controllers\Admin\HoSoNhanVienController;
-use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
+use App\Http\Controllers\Admin\LoaiNghiPhepController;
 use App\Http\Controllers\employee\BangLuongController;
-use App\Http\Middleware\RedirectIfAuthenticatedCustom;
 
+use App\Http\Middleware\RedirectIfAuthenticatedCustom;
+use App\Http\Controllers\Admin\ChamCongAdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
-use App\Http\Controllers\Admin\HopDongLaoDongController;
 
+use App\Http\Controllers\Admin\HopDongLaoDongController;
+use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 
+use App\Http\Controllers\employee\DangKyTangCaController;
 
 
 
 
-use App\Http\Controllers\NotificationController;
-use Illuminate\Notifications\DatabaseNotification;
+
+use App\Http\Controllers\Admin\DangKyTangCaAdminController;
+use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
+use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
@@ -546,7 +547,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr,ad
     Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // Route xuất file excel trúng tuyển
     Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
-    
+
     // Route test vai_tro_id
     Route::get('/ungvien/test-vai-tro/{id}', [UngTuyenController::class, 'testVaiTro'])->name('ungvien.test-vai-tro');
 });
@@ -559,4 +560,4 @@ Route::middleware(['auth'])->group(function () {
 
 Route::post('/hopdong/{id}/xac-nhan-ky', [NotificationController::class, 'xacNhanKy'])->name('hopdong.xacnhanky');
 Route::post('/hopdong/{id}/tu-choi-ky', [NotificationController::class, 'tuChoiKy'])->name('hopdong.tuchoiky');
-
+Route::get('/toggle-theme', [ThemeController::class, 'toggle'])->name('toggle.theme');
