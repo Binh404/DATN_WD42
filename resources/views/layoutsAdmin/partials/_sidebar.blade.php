@@ -339,6 +339,7 @@
         </li>
 
         @endif
+
         {{-- Loại nghỉ phép - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('yeucautuyendung'))
         <li class="nav-item">

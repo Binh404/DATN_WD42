@@ -99,7 +99,7 @@
                                 {{-- Vai trò --}}
                                 <div class="col-md-4 mb-3">
                                     <label for="vai_tro_id" class="form-label">
-                                        <i class="fas fa-user-tag me-2"></i>Vai trò
+                                        <i class="fas fa-user-tag me-2"></i>Quyền
                                     </label>
                                     <select name="vai_tro_id"
                                             id="vai_tro_id"

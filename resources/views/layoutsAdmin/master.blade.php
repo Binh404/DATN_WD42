@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+@livewireStyles
 
  <!-- Font Awesome Icons StyleSheet -->
     <link rel="stylesheet" href="{{ asset('assets/backend/plugins/fontawesome-free/css/all.min.css') }}">
@@ -69,6 +70,8 @@
         }
     </style>
   </head>
+  @livewireScripts
+
   <body class="{{ auth()->user()?->theme === 'dark' ? 'dark-mode' : '' }}">
     <div class="container-scroller">
       <!-- partial:../../partials/_navbar.html -->
