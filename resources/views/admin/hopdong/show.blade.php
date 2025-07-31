@@ -8,7 +8,7 @@
         <div class="container-fluid">
             
         
-        <div class="card shadow mb-4 mx-auto" style="max-width: 800px;">
+            <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -338,26 +338,7 @@
                                                 @endif
                                             @endif
                                             
-                                            @if($hopDong->trang_thai_hop_dong === 'chua_hieu_luc' && $hopDong->trang_thai_ky === 'cho_ky')
-                                                @php
-                                                    $user = \Illuminate\Support\Facades\Auth::user();
-                                                    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-                                                    $canSign = in_array('admin', $userRoles) || in_array('hr', $userRoles);
-                                                @endphp
-                                                @if($canSign)
-                                                    <form action="{{ route('hopdong.ky', $hopDong->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có chắc chắn muốn ký hợp đồng này?')">
-                                                            <i class="fas fa-signature"></i> Ký hợp đồng
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <div class="alert alert-info mt-2">
-                                                        <i class="fas fa-info-circle"></i>
-                                                        <strong>Lưu ý:</strong> Bạn không có quyền ký hợp đồng này.
-                                                    </div>
-                                                @endif
-                                            @endif
+                                           
                                             @php
                                                 $user = \Illuminate\Support\Facades\Auth::user();
                                                 $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();

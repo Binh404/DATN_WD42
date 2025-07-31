@@ -14,7 +14,7 @@
     {{-- TODO: Update form action to the correct store route --}}
     <form action="{{ route('hopdong.phuluc.store', $hopDong->id) }}" method="POST" id="form-phu-luc" enctype="multipart/form-data">
         @csrf
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Thông tin chung</h6>
             </div>
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Thông tin thay đổi</h6>
             </div>
@@ -77,7 +77,9 @@
                     </div>
                     <div class="col-md-6 form-group">
                         <label>Ngày hết hạn <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="ngay_het_han_moi" required value="{{ $hopDong->ngay_ket_thuc ? $hopDong->ngay_ket_thuc->format('Y-m-d') : '' }}">
+                        <input type="date" class="form-control" name="ngay_het_han_moi" id="ngay_het_han_moi" 
+                               required value="{{ $hopDong->ngay_ket_thuc ? $hopDong->ngay_ket_thuc->format('Y-m-d') : '' }}"
+                               {{ $hopDong->loai_hop_dong == 'khong_xac_dinh_thoi_han' ? 'disabled' : '' }}>
                     </div>
                     <div class="col-md-6 form-group">
                         <label>Lương cơ bản <span class="text-danger">*</span></label>
@@ -103,7 +105,7 @@
             </div>
         </div>
 
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Thông tin khác</h6>
             </div>
@@ -122,4 +124,32 @@
         </div>
     </form>
 </div>
+@endsection
+
+@section('script')
+<script>
+    // Xử lý enable/disable ngày hết hạn dựa trên loại hợp đồng
+    setTimeout(function() {
+        var loaiHopDong = document.querySelector('select[name="loai_hop_dong"]');
+        var ngayHetHan = document.getElementById('ngay_het_han_moi');
+        
+        if (loaiHopDong && ngayHetHan) {
+            // Xử lý khi thay đổi loại hợp đồng
+            loaiHopDong.addEventListener('change', function() {
+                if (this.value === 'khong_xac_dinh_thoi_han') {
+                    ngayHetHan.disabled = true;
+                    ngayHetHan.value = '';
+                } else {
+                    ngayHetHan.disabled = false;
+                }
+            });
+            
+            // Chạy lần đầu
+            if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
+                ngayHetHan.disabled = true;
+                ngayHetHan.value = '';
+            }
+        }
+    }, 100);
+</script>
 @endsection

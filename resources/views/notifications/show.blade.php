@@ -21,7 +21,17 @@
                         </tr>
                         <tr>
                             <th>Loại hợp đồng</th>
-                            <td>{{ $hopdong->loai_hop_dong }}</td>
+                            <td>
+                                                @if($hopdong->loai_hop_dong == 'thu_viec')
+                                                    Thử việc
+                                                @elseif($hopdong->loai_hop_dong == 'chinh_thuc')
+                                                    Chính thức
+                                                @elseif($hopdong->loai_hop_dong == 'xac_dinh_thoi_han')
+                                                    Xác định thời hạn
+                                                @else
+                                                    Không xác định thời hạn
+                                                @endif
+                                            </td>
                         </tr>
                         <tr>
                             <th>Ngày bắt đầu</th>
@@ -41,7 +51,18 @@
                         </tr>
                         <tr>
                             <th>Trạng thái ký</th>
-                            <td>{{ $hopdong->trang_thai_ky }}</td>
+                            
+                            <td>
+                                                @if($hopdong->trang_thai_ky == 'cho_ky')
+                                                    <span class="badge badge-warning">Chờ ký</span>
+                                                @elseif($hopdong->trang_thai_ky == 'da_ky')
+                                                    <span class="badge badge-primary">Đã ký</span>
+                                                @elseif($hopdong->trang_thai_ky == 'tu_choi_ky')
+                                                    <span class="badge badge-danger">Từ chối ký</span>
+                                                @else
+                                                    <span class="badge badge-light">Không xác định</span>
+                                                @endif
+                                            </td>
                         </tr>
                         <tr>
                             <th>File hợp đồng</th>

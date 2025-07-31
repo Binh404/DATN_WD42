@@ -17,7 +17,11 @@ class NotificationController extends Controller
             return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để xem thông báo!');
         }
         $notification = $user->notifications()->findOrFail($id);
-        // $notification->markAsRead(); // Nếu muốn giữ thông báo chưa đọc thì comment dòng này
+        
+        // Đánh dấu thông báo đã đọc
+        if (!$notification->read_at) {
+            $notification->markAsRead();
+        }
 
         $hopdongId = $notification->data['hopdong_id'] ?? null;
         $hopdong = $hopdongId ? HopDongLaoDong::find($hopdongId) : null;
@@ -68,14 +72,6 @@ class NotificationController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy hợp đồng!');
         }
     }
-    public function sendNotification()
-    {
-        $users = User::all(); // hoặc chỉ định người nhận
 
-        foreach ($users as $user) {
-            $user->notify(new NewMessageNotification("Có cập nhật mới từ Admin!"));
-        }
 
-        return "Đã gửi thông báo";
-    }
-}
+} 
