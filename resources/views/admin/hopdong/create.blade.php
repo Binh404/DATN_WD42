@@ -9,7 +9,7 @@
     </div>
 
     <!-- Content Row -->
-    <div class="card shadow mb-4 mx-auto" style="max-width: 800px;">
+    <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
@@ -98,7 +98,8 @@
                         <div class="form-group">
                             <label for="ngay_ket_thuc">Ngày kết thúc</label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
-                                   id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}">
+                                   id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}"
+                                   {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'disabled' : '' }}>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -210,25 +211,54 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('script')
 <script>
-    $(document).ready(function() {
-        // Validate ngày kết thúc phải sau ngày bắt đầu
-        $('#ngay_ket_thuc').on('change', function() {
-            var ngayBatDau = new Date($('#ngay_bat_dau').val());
-            var ngayKetThuc = new Date($(this).val());
+    // Xử lý enable/disable ngày kết thúc dựa trên loại hợp đồng
+    setTimeout(function() {
+        var loaiHopDong = document.getElementById('loai_hop_dong');
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc');
+        
+        if (loaiHopDong && ngayKetThuc) {
+            // Xử lý khi thay đổi loại hợp đồng
+            loaiHopDong.addEventListener('change', function() {
+                if (this.value === 'khong_xac_dinh_thoi_han') {
+                    ngayKetThuc.disabled = true;
+                    ngayKetThuc.value = '';
+                } else {
+                    ngayKetThuc.disabled = false;
+                }
+            });
+            
+            // Chạy lần đầu
+            if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
+                ngayKetThuc.disabled = true;
+                ngayKetThuc.value = '';
+            }
+        }
+    }, 100);
+
+    // Validate ngày kết thúc phải sau ngày bắt đầu
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('ngay_ket_thuc').addEventListener('change', function() {
+            var ngayBatDau = new Date(document.getElementById('ngay_bat_dau').value);
+            var ngayKetThuc = new Date(this.value);
 
             if (ngayKetThuc < ngayBatDau) {
                 alert('Ngày kết thúc phải sau ngày bắt đầu');
-                $(this).val('');
+                this.value = '';
             }
         });
 
         // Format số tiền
-        $('#luong_co_ban, #phu_cap').on('input', function() {
-            var value = $(this).val();
-            if (value < 0) {
-                $(this).val(0);
+        document.getElementById('luong_co_ban').addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+            }
+        });
+
+        document.getElementById('phu_cap').addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
             }
         });
     });
