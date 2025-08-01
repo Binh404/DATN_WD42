@@ -130,8 +130,8 @@
                                                                 <th>Trạng thái</th>
                                                                 <th>Lần đăng nhập cuối</th>
                                                                 {{-- <th>IP đăng nhập cuối</th> --}}
-                                                                <th>Phòng ban</th>
-                                                                <th>Chức vụ</th>
+                                                                {{-- <th>Phòng ban</th>
+                                                                <th>Chức vụ</th> --}}
                                                                 <th>Hành động</th>
                                                             </tr>
                                                         </thead>
@@ -174,7 +174,7 @@
                                                                                     </div>
                                                                                     <div><i
                                                                                             class="mdi mdi-office-building me-1"></i>
-                                                                                        Phòng:
+                                                                                        Phòng ban:
                                                                                         {{ $item->phongBan->ten_phong_ban ?? 'N/A' }}
                                                                                     </div>
                                                                                     <div><i
@@ -199,8 +199,8 @@
                                                                     </td>
                                                                     <td>{{ $item->lan_dang_nhap_cuoi }}</td>
                                                                     {{-- <td>{{ $item->ip_dang_nhap_cuoi }}</td> --}}
-                                                                    <td>{{ $item->PhongBan->ten_phong_ban }}</td>
-                                                                    <td>{{ $item->chucVu->ten }}</td>
+                                                                    {{-- <td>{{ $item->PhongBan->ten_phong_ban }}</td>
+                                                                    <td>{{ $item->chucVu->ten }}</td> --}}
                                                                     <td>
                                                                         <a href="{{ route('tkedit', $item->id) }}"
                                                                             class="btn btn-sm btn-warning">Sửa</a>
