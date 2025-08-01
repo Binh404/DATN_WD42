@@ -558,7 +558,7 @@
                                                                                         tiết
                                                                                     </a>
                                                                                 </li>
-                                                                                @if($userTrangThai)
+                                                                                {{-- @if($userTrangThai)
                                                                                 <li>
                                                                                     <a class="dropdown-item"
                                                                                         href="{{ route('admin.chamcong.edit', $cc->id) }}">
@@ -566,7 +566,7 @@
                                                                                         sửa
                                                                                     </a>
                                                                                 </li>
-                                                                                @endif
+                                                                                @endif --}}
                                                                                 @if($cc->trang_thai_duyet == 3 || !$cc->trang_thai_duyet || $cc->trang_thai_duyet == 4)
                                                                                     <li>
                                                                                         <hr class="dropdown-divider">
