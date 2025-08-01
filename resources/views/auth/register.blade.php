@@ -34,14 +34,14 @@
                             {{-- Tên đăng nhập --}}
                             <div class="mb-3">
                                 <label for="ten_dang_nhap" class="form-label">
-                                    <i class="fas fa-user me-2"></i>Tên đăng nhập
+                                    <i class="fas fa-user me-2"></i>Họ và tên
                                 </label>
                                 <input type="text"
                                         id="ten_dang_nhap"
                                         name="ten_dang_nhap"
                                         value="{{ old('ten_dang_nhap') }}"
                                         class="form-control @error('ten_dang_nhap') is-invalid @enderror"
-                                        placeholder="Nhập tên đăng nhập"
+                                        placeholder="Nhập họ và tên"
                                         required
                                         autofocus>
                                 @error('ten_dang_nhap')
@@ -105,7 +105,7 @@
                                             id="vai_tro_id"
                                             class="form-select"
                                             required>
-                                        <option value="" disabled selected>-- Chọn vai trò --</option>
+                                        <option value="" disabled selected>-- Chọn quyền --</option>
                                         @foreach ($vaitro as $vaitros)
                                             <option value="{{ $vaitros->id }}" {{ old('vai_tro_id') == $vaitros->id ? 'selected' : '' }}>
                                                 {{ $vaitros->ten }}
