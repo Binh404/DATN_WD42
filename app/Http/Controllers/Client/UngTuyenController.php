@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Exports\TrungTuyenExport;
-use App\Exports\UngTuyenExport;
-use App\Http\Controllers\Controller;
-use App\Models\NguoiDung;
-use App\Models\NguoiDungVaiTro;
-use App\Models\TinTuyenDung;
-use App\Models\UngTuyen;
+use Carbon\Carbon;
+use App\Models\VaiTro;
 use App\Models\UngVien;
+use App\Models\UngTuyen;
+use App\Models\NguoiDung;
+use Illuminate\Support\Str;
+use App\Models\LoaiNghiPhep;
+use App\Models\TinTuyenDung;
 use Illuminate\Http\Request;
+use App\Exports\UngTuyenExport;
+use App\Models\NguoiDungVaiTro;
+use App\Exports\TrungTuyenExport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\SoDuNghiPhepNhanVien;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use App\Models\VaiTro;
 
 class UngTuyenController extends Controller
 {
@@ -274,15 +277,15 @@ class UngTuyenController extends Controller
             // Nếu trạng thái là "Đạt", cập nhật thông tin phòng ban, chức vụ, vai trò từ tin tuyển dụng
             if ($request->trang_thai_pv === 'Đạt' && $ungVien->tinTuyenDung) {
                 $tinTuyenDung = $ungVien->tinTuyenDung;
-                
+
                 if ($tinTuyenDung->phong_ban_id) {
                     $data['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
                 }
-                
+
                 if ($tinTuyenDung->chuc_vu_id) {
                     $data['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
                 }
-                
+
                 if ($tinTuyenDung->vai_tro_id) {
                     $data['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
                 }
@@ -403,22 +406,22 @@ class UngTuyenController extends Controller
                 $tinTuyenDung = $ungvien->tinTuyenDung;
                 if ($tinTuyenDung) {
                     $updateData = [];
-                    
+
                     if (!$ungvien->phong_ban_id && $tinTuyenDung->phong_ban_id) {
                         $updateData['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
                     }
-                    
+
                     if (!$ungvien->chuc_vu_id && $tinTuyenDung->chuc_vu_id) {
                         $updateData['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
                     }
-                    
+
                     if (!$ungvien->vai_tro_id && $tinTuyenDung->vai_tro_id) {
                         $updateData['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
                         Log::info('Cập nhật vai_tro_id từ tin tuyển dụng:', [
                             'tin_tuyen_dung_vai_tro_id' => $tinTuyenDung->vai_tro_id
                         ]);
                     }
-                    
+
                     if (!empty($updateData)) {
                         $ungvien->update($updateData);
                         // Reload relationships sau khi update
@@ -430,7 +433,7 @@ class UngTuyenController extends Controller
                     }
                 }
             }
-            
+
             // Tạo email và mật khẩu
             $emailPrefix = Str::slug($ungvien->ten_ung_vien, '');
             $maSo = substr($ungvien->ma_ung_tuyen, 2); // bỏ 'ut'
@@ -461,7 +464,7 @@ class UngTuyenController extends Controller
                 // Nếu tài khoản đã tồn tại, sử dụng tài khoản cũ
                 $nguoiDung = $existingUser;
                 $password = 'Đã có tài khoản';
-                
+
                 // Cập nhật thông tin phòng ban, chức vụ nếu chưa có
                 $updateData = [];
                 if ($ungvien->phong_ban_id && !$existingUser->phong_ban_id) {
@@ -473,7 +476,7 @@ class UngTuyenController extends Controller
                 if ($ungvien->vai_tro_id && !$existingUser->vai_tro_id) {
                     $updateData['vai_tro_id'] = $ungvien->vai_tro_id;
                 }
-                
+
                 if (!empty($updateData)) {
                     $existingUser->update($updateData);
                     Log::info('Đã cập nhật thông tin người dùng hiện có:', [
@@ -489,7 +492,7 @@ class UngTuyenController extends Controller
                     'email' => $email,
                     'password' => Hash::make($password),
                 ];
-                
+
                 // Thêm thông tin phòng ban, chức vụ nếu có
                 if ($ungvien->phong_ban_id) {
                     $nguoiDungData['phong_ban_id'] = $ungvien->phong_ban_id;
@@ -509,7 +512,31 @@ class UngTuyenController extends Controller
                     ]);
                 }
                 $nguoiDung = NguoiDung::create($nguoiDungData);
-                
+
+                $loaiNghiPhep = LoaiNghiPhep::all();
+                $thangBatDauLam = Carbon::parse($nguoiDung->created_at)->month;
+                $soThangLamTrongNam = 12 - $thangBatDauLam + 1;
+
+                foreach ($loaiNghiPhep as $item) {
+                    $soNgayDuocCap = $item->tinh_theo_ty_le
+                        ? round($item->so_ngay_nam * $soThangLamTrongNam / 12)
+                        : $item->so_ngay_nam;
+                    if ($item->trang_thai == 1) {
+                        SoDuNghiPhepNhanVien::create([
+                            'nguoi_dung_id' => $nguoiDung->id,
+                            'loai_nghi_phep_id' => $item->id,
+                            'nam' => now()->year,
+                            'so_ngay_duoc_cap' => $soNgayDuocCap,
+                            'so_ngay_da_dung' => 0,
+                            'so_ngay_cho_duyet' => 0,
+                            'so_ngay_con_lai' => $soNgayDuocCap,
+                            'so_ngay_chuyen_tu_nam_truoc' => 0,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+                }
+
                 Log::info('Đã tạo tài khoản mới với thông tin đầy đủ:', [
                     'nguoi_dung_id' => $nguoiDung->id,
                     'email' => $nguoiDung->email,
@@ -525,7 +552,7 @@ class UngTuyenController extends Controller
             $phongBan = $ungvien->phongBan->ten_phong_ban ?? 'Chưa rõ';
             $chucVu = $ungvien->chucVu->ten ?? 'Chưa rõ';
             $vaiTro = $ungvien->vaiTro->ten ?? 'Chưa rõ';
-            
+
             // Log để debug
             Log::info('Thông tin ứng viên trúng tuyển:', [
                 'ma_ung_vien' => $ungvien->ma_ung_tuyen,
@@ -547,7 +574,7 @@ class UngTuyenController extends Controller
                 $existingRole = NguoiDungVaiTro::where('nguoi_dung_id', $nguoiDung->id)
                     ->where('vai_tro_id', $ungvien->vai_tro_id)
                     ->first();
-                
+
                 if (!$existingRole) {
                     NguoiDungVaiTro::create([
                         'nguoi_dung_id' => $nguoiDung->id,
@@ -591,9 +618,9 @@ class UngTuyenController extends Controller
         try {
             $ungvien = UngTuyen::with(['phongBan', 'chucVu', 'vaiTro', 'tinTuyenDung'])
                 ->findOrFail($ungVienId);
-            
+
             $tinTuyenDung = $ungvien->tinTuyenDung;
-            
+
             return response()->json([
                 'ungvien' => [
                     'id' => $ungvien->id,
@@ -616,7 +643,7 @@ class UngTuyenController extends Controller
                     'vai_tro' => $ungvien->vaiTro ? $ungvien->vaiTro->ten : null,
                 ]
             ]);
-            
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Lỗi: ' . $e->getMessage()]);
         }
@@ -732,7 +759,7 @@ class UngTuyenController extends Controller
     {
         try {
             $ungVien = UngTuyen::with('tinTuyenDung')->findOrFail($id);
-            
+
             if ($ungVien->trang_thai_pv !== 'Đạt') {
                 return redirect()->back()->with('error', 'Ứng viên chưa đạt phỏng vấn');
             }
@@ -743,15 +770,15 @@ class UngTuyenController extends Controller
             }
 
             $updateData = [];
-            
+
             if ($tinTuyenDung->phong_ban_id) {
                 $updateData['phong_ban_id'] = $tinTuyenDung->phong_ban_id;
             }
-            
+
             if ($tinTuyenDung->chuc_vu_id) {
                 $updateData['chuc_vu_id'] = $tinTuyenDung->chuc_vu_id;
             }
-            
+
             if ($tinTuyenDung->vai_tro_id) {
                 $updateData['vai_tro_id'] = $tinTuyenDung->vai_tro_id;
             }
@@ -763,12 +790,12 @@ class UngTuyenController extends Controller
                     'ten_ung_vien' => $ungVien->ten_ung_vien,
                     'update_data' => $updateData
                 ]);
-                
+
                 return redirect()->back()->with('success', 'Đã cập nhật thông tin phòng ban, chức vụ, vai trò thành công!');
             } else {
                 return redirect()->back()->with('warning', 'Không có thông tin để cập nhật');
             }
-            
+
         } catch (\Exception $e) {
             Log::error('Lỗi cập nhật thông tin trúng tuyển: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật thông tin: ' . $e->getMessage());

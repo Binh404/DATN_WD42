@@ -12,12 +12,12 @@
                 <span class="menu-title">Thống kê</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('chat.index') }}">
                 <i class="mdi mdi-message-text-outline menu-icon"></i>
                 <span class="menu-title">Nhắn tin</span>
             </a>
-        </li>
+        </li> --}}
         @endif
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}

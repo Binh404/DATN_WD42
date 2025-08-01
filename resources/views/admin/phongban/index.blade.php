@@ -119,7 +119,7 @@
                                                                 <th>ID</th>
                                                                 <th>Mã Phòng Ban</th>
                                                                 <th>Tên Phòng Ban</th>
-                                                                <th>Trạng Thái</th>
+                                                                {{-- <th>Trạng Thái</th> --}}
                                                                 <th>Ngày Tạo</th>
                                                                 <th>Ngày Cập Nhật</th>
                                                                 <th>Hành Động</th>
@@ -143,7 +143,7 @@
                                                                             {{ $phongBan->ten_phong_ban }}
                                                                         </a>
                                                                     </td>
-                                                                    <td>
+                                                                    {{-- <td>
                                                                          @if($phongBan->trang_thai == 1)
                                                                             <span class="badge bg-success">
                                                                                 Hoạt động
@@ -153,7 +153,7 @@
                                                                                 Ngừng hoạt động
                                                                             </span>
                                                                         @endif
-                                                                    </td>
+                                                                    </td> --}}
                                                                     <td>
                                                                          <div class="text-muted ">
                                                                             <!-- <i class="fas fa-calendar me-1"></i> -->
@@ -197,14 +197,14 @@
                                                                                 <li>
                                                                                     <hr class="dropdown-divider">
                                                                                 </li>
-                                                                                <li>
+                                                                                {{-- <li>
                                                                                     <a class="dropdown-item text-danger"
                                                                                         href="#"
                                                                                          onclick="showConfirmDelete({{ $phongBan->id }})"
                                                                                         >
                                                                                         <i class="mdi mdi-delete me-2"></i>Xóa
                                                                                     </a>
-                                                                                </li>
+                                                                                </li> --}}
                                                                             </ul>
                                                                         </div>
                                                                     </td>

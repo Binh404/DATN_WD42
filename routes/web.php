@@ -53,8 +53,6 @@ use App\Http\Controllers\employee\DangKyTangCaController;
 
 
 
-
-
 use App\Http\Controllers\Admin\DangKyTangCaAdminController;
 use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
@@ -437,15 +435,15 @@ Route::get('/chuc-vus/{phongBanId}', action: [ChucVuController::class, 'getByPho
 
 });
 
-// Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
+Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
     Route::get('/', function () {
         return view('auth.login');
     })->name('login');
 
-//     Route::get('/login', function () {
-//         return view('auth.login');
-//     });
-// });
+    Route::get('/login', function () {
+        return view('auth.login');
+    });
+});
 
 require __DIR__ . '/auth.php';
 
@@ -478,7 +476,7 @@ Route::prefix('hr')->name('hr.')->group(function () {
     // tuyển dụng
     Route::get('captrenthongbao/tuyendung/danhsach', [YeuCauTuyenDungController::class, 'danhSachThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.index');
     Route::get('captrenthongbao/tuyendung/{id}/show', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
-    Route::get('tintuyendung/create-from-request/{id}', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
+    Route::get('tintuyendung/create-from-request/{id}/create', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
 
     // nghỉ phép

@@ -75,9 +75,10 @@ $vaiTro = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
           <input type="text" class="form-control">
         </div>
       </li>
+
       <li class="nav-item position-relative">
-          <a href="#" class="nav-link" id="toggle-search">
-              <i class="fas fa-search"></i>
+          <a href="{{ route('chat.index') }}" class="nav-link" id="toggle-search">
+              <i class="mdi mdi-message-text-outline menu-icon"></i>
           </a>
           <form class="search-form d-none position-absolute" id="search-form" style="top: 100%; right: 0; z-index: 1000;">
               <div class="input-group mt-2">
@@ -123,7 +124,7 @@ $vaiTro = $nguoiDung->vaiTro->ten_hien_thi ?? 'Chưa cập nhật';
           @endif
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
-          
+
           <a class="dropdown-item py-3 border-bottom">
             <p class="mb-0 fw-medium float-start">Bạn có {{ $unreadCount }} thông báo</p>
             <span class="badge badge-pill badge-primary float-end">Thông báo</span>
