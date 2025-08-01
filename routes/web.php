@@ -73,7 +73,7 @@ Route::get('/testcatlayout', function () {
     return view('layoutsAdmin.master');
 });
 // Admin routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr,employee'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');;

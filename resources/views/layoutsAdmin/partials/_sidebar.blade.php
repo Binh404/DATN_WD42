@@ -22,6 +22,29 @@
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         <li class="nav-item nav-category">Các chức năng</li>
+        {{-- Thống kê hợp đồng - admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('thongke'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon mdi mdi-clock-check"></i>
+                <span class="menu-title">Thống kê</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="thongke">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Hợp đồng</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">Chấm công</a>
+                    </li>
+
+                </ul>
+            </div>
+        </li>
+
+        @endif
 
         @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
@@ -253,7 +276,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
                     </li>
@@ -269,7 +292,7 @@
         </li>
         @endif
 
-        
+
 
         {{-- Tin tuyển dụng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('tintuyendung'))
@@ -427,10 +450,10 @@
                 </ul>
             </div>
         </li>
-        
+
         @endif
 
-       
+
     </ul>
 </nav>
 
