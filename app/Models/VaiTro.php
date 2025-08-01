@@ -15,14 +15,14 @@ class VaiTro extends SpatieRole
         'ten',
         'ten_hien_thi',
         'mo_ta',
-        'la_vai_tro_he_thong',
-        'trang_thai',
+        // 'la_vai_tro_he_thong',
+        // 'trang_thai',
     ];
 
-    protected $casts = [
-        'la_vai_tro_he_thong' => 'boolean',
-        'trang_thai' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'la_vai_tro_he_thong' => 'boolean',
+    //     'trang_thai' => 'boolean',
+    // ];
 
     // Relationships
     public function quyens()

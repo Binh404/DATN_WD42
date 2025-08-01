@@ -34,7 +34,7 @@
                 <ul class="nav flex-column sub-menu">
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'qlhoso'))
                     <li class="nav-item">
-                        <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
+                        <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
                     </li>
                     @endif
 
@@ -45,6 +45,11 @@
                      <li class="nav-item">
                         <a class="nav-link" href="{{route('chucvu.index')}}">
                            Chức vụ
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{route('vaitro.index')}}">
+                           Vai trò
                         </a>
                     </li>
                     @endif

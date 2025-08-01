@@ -1,27 +1,28 @@
-@extends('layouts.master')
+@extends('layoutsAdmin.master')
 
 @section('content')
 
 <div class="container">
-    <h2>Tạo vai trò mới</h2>
-    <form action="{{ route('roles.store') }}" method="POST">
+    <h2>Cập nhật vai trò</h2>
+    <form action="{{ route('vaitro.update', $role->id) }}" method="POST">
         @csrf
+        @method('PUT')
         <div class="mb-3">
             <label for="ten" class="form-label">Tên vai trò</label>
-            <input type="text" name="ten" class="form-control" required>
+            <input type="text" name="ten" class="form-control" value="{{ $role->ten }}" required>
         </div>
         <div class="mb-3">
             <label for="display_name" class="form-label">Tên hiển thị</label>
-            <input type="text" name="ten_hien_thi" class="form-control">
+            <input type="text" name="ten_hien_thi" class="form-control" value="{{ $role->ten_hien_thi }}">
         </div>
         <div class="mb-3">
             <label for="mo_ta" class="form-label">Mô tả</label>
-            <textarea name="mo_ta" class="form-control"></textarea>
+            <textarea name="mo_ta" class="form-control">{{ $role->mo_ta }}</textarea>
         </div>
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label class="form-label fw-bold">Phân quyền</label>
             <div class="row">
-                @foreach($permissions as $group => $perms)
+                @foreach($role as $group => $perms)
                     <div class="col-12 mb-3">
                         <div class="mb-2">
                             <strong>
@@ -36,7 +37,7 @@
                                         <div class="form-check mb-1">
                                             <input class="form-check-input perm-check" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="perm{{ $permission->id }}" data-group="group-{{ $group }}">
                                             <label class="form-check-label" for="perm{{ $permission->id }}">
-                                                {{ $permission->ten }}
+                                                {{ $role->ten }}
                                             </label>
                                         </div>
                                     @endforeach
@@ -46,7 +47,7 @@
                     </div>
                 @endforeach
             </div>
-        </div>
+        </div> --}}
         <button type="submit" class="btn btn-primary">Lưu</button>
     </form>
 </div>
