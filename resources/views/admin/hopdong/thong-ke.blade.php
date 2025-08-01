@@ -279,7 +279,7 @@
                                                     @foreach($hopDongSapHetHan as $hopDong)
                                                         <tr>
                                                             <td>{{ $hopDong->so_hop_dong }}</td>
-                                                            <td>{{ $hopDong->hoSoNguoiDung->ho ?? '' }} {{ $hopDong->hoSoNguoiDung->ten ?? '' }}</td>
+                                                            <td>{{ $hopDong->hoSoNguoiDung ? (($hopDong->hoSoNguoiDung->ho ?? '') . ' ' . ($hopDong->hoSoNguoiDung->ten ?? '')) : 'N/A' }}</td>
                                                             <td>{{ $hopDong->chucVu->ten_chuc_vu ?? '' }}</td>
                                                             <td>{{ $hopDong->ngay_ket_thuc ? $hopDong->ngay_ket_thuc->format('d/m/Y') : 'N/A' }}</td>
                                                             <td>

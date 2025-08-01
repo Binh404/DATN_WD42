@@ -228,29 +228,48 @@
         </li>
         @endif
 
-        {{-- Hợp đồng - admin, hr có quyền --}}
+        {{-- Hợp đồng của tôi - Tất cả role đều có quyền --}}
         @if(MenuHelper::hasMenuPermission('hopdong'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('hopdong.cua-toi') }}">
+                <i class="menu-icon mdi mdi-file-document-outline"></i>
+                <span class="menu-title">Hợp đồng của tôi</span>
+            </a>
+        </li>
+        @endif
+
+        {{-- Quản lý hợp đồng - Chỉ admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('hopdong_quanly'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#taodontu" aria-expanded="false"
                 aria-controls="tables">
-                <i class="menu-icon mdi mdi-file-document-outline"></i>
-                <span class="menu-title">Hợp đồng</span>
+                <i class="menu-icon mdi mdi-file-document-multiple-outline"></i>
+                <span class="menu-title">Quản lý hợp đồng</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="taodontu">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('hopdong_quanly', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
-
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
                     </li>
-                </ul>
+                    @endif
 
+                    @if(MenuHelper::hasSubMenuPermission('hopdong_quanly', 'thongke'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Thống kê</a>
+                    </li>
+                    @endif
+                </ul>
             </div>
         </li>
         @endif
+
+        
 
         {{-- Tin tuyển dụng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('tintuyendung'))
@@ -388,7 +407,7 @@
         @endif
 
         {{-- Thống kê hợp đồng - admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('thongke'))
+        @if(MenuHelper::hasMenuPermission('hopdong'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi mdi-clock-check"></i>
@@ -408,18 +427,10 @@
                 </ul>
             </div>
         </li>
-
+        
         @endif
 
-        {{-- Thống kê chấm công - admin, hr có quyền
-        @if(MenuHelper::hasMenuPermission('chamcong'))
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">
-                <i class="menu-icon mdi mdi-clock-check"></i>
-                <span class="menu-title">Thống kê chấm công</span>
-            </a>
-        </li>
-        @endif --}}
+       
     </ul>
 </nav>
 
