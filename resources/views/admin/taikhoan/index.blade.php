@@ -4,8 +4,8 @@
 @endphp
 <style>
     option {
-    color: black;
-}
+        color: black;
+    }
 </style>
 @section('content')
     <div class="row">
@@ -115,8 +115,8 @@
                                                     </div>
                                                     <div class="col-md-3 d-flex gap-2">
                                                         <button type="submit" class="btn btn-primary">Lọc</button>
-                                                        <a href="{{ route('tkall') }}"
-                                                            class="btn btn-secondary">Đặt lại</a>
+                                                        <a href="{{ route('tkall') }}" class="btn btn-secondary">Đặt
+                                                            lại</a>
                                                     </div>
                                                 </form>
 
@@ -179,8 +179,8 @@
                                                                                     </div>
                                                                                     <div><i
                                                                                             class="mdi mdi-account-badge me-1"></i>
-                                                                                        Vai trò:
-                                                                                        {{ $item->vaiTro->ten_hien_thi }}
+                                                                                        Chức vụ:
+                                                                                        {{ $item->chucVu->ten ?? 'N/A' }}
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
