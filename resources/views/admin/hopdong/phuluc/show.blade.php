@@ -26,7 +26,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="card shadow mb-4mx-auto" style="max-width: 800px;">
+    <div class="card shadow mb-4 mx-auto" style="max-width: 1000px;">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Chi tiết phụ lục: {{ $phuLuc->so_phu_luc }}</h6>
             <a href="{{ route('hopdong.show', $phuLuc->hop_dong_id) }}" class="btn btn-secondary btn-sm">
@@ -40,7 +40,7 @@
                     <h4>Thông tin chung</h4>
                     <table class="table table-bordered">
                         <tr><th style="width: 200px;">Hợp đồng gốc</th><td>{{ $phuLuc->hopDong->so_hop_dong }}</td></tr>
-                        <tr><th>Nhân viên</th><td>{{ $phuLuc->hopDong->hoSoNguoiDung->ho . ' ' . $phuLuc->hopDong->hoSoNguoiDung->ten }}</td></tr>
+                        <tr><th>Nhân viên</th><td>{{ $phuLuc->hopDong->hoSoNguoiDung ? ($phuLuc->hopDong->hoSoNguoiDung->ho . ' ' . $phuLuc->hopDong->hoSoNguoiDung->ten) : 'N/A' }}</td></tr>
                         <tr><th>Tên phụ lục</th><td>{{ $phuLuc->ten_phu_luc ?? 'Không có' }}</td></tr>
                         <tr><th>Ngày ký</th><td>{{ $phuLuc->ngay_ky->format('d/m/Y') }}</td></tr>
                         <tr><th>Ngày hiệu lực PL</th><td>{{ $phuLuc->ngay_hieu_luc->format('d/m/Y') }}</td></tr>

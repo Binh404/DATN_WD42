@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\employee;
 
-use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
-use App\Models\DangKyTangCa;
-use App\Models\thucHienTangCa;
 use App\Models\NguoiDung;
-use App\Services\GioLamViecService;
+use App\Models\DangKyTangCa;
 use Illuminate\Http\Request;
+use App\Models\thucHienTangCa;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\GioLamViecService;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ChamCongController extends Controller
 {
@@ -421,7 +422,7 @@ class ChamCongController extends Controller
             return response()->json($data);
 
         } catch (\Exception $e) {
-            \Log::error('Error fetching attendance data: ' . $e->getMessage());
+            Log::error('Error fetching attendance data: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Có lỗi xảy ra khi lấy dữ liệu',
                 'message' => config('app.debug') ? $e->getMessage() : 'Lỗi hệ thống'
