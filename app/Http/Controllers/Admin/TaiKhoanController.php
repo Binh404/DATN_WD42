@@ -64,7 +64,7 @@ class TaiKhoanController extends Controller
             'vai_tro_id'    => 'required|exists:vai_tro,id',
             'phong_ban_id'  => 'required|exists:phong_ban,id',
             'chuc_vu_id'    => 'required|exists:chuc_vu,id',
-           
+
         ]);
 
         // 1. Cập nhật bảng nguoi_dung
@@ -72,10 +72,10 @@ class TaiKhoanController extends Controller
             'ten_dang_nhap' => $request->ten_dang_nhap,
             'email'         => $request->email,
             'trang_thai'    => $request->trang_thai,
-            'vai_tro_id'    => $request->vai_tro_id,    
+            'vai_tro_id'    => $request->vai_tro_id,
             'phong_ban_id'  => $request->phong_ban_id,
             'chuc_vu_id'    => $request->chuc_vu_id,
-           
+
         ]);
 
 

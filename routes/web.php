@@ -1,5 +1,11 @@
 <?php
 
+
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DonDeXuatController;
+
+use App\Http\Controllers\Admin\ImportChamCongController;
+use App\Http\Controllers\GioLamViecController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ThemeController;
@@ -7,9 +13,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Middleware\CheckHoSoNguoiDung;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DonDeXuatController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\GioLamViecController;
 use App\Http\Controllers\Admin\DonTuController;
 use App\Http\Controllers\Admin\LuongController;
 
@@ -43,12 +47,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\client\TinTuyenDungController;
 
 use App\Http\Controllers\Admin\HopDongLaoDongController;
-use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Controllers\Admin\YeuCauTuyenDungController;
 
 use App\Http\Controllers\employee\DangKyTangCaController;
-
-
 
 
 
@@ -475,7 +476,7 @@ Route::prefix('hr')->name('hr.')->group(function () {
     // tuyển dụng
     Route::get('captrenthongbao/tuyendung/danhsach', [YeuCauTuyenDungController::class, 'danhSachThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.index');
     Route::get('captrenthongbao/tuyendung/{id}/show', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
-    Route::get('tintuyendung/create-from-request/{id}', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
+    Route::get('tintuyendung/create-from-request/{id}/create', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
 
     // nghỉ phép
@@ -562,3 +563,13 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/hopdong/{id}/xac-nhan-ky', [NotificationController::class, 'xacNhanKy'])->name('hopdong.xacnhanky');
 Route::post('/hopdong/{id}/tu-choi-ky', [NotificationController::class, 'tuChoiKy'])->name('hopdong.tuchoiky');
 Route::get('/toggle-theme', [ThemeController::class, 'toggle'])->name('toggle.theme');
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{user}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('api/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
+
+});
+Route::post('/chat/typing', [ChatController::class, 'typing'])->middleware('auth');
+Route::post('/chat/stopped-typing', [ChatController::class, 'stoppedTyping'])->middleware('auth');

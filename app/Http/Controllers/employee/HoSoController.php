@@ -36,18 +36,16 @@ class HoSoController extends Controller
      */
     protected function generateMaNhanVien($prefix)
 {
-    // Tìm hồ sơ có mã nhân viên bắt đầu bằng prefix, sắp xếp theo ID giảm dần
-    $last = HoSoNguoiDung::where('ma_nhan_vien', 'like', $prefix . '%')
-                ->orderByDesc('id')
-                ->first();
-
     $so = 1;
-    if ($last && preg_match('/' . $prefix . '(\d+)/', $last->ma_nhan_vien, $matches)) {
-        $so = intval($matches[1]) + 1;
-    }
+    do {
+        $maNhanVien = $prefix . str_pad($so, 6, '0', STR_PAD_LEFT);
+        $exists = HoSoNguoiDung::where('ma_nhan_vien', $maNhanVien)->exists();
+        $so++;
+    } while ($exists);
 
-    return $prefix . str_pad($so, 6, '0', STR_PAD_LEFT);
+    return $maNhanVien;
 }
+
 
     public function store(Request $request)
     {
