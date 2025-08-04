@@ -195,9 +195,11 @@ class NghiPhepController extends Controller
 
     public function chiTiet($id)
     {
+        $user = auth()->user();
+        $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
         $donNghiPhep = DonXinNghi::with('loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->findOrFail($id);
 
-        return view('admin.duyetdontu.donxinnghi.show', compact('donNghiPhep'));
+        return view('admin.duyetdontu.donxinnghi.show', compact('donNghiPhep', 'vaiTro'));
     }
 
     public function huyDonXinNghi($id)
@@ -207,8 +209,8 @@ class NghiPhepController extends Controller
         $donXinNghi = DonXinNghi::find($id);
         $nam = Carbon::today()->year;
         $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
-        if ($lichSuDuyet->isNotEmpty()) {
-            return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt không thể hủy!');
+        if ($lichSuDuyet->isNotEmpty() || $donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt hoặc đã hủy trước đó!');
         }
 
         DonXinNghi::where('id', $id)->update([

@@ -7,15 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaoDonXinNghi extends Notification
+class TuChoiDonXinNghi extends Notification
 {
     use Queueable;
+
+    public $donXinNghi;
 
     /**
      * Create a new notification instance.
      */
-    public $donXinNghi;
-
     public function __construct($donXinNghi)
     {
         $this->donXinNghi = $donXinNghi;
@@ -31,15 +31,11 @@ class TaoDonXinNghi extends Notification
         return ['database', 'broadcast'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toDatabase($notifiable)
     {
-
         return [
-            'message' => 'Nhân viên ' . $this->donXinNghi->nguoi_dung_id . 'vừa tạo đơn xin nghỉ.',
-            'url' => route('department.donxinnghi.show', $this->donXinNghi->id),
+            'message' => 'Quản lý cấp trên đã từ chối đơn xin nghỉ của bạn.',
+            'url' => route('nghiphep.show', ['id' => $this->donXinNghi->id]),
         ];
     }
 
@@ -51,8 +47,8 @@ class TaoDonXinNghi extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Nhân viên Nguyễn Văn A vừa tạo đơn xin nghỉ.',
-            'url' => route('department.donxinnghi.show', $this->donXinNghi->id),
+            'message' => 'Quản lý cấp trên đã từ chối đơn xin nghỉ của bạn.',
+            'url' => route('nghiphep.show', ['id' => $this->donXinNghi->id]),
         ];
     }
 }
