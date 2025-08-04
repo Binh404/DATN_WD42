@@ -75,7 +75,7 @@ Route::get('/testcatlayout', function () {
     return view('layoutsAdmin.master');
 });
 // Admin routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr'])->group(function () {
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr,employee'])->group(function () {
     // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');;
@@ -438,9 +438,9 @@ Route::get('/chuc-vus/{phongBanId}', action: [ChucVuController::class, 'getByPho
 });
 
 // Route::middleware([RedirectIfAuthenticatedCustom::class, PreventLoginCacheMiddleware::class])->group(function () {
-//     Route::get('/', function () {
-//         return view('auth.login');
-//     })->name('login');
+    Route::get('/', function () {
+        return view('auth.login');
+    })->name('login');
 
 //     Route::get('/login', function () {
 //         return view('auth.login');

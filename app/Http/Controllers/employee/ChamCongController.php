@@ -72,7 +72,8 @@ class ChamCongController extends Controller
             // dd($today->format('Y-m-d'));
             $isOvertime = false;
             $workingHours = $this->workScheduleService->getWorkingHours();
-            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+            // dd($workingHours);
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']) ?? '18:30'; // $workingHours['start_time_tang_ca']; // 18:45
 
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
