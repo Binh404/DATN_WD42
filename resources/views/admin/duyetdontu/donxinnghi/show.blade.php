@@ -527,6 +527,70 @@
             text-decoration: none;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -626,7 +690,8 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Số ngày nghỉ:</span>
-                            <span class="info-value" id="totalDays">{{ number_format($donNghiPhep->so_ngay_nghi) }} ngày</span>
+                            <span class="info-value" id="totalDays">{{ number_format($donNghiPhep->so_ngay_nghi) }}
+                                ngày</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ngày tạo:</span>
@@ -692,11 +757,13 @@
                         </h3>
                         <div class="info-row">
                             <span class="info-label">Bàn giao cho:</span>
-                            <span class="info-value" id="handoverTo">{{ $donNghiPhep->banGiaoCho ? $donNghiPhep->banGiaoCho->ten_dang_nhap : 'Không có' }}</span>
+                            <span class="info-value"
+                                id="handoverTo">{{ $donNghiPhep->banGiaoCho ? $donNghiPhep->banGiaoCho->ten_dang_nhap : 'Không có' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ghi chú bàn giao:</span>
-                            <span class="info-value" id="handoverNote">{{ $donNghiPhep->ghi_chu_ban_giao }}</span>
+                            <span class="info-value"
+                                id="handoverNote">{{ $donNghiPhep->ghi_chu_ban_giao ? $donNghiPhep->ghi_chu_ban_giao : 'Không có' }}</span>
                         </div>
                     </div>
                 </div>
@@ -712,99 +779,6 @@
                     </div>
                 </div>
 
-                {{-- tiến trình xử lý --}}
-                {{-- <div class="tracking-section">
-                    <h3><i class="fas fa-route"></i> Tiến trình xử lý</h3>
-                    <div class="progress-timeline">
-                        <div class="timeline-step">
-                            <div class="step-indicator step-completed">
-                                <i class="fas fa-paper-plane"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">Đã gửi đơn</div>
-                                <div class="step-description">Đơn nghỉ phép đã được tạo và gửi đi</div>
-                            </div>
-                        </div>
-                        <div class="timeline-line"></div>
-
-
-                        <div class="timeline-step">
-                            @php
-                                $lichSuTruongPhongDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere(
-                                    'cap_duyet',
-                                    1,
-                                );
-                                $lichSuHRDuyet = ($donNghiPhep->lichSuDuyet ?? collect())->firstWhere('cap_duyet', 2);
-
-                                $trPhongTuChoi = $lichSuTruongPhongDuyet?->ket_qua === 'tu_choi';
-                                $trPhongDuyet = $lichSuTruongPhongDuyet?->ket_qua === 'da_duyet';
-
-                                $hrTuChoi = $lichSuHRDuyet?->ket_qua === 'tu_choi';
-                                $hrDuyet = $lichSuHRDuyet?->ket_qua === 'da_duyet';
-                            @endphp
-
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuTruongPhongDuyet ? 'step-active' : ($trPhongTuChoi ? 'step-rejected' : 'step-completed') }}">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Chờ trưởng phòng duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng từ chối'
-                                    : 'Trưởng phòng đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuTruongPhongDuyet
-                                ? 'Đơn đang chờ trưởng phòng xem xét và phê duyệt'
-                                : ($trPhongTuChoi
-                                    ? 'Trưởng phòng đã từ chối đơn nghỉ'
-                                    : 'Trưởng phòng đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-                <div class="timeline-step">
-                    <div
-                        class="step-indicator
-                                {{ !$lichSuHRDuyet && $trPhongDuyet ? 'step-active' : ($hrTuChoi ? 'step-rejected' : ($hrDuyet ? 'step-completed' : 'step-pending')) }}">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="step-content">
-                        <div class="step-title">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet ? 'Chờ HR duyệt' : ($hrTuChoi ? 'HR từ chối' : 'HR đã duyệt') }}
-                        </div>
-                        <div class="step-description">
-                            {{ !$lichSuHRDuyet && $trPhongDuyet
-                                ? 'HR đang xem xét đơn nghỉ'
-                                : ($hrTuChoi
-                                    ? 'HR đã từ chối đơn nghỉ'
-                                    : 'HR đã duyệt đơn nghỉ') }}
-                        </div>
-                    </div>
-                    <div class="timeline-line"></div>
-                </div>
-
-
-                        <div class="timeline-step">
-                            <div
-                                class="step-indicator {{ $donNghiPhep->trang_thai == 'da_duyet' ? 'step-completed' : 'step-pending' }}">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="step-content">
-                                <div class="step-title">Hoàn tất</div>
-                                <div class="step-description">Đơn nghỉ phép được chấp thuận và có hiệu lực</div>
-                            </div>
-
-                        </div>
-                        <div class="timeline-line"></div>
-                    </div>
-                </div> --}}
-
-                <!-- Tài liệu hỗ trợ -->
                 <div class="description-card">
                     <h3>
                         <i data-lucide="paperclip"></i>
@@ -828,13 +802,29 @@
                 </div>
 
 
+                @php
+                    $ketQua = $donNghiPhep->ketQuaDuyetTheoCap(
+                        $vaiTro->ten == 'hr' ? 2 : ($vaiTro->ten == 'admin' ? 3 : 1),
+                    );
+                @endphp
                 <!-- Các hành động -->
                 <div class="actions">
                     <a style="text-decoration: none;" href="{{ route('department.donxinnghi.danhsach') }}">
-                        <button class="btn btn-secondary">
+                        <button class="btn btn-outline-warning btn-sm rounded-pill">
                             Quay lại
                         </button>
                     </a>
+
+                    @if ($ketQua !== 'da_duyet' && $ketQua !== 'tu_choi')
+                        <a class="btn btn-outline-success btn-sm rounded-pill"
+                            href="{{ route('department.donxinnghi.duyet', $donNghiPhep->id) }}">
+                            <i class="fas fa-check text-success"></i>Duyệt
+                        </a>
+
+                        <button class="btn btn-outline-danger btn-sm rounded-pill"
+                            onclick="clickTuChoi({{ $donNghiPhep->id }})"><i class="fas fa-times text-danger"></i>Từ
+                            chối</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -851,6 +841,35 @@
             <div class="popup-body" id="popupBody">
                 <!-- Nội dung sẽ được load động -->
             </div>
+        </div>
+    </div>
+
+    <!-- Modal cho ghi chú từ chối -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <form action="{{ route('department.donxinnghi.tuchoi') }}" id="frmTuChoiDonXinNghi" method="POST">
+                @csrf
+
+                <div class="modal-header">
+                    <h3>Lý do từ chối</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <input type="hidden" id="don_xin_nghi_id" name="don_xin_nghi_id">
+                    <label for="rejectReason" style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">
+                        Vui lòng nhập lý do từ chối đơn xin nghỉ:
+                    </label>
+                    <textarea id="rejectReason" name="ghi_chu"
+                        placeholder="Ví dụ: Thời gian nghỉ trùng với dự án quan trọng, cần sắp xếp lại công việc..."></textarea>
+                </div>
+                <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn" type="button" style="background: #95a5a6; color: white;"
+                        onclick="closeRejectModal()">Hủy</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirmReject()">Xác nhận từ
+                        chối</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -943,5 +962,60 @@
                 }, 300);
             }
         }
+
+        function clickTuChoi(id) {
+            document.getElementById('rejectModal').style.display = 'block';
+            document.getElementById('rejectReason').value = '';
+            document.getElementById('rejectReason').focus();
+            document.getElementById('don_xin_nghi_id').value = id;
+        }
+
+        // Đóng modal khi click vào nút X
+        document.querySelector('.close').addEventListener('click', function() {
+            closeRejectModal();
+        });
+
+        // Đóng modal khi click ra ngoài
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('rejectModal');
+            if (e.target === modal) {
+                closeRejectModal();
+            }
+        });
+
+        // Hàm đóng modal
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+            currentRejectEmployee = '';
+        }
+
+        // Hàm xác nhận từ chối
+        function confirmReject() {
+            const reason = document.getElementById('rejectReason').value.trim();
+            if (!reason) {
+                alert('Vui lòng nhập lý do từ chối!');
+                return false;
+            }
+
+            return confirm('Bạn có chắc chắn muốn từ chối đơn xin nghỉ này không?');
+        }
+
+        // Xử lý phím Enter trong textarea
+        document.getElementById('rejectReason').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                confirmReject();
+            }
+        });
+
+        // Hiệu ứng hover cho cards
+        document.querySelectorAll('.request-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0) scale(1)';
+            });
+        });
     </script>
 @endsection
