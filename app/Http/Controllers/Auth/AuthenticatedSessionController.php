@@ -56,7 +56,7 @@ class AuthenticatedSessionController extends Controller
             'email' => 'Tài khoản không có quyền truy cập hệ thống.',
         ]);
     }
-    
+
 
     /**
      * Đăng xuất khỏi phiên đăng nhập.

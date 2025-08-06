@@ -1,5 +1,5 @@
 @php
-    use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
     $nguoiDung = Auth::user();
     $avatar = $nguoiDung->hoSo->anh_dai_dien ?? asset('assets/images/default.png');

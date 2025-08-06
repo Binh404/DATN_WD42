@@ -278,7 +278,7 @@
                     <h3 class="section-title">Thông tin cơ bản</h3>
                     <div class="info-grid">
                         <div class="info-item">
-                            <div class="info-label">Mã yêu cầu</div>
+                            <div class="info-label">Mã tin tuyển dụng</div>
                             <div class="info-value highlight">{{ $tuyenDung->ma }}</div>
                         </div>
                         <div class="info-item">
