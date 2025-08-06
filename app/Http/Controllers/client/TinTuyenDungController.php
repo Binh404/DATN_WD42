@@ -201,4 +201,14 @@ class TinTuyenDungController extends Controller
         }
         abort(403, 'Bạn không có quyền truy cập trang này.');
     }
+
+    public function capNhatTrangThaiketThuc(string $id){
+        $tinTuyenDung = TinTuyenDung::findOrFail($id);
+        $tinTuyenDung->update([
+            'trang_thai' => 'ket_thuc'
+        ]);
+
+        return redirect()->route('hr.tintuyendung.index')
+            ->with('success', 'Cập nhật trạng thái kết thúc thành công!');
+    }
 }

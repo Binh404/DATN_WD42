@@ -478,6 +478,8 @@ Route::prefix('hr')->name('hr.')->group(function () {
     Route::get('captrenthongbao/tuyendung/{id}/show', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
     Route::get('tintuyendung/create-from-request/{id}/create', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
+    Route::put('tintuyendung/{id}/end', [TinTuyenDungController::class, 'capNhatTrangThaiKetThuc'])->name('tintuyendung.end');
+
 
     // nghỉ phép
     Route::resource('loainghiphep', LoaiNghiPhepController::class)->names('loainghiphep');
