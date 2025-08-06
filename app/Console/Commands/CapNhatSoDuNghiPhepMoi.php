@@ -15,7 +15,7 @@ class CapNhatSoDuNghiPhepMoi extends Command
      *
      * @var string
      */
-    protected $signature = 'app:cap-nhat-so-du-nghi-phep-moi';
+    protected $signature = 'capnhat:nghiphep';
 
     /**
      * The console command description.
@@ -44,8 +44,13 @@ class CapNhatSoDuNghiPhepMoi extends Command
                     ->exists();
 
 
+
                 if (!$daCo) {
                     $gioiTinh = HoSoNguoiDung::where('nguoi_dung_id', $nguoiDung->id)->value('gioi_tinh');
+                    if (strcasecmp($loai->ten, 'Nghỉ thai sản') == 0 && $gioiTinh != 'nu') {
+                        continue;
+                    }
+
                     if ($loai->cho_phep_chuyen_nam == 1) {
                         $soNgayChuyenToiDa = $loai->toi_da_ngay_chuyen ?? 0;
                         $soDuNamCu = SoDuNghiPhepNhanVien::where('nguoi_dung_id', $nguoiDung->id)
@@ -66,7 +71,7 @@ class CapNhatSoDuNghiPhepMoi extends Command
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
-                    } elseif(strcasecmp($loai->ten, 'Nghỉ thai sản') == 0 && $gioiTinh == 'nu') {
+                    } elseif (strcasecmp($loai->ten, 'Nghỉ thai sản') == 0 && $gioiTinh == 'nu') {
                         SoDuNghiPhepNhanVien::create([
                             'nguoi_dung_id' => $nguoiDung->id,
                             'loai_nghi_phep_id' => $loai->id,
@@ -79,7 +84,7 @@ class CapNhatSoDuNghiPhepMoi extends Command
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
-                    } else{
+                    } else {
                         SoDuNghiPhepNhanVien::create([
                             'nguoi_dung_id' => $nguoiDung->id,
                             'loai_nghi_phep_id' => $loai->id,
