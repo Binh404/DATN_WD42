@@ -815,7 +815,7 @@
                         </button>
                     </a>
 
-                    @if ($ketQua !== 'da_duyet' && $ketQua !== 'tu_choi')
+                    @if ($ketQua !== 'da_duyet' && $ketQua !== 'tu_choi' && $donNghiPhep->trang_thai !== 'huy_bo')
                         <a class="btn btn-outline-success btn-sm rounded-pill"
                             href="{{ route('department.donxinnghi.duyet', $donNghiPhep->id) }}">
                             <i class="fas fa-check text-success"></i>Duyệt
