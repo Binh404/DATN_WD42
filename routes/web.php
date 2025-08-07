@@ -74,13 +74,10 @@ Route::get('/testcatlayout', function () {
 });
 // Admin routes
 Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr,employee'])->group(function () {
-    // Route::get('/phongban', [PhongBanController::class, 'index']);
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');;
     // Admin Phòng Ban
-    // Route::get('/thongke',function(){
-    //     return view('admin.thongke');
-    // })->name('admin.dashboard.index');
+
 
     Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
@@ -185,18 +182,18 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 // Hợp đồng của tôi - Tất cả role đều có quyền
 Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     Route::get('/hop-dong/cua-toi', [HopDongLaoDongController::class, 'cuaToi'])->name('hopdong.cua-toi');
-    
+
     // Routes ký hợp đồng
     Route::get('/hop-dong/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('hopdong.ky');
     Route::post('/hop-dong/{id}/xu-ly-ky', [HopDongLaoDongController::class, 'xuLyKyHopDong'])->name('hopdong.xu-ly-ky');
     Route::post('/hop-dong/{id}/tu-choi-ky', [HopDongLaoDongController::class, 'tuChoiKy'])->name('hopdong.tu-choi-ky');
-    
+
     // Route test để kiểm tra role
     Route::get('/test-role', function() {
         $user = auth()->user();
         $roles = optional($user->vaiTros)->pluck('ten')->toArray();
         $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0] ?? null;
-        
+
         return response()->json([
             'user_id' => $user->id,
             'user_name' => $user->name,

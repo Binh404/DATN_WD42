@@ -13,8 +13,8 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = Auth::user();
-        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-        // dd(...$vaiTro);
+        $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
+        // dd(...$userRoles);
 
         Log::info('Đang kiểm tra role cho route: ' . $request->path());
         Log::info('User Roles: ' . json_encode($userRoles));
@@ -27,12 +27,12 @@ class CheckRole
         }
 
         // Nếu quan hệ belongsTo
-        $userRole = optional($user->vaiTro)->ten;
+        $userRole = optional($user->vaiTro)->name;
 
         if (in_array($userRole, $roles)) {
             return $next($request);
         }
 
-        abort(403, 'Bạn không có quyền truy cập.');
+        abort(403, 'Bạn không có quyền truy cậpp.');
     }
 }

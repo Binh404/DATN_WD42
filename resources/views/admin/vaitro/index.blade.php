@@ -25,7 +25,7 @@
             @foreach($vaiTros as $role)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $role->ten }}</td>
+                    <td>{{ $role->name }}</td>
                     <td>{{ $role->ten_hien_thi }}</td>
                     <td>{{ $role->mo_ta }}</td>
                     {{-- <td>{{ $role->la_vai_tro_he_thong }}</td> --}}

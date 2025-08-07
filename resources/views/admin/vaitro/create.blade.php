@@ -32,18 +32,18 @@
                             @csrf
                             {{-- Tên vai trò --}}
                             <div class="mb-3">
-                                <label for="ten_vai_tro" class="form-label">
+                                <label for="name" class="form-label">
                                     <i class="fas fa-user me-2"></i>Tên vai trò
                                 </label>
                                 <input type="text"
-                                id="ten_vai_tro"
+                                id="name"
                                 name="name" {{-- ✅ Spatie yêu cầu key này --}}
                                 value="{{ old('name') }}"
                                 class="form-control"
                                 placeholder="Nhập tên vai trò"
                                 required>
 
-                                @error('ten')
+                                @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

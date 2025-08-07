@@ -46,7 +46,7 @@ return [
          * default value but you may easily change it to any table you like.
          */
 
-        'permissions' => 'quyen',
+        'permissions' => null,
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -54,7 +54,7 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'model_has_permissions' => 'nguoi_dung_quyen',
+        'model_has_permissions' => null,
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -70,14 +70,14 @@ return [
          * basic default value but you may easily change it to any table you like.
          */
 
-        'role_has_permissions' => 'vai_tro_quyen',
+        'role_has_permissions' => null,
     ],
 
     'column_names' => [
         /*
          * Change this if you want to name the related pivots other than defaults
          */
-        'role_pivot_key' => null, // default 'role_id',
+        'role_pivot_key' => 'vai_tro_id', // default 'role_id',
         'permission_pivot_key' => null, // default 'permission_id',
 
         /*

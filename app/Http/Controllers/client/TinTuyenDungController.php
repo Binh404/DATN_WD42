@@ -34,7 +34,7 @@ class TinTuyenDungController extends Controller
     {
         $yeuCau = YeuCauTuyenDung::with('phongBan', 'chucVu')->findOrFail($id);
         $phongBans = PhongBan::all();
-        $vaiTros = VaiTro::whereRaw('LOWER(ten) != ?', ['admin'])->get();
+        $vaiTros = VaiTro::whereRaw('LOWER(name) != ?', ['admin'])->get();
         return view("admin.tintuyendung.create", compact('yeuCau', 'phongBans', 'vaiTros'));
     }
 

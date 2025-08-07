@@ -70,17 +70,22 @@
                            Chức vụ
                         </a>
                     </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('vaitro.index')}}">
-                           Vai trò
-                        </a>
-                    </li>
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
                     @endif
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('vaitro.index')}}">
+                           Vai trò
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('phongban.index') }}">
+                           Phòng ban
+                        </a>
+                    </li>
                 </ul>
 
             </div>
@@ -89,7 +94,7 @@
         @endif
 
         {{-- Phòng ban - Chỉ admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('phongban'))
+        {{-- @if(MenuHelper::hasMenuPermission('phongban'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi mdi-office-building-outline"></i>
@@ -104,7 +109,7 @@
                 </ul>
             </div>
         </li>
-        @endif
+        @endif --}}
 
         @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
         <li class="nav-item">
