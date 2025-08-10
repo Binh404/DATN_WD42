@@ -22,35 +22,13 @@
 
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         <li class="nav-item nav-category">Các chức năng</li>
-        {{-- Thống kê hợp đồng - admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('thongke'))
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-clock-check"></i>
-                <span class="menu-title">Thống kê</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="thongke">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Hợp đồng</a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">Chấm công</a>
-                    </li>
-
-                </ul>
-            </div>
-        </li>
-
-        @endif
 
         @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
-                <span class="menu-title">Người dùng</span>
+                <span class="menu-title">Nhân sự</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-hoso">
@@ -134,6 +112,9 @@
                 <ul class="nav flex-column sub-menu">
                     {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
                     <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
+                    </li>
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>

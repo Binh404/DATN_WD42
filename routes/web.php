@@ -126,9 +126,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
         Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
             ->name('exportReport');
     });
-    // Route xuất báo cáo (Excel/PDF)
-    // Route::post('cham-cong/export-report', [ChamCongAdminController::class, 'exportReport'])
-    //     ->name('chamcong.exportReport');
+
     Route::get('chamCongPheDuyetTangCa', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.xemPheDuyetTangCa');
     Route::get('chamCongPheDuyetTangCa/{id}/show', [DangKyTangCaAdminController::class, 'show'])->name('admin.chamcong.xemChiTietDonTangCa');
     Route::post('chamCongPheDuyetTangCa/{id}/pheDuyet', [DangKyTangCaAdminController::class, 'pheDuyet'])->name('admin.chamcong.pheDuyetTangCaTrangThai');
@@ -336,8 +334,16 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('/tinh-luong', [LuongController::class, 'tinhLuongVaLuu'])->name('store');
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
+        Route::get('/export-luongcb', [LuongController::class, 'luongcbExcel'])->name('export.luongcb');
         Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
         Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
+
+        // Routes cho bảng luong cơ bản
+        Route::get('/list', [LuongController::class, 'listLuong'])->name('list');
+        Route::get('/{id}/edit', [LuongController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [LuongController::class, 'update'])->name('update');
+        Route::delete('/{id}/delete', [LuongController::class, 'delete'])->name('delete');
+
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
@@ -345,6 +351,9 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         // Route::get('/api/bang-luong-json', function () {
         //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
         // });
+        // Route test
+        Route::get('/test-create', [LuongController::class, 'testCreateLuongNhanVien'])->name('test.create');
+        Route::post('/test-form', [LuongController::class, 'testFormSubmission'])->name('test.form');
     });
 
       Route::prefix('chucvu')->name('chucvu.')->controller(ChucVuController::class)->group(function () {
@@ -435,11 +444,11 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         });
 
         // Bang Luong
-        Route::get('/salary', [BangLuongController::class, 'index'])->name('bangluong.index');
-        Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
-        Route::get('/task', function () {
-            return view('employe.task');
-        });
+        // Route::get('/salary', [BangLuongController::class, 'index'])->name('bangluong.index');
+        // Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
+        // Route::get('/task', function () {
+        //     return view('employe.task');
+        // });
 
         // EM Profile , đặt tên khác để không bị trùng
         Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');

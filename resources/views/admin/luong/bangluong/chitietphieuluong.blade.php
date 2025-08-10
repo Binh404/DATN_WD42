@@ -31,7 +31,7 @@
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
-        {{-- <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG {{ $thang }}/{{ $nam }}</h3> --}}
+        <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG</h3>
     </div>
 </div>
 
@@ -83,57 +83,37 @@
                     <tr>
                         <td>1</td>
                         <td class="text-start ps-3">Lương Cơ bản</td>
-                        <td class="text-end pe-3">{{ number_format($luong->luong_co_ban) }}</td>
+                        <td class="text-end pe-3">{{ number_format($luong->luong_co_ban) }} đ</td>
                         <td class="text-start ps-3">Ngày công</td>
                         <td>{{ number_format($luong->so_ngay_cong) }}</td>
                     </tr>
-                    <tr class="fw-bold">
+                    <tr>
                         <td>2</td>
                         <td class="text-start ps-3">Tổng lương</td>
-                        <td class="text-end pe-3">{{ number_format($luong->tong_luong) }}</td>
-                        <td class="text-start ps-3">Tăng ca</td>
-                        <td>{{ number_format($luong->cong_tang_ca) }}</td>
+                        <td class="text-end pe-3">{{ number_format($luong->tong_luong) }} đ</td>
+                        <td class="text-start ps-3">Công tăng ca</td>
+                        <td>{{ $luong->cong_tang_ca }}</td>
 
                     </tr>
-                    <tr>
+                    <tr >
                         <td>3</td>
                         <td class="text-start ps-3">Phụ cấp</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_trach_nhiem ?? 0) }}</td>
-                        <td class="text-start ps-3">Bảo hiểm</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->bao_hiem ?? 0) }}</td>
+                        <td class="text-end pe-3">{{ number_format($luong->tong_phu_cap ?? 0) }} đ</td>
+                         <td class="text-start ps-3">Thuế TNCN</td>
+                        <td class="text-end pe-3">- {{ number_format($luong->thue_thu_nhap_ca_nhan ?? 0) }} đ</td>
+                        {{-- <td class="text-start ps-3">Bảo hiểm</td>
+                        <td class="text-end pe-3">{{ number_format($nhanVien->bao_hiem ?? 0) }}</td> --}}
                     </tr>
-                    {{-- <tr>
-                        <td>4</td>
-                        <td class="text-start ps-3">Tiền cơm / ngày</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_com ?? 0) }}</td>
-                        <td class="text-start ps-3">Thuế TNCN</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->thue_tncn ?? 0) }}</td>
-                    </tr> --}}
-                    {{-- <tr>
-                        <td>5</td>
-                        <td class="text-start ps-3">Xăng xe, điện thoại</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_xang ?? 0) }}</td>
-                        <td></td>
-                        <td></td>
-                    </tr> --}}
-                    {{-- <tr>
-                        <td>6</td>
-                        <td class="text-start ps-3">Nhà ở / Con nhỏ</td>
-                        <td class="text-end pe-3">{{ number_format($nhanVien->phu_cap_nhao ?? 0) }}</td>
-                        <td></td>
-                        <td></td>
-                    </tr> --}}
                     <tr class="fw-bold">
-                        <td>7</td>
-                        <td class="text-start ps-3">Tổng phụ cấp</td>
-                        <td class="text-end pe-3">{{ number_format(($nhanVien->phu_cap_trach_nhiem ?? 0) + ($nhanVien->phu_cap_com ?? 0) + ($nhanVien->phu_cap_xang ?? 0) + ($nhanVien->phu_cap_nhao ?? 0)) }}</td>
-                        <td class="text-start ps-3">Tổng trừ</td>
-                        <td class="text-end pe-3">{{ number_format(($nhanVien->bao_hiem ?? 0) + ($nhanVien->thue_tncn ?? 0)) }}</td>
+                        <td>4</td>
+                        <td colspan="3" class="text-start ps-3">Tổng trừ</td>
+                        <td class="text-end pe-3">- {{ number_format(  ($luong->thue_thu_nhap_ca_nhan ?? 0)) }} đ</td>
                     </tr>
+
                     <tr class="fw-bold bg-light">
                         <td colspan="4" class="text-start ps-3">Thực lĩnh</td>
                         {{-- <td class="text-end pe-3">{{ number_format($tongLuong - (($nhanVien->bao_hiem ?? 0) + ($nhanVien->thue_tncn ?? 0))) }}</td> --}}
-                        <td class="text-end pe-3">{{ number_format($luong->luong_thuc_nhan) }}</td>
+                        <td class="text-end pe-3">{{ number_format($luong->luong_thuc_nhan) }} đ</td>
                     </tr>
                 </tbody>
             </table>

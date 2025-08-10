@@ -9,6 +9,7 @@ use App\Models\ChucVu;
 use App\Models\HoSoNguoiDung;
 use App\Models\PhuLucHopDong;
 use App\Models\PhongBan;
+use App\Models\Luong;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -285,6 +286,20 @@ class HopDongLaoDongController extends Controller
         $nguoiDungId = $request->nguoi_dung_id;
         $hopDong = HopDongLaoDong::create($data);
 
+        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo
+        try {
+            Luong::create([
+                'nguoi_dung_id' => $nguoiDungId,
+                'hop_dong_lao_dong_id' => $hopDong->id,
+                'luong_co_ban' => $request->luong_co_ban,
+                'phu_cap' => $request->phu_cap ?? 0,
+            ]);
+        } catch (\Exception $e) {
+            // Nếu tạo bản ghi lương thất bại, xóa hợp đồng vừa tạo và trả về lỗi
+            $hopDong->delete();
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo bản ghi lương: ' . $e->getMessage())->withInput();
+        }
+
         // Cập nhật trạng thái tái ký cho các hợp đồng đã hết hạn trước đó
         HopDongLaoDong::where('nguoi_dung_id', $nguoiDungId)
             ->where('id', '!=', $hopDong->id) // Loại trừ hợp đồng vừa tạo
@@ -292,7 +307,7 @@ class HopDongLaoDongController extends Controller
             ->where('trang_thai_tai_ky', 'cho_tai_ky')
             ->update(['trang_thai_tai_ky' => 'da_tai_ky']);
 
-        return redirect()->route('hopdong.index')->with('success', 'Hợp đồng đã được tạo thành công.');
+        return redirect()->route('hopdong.index')->with('success', 'Hợp đồng đã được tạo thành công và bản ghi lương đã được tạo.');
     }
 
     public function show($id)
@@ -419,6 +434,32 @@ class HopDongLaoDongController extends Controller
 
         $hopDong->update($data);
 
+        // Cập nhật bản ghi lương tương ứng nếu lương cơ bản hoặc phụ cấp thay đổi
+        try {
+            $luong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
+            
+            if ($luong) {
+                // Chỉ cập nhật nếu có thay đổi về lương cơ bản hoặc phụ cấp
+                if ($luong->luong_co_ban != $request->luong_co_ban || $luong->phu_cap != ($request->phu_cap ?? 0)) {
+                    $luong->update([
+                        'luong_co_ban' => $request->luong_co_ban,
+                        'phu_cap' => $request->phu_cap ?? 0,
+                    ]);
+                }
+            } else {
+                // Nếu chưa có bản ghi lương, tạo mới
+                Luong::create([
+                    'nguoi_dung_id' => $hopDong->nguoi_dung_id,
+                    'hop_dong_lao_dong_id' => $hopDong->id,
+                    'luong_co_ban' => $request->luong_co_ban,
+                    'phu_cap' => $request->phu_cap ?? 0,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log lỗi nhưng không dừng quá trình cập nhật hợp đồng
+            \Log::error('Lỗi cập nhật bản ghi lương: ' . $e->getMessage());
+        }
+
         return redirect()->route('hopdong.index')
             ->with('success', 'Cập nhật hợp đồng thành công');
     }
@@ -426,6 +467,13 @@ class HopDongLaoDongController extends Controller
     public function destroy($id)
     {
         $hopDong = HopDongLaoDong::findOrFail($id);
+
+        // Xóa bản ghi lương tương ứng trước
+        try {
+            Luong::where('hop_dong_lao_dong_id', $hopDong->id)->delete();
+        } catch (\Exception $e) {
+            \Log::error('Lỗi xóa bản ghi lương: ' . $e->getMessage());
+        }
 
         // Xóa file hợp đồng nếu có
         if ($hopDong->duong_dan_file) {
@@ -634,6 +682,28 @@ class HopDongLaoDongController extends Controller
                 'hinh_thuc_lam_viec' => $phuLuc->hinh_thuc_lam_viec,
                 'dia_diem_lam_viec' => $phuLuc->dia_diem_lam_viec,
             ]);
+
+            // Cập nhật bản ghi lương tương ứng
+            try {
+                $luong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
+                
+                if ($luong) {
+                    $luong->update([
+                        'luong_co_ban' => $phuLuc->luong_co_ban,
+                        'phu_cap' => $phuLuc->phu_cap,
+                    ]);
+                } else {
+                    // Nếu chưa có bản ghi lương, tạo mới
+                    Luong::create([
+                        'nguoi_dung_id' => $hopDong->nguoi_dung_id,
+                        'hop_dong_lao_dong_id' => $hopDong->id,
+                        'luong_co_ban' => $phuLuc->luong_co_ban,
+                        'phu_cap' => $phuLuc->phu_cap,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Lỗi cập nhật bản ghi lương từ phụ lục: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('hopdong.show', $hopDong->id)
