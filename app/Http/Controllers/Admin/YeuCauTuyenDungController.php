@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ChucVu;
 use App\Models\DonTu;
+use App\Models\NguoiDung;
 use App\Models\PhongBan;
 use App\Models\YeuCauTuyenDung;
 use Illuminate\Http\Request;
@@ -100,10 +101,19 @@ class YeuCauTuyenDungController extends Controller
 
         $user = Auth::user();
 
-        YeuCauTuyenDung::create(array_merge($validated, [
+        $yeuCauTuyenDung = YeuCauTuyenDung::create(array_merge($validated, [
             'phong_ban_id' => $user->phong_ban_id,
             'nguoi_tao_id' => $user->id,
         ]));
+
+        // tạo thông báo
+        $admin = NguoiDung::whereHas('vaiTros', function ($query) {
+            $query->where('ten', 'admin');
+        })
+            ->get();
+        foreach ($admin as $adm) {
+            $adm->notify(new \App\Notifications\TaoYeuCauTuyenDung($yeuCauTuyenDung));
+        }
 
         return redirect()->route('department.yeucautuyendung.index')
             ->with('success', 'Tạo yêu cầu tuyển dụng thành công!');
