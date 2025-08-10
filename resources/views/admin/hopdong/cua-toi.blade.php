@@ -38,15 +38,15 @@
                         <div class="mb-4">
                             <i class="fas fa-file-contract text-muted" style="font-size: 4rem;"></i>
                         </div>
-                        <h4 class="text-muted mb-3">Bạn chưa có hợp đồng nào được phê duyệt</h4>
-                        <p class="text-muted mb-4">Hiện tại bạn chưa có hợp đồng lao động nào được HR phê duyệt trong hệ thống.</p>
+                                            <h4 class="text-muted mb-3">Bạn chưa có hợp đồng nào được gửi</h4>
+                    <p class="text-muted mb-4">Hiện tại bạn chưa có hợp đồng lao động nào được HR gửi trong hệ thống.</p>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <strong>Thông tin:</strong> Chỉ những hợp đồng đã được HR phê duyệt mới hiển thị tại đây.
+                            <strong>Thông tin:</strong> Chỉ những hợp đồng đã được HR gửi mới hiển thị tại đây.
                         </div>
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <strong>Lưu ý:</strong> Nếu bạn đã có hợp đồng nhưng chưa thấy ở đây, vui lòng liên hệ với phòng Nhân sự để kiểm tra trạng thái phê duyệt.
+                            <strong>Lưu ý:</strong> Nếu bạn đã có hợp đồng nhưng chưa thấy ở đây, vui lòng liên hệ với phòng Nhân sự để kiểm tra trạng thái gửi hợp đồng.
                         </div>
                     </div>
                 @else
@@ -622,36 +622,7 @@
                                 </div>
                             </div>
 
-                            <!-- Phụ lục -->
-                            @if($hopDong->phuLucs->count() > 0)
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-paperclip"></i> Phụ lục hợp đồng ({{ $hopDong->phuLucs->count() }})
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    @foreach($hopDong->phuLucs as $phuLuc)
-                                    <div class="border-bottom pb-2 mb-2">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Số phụ lục:</label>
-                                            <p class="form-control-static">{{ $phuLuc->so_phu_luc }}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Ngày hiệu lực:</label>
-                                            <p class="form-control-static">
-                                                {{ $phuLuc->ngay_hieu_luc ? $phuLuc->ngay_hieu_luc->format('d/m/Y') : 'N/A' }}
-                                            </p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Nội dung:</label>
-                                            <p class="form-control-static">{{ Str::limit($phuLuc->noi_dung_thay_doi, 100) }}</p>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endif
+                            {{-- Phần phụ lục hợp đồng đã được xóa --}}
                         </div>
                     </div>
                 @endif

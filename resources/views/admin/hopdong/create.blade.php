@@ -98,7 +98,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="ngay_ket_thuc">Ngày kết thúc</label>
+                            <label for="ngay_ket_thuc">Ngày kết thúc <span class="text-danger" id="ngay_ket_thuc_required" style="display: none;">*</span></label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
                                    id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}"
                                    {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'disabled' : '' }}>
@@ -134,18 +134,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
-                                   id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec') }}" required>
-                            @error('hinh_thuc_lam_viec')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
@@ -164,7 +153,7 @@
                             <strong>Lưu ý:</strong> 
                             <ul class="mb-0 mt-2">
                                 <li>Hợp đồng mới tạo sẽ ở trạng thái <strong>"Tạo mới"</strong></li>
-                                <li>Sau khi tạo, HR/Admin cần <strong>phê duyệt</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
+                                <li>Sau khi tạo, HR/Admin cần <strong>gửi cho nhân viên</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
                                 <li>Sau khi phê duyệt, HR/Admin có thể <strong>ký hợp đồng</strong> để chuyển sang trạng thái <strong>"Hiệu lực"</strong></li>
                             </ul>
                         </div>
@@ -183,9 +172,20 @@
                 <div class="form-group">
                     <label for="file_hop_dong">File hợp đồng <span class="text-danger">*</span></label>
                     <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
-                           id="file_hop_dong" name="file_hop_dong" required>
-                    <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
+                           id="file_hop_dong" name="file_hop_dong[]" multiple required>
+                   
                     @error('file_hop_dong')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div id="file-list" class="mt-2"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="file_dinh_kem">File đính kèm</label>
+                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror" 
+                           id="file_dinh_kem" name="file_dinh_kem">
+                   
+                    @error('file_dinh_kem')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -219,6 +219,7 @@
     setTimeout(function() {
         var loaiHopDong = document.getElementById('loai_hop_dong');
         var ngayKetThuc = document.getElementById('ngay_ket_thuc');
+        var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
         
         if (loaiHopDong && ngayKetThuc) {
             // Xử lý khi thay đổi loại hợp đồng
@@ -226,8 +227,12 @@
                 if (this.value === 'khong_xac_dinh_thoi_han') {
                     ngayKetThuc.disabled = true;
                     ngayKetThuc.value = '';
+                    ngayKetThuc.required = false;
+                    ngayKetThucRequired.style.display = 'none';
                 } else {
                     ngayKetThuc.disabled = false;
+                    ngayKetThuc.required = true;
+                    ngayKetThucRequired.style.display = 'inline';
                 }
             });
             
@@ -235,6 +240,11 @@
             if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
                 ngayKetThuc.disabled = true;
                 ngayKetThuc.value = '';
+                ngayKetThuc.required = false;
+                ngayKetThucRequired.style.display = 'none';
+            } else {
+                ngayKetThuc.required = true;
+                ngayKetThucRequired.style.display = 'inline';
             }
         }
     }, 100);
@@ -263,6 +273,91 @@
                 this.value = 0;
             }
         });
+
+        // Xử lý hiển thị danh sách file đã chọn
+        var selectedFiles = []; // Mảng lưu trữ các file đã chọn
+        
+        document.getElementById('file_hop_dong').addEventListener('change', function() {
+            console.log('Files selected:', this.files.length);
+            
+            // Thêm các file mới vào mảng selectedFiles
+            for (var i = 0; i < this.files.length; i++) {
+                var file = this.files[i];
+                console.log('File ' + (i + 1) + ':', file.name, file.size);
+                
+                // Kiểm tra xem file đã tồn tại chưa
+                var exists = selectedFiles.some(function(existingFile) {
+                    return existingFile.name === file.name && existingFile.size === file.size;
+                });
+                
+                if (!exists) {
+                    selectedFiles.push(file);
+                }
+            }
+            
+            // Hiển thị lại tất cả file đã chọn
+            displaySelectedFiles();
+            
+            // Tạo DataTransfer object để cập nhật input
+            updateFileInput();
+        });
+        
+        function displaySelectedFiles() {
+            var fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            
+            if (selectedFiles.length > 0) {
+                var list = document.createElement('ul');
+                list.className = 'list-group list-group-flush';
+                
+                for (var i = 0; i < selectedFiles.length; i++) {
+                    var file = selectedFiles[i];
+                    
+                    var item = document.createElement('li');
+                    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    item.innerHTML = `
+                        <div>
+                            <i class="fas fa-file"></i> ${file.name}
+                            <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+                        </div>
+                        <div>
+                            <span class="badge badge-primary badge-pill me-2">${i + 1}</span>
+                            <button type="button" class="btn btn-danger btn-sm remove-file-btn" data-index="${i}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                }
+                
+                // Thêm event listener cho các nút xóa
+                list.querySelectorAll('.remove-file-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var index = parseInt(this.getAttribute('data-index'));
+                        removeFile(index);
+                    });
+                });
+                
+                fileList.appendChild(list);
+            }
+        }
+        
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displaySelectedFiles();
+            updateFileInput();
+        }
+        
+        function updateFileInput() {
+            var fileInput = document.getElementById('file_hop_dong');
+            var dataTransfer = new DataTransfer();
+            
+            selectedFiles.forEach(function(file) {
+                dataTransfer.items.add(file);
+            });
+            
+            fileInput.files = dataTransfer.files;
+        }
     });
 </script>
 @endsection

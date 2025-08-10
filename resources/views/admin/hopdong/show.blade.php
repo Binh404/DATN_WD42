@@ -75,10 +75,7 @@
                                             <th>Phụ cấp</th>
                                             <td>{{ number_format($hopDong->phu_cap, 0, ',', '.') }} VNĐ</td>
                                         </tr>
-                                        <tr>
-                                            <th>Hình thức làm việc</th>
-                                            <td>{{ $hopDong->hinh_thuc_lam_viec }}</td>
-                                        </tr>
+                                        
                                         <tr>
                                             <th>Nơi làm việc</th>
                                             <td>{{ $hopDong->dia_diem_lam_viec }}</td>
@@ -121,48 +118,63 @@
                                 <!-- File hợp đồng gốc -->
                                 <div class="mb-4">
                                     <h4 class="text-center">File hợp đồng gốc</h4>
-                                    <div class="card mx-auto" style="max-width: 600px;">
-                                        <div class="card-header bg-info text-white text-center">
-                                            <i class="mdi mdi-file-document"></i> File hợp đồng gốc
-                                        </div>
-                                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center mx-auto">
-                                                @php
-                                                    $fileName = $hopDong->duong_dan_file ? basename($hopDong->duong_dan_file) : 'Không có file';
-                                                    $fileSize = $hopDong->duong_dan_file && \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file)
-                                                        ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($hopDong->duong_dan_file) / 1024, 1) . ' KB'
-                                                        : 'Không xác định';
-                                                    $fileExt = $hopDong->duong_dan_file ? strtoupper(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION)) : 'N/A';
-                                                @endphp
-                                                <i class="fas fa-file-pdf text-danger" style="font-size: 2.5rem;"></i>
-                                                <div class="ms-3">
-                                                    <div><strong>{{ $fileName }}</strong></div>
-                                                    <div class="text-muted" style="font-size: 0.95em;">
-                                                        {{ $fileSize }} | {{ $fileExt }} | Cập nhật: {{ $hopDong->updated_at->format('d/m/Y H:i') }}
+                                    @if($hopDong->duong_dan_file)
+                                        @php
+                                            $files = explode(';', $hopDong->duong_dan_file);
+                                            $files = array_filter($files); // Loại bỏ các phần tử rỗng
+                                        @endphp
+                                        @foreach($files as $index => $file)
+                                            @if($file)
+                                                <div class="card mx-auto mb-3" style="max-width: 600px;">
+                                                    <div class="card-header bg-info text-white text-center">
+                                                        <i class="mdi mdi-file-document"></i> File hợp đồng gốc {{ count($files) > 1 ? '#' . ($index + 1) : '' }}
+                                                    </div>
+                                                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+                                                        <div class="d-flex align-items-center mx-auto">
+                                                            @php
+                                                                $fileName = basename(trim($file));
+                                                                $fileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists(trim($file))
+                                                                    ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size(trim($file)) / 1024, 1) . ' KB'
+                                                                    : 'Không xác định';
+                                                                $fileExt = strtoupper(pathinfo(trim($file), PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <i class="fas fa-file-pdf text-danger" style="font-size: 2.5rem;"></i>
+                                                            <div class="ms-3">
+                                                                <div><strong>{{ $fileName }}</strong></div>
+                                                                <div class="text-muted" style="font-size: 0.95em;">
+                                                                    {{ $fileSize }} | {{ $fileExt }} | Cập nhật: {{ $hopDong->updated_at->format('d/m/Y H:i') }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="btn-group mt-3 mt-md-0 mx-auto">
+                                                            @if(\Illuminate\Support\Facades\Storage::disk('public')->exists(trim($file)))
+                                                                <a href="{{ asset('storage/' . trim($file)) }}" class="btn btn-primary" target="_blank">
+                                                                    <i class="fas fa-eye"></i> Xem
+                                                                </a>
+                                                                <a href="{{ asset('storage/' . trim($file)) }}" class="btn btn-success" download>
+                                                                    <i class="fas fa-download"></i> Tải xuống
+                                                                </a>
+                                                            @else
+                                                                <button class="btn btn-secondary" disabled>
+                                                                    <i class="fas fa-exclamation-triangle"></i> File không tồn tại
+                                                                </button>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <div class="card mx-auto" style="max-width: 600px;">
+                                            <div class="card-header bg-info text-white text-center">
+                                                <i class="mdi mdi-file-document"></i> File hợp đồng gốc
                                             </div>
-                                            <div class="btn-group mt-3 mt-md-0 mx-auto">
-                                                @if($hopDong->duong_dan_file && \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->duong_dan_file))
-                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-primary" target="_blank">
-                                                        <i class="fas fa-eye"></i> Xem
-                                                    </a>
-                                                    <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" class="btn btn-success" download>
-                                                        <i class="fas fa-download"></i> Tải xuống
-                                                    </a>
-                                                @else
-                                                    <button class="btn btn-secondary" disabled>
-                                                        <i class="fas fa-exclamation-triangle"></i> File không tồn tại
-                                                    </button>
-                                                @endif
-                                                @if($hopDong->trang_thai_hop_dong !== 'da_ky' && $hopDong->trang_thai_hop_dong !== 'hieu_luc')
-                                                    <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
-                                                        <i class="fas fa-edit"></i> Cập nhật
-                                                    </a>
-                                                @endif
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
+                                                <p class="mt-2">Không có file hợp đồng</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 </div>
 
                                 <!-- File hợp đồng đã ký -->
@@ -201,6 +213,50 @@
                                                         <i class="fas fa-eye"></i> Xem
                                                     </a>
                                                     <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" class="btn btn-success" download>
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary" disabled>
+                                                        <i class="fas fa-exclamation-triangle"></i> File không tồn tại
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <!-- File đính kèm -->
+                                @if($hopDong->file_dinh_kem)
+                                <div class="mb-4">
+                                    <h4 class="text-center">File đính kèm</h4>
+                                    <div class="card mx-auto" style="max-width: 600px;">
+                                        <div class="card-header bg-secondary text-white text-center">
+                                            <i class="fas fa-paperclip"></i> File đính kèm
+                                        </div>
+                                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center mx-auto">
+                                                @php
+                                                    $attachmentFileName = basename($hopDong->file_dinh_kem);
+                                                    $attachmentFileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->file_dinh_kem)
+                                                        ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($hopDong->file_dinh_kem) / 1024, 1) . ' KB'
+                                                        : 'Không xác định';
+                                                    $attachmentFileExt = strtoupper(pathinfo($hopDong->file_dinh_kem, PATHINFO_EXTENSION));
+                                                @endphp
+                                                <i class="fas fa-paperclip text-secondary" style="font-size: 2.5rem;"></i>
+                                                <div class="ms-3">
+                                                    <div><strong>{{ $attachmentFileName }}</strong></div>
+                                                    <div class="text-muted" style="font-size: 0.95em;">
+                                                        {{ $attachmentFileSize }} | {{ $attachmentFileExt }} | Cập nhật: {{ $hopDong->updated_at->format('d/m/Y H:i') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-group mt-3 mt-md-0 mx-auto">
+                                                @if(\Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->file_dinh_kem))
+                                                    <a href="{{ asset('storage/' . $hopDong->file_dinh_kem) }}" class="btn btn-primary" target="_blank">
+                                                        <i class="fas fa-eye"></i> Xem
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $hopDong->file_dinh_kem) }}" class="btn btn-success" download>
                                                         <i class="fas fa-download"></i> Tải xuống
                                                     </a>
                                                 @else
@@ -257,53 +313,7 @@
                                 </div>
                             @endif
 
-                            @if($hopDong->phuLucs->isNotEmpty())
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <h4>Phụ lục hợp đồng</h4>
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Số phụ lục</th>
-                                                                <th>Tên phụ lục</th>
-                                                                <th>Ngày ký</th>
-                                                                <th>Ngày có hiệu lực PL</th>
-                                                                <th>Trạng thái ký</th>
-                                                                <th>Thao tác</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($hopDong->phuLucs as $phuLuc)
-                                                                <tr>
-                                                                    <td>{{ $phuLuc->so_phu_luc }}</td>
-                                                                    <td>{{ $phuLuc->ten_phu_luc ?? '-' }}</td>
-                                                                    <td>{{ $phuLuc->ngay_ky->format('d/m/Y') }}</td>
-                                                                    <td>{{ $phuLuc->ngay_hieu_luc->format('d/m/Y') }}</td>
-                                                                    <td>
-                                                                        @if($phuLuc->trang_thai_ky == 'da_ky')
-                                                                            <span class="badge badge-success">Đã ký</span>
-                                                                        @else
-                                                                            <span class="badge badge-warning">Chờ ký</span>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        {{-- TODO: Add actions like view details for appendix --}}
-                                                                        <a href="{{ route('phuluc.show', $phuLuc->id) }}"
-                                                                            class="btn btn-info btn-sm">Xem</a>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
+                            {{-- Phần phụ lục hợp đồng đã được xóa --}}
 
                             <div class="row mt-4">
                                 <div class="col-12">
@@ -357,72 +367,56 @@
                                                 align-items: stretch !important;
                                             }
                                         </style>
-                                        @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
-                                            <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
-                                                <i class="fas fa-edit"></i> Chỉnh sửa
-                                            </a>
-                                            
-                                            @if($hopDong->trang_thai_hop_dong === 'tao_moi')
-                                                @php
-                                                    $user = \Illuminate\Support\Facades\Auth::user();
-                                                    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-                                                    $canApprove = in_array('admin', $userRoles) || in_array('hr', $userRoles);
-                                                @endphp
-                                                @if($canApprove)
-                                                    <form action="{{ route('hopdong.phe-duyet', $hopDong->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-success" onclick="return confirm('Bạn có chắc chắn muốn phê duyệt hợp đồng này?')">
-                                                            <i class="fas fa-check"></i> Phê duyệt
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <div class="alert alert-info mt-2">
-                                                        <i class="fas fa-info-circle"></i>
-                                                        <strong>Lưu ý:</strong> Bạn không có quyền phê duyệt hợp đồng này.
-                                                    </div>
-                                                @endif
-                                            @endif
-                                            
-                                           
+                                        @if($hopDong->trang_thai_hop_dong === 'tao_moi')
                                             @php
                                                 $user = \Illuminate\Support\Facades\Auth::user();
-                                                $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-                                                $canCancel = in_array('admin', $userRoles) || in_array('hr', $userRoles);
-
-                                                // Kiểm tra điều kiện hủy hợp đồng - cho phép hủy ở mọi trạng thái trừ đã hủy và hết hạn
-                                                $canCancelContract = $canCancel &&
-                                                    $hopDong->trang_thai_hop_dong !== 'het_han' &&
-                                                    $hopDong->trang_thai_hop_dong !== 'huy_bo';
+                                                $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
+                                                $canApprove = in_array('admin', $userRoles) || in_array('hr', $userRoles);
                                             @endphp
-                                            @if($canCancel)
-                                                @if($canCancelContract)
-                                                    <button type="button" class="btn btn-danger" onclick="showHuyForm()">
-                                                        <i class="fas fa-times"></i> Hủy hợp đồng
+                                            @if($canApprove)
+                                                <form action="{{ route('hopdong.phe-duyet', $hopDong->id) }}" method="POST" style="display: inline;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success"                                 onclick="return confirm('Bạn có chắc chắn muốn gửi hợp đồng này cho nhân viên?')">
+                        <i class="fas fa-check"></i> Gửi cho nhân viên
                                                     </button>
-                                                @else
-                                                    <button type="button" class="btn btn-danger" disabled>
+                                                </form>
+                                            @else
+                                                <div class="alert alert-info mt-2">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <strong>Lưu ý:</strong> Bạn không có quyền gửi hợp đồng này cho nhân viên.
+                                                </div>
+                                            @endif
+                                        @endif
+
+                                        {{-- Nút hủy hợp đồng - hiển thị độc lập với nút chỉnh sửa --}}
+                                        @php
+                                            $user = \Illuminate\Support\Facades\Auth::user();
+                                            $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
+                                            $canCancel = in_array('admin', $userRoles) || in_array('hr', $userRoles);
+
+                                            // Kiểm tra điều kiện hủy hợp đồng - cho phép hủy ở mọi trạng thái trừ đã hủy và hết hạn
+                                            $canCancelContract = $canCancel &&
+                                                $hopDong->trang_thai_hop_dong !== 'het_han' &&
+                                                $hopDong->trang_thai_hop_dong !== 'huy_bo';
+                                        @endphp
+                                        @if($canCancel)
+                                            @if($canCancelContract)
+                                                <button type="button" class="btn btn-danger" onclick="showHuyForm()">
                                                     <i class="fas fa-times"></i> Hủy hợp đồng
                                                 </button>
-                                                    <div class="alert alert-warning mt-2">
-                                                        <i class="fas fa-exclamation-triangle"></i>
-                                                        <strong>Lưu ý:</strong> Hợp đồng này không thể được hủy.
-                                                    </div>
-                                                @endif
                                             @else
-                                                <div class="alert alert-info">
-                                                    <i class="fas fa-info-circle"></i>
-                                                    <strong>Lưu ý:</strong> Bạn không có quyền hủy hợp đồng này.
+                                                <button type="button" class="btn btn-danger" disabled>
+                                                <i class="fas fa-times"></i> Hủy hợp đồng
+                                            </button>
+                                                <div class="alert alert-warning mt-2">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    <strong>Lưu ý:</strong> Hợp đồng này không thể được hủy.
                                                 </div>
                                             @endif
                                         @else
                                             <div class="alert alert-info">
                                                 <i class="fas fa-info-circle"></i>
-                                                <strong>Lưu ý:</strong>
-                                                @if($hopDong->trang_thai_hop_dong == 'huy_bo')
-                                                    Hợp đồng này đã được hủy và không thể chỉnh sửa.
-                                                @elseif($hopDong->trang_thai_hop_dong == 'het_han')
-                                                    Hợp đồng này đã hết hạn và không thể chỉnh sửa.
-                                                @endif
+                                                <strong>Lưu ý:</strong> Bạn không có quyền hủy hợp đồng này.
                                             </div>
                                         @endif
                                     </div>

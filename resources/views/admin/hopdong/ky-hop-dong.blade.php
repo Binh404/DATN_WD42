@@ -36,13 +36,13 @@
                             <strong>Trạng thái hợp đồng:</strong> 
                             @switch($hopDong->trang_thai_hop_dong)
                                 @case('hieu_luc')
-                                    <span class="badge badge-success">Đang hiệu lực</span> - Hợp đồng đã được HR phê duyệt và đang có hiệu lực.
+                                    <span class="badge badge-success">Đang hiệu lực</span> - Hợp đồng đã được HR gửi và đang có hiệu lực.
                                     @break
                                 @case('chua_hieu_luc')
-                                    <span class="badge badge-warning">Chưa hiệu lực</span> - Hợp đồng đã được HR phê duyệt nhưng chưa đến ngày hiệu lực.
+                                    <span class="badge badge-warning">Chưa hiệu lực</span> - Hợp đồng đã được HR gửi nhưng chưa đến ngày hiệu lực.
                                     @break
                                 @case('het_han')
-                                    <span class="badge badge-danger">Hết hạn</span> - Hợp đồng đã được HR phê duyệt nhưng đã hết hạn.
+                                    <span class="badge badge-danger">Hết hạn</span> - Hợp đồng đã được HR gửi nhưng đã hết hạn.
                                     @break
                                 @default
                                     <span class="badge badge-secondary">Không xác định</span>
@@ -177,7 +177,7 @@
                                                  <li><strong>BẮT BUỘC:</strong> Bạn phải upload file hợp đồng đã được ký</li>
                                                  <li>File phải là bản hợp đồng có chữ ký của bạn</li>
                                                  <li>Hệ thống sẽ không cho phép ký mà không có file</li>
-                                                 <li>File sẽ được lưu vào database trong trường "file_hop_dong_da_ky"</li>
+                                                 
                                              </ul>
                                          </div>
                                      </div>

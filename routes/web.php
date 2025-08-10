@@ -168,12 +168,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('/{id}/phe-duyet', [HopDongLaoDongController::class, 'pheDuyetHopDong'])->name('phe-duyet');
         Route::post('/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('ky');
         Route::post('/{id}/huy', [HopDongLaoDongController::class, 'huyHopDong'])->name('huy');
-        Route::get('/{hopDong}/phu-luc/create', [HopDongLaoDongController::class, 'createPhuLuc'])->name('phuluc.create');
-        Route::post('/{hopDong}/phu-luc', [HopDongLaoDongController::class, 'storePhuLuc'])->name('phuluc.store');
-    });
-
-    Route::prefix('phu-luc')->name('phuluc.')->group(function () {
-        Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
+        Route::post('/an-khoi-danh-sach', [HopDongLaoDongController::class, 'anKhoiDanhSach'])->name('an-khoi-danh-sach');
+        // Routes phụ lục đã được xóa
     });
 });
 
@@ -189,8 +185,8 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     // Route test để kiểm tra role
     Route::get('/test-role', function() {
         $user = auth()->user();
-        $roles = optional($user->vaiTros)->pluck('ten')->toArray();
-        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0] ?? null;
+        $roles = optional($user->vaiTros)->pluck('name')->toArray();
+        $userRole = optional($user->vaiTros)->pluck('name')->toArray()[0] ?? null;
 
         return response()->json([
             'user_id' => $user->id,

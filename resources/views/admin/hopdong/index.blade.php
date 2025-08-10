@@ -128,7 +128,7 @@
                                                     @if($hopDongTaoMoi > 0)
                                                         <div class="alert alert-info alert-sm mt-2 mb-0">
                                                             <i class="mdi mdi-information-outline me-1"></i>
-                                                            Có <strong>{{ $hopDongTaoMoi }}</strong> hợp đồng ở trạng thái "Tạo mới" cần phê duyệt.
+                                                            Có <strong>{{ $hopDongTaoMoi }}</strong> hợp đồng ở trạng thái "Tạo mới" cần gửi cho nhân viên.
                                                         </div>
                                                     @endif
                                                 </div>
@@ -208,7 +208,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @if($hopDong->trang_thai_hop_dong == 'tao_moi')
-                                                                        <span class="badge badge-info" title="Hợp đồng mới tạo, cần phê duyệt để chuyển sang trạng thái 'Chưa hiệu lực'">Tạo mới</span>
+                                                                        <span class="badge badge-info" title="Hợp đồng mới tạo, cần gửi cho nhân viên để chuyển sang trạng thái 'Chưa hiệu lực'">Tạo mới</span>
                                                                     @elseif($hopDong->trang_thai_hop_dong == 'hieu_luc')
                                                                         <span class="badge badge-success">Hiệu lực</span>
                                                                     @elseif($hopDong->trang_thai_hop_dong == 'chua_hieu_luc')
@@ -232,11 +232,22 @@
                                                                                 title="Tái ký hợp đồng">
                                                                                 <i class="mdi mdi-file-sign"></i> Tái ký
                                                                             </a>
-                                                                        @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
+                                                                        @elseif($hopDong->trang_thai_hop_dong !== 'huy_bo' && 
+                                                                                $hopDong->trang_thai_hop_dong !== 'het_han' && 
+                                                                                !($hopDong->trang_thai_ky === 'da_ky' && $hopDong->trang_thai_hop_dong === 'hieu_luc'))
                                                                             <a href="{{ route('hopdong.edit', $hopDong->id) }}"
                                                                                 class="btn btn-warning btn-sm" title="Chỉnh sửa">
                                                                                 <i class="mdi mdi-pencil"></i>
                                                                             </a>
+                                                                        @endif
+
+                                                                        {{-- Nút ẩn hợp đồng khỏi danh sách cho hợp đồng hết hạn --}}
+                                                                        @if($hopDong->trang_thai_hop_dong === 'het_han')
+                                                                            <button type="button" class="btn btn-secondary btn-sm" 
+                                                                                    onclick="anHopDongKhoiDanhSach({{ $hopDong->id }}, event)"
+                                                                                    title="Ẩn hợp đồng khỏi danh sách chính">
+                                                                                <i class="mdi mdi-eye-off"></i> Ẩn
+                                                                            </button>
                                                                         @endif
 
                                                                        
@@ -281,8 +292,38 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('script')
     <script>
-        // JavaScript cho các chức năng khác nếu cần
+        // Function ẩn hợp đồng khỏi danh sách
+        function anHopDongKhoiDanhSach(hopDongId, event) {
+            if (confirm('Bạn có chắc chắn muốn ẩn hợp đồng này khỏi danh sách chính?\n\nHợp đồng sẽ được chuyển vào lưu trữ.')) {
+                // Hiển thị loading
+                var button = event.target;
+                var originalText = button.innerHTML;
+                button.innerHTML = '<i class="mdi mdi-loading mdi-spin"></i> Đang xử lý...';
+                button.disabled = true;
+                
+                // Tạo form và submit
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("hopdong.an-khoi-danh-sach") }}';
+                form.style.display = 'none';
+                
+                var csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                var hopDongIdInput = document.createElement('input');
+                hopDongIdInput.type = 'hidden';
+                hopDongIdInput.name = 'hop_dong_id';
+                hopDongIdInput.value = hopDongId;
+                
+                form.appendChild(csrfToken);
+                form.appendChild(hopDongIdInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
     </script>
 @endsection
