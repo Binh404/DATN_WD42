@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nhom_quyen', function (Blueprint $table) {
-            $table->id();
-            $table->string('ten');
-            $table->string('ma')->unique();
-            $table->text('mo_ta')->nullable();
-            $table->timestamps();
+        Schema::table('luong_nhan_vien', function (Blueprint $table) {
+            $table->decimal('thue_thu_nhap_ca_nhan', 12, 2)->default(0)->comment('Thuế thu nhập cá nhân');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nhom_quyen');
+        Schema::table('luong_nhan_vien', function (Blueprint $table) {
+            $table->dropColumn('thue_thu_nhap_ca_nhan');
+        });
     }
 };

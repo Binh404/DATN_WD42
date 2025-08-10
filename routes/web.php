@@ -73,14 +73,11 @@ Route::get('/testcatlayout', function () {
     return view('layoutsAdmin.master');
 });
 // Admin routes
-Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr'])->group(function () {
-    // Route::get('/phongban', [PhongBanController::class, 'index']);
+Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin,department,hr,employee'])->group(function () {
     // các route khác dành cho admin...
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');;
     // Admin Phòng Ban
-    // Route::get('/thongke',function(){
-    //     return view('admin.thongke');
-    // })->name('admin.dashboard.index');
+
 
     Route::delete('/phongban/delete/{id}', [PhongBanController::class, 'destroy']);
 
@@ -129,9 +126,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':admin
         Route::post('export-report', [ChamCongAdminController::class, 'exportReport'])
             ->name('exportReport');
     });
-    // Route xuất báo cáo (Excel/PDF)
-    // Route::post('cham-cong/export-report', [ChamCongAdminController::class, 'exportReport'])
-    //     ->name('chamcong.exportReport');
+
     Route::get('chamCongPheDuyetTangCa', [DangKyTangCaAdminController::class, 'index'])->name('admin.chamcong.xemPheDuyetTangCa');
     Route::get('chamCongPheDuyetTangCa/{id}/show', [DangKyTangCaAdminController::class, 'show'])->name('admin.chamcong.xemChiTietDonTangCa');
     Route::post('chamCongPheDuyetTangCa/{id}/pheDuyet', [DangKyTangCaAdminController::class, 'pheDuyet'])->name('admin.chamcong.pheDuyetTangCaTrangThai');
@@ -180,6 +175,37 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('phu-luc')->name('phuluc.')->group(function () {
         Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
     });
+});
+
+// Hợp đồng của tôi - Tất cả role đều có quyền
+Route::middleware(['auth', PreventBackHistory::class])->group(function () {
+    Route::get('/hop-dong/cua-toi', [HopDongLaoDongController::class, 'cuaToi'])->name('hopdong.cua-toi');
+
+    // Routes ký hợp đồng
+    Route::get('/hop-dong/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('hopdong.ky');
+    Route::post('/hop-dong/{id}/xu-ly-ky', [HopDongLaoDongController::class, 'xuLyKyHopDong'])->name('hopdong.xu-ly-ky');
+    Route::post('/hop-dong/{id}/tu-choi-ky', [HopDongLaoDongController::class, 'tuChoiKy'])->name('hopdong.tu-choi-ky');
+
+    // Route test để kiểm tra role
+    Route::get('/test-role', function() {
+        $user = auth()->user();
+        $roles = optional($user->vaiTros)->pluck('ten')->toArray();
+        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0] ?? null;
+
+        return response()->json([
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'roles_array' => $roles,
+            'user_role' => $userRole,
+            'has_roles' => !empty($roles),
+            'has_role' => !empty($userRole),
+            'has_hopdong_permission' => \App\Helpers\MenuHelper::hasMenuPermission('hopdong')
+        ]);
+    })->name('test.role');
+});
+
+// HR, ADMIN, DEPARTMENT routes (tiếp tục)
+Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admin,hr,department'])->group(function () {
     Route::prefix('phong-ban')->name('phongban.')->group(function () {
         Route::get('/', [PhongBanController::class, 'index'])->name('index');
         Route::get('/create', [PhongBanController::class, 'create'])->name('create');
@@ -235,10 +261,12 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
 
     // Admin Vai Trò
-    Route::get('/vaitro', [RoleController::class, 'index'])->name('roles.index');
-    Route::get('/vaitro/create', [RoleController::class, 'create'])->name('roles.create');
-    Route::post('/vaitro/store', [RoleController::class, 'store'])->name('roles.store');
-    Route::get('/vaitro/edit/{id}', [CongViecController::class, 'edit']);
+    Route::get('/vaitro', [RoleController::class, 'index'])->name('vaitro.index');
+    Route::get('/vaitro/create', [RoleController::class, 'create'])->name('vaitro.create');
+    Route::post('/vaitro/store', [RoleController::class, 'store'])->name('vaitro.store');
+    Route::get('/vaitro/{id}/edit', [RoleController::class, 'edit'])->name('vaitro.edit');
+    Route::delete('/vaitro/{id}', [RoleController::class, 'destroy'])->name('vaitro.destroy');
+    Route::put('/vaitro/{id}/update', [RoleController::class, 'update'])->name('vaitro.update');
 
     // HR Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -306,8 +334,16 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('/tinh-luong', [LuongController::class, 'tinhLuongVaLuu'])->name('store');
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
+        Route::get('/export-luongcb', [LuongController::class, 'luongcbExcel'])->name('export.luongcb');
         Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
         Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
+
+        // Routes cho bảng luong cơ bản
+        Route::get('/list', [LuongController::class, 'listLuong'])->name('list');
+        Route::get('/{id}/edit', [LuongController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [LuongController::class, 'update'])->name('update');
+        Route::delete('/{id}/delete', [LuongController::class, 'delete'])->name('delete');
+
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
@@ -315,6 +351,9 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         // Route::get('/api/bang-luong-json', function () {
         //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
         // });
+        // Route test
+        Route::get('/test-create', [LuongController::class, 'testCreateLuongNhanVien'])->name('test.create');
+        Route::post('/test-form', [LuongController::class, 'testFormSubmission'])->name('test.form');
     });
 
       Route::prefix('chucvu')->name('chucvu.')->controller(ChucVuController::class)->group(function () {
@@ -405,11 +444,11 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         });
 
         // Bang Luong
-        Route::get('/salary', [BangLuongController::class, 'index'])->name('bangluong.index');
-        Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
-        Route::get('/task', function () {
-            return view('employe.task');
-        });
+        // Route::get('/salary', [BangLuongController::class, 'index'])->name('bangluong.index');
+        // Route::get('/salary/{id}', [BangLuongController::class, 'show'])->name('salary.show');
+        // Route::get('/task', function () {
+        //     return view('employe.task');
+        // });
 
         // EM Profile , đặt tên khác để không bị trùng
         Route::get('/profile', [ProfileController::class, 'show'])->name('employee.profile.show');
@@ -478,6 +517,8 @@ Route::prefix('hr')->name('hr.')->group(function () {
     Route::get('captrenthongbao/tuyendung/{id}/show', [YeuCauTuyenDungController::class, 'chiTietThongBaoTuyenDung'])->name('captrenthongbao.tuyendung.show');
     Route::get('tintuyendung/create-from-request/{id}/create', [TinTuyenDungController::class, 'createFromRequest'])->name('tintuyendung.create-from-request');
     Route::resource('tintuyendung', TinTuyenDungController::class)->names('tintuyendung');
+    Route::put('tintuyendung/{id}/end', [TinTuyenDungController::class, 'capNhatTrangThaiKetThuc'])->name('tintuyendung.end');
+
 
     // nghỉ phép
     Route::resource('loainghiphep', LoaiNghiPhepController::class)->names('loainghiphep');

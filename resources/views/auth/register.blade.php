@@ -108,7 +108,7 @@
                                         <option value="" disabled selected>-- Chọn quyền --</option>
                                         @foreach ($vaitro as $vaitros)
                                             <option value="{{ $vaitros->id }}" {{ old('vai_tro_id') == $vaitros->id ? 'selected' : '' }}>
-                                                {{ $vaitros->ten }}
+                                                {{ $vaitros->name }}
                                             </option>
                                         @endforeach
                                     </select>

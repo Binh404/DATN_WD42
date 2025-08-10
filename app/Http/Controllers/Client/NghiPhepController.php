@@ -150,7 +150,7 @@ class NghiPhepController extends Controller
         if ($don->cap_duyet_hien_tai == 1) {
             $truongPhong = NguoiDung::where('phong_ban_id', $user->phong_ban_id)
                 ->whereHas('vaiTros', function ($query) {
-                    $query->where('ten', 'department');
+                    $query->where('name', 'department');
                 })
                 ->get();
             foreach ($truongPhong as $tp) {
@@ -158,14 +158,14 @@ class NghiPhepController extends Controller
             }
         } elseif ($don->cap_duyet_hien_tai == 2) {
             $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
-                $q->where('ten', 'hr');
+                $q->where('name', 'hr');
             })->get();
             foreach ($hrUsers as $hr) {
                 $hr->notify(new \App\Notifications\TaoDonXinNghi($don));
             }
         } else {
             $admin = NguoiDung::whereHas('vaiTros', function ($query) {
-                $query->where('ten', 'admin');
+                $query->where('name', 'admin');
             })
                 ->get();
             foreach ($admin as $adm) {
@@ -288,7 +288,7 @@ class NghiPhepController extends Controller
         $thongKe = [];
         $soDonChuaDuyet = 0;
 
-        if ($vaiTro->ten == 'department') {
+        if ($vaiTro->name == 'department') {
 
             $donXinNghis = DonXinNghi::with([
                 'nguoiDung.phongBan',
@@ -300,7 +300,7 @@ class NghiPhepController extends Controller
                 ->whereHas('nguoiDung', function ($query) use ($user) {
                     $query->where('phong_ban_id', $user->phong_ban_id)
                         ->whereHas('vaiTro', function ($q) {
-                            $q->where('ten', '!=', 'department');
+                            $q->where('name', '!=', 'department');
                         });
                 })
                 ->orderBy('created_at', 'desc')
@@ -317,11 +317,11 @@ class NghiPhepController extends Controller
             })
                 ->whereHas('nguoiDung', function ($query) {
                     $query->whereHas('vaiTro', function ($q) {
-                        $q->where('ten', '!=', 'department');
+                        $q->where('name', '!=', 'department');
                     });
                 })
                 ->count();
-        } elseif ($vaiTro->ten == 'hr') {
+        } elseif ($vaiTro->name == 'hr') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
                 ->where('cap_duyet_hien_tai', 2)
                 ->orderBy('created_at', 'desc')
@@ -337,11 +337,11 @@ class NghiPhepController extends Controller
             })->where('cap_duyet_hien_tai', 2)
                 ->whereHas('nguoiDung', function ($query) {
                     $query->whereHas('vaiTro', function ($q) {
-                        $q->where('ten', '!=', 'hr');
+                        $q->where('name', '!=', 'hr');
                     });
                 })
                 ->count();
-        } elseif ($vaiTro->ten == 'admin') {
+        } elseif ($vaiTro->name == 'admin') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
                 ->where('cap_duyet_hien_tai', 3)
                 ->orderBy('created_at', 'desc')

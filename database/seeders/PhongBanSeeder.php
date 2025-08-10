@@ -17,7 +17,7 @@ class PhongBanSeeder extends Seeder
         FacadesDB::table('phong_ban')->insert([
             // Phòng ban cấp cao
             [
-                'id' => 1,
+                // 'id' => 1,
                 'ten_phong_ban' => 'Ban Giám Đốc',
                 'ma_phong_ban' => 'BGD',
                 'mo_ta' => 'Ban lãnh đạo công ty',
@@ -30,7 +30,7 @@ class PhongBanSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => 2,
+                // 'id' => 2,
                 'ten_phong_ban' => 'Phòng Nhân Sự',
                 'ma_phong_ban' => 'HR',
                 'mo_ta' => 'Quản lý nhân sự và tuyển dụng',
@@ -43,7 +43,7 @@ class PhongBanSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => 3,
+                // 'id' => 3,
                 'ten_phong_ban' => 'Phòng Kế Toán',
                 'ma_phong_ban' => 'KT',
                 'mo_ta' => 'Quản lý tài chính và kế toán',
@@ -56,7 +56,7 @@ class PhongBanSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => 4,
+                // 'id' => 4,
                 'ten_phong_ban' => 'Phòng Công Nghệ Thông Tin',
                 'ma_phong_ban' => 'IT',
                 'mo_ta' => 'Phát triển và vận hành hệ thống IT',
@@ -69,7 +69,7 @@ class PhongBanSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => 5,
+                // 'id' => 5,
                 'ten_phong_ban' => 'Phòng Marketing',
                 'ma_phong_ban' => 'MKT',
                 'mo_ta' => 'Marketing và truyền thông',
@@ -82,7 +82,7 @@ class PhongBanSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => 6,
+                // 'id' => 6,
                 'ten_phong_ban' => 'Phòng Kinh Doanh',
                 'ma_phong_ban' => 'SALES',
                 'mo_ta' => 'Bán hàng và chăm sóc khách hàng',
@@ -96,7 +96,7 @@ class PhongBanSeeder extends Seeder
             ],
             // Phòng ban tại chi nhánh HCM
             [
-                'id' => 7,
+                // 'id' => 7,
                 'ten_phong_ban' => 'Phòng Kinh Doanh HCM',
                 'ma_phong_ban' => 'SALES_HCM',
                 'mo_ta' => 'Bán hàng tại khu vực phía Nam',

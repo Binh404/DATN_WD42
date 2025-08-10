@@ -34,7 +34,7 @@ class TinTuyenDungController extends Controller
     {
         $yeuCau = YeuCauTuyenDung::with('phongBan', 'chucVu')->findOrFail($id);
         $phongBans = PhongBan::all();
-        $vaiTros = VaiTro::whereRaw('LOWER(ten) != ?', ['admin'])->get();
+        $vaiTros = VaiTro::whereRaw('LOWER(name) != ?', ['admin'])->get();
         return view("admin.tintuyendung.create", compact('yeuCau', 'phongBans', 'vaiTros'));
     }
 
@@ -200,5 +200,15 @@ class TinTuyenDungController extends Controller
             return view("admin.tintuyendung.show", compact('tuyenDung'));
         }
         abort(403, 'Bạn không có quyền truy cập trang này.');
+    }
+
+    public function capNhatTrangThaiketThuc(string $id){
+        $tinTuyenDung = TinTuyenDung::findOrFail($id);
+        $tinTuyenDung->update([
+            'trang_thai' => 'ket_thuc'
+        ]);
+
+        return redirect()->route('hr.tintuyendung.index')
+            ->with('success', 'Cập nhật trạng thái kết thúc thành công!');
     }
 }

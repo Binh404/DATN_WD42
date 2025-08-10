@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
     // Đảm bảo đã load vai trò
         // dd($request->session()->get('_token'));
 
-        $roles = $user->vaiTros->pluck('ten')->toArray();
+        $roles = $user->vaiTros->pluck('name')->toArray();
 
         if (in_array('admin', $roles)) {
             return redirect()->route('admin.dashboard');
@@ -68,6 +68,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

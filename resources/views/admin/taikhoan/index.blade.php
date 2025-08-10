@@ -180,7 +180,7 @@
                                                                                     <div><i
                                                                                             class="mdi mdi-account-badge me-1"></i>
                                                                                         Vai trò:
-                                                                                        {{ $item->vaiTro->ten_hien_thi }}
+                                                                                        {{ $item->vaiTro->ten_hien_thi ?? 'N/A' }}
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

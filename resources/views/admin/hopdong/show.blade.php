@@ -3,12 +3,8 @@
 @section('title', 'Chi tiết hợp đồng')
 
 @section('content')
-    <div class="row">
-       
-        <div class="container-fluid">
-            
-        
-            <div class="row">
+    <div class="container-fluid">
+        <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -122,12 +118,12 @@
                                     </table>
                                 </div>
 
-                                <!-- File hợp đồng -->
+                                <!-- File hợp đồng gốc -->
                                 <div class="mb-4">
-                                    <h4 class="text-center">File hợp đồng</h4>
+                                    <h4 class="text-center">File hợp đồng gốc</h4>
                                     <div class="card mx-auto" style="max-width: 600px;">
                                         <div class="card-header bg-info text-white text-center">
-                                            <i class="mdi mdi-file-document"></i> File hợp đồng
+                                            <i class="mdi mdi-file-document"></i> File hợp đồng gốc
                                         </div>
                                         <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                                             <div class="d-flex align-items-center mx-auto">
@@ -159,7 +155,7 @@
                                                         <i class="fas fa-exclamation-triangle"></i> File không tồn tại
                                                     </button>
                                                 @endif
-                                                @if($hopDong->trang_thai_hop_dong !== 'huy_bo' && $hopDong->trang_thai_hop_dong !== 'het_han')
+                                                @if($hopDong->trang_thai_hop_dong !== 'da_ky' && $hopDong->trang_thai_hop_dong !== 'hieu_luc')
                                                     <a href="{{ route('hopdong.edit', $hopDong->id) }}" class="btn btn-warning">
                                                         <i class="fas fa-edit"></i> Cập nhật
                                                     </a>
@@ -168,12 +164,61 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <!-- File hợp đồng đã ký -->
+                                @if($hopDong->file_hop_dong_da_ky)
+                                <div class="mb-4">
+                                    <h4 class="text-center">File hợp đồng đã ký</h4>
+                                    <div class="card mx-auto" style="max-width: 600px;">
+                                        <div class="card-header bg-success text-white text-center">
+                                            <i class="fas fa-file-signature"></i> File hợp đồng đã ký
+                                        </div>
+                                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center mx-auto">
+                                                @php
+                                                    $signedFileName = basename($hopDong->file_hop_dong_da_ky);
+                                                    $signedFileSize = \Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->file_hop_dong_da_ky)
+                                                        ? number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($hopDong->file_hop_dong_da_ky) / 1024, 1) . ' KB'
+                                                        : 'Không xác định';
+                                                    $signedFileExt = strtoupper(pathinfo($hopDong->file_hop_dong_da_ky, PATHINFO_EXTENSION));
+                                                @endphp
+                                                <i class="fas fa-file-signature text-success" style="font-size: 2.5rem;"></i>
+                                                <div class="ms-3">
+                                                    <div><strong>{{ $signedFileName }}</strong></div>
+                                                    <div class="text-muted" style="font-size: 0.95em;">
+                                                        {{ $signedFileSize }} | {{ $signedFileExt }} | Đã ký: {{ $hopDong->thoi_gian_ky ? $hopDong->thoi_gian_ky->format('d/m/Y H:i') : 'N/A' }}
+                                                    </div>
+                                                    @if($hopDong->nguoiKy && $hopDong->nguoiKy->hoSo)
+                                                        <div class="text-success" style="font-size: 0.9em;">
+                                                            <i class="fas fa-user-check"></i> Ký bởi: {{ $hopDong->nguoiKy->hoSo->ho . ' ' . $hopDong->nguoiKy->hoSo->ten }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="btn-group mt-3 mt-md-0 mx-auto">
+                                                @if(\Illuminate\Support\Facades\Storage::disk('public')->exists($hopDong->file_hop_dong_da_ky))
+                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" class="btn btn-primary" target="_blank">
+                                                        <i class="fas fa-eye"></i> Xem
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" class="btn btn-success" download>
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary" disabled>
+                                                        <i class="fas fa-exclamation-triangle"></i> File không tồn tại
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -354,7 +399,6 @@
                                                     <button type="button" class="btn btn-danger" onclick="showHuyForm()">
                                                         <i class="fas fa-times"></i> Hủy hợp đồng
                                                     </button>
-                                                   
                                                 @else
                                                     <button type="button" class="btn btn-danger" disabled>
                                                     <i class="fas fa-times"></i> Hủy hợp đồng
@@ -364,10 +408,6 @@
                                                         <strong>Lưu ý:</strong> Hợp đồng này không thể được hủy.
                                                     </div>
                                                 @endif
-
-
-
-
                                             @else
                                                 <div class="alert alert-info">
                                                     <i class="fas fa-info-circle"></i>
@@ -393,11 +433,9 @@
                 </div>
             </div>
         </div>
-
-
 @endsection
 
-@yield('script')
+@section('script')
 <script>
 // Function hiển thị form hủy hợp đồng
 function showHuyForm() {

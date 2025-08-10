@@ -2,6 +2,30 @@
 @section('title', 'Chỉnh sửa hợp đồng')
 
 @section('content')
+@if(session('error'))
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> {{ session('success') }}
+    </div>
+@endif
+
+@if(($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky')
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Lưu ý:</strong> 
+        @if($hopDong->trang_thai_ky === 'tu_choi_ky')
+            Hợp đồng này đã bị từ chối ký. Bạn có thể xem thông tin nhưng không thể sửa đổi.
+        @else
+            Hợp đồng này đang ở trạng thái chờ ký và chưa hiệu lực. Bạn có thể xem thông tin nhưng không thể sửa đổi.
+        @endif
+    </div>
+@endif
+
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -22,7 +46,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="nguoi_dung_id">Nhân viên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" value="{{ $hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten }} ({{ $hopDong->hoSoNguoiDung->ma_nhan_vien }})" readonly>
+                            <input type="text" class="form-control" value="{{ $hopDong->hoSoNguoiDung ? ($hopDong->hoSoNguoiDung->ho . ' ' . $hopDong->hoSoNguoiDung->ten . ' (' . $hopDong->hoSoNguoiDung->ma_nhan_vien . ')') : 'Không có thông tin' }}" readonly>
                             <input type="hidden" name="nguoi_dung_id" value="{{ $hopDong->nguoi_dung_id }}">
                         </div>
                     </div>
@@ -30,7 +54,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="chuc_vu_id">Chức vụ <span class="text-danger">*</span></label>
-                            <select name="chuc_vu_id" id="chuc_vu_id" class="form-control @error('chuc_vu_id') is-invalid @enderror" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" @endif>
+                            <select name="chuc_vu_id" id="chuc_vu_id" class="form-control @error('chuc_vu_id') is-invalid @enderror" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" @endif>
                                 <option value="">-- Chọn chức vụ --</option>
                                 @foreach($chucVus as $chucVu)
                                     <option value="{{ $chucVu->id }}" {{ $hopDong->chuc_vu_id == $chucVu->id ? 'selected' : '' }}>
@@ -57,7 +81,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="loai_hop_dong">Loại hợp đồng <span class="text-danger">*</span></label>
-                            <select name="loai_hop_dong" id="loai_hop_dong" class="form-control @error('loai_hop_dong') is-invalid @enderror" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" @endif>
+                            <select name="loai_hop_dong" id="loai_hop_dong" class="form-control @error('loai_hop_dong') is-invalid @enderror" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') style="pointer-events: none; background-color: #e9ecef;" tabindex="-1" @endif>
     <option value="">-- Chọn loại hợp đồng --</option>
     <option value="thu_viec" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
     <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
@@ -76,7 +100,7 @@
                         <div class="form-group">
                             <label for="ngay_bat_dau">Ngày bắt đầu <span class="text-danger">*</span></label>
                             <input type="date" class="form-control @error('ngay_bat_dau') is-invalid @enderror"
-                                   id="ngay_bat_dau" name="ngay_bat_dau" value="{{ old('ngay_bat_dau', $hopDong->ngay_bat_dau->format('Y-m-d')) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+                                   id="ngay_bat_dau" name="ngay_bat_dau" value="{{ old('ngay_bat_dau', $hopDong->ngay_bat_dau->format('Y-m-d')) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('ngay_bat_dau')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -89,7 +113,7 @@
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
     id="ngay_ket_thuc" name="ngay_ket_thuc"
     value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" 
-    @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+    @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -102,7 +126,7 @@
                         <div class="form-group">
                             <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
                             <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -113,7 +137,7 @@
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
                             <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap', $hopDong->phu_cap) }}" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap', $hopDong->phu_cap) }}" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -126,7 +150,7 @@
                         <div class="form-group">
                             <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
-                                   id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec', $hopDong->hinh_thuc_lam_viec) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+                                   id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec', $hopDong->hinh_thuc_lam_viec) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('hinh_thuc_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -137,7 +161,7 @@
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
-                                   id="dia_diem_lam_viec" name="dia_diem_lam_viec" value="{{ old('dia_diem_lam_viec', $hopDong->dia_diem_lam_viec) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>
+                                   id="dia_diem_lam_viec" name="dia_diem_lam_viec" value="{{ old('dia_diem_lam_viec', $hopDong->dia_diem_lam_viec) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('dia_diem_lam_viec')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -186,7 +210,7 @@
                         <div class="form-group">
                             <label for="ghi_chu">Ghi chú</label>
                             <textarea class="form-control @error('ghi_chu') is-invalid @enderror"
-                                      id="ghi_chu" name="ghi_chu" rows="3" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) readonly @endif>{{ old('ghi_chu', $hopDong->ghi_chu) }}</textarea>
+                                      id="ghi_chu" name="ghi_chu" rows="3" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>{{ old('ghi_chu', $hopDong->ghi_chu) }}</textarea>
                             @error('ghi_chu')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -204,7 +228,7 @@
                         </div>
                     @endif
                     <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
-                           id="file_hop_dong" name="file_hop_dong" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) disabled @endif>
+                                                           id="file_hop_dong" name="file_hop_dong" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
                     <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB. Để trống nếu muốn giữ file hiện tại.</small>
                     @error('file_hop_dong')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -212,7 +236,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) disabled @endif>
+                                            <button type="submit" class="btn btn-primary" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
                         <i class="fas fa-save"></i> Lưu thay đổi
                     </button>
                     @if($hopDong->trang_thai_hop_dong === 'hieu_luc')

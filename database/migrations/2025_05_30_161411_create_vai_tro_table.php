@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vai_tro', function (Blueprint $table) {
              $table->id();
-            $table->string('ten')->unique();
+            $table->string('name')->unique();
             $table->string('ten_hien_thi');
             $table->text('mo_ta')->nullable();
             $table->boolean('la_vai_tro_he_thong')->default(false);

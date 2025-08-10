@@ -378,13 +378,19 @@
             </div>
             <div class="footer">
                 <div class="actions">
-                    {{-- @if ($tuyenDung->trang_thai_dang === 'chua_dang')
-                    <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
-                        <button class="btn btn-primary">
-                            Đăng tin tuyển dụng
-                        </button>
-                    </a>
-                @endif --}}
+                    @if ($tuyenDung->trang_thai === 'dang_tuyen')
+                        <form action="{{ route('hr.tintuyendung.end', $tuyenDung->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <button class="btn btn-primary" type="submit">Kết thúc tuyển</button>
+                        </form>
+
+                        {{-- <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
+                            <button class="btn btn-primary">
+                                Đăng tin tuyển dụng
+                            </button>
+                        </a> --}}
+                    @endif
 
                 </div>
             </div>

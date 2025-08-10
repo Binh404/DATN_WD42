@@ -60,7 +60,7 @@
                 <form method="POST" action="{{ route('phongban.store') }}">
                     @csrf
                     <div class="card">
-                        <div class="card-header bg-success text-white mb-3">
+                        <div class="card-header bg-primary text-white mb-3">
                             <h3 class="mb-0">
                                 <i class="mdi mdi-pencil me-2"></i>Thông tin phòng ban
                             </h3>
