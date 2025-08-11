@@ -68,7 +68,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Lương cơ bản</th>
+                                            <th>Lương </th>
                                             <td>{{ number_format($hopDong->luong_co_ban, 0, ',', '.') }} VNĐ</td>
                                         </tr>
                                         <tr>
@@ -150,17 +150,13 @@
                                                             @endif
                                                             File {{ $index + 1 }}: {{ $fileName }}
                                                         </a>
-                                                        <a href="{{ asset('storage/' . trim($file)) }}" 
-                                                           download="{{ $fileName }}"
-                                                           class="btn btn-success btn-sm"
-                                                           title="Tải xuống">
-                                                            <i class="fas fa-download"></i> Tải xuống
-                                                        </a>
+                                                        
                                                     </div>
                                                 @endif
                                             @endforeach
                                         </div>
                                     @else
+
                                         <div class="alert alert-info text-center">
                                             <i class="fas fa-info-circle"></i>
                                             Không có file hợp đồng
@@ -194,12 +190,7 @@
                                                     <i class="fas fa-file-signature"></i>
                                                     File đã ký {{ $index + 1 }}: {{ $signedFileName }}
                                                 </a>
-                                                <a href="{{ asset('storage/' . $filePath) }}" 
-                                                   download="{{ $signedFileName }}"
-                                                   class="btn btn-outline-success btn-sm"
-                                                   title="Tải xuống">
-                                                    <i class="fas fa-download"></i> Tải xuống
-                                                </a>
+                                                
                                             </div>
                                         @endforeach
                                         
@@ -249,12 +240,7 @@
                                                 @endif
                                                 {{ $attachmentFileName }}
                                             </a>
-                                            <a href="{{ asset('storage/' . $hopDong->file_dinh_kem) }}" 
-                                               download="{{ $attachmentFileName }}"
-                                               class="btn btn-outline-secondary btn-sm"
-                                               title="Tải xuống">
-                                                <i class="fas fa-download"></i> Tải xuống
-                                            </a>
+                                           
                                             <small class="text-secondary d-block mt-1">
                                                 <i class="fas fa-calendar"></i> 
                                                 Cập nhật: {{ $hopDong->updated_at->format('d/m/Y H:i') }}

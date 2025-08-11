@@ -125,8 +125,16 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
+                            <input type="text" 
+                                   class="form-control @error('luong_co_ban') is-invalid @enderror"
+                                   id="luong_co_ban" 
+                                   name="luong_co_ban" 
+                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" 
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   required 
+                                   @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -136,8 +144,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap', $hopDong->phu_cap) }}" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
+                            <input type="text" 
+                                   class="form-control @error('phu_cap') is-invalid @enderror"
+                                   id="phu_cap" 
+                                   name="phu_cap" 
+                                   value="{{ old('phu_cap', $hopDong->phu_cap) }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -328,9 +343,13 @@
             }
         });
 
-        // Format số tiền
+        // Format số tiền - chỉ cho phép nhập số
         $('#luong_co_ban, #phu_cap').on('input', function() {
-            var value = $(this).val();
+            // Loại bỏ tất cả ký tự không phải số
+            var value = $(this).val().replace(/[^0-9]/g, '');
+            $(this).val(value);
+            
+            // Nếu giá trị âm thì đặt về 0
             if (value < 0) {
                 $(this).val(0);
             }

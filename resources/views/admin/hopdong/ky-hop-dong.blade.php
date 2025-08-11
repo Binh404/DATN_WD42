@@ -90,7 +90,7 @@
                                         <td>{{ $hopDong->ngay_ket_thuc ? $hopDong->ngay_ket_thuc->format('d/m/Y') : 'N/A' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Lương cơ bản</th>
+                                        <th>Lương</th>
                                         <td>{{ number_format($hopDong->luong_co_ban, 0, ',', '.') }} VNĐ</td>
                                     </tr>
                                     <tr>
@@ -233,8 +233,11 @@
      let selectedFiles = [];
      
      form.addEventListener('submit', function(e) {
+         // Cập nhật input file với selectedFiles trước khi submit
+         updateFileInput();
+         
          // Kiểm tra xem có file được chọn không
-         if (!fileInput.files || fileInput.files.length === 0) {
+         if (selectedFiles.length === 0) {
              e.preventDefault();
              alert('BẮT BUỘC: Vui lòng upload file hợp đồng đã được ký!\n\nKhông thể ký hợp đồng mà không có file.');
              fileInput.focus();
@@ -245,8 +248,8 @@
          const maxSize = 10 * 1024 * 1024; // 10MB
          const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
          
-         for (let i = 0; i < fileInput.files.length; i++) {
-             const file = fileInput.files[i];
+         for (let i = 0; i < selectedFiles.length; i++) {
+             const file = selectedFiles[i];
              
              // Kiểm tra kích thước file
              if (file.size > maxSize) {
@@ -295,6 +298,9 @@
          
          // Hiển thị lại tất cả file đã chọn
          displaySelectedFiles();
+         
+         // Cập nhật input file
+         updateFileInput();
      });
      
      // Hàm hiển thị danh sách file đã chọn
@@ -304,7 +310,7 @@
              return;
          }
          
-         let html = '<div class="border rounded p-3 "><h6><i class="fas fa-files-o"></i> Danh sách file đã chọn:</h6><ul class="mb-0">';
+         let html = '<div class="border rounded p-3"><h6><i class="fas fa-files-o"></i> Danh sách file đã chọn:</h6><ul class="mb-0">';
          
          selectedFiles.forEach(function(file, index) {
              const fileSize = (file.size / 1024 / 1024).toFixed(2);
@@ -340,17 +346,22 @@
          }
      }
      
+     // Hàm cập nhật input file với selectedFiles
+     function updateFileInput() {
+         const dataTransfer = new DataTransfer();
+         
+         selectedFiles.forEach(function(file) {
+             dataTransfer.items.add(file);
+         });
+         
+         fileInput.files = dataTransfer.files;
+     }
+     
      // Hàm xóa file khỏi danh sách
      window.removeFile = function(index) {
          selectedFiles.splice(index, 1);
          displaySelectedFiles();
-         
-         // Cập nhật lại input file
-         const dt = new DataTransfer();
-         selectedFiles.forEach(function(file) {
-             dt.items.add(file);
-         });
-         fileInput.files = dt.files;
+         updateFileInput();
      };
  });
  </script>

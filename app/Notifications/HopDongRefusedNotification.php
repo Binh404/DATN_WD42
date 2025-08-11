@@ -36,9 +36,12 @@ class HopDongRefusedNotification extends Notification
 
     public function toDatabase($notifiable)
     {
+        $nguoiTuChoi = $this->hopdong->nguoiDung;
+        $tenNguoiTuChoi = $nguoiTuChoi && $nguoiTuChoi->hoSo ? ($nguoiTuChoi->hoSo->ho . ' ' . $nguoiTuChoi->hoSo->ten) : 'N/A';
+        
         return [
             'title' => 'Hợp đồng bị từ chối ký',
-            'message' => 'Nhân viên đã từ chối ký hợp đồng số: ' . $this->hopdong->so_hop_dong,
+            'message' => 'Nhân viên ' . $tenNguoiTuChoi . ' đã từ chối ký hợp đồng số: ' . $this->hopdong->so_hop_dong,
             'hopdong_id' => $this->hopdong->id,
             'type' => 'hopdong_refused',
             'so_hop_dong' => $this->hopdong->so_hop_dong,
@@ -47,9 +50,12 @@ class HopDongRefusedNotification extends Notification
 
     public function toArray($notifiable)
     {
+        $nguoiTuChoi = $this->hopdong->nguoiDung;
+        $tenNguoiTuChoi = $nguoiTuChoi && $nguoiTuChoi->hoSo ? ($nguoiTuChoi->hoSo->ho . ' ' . $nguoiTuChoi->hoSo->ten) : 'N/A';
+        
         return [
             'title' => 'Hợp đồng bị từ chối ký',
-            'message' => 'Nhân viên đã từ chối ký hợp đồng số: ' . $this->hopdong->so_hop_dong,
+            'message' => 'Nhân viên ' . $tenNguoiTuChoi . ' đã từ chối ký hợp đồng số: ' . $this->hopdong->so_hop_dong,
             'hopdong_id' => $this->hopdong->id,
             'type' => 'hopdong_refused',
             'so_hop_dong' => $this->hopdong->so_hop_dong,

@@ -9,9 +9,24 @@
             <div class="card-header">
                 <h3 class="card-title">Hợp đồng của tôi</h3>
                 <div class="card-tools">
-                    <a href="{{ route('personal.department.dashboard') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay lại
-                    </a>
+                    @php
+                        $user = auth()->user();
+                        $userRole = optional($user->vaiTro)->name;
+                    @endphp
+                    
+                    @if($userRole == 'hr')
+                        <a href="{{ route('hr.dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    @elseif($userRole == 'employee' || $userRole == 'department')
+                        <a href="{{ route('employee.dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    @else
+                        <a href="{{ route('personal.department.dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    @endif
                 </div>
             </div>
             <div class="card-body">
@@ -141,7 +156,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="font-weight-bold">Lương cơ bản:</label>
+                                                <label class="font-weight-bold">Lương :</label>
                                                 <p class="form-control-static text-success font-weight-bold">
                                                     {{ number_format($hopDong->luong_co_ban, 0, ',', '.') }} VNĐ
                                                 </p>
@@ -213,12 +228,7 @@
                                                     @endif
                                                     File {{ $index + 1 }}: {{ $fileName }}
                                                 </a>
-                                                <a href="{{ asset('storage/' . trim($file)) }}" 
-                                                   download="{{ $fileName }}"
-                                                   class="btn btn-success btn-sm"
-                                                   title="Tải xuống">
-                                                    <i class="fas fa-download"></i> Tải xuống
-                                                </a>
+                                               
                                             </div>
                                         @endif
                                     @endforeach
@@ -252,12 +262,7 @@
                                                 <i class="fas fa-file-signature"></i>
                                                 File đã ký {{ $index + 1 }}: {{ $fileName }}
                                             </a>
-                                            <a href="{{ asset('storage/' . $filePath) }}" 
-                                               download="{{ $fileName }}"
-                                               class="btn btn-outline-success btn-sm"
-                                               title="Tải xuống">
-                                                <i class="fas fa-download"></i> Tải xuống
-                                            </a>
+                                          
                                         </div>
                                     @endforeach
                                     

@@ -54,7 +54,7 @@
                             <td>{{ $hopdong->ngay_ket_thuc }}</td>
                         </tr>
                         <tr>
-                            <th>Lương cơ bản</th>
+                            <th>Lương </th>
                             <td>{{ number_format($hopdong->luong_co_ban) }}</td>
                         </tr>
                         <tr>
@@ -80,13 +80,92 @@
                             <th>File hợp đồng</th>
                             <td>
                                 @if($hopdong->duong_dan_file)
-                                    <a href="{{ asset('storage/' . $hopdong->duong_dan_file) }}" target="_blank" class="btn btn-sm btn-primary">Xem file hợp đồng</a>
+                                    @php
+                                        $files = explode(';', $hopdong->duong_dan_file);
+                                        $files = array_filter($files); // Loại bỏ các phần tử rỗng
+                                    @endphp
+                                    <div class="mb-2">
+                                        @foreach($files as $index => $file)
+                                            @if($file)
+                                                @php
+                                                    $fileName = basename(trim($file));
+                                                    $fileExtension = strtolower(pathinfo(trim($file), PATHINFO_EXTENSION));
+                                                @endphp
+                                                <div class="mb-2">
+                                                    <a href="{{ asset('storage/' . trim($file)) }}" 
+                                                       target="_blank" 
+                                                       class="btn btn-info btn-sm me-2"
+                                                       title="Xem file">
+                                                        @if($fileExtension == 'pdf')
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        @elseif(in_array($fileExtension, ['doc', 'docx']))
+                                                            <i class="fas fa-file-word"></i>
+                                                        @elseif(in_array($fileExtension, ['xls', 'xlsx']))
+                                                            <i class="fas fa-file-excel"></i>
+                                                        @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
+                                                            <i class="fas fa-file-image"></i>
+                                                        @else
+                                                            <i class="fas fa-file"></i>
+                                                        @endif
+                                                        File {{ $index + 1 }}: {{ $fileName }}
+                                                    </a>
+                                                
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 @else
                                     <span class="text-danger">Không có file</span>
                                 @endif
                             </td>
                         </tr>
                     </table>
+
+                    <!-- File hợp đồng đã ký -->
+                    @if($hopdong->file_hop_dong_da_ky)
+                    <div class="mt-4">
+                        <h5 class="text-success mb-3">
+                            <i class="fas fa-file-signature"></i> File hợp đồng đã ký
+                        </h5>
+                        @php
+                            $signedFiles = explode(';', $hopdong->file_hop_dong_da_ky);
+                            $signedFiles = array_filter($signedFiles); // Loại bỏ các phần tử rỗng
+                        @endphp
+                        
+                        <div class="mb-2">
+                            @foreach($signedFiles as $index => $filePath)
+                                @php
+                                    $signedFileName = basename($filePath);
+                                    $signedFileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                @endphp
+                                <div class="mb-2">
+                                    <a href="{{ asset('storage/' . $filePath) }}" 
+                                       target="_blank" 
+                                       class="btn btn-success btn-sm me-2"
+                                       title="Xem file">
+                                        <i class="fas fa-file-signature"></i>
+                                        File đã ký {{ $index + 1 }}: {{ $signedFileName }}
+                                    </a>
+                                
+                                </div>
+                            @endforeach
+                            
+                            <!-- Thông tin ký chung cho tất cả file -->
+                            @if($hopdong->thoi_gian_ky)
+                                <small class="text-success d-block mt-2">
+                                    <i class="fas fa-calendar-check"></i> 
+                                    Đã ký: {{ $hopdong->thoi_gian_ky->format('d/m/Y H:i') }}
+                                </small>
+                            @endif
+                            @if($hopdong->nguoiKy && $hopdong->nguoiKy->hoSo)
+                                <small class="text-success d-block">
+                                    <i class="fas fa-user-check"></i> 
+                                    Ký bởi: {{ $hopdong->nguoiKy->hoSo->ho . ' ' . $hopdong->nguoiKy->hoSo->ten }}
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
 
                     @if($hopdong->trang_thai_ky == 'cho_ky')
                        
@@ -140,9 +219,21 @@
                             <div class="alert alert-info mt-3">Hợp đồng đã được ký bởi {{ $hopdong->nguoiKy->hoSo->ho ?? '' }} {{ $hopdong->nguoiKy->hoSo->ten ?? '' }}.</div>
                         @endif
                     @elseif($hopdong->trang_thai_ky == 'tu_choi_ky')
+                        @php
+                            $nguoiTuChoi = $hopdong->nguoiDung;
+                            $tenNguoiTuChoi = $nguoiTuChoi && $nguoiTuChoi->hoSo ? ($nguoiTuChoi->hoSo->ho . ' ' . $nguoiTuChoi->hoSo->ten) : 'N/A';
+                            $isCurrentUser = \Illuminate\Support\Facades\Auth::id() == $hopdong->nguoi_dung_id;
+                        @endphp
+                        
                         <div class="alert alert-warning mt-3">
                             <i class="fas fa-times-circle"></i>
-                            <strong>Bạn đã từ chối ký hợp đồng này.</strong>
+                            <strong>
+                                @if($isCurrentUser)
+                                    Bạn đã từ chối ký hợp đồng này.
+                                @else
+                                    Nhân viên {{ $tenNguoiTuChoi }} đã từ chối ký hợp đồng này.
+                                @endif
+                            </strong>
                         </div>
                         @if($hopdong->ghi_chu && str_contains($hopdong->ghi_chu, 'Từ chối ký:'))
                             <div class="alert alert-info mt-3">

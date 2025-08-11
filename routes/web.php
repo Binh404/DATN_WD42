@@ -57,6 +57,8 @@ use App\Http\Controllers\Admin\DangKyTangCaAdminController;
 use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
 
+
+
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
     Route::get('/verify-otp', function () {
@@ -252,8 +254,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // // Route xuất file excel trúng tuyển
     // Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
-    // Admin Thoong baos
-    Route::get('/thongbao', [ThongBaoController::class, 'index'])->name('thongbao.index');
+    // Admin Thong baos
+    Route::get('/thongbao', [NotificationController::class, 'index'])->name('thongbao.index');
 
 
     // Admin Vai Trò

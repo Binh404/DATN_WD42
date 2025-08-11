@@ -14,6 +14,8 @@ use App\Models\VaiTro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 use Carbon\Carbon;
 use App\Exports\HopDongExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1069,6 +1071,8 @@ class HopDongLaoDongController extends Controller
                 }
                 
                 return redirect()->route('hopdong.cua-toi')->with('success', $successMessage);
+            } else {
+                return redirect()->back()->with('error', 'Không có file nào được upload.');
             }
         } catch (\Exception $e) {
             return redirect()->route('hopdong.cua-toi')->with('error', 'Có lỗi xảy ra khi upload file: ' . $e->getMessage());

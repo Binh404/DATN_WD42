@@ -112,9 +112,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban') }}" required>
+                            <label for="luong_co_ban">Lương  <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control @error('luong_co_ban') is-invalid @enderror"
+                                   id="luong_co_ban" 
+                                   name="luong_co_ban" 
+                                   value="{{ old('luong_co_ban') }}" 
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   required>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -124,8 +131,14 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap') }}">
+                            <input type="text" 
+                                   class="form-control @error('phu_cap') is-invalid @enderror"
+                                   id="phu_cap" 
+                                   name="phu_cap" 
+                                   value="{{ old('phu_cap') }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)">
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -181,7 +194,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="file_dinh_kem">File đính kèm</label>
+                    <label for="file_dinh_kem">File đính kèm (tùy chọn)</label>
                     <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror" 
                            id="file_dinh_kem" name="file_dinh_kem">
                    
@@ -261,14 +274,22 @@
             }
         });
 
-        // Format số tiền
+        // Format số tiền - chỉ cho phép nhập số
         document.getElementById('luong_co_ban').addEventListener('input', function() {
+            // Loại bỏ tất cả ký tự không phải số
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Nếu giá trị âm thì đặt về 0
             if (this.value < 0) {
                 this.value = 0;
             }
         });
 
         document.getElementById('phu_cap').addEventListener('input', function() {
+            // Loại bỏ tất cả ký tự không phải số
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Nếu giá trị âm thì đặt về 0
             if (this.value < 0) {
                 this.value = 0;
             }
