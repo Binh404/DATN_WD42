@@ -340,6 +340,9 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::put('/{id}', [LuongController::class, 'update'])->name('update');
         Route::delete('/{id}/delete', [LuongController::class, 'delete'])->name('delete');
 
+        // Thống kê lương
+        Route::get('/thong-ke', [LuongController::class, 'thongKe'])->name('thong-ke');
+
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');

@@ -115,7 +115,7 @@ class ThucHienTangCaAdminController extends Controller
                     $q->where('phong_ban_id', $phongBanId)
                     ->where('id', '<>', $userId)
                     ->whereHas('vaiTro', function ($v) {
-                        $v->whereNotIn('ten', ['Admin', 'HR', 'department']); // loại vai trò không hợp lệ
+                        $v->whereNotIn('name', ['Admin', 'HR', 'department']); // loại vai trò không hợp lệ
                     })
                     ;
                 });

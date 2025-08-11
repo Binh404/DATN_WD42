@@ -91,10 +91,14 @@
                     @if($hopdong->trang_thai_ky == 'cho_ky')
                        
                         
-                        <a href="{{ route('hopdong.ky', $hopdong->id) }}?from_notification=1" class="btn btn-success">
-                            <i class="fas fa-signature"></i> Đồng ý ký hợp đồng
-                        </a>
-                        <button class="btn btn-danger" onclick="showTuChoiForm()">Từ chối ký</button>
+                        <div class="btn-group-custom ">
+                            <a href="{{ route('hopdong.ky', $hopdong->id) }}?from_notification=1" class="btn btn-success">
+                                <i class="fas fa-signature"></i> Đồng ý ký hợp đồng
+                            </a>
+                            <button class="btn btn-danger" onclick="showTuChoiForm()">
+                                <i class="fas fa-times-circle"></i> Từ chối ký
+                            </button>
+                        </div>
                         
                         <!-- Form từ chối ký (ẩn ban đầu) -->
                         <div id="tuChoiForm" style="display: none; margin-top: 20px;">
@@ -118,12 +122,14 @@
                                    
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn từ chối ký hợp đồng này?')">
-                                        <i class="fas fa-times-circle"></i> Gửi lý do từ chối
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hideTuChoiForm()">
-                                        <i class="fas fa-arrow-left"></i> Hủy
-                                    </button>
+                                    <div class="btn-group-custom">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn từ chối ký hợp đồng này?')">
+                                            <i class="fas fa-times-circle"></i> Gửi lý do từ chối
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="hideTuChoiForm()">
+                                            <i class="fas fa-arrow-left"></i> Hủy
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -153,6 +159,29 @@
         </div>
     </div>
 </div>
+
+<style>
+.btn-group-custom {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-group-custom .btn {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 576px) {
+    .btn-group-custom {
+        flex-direction: column;
+    }
+    
+    .btn-group-custom .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
 
 <script>
 function showTuChoiForm() {

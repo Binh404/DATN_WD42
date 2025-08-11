@@ -881,4 +881,106 @@ private function tinhThueThueNhapCaNhan($thuNhapChiuThue)
 
         return redirect()->route('luong.list')->with('success', 'Xóa lương thành công.');
     }
+
+    /**
+     * Thống kê lương
+     */
+    public function thongKe(Request $request)
+    {
+        // Lấy tham số từ request
+        $tuNgay = $request->tu_ngay ?? now()->startOfMonth()->format('Y-m-d');
+        $denNgay = $request->den_ngay ?? now()->endOfMonth()->format('Y-m-d');
+        $namHienTai = now()->year;
+
+        // Thống kê tổng quan
+        $tongLuongNhanVien = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->count();
+        $tongTienLuong = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('tong_luong');
+        $tongLuongThucNhan = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('luong_thuc_nhan');
+        $tongThue = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('thue_thu_nhap_ca_nhan');
+        $tongPhuCap = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('tong_phu_cap');
+
+        // Thống kê theo phòng ban
+        $thongKeTheoPhongBan = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('phong_ban.ten_phong_ban, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('tong_luong', 'desc')
+            ->get();
+
+        // Thống kê theo chức vụ
+        $thongKeTheoChucVu = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('chuc_vu', 'nguoi_dung.chuc_vu_id', '=', 'chuc_vu.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('chuc_vu.ten as ten_chuc_vu, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy('chuc_vu.id', 'chuc_vu.ten')
+            ->orderBy('tong_luong', 'desc')
+            ->get();
+
+        // Thống kê theo tháng trong năm
+        $thongKeTheoThang = LuongNhanVien::whereYear('created_at', $namHienTai)
+            ->selectRaw('MONTH(created_at) as thang, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->orderBy('thang')
+            ->get();
+
+        // Thống kê theo năm
+        $thongKeTheoNam = LuongNhanVien::selectRaw('YEAR(created_at) as nam, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy(DB::raw('YEAR(created_at)'))
+            ->orderBy('nam', 'desc')
+            ->get();
+
+        // Thống kê lương cơ bản theo phòng ban
+        $thongKeLuongCoBan = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('phong_ban.ten_phong_ban, AVG(luong_co_ban) as luong_co_ban_trung_binh, MIN(luong_co_ban) as luong_co_ban_thap_nhat, MAX(luong_co_ban) as luong_co_ban_cao_nhat')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('luong_co_ban_trung_binh', 'desc')
+            ->get();
+
+        // Thống kê tăng ca
+        $thongKeTangCa = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('SUM(gio_tang_ca) as tong_gio_tang_ca, AVG(gio_tang_ca) as gio_tang_ca_trung_binh, SUM(cong_tang_ca) as tong_cong_tang_ca')
+            ->first();
+
+        // Thống kê thuế
+        $thongKeThue = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('SUM(thue_thu_nhap_ca_nhan) as tong_thue, AVG(thue_thu_nhap_ca_nhan) as thue_trung_binh')
+            ->first();
+
+        // Top 10 nhân viên có lương cao nhất
+        $topLuongCaoNhat = LuongNhanVien::with(['nguoiDung.hoSo', 'nguoiDung.phongBan'])
+            ->whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->orderBy('tong_luong', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Top 10 nhân viên có lương thấp nhất
+        $topLuongThapNhat = LuongNhanVien::with(['nguoiDung.hoSo', 'nguoiDung.phongBan'])
+            ->whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->orderBy('tong_luong', 'asc')
+            ->limit(10)
+            ->get();
+
+        return view('admin.luong.thong-ke', compact(
+            'tuNgay',
+            'denNgay',
+            'namHienTai',
+            'tongLuongNhanVien',
+            'tongTienLuong',
+            'tongLuongThucNhan',
+            'tongThue',
+            'tongPhuCap',
+            'thongKeTheoPhongBan',
+            'thongKeTheoChucVu',
+            'thongKeTheoThang',
+            'thongKeTheoNam',
+            'thongKeLuongCoBan',
+            'thongKeTangCa',
+            'thongKeThue',
+            'topLuongCaoNhat',
+            'topLuongThapNhat'
+        ));
+    }
 }

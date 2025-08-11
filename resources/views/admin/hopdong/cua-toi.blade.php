@@ -9,7 +9,7 @@
             <div class="card-header">
                 <h3 class="card-title">Hợp đồng của tôi</h3>
                 <div class="card-tools">
-                    <a href="{{ route('hopdong.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('personal.department.dashboard') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
@@ -120,10 +120,7 @@
                                                     @endif
                                                 </p>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Hình thức làm việc:</label>
-                                                <p class="form-control-static">{{ $hopDong->hinh_thuc_lam_viec }}</p>
-                                            </div>
+                                            
                                             <div class="form-group">
                                                 <label class="font-weight-bold">Địa điểm làm việc:</label>
                                                 <p class="form-control-static">{{ $hopDong->dia_diem_lam_viec }}</p>
@@ -163,35 +160,7 @@
                             </div>
 
                             <!-- Thông tin ký -->
-                            @if($hopDong->nguoiKy)
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-signature"></i> Thông tin ký
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Người ký:</label>
-                                                <p class="form-control-static">
-                                                    {{ $hopDong->nguoiKy->hoSo ? ($hopDong->nguoiKy->hoSo->ho . ' ' . $hopDong->nguoiKy->hoSo->ten) : 'N/A' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Thời gian ký:</label>
-                                                <p class="form-control-static">
-                                                    {{ $hopDong->thoi_gian_ky ? $hopDong->thoi_gian_ky->format('d/m/Y H:i') : 'N/A' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
+                           
 
                             <!-- Ghi chú -->
                             @if($hopDong->ghi_chu)
@@ -210,284 +179,107 @@
                                                          
 
                                                            <!-- File hợp đồng -->
-                              @if($hopDong->duong_dan_file)
-                             <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-file-pdf"></i> File hợp đồng
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Tên file:</label>
-                                                                                                 <p class="form-control-static">
-                                                     <i class="fas fa-file"></i> {{ basename($hopDong->duong_dan_file) }}
-                                                 </p>
+                            @if($hopDong->duong_dan_file)
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-file-contract"></i> File hợp đồng gốc
+                                </h5>
+                                @php
+                                    $files = explode(';', $hopDong->duong_dan_file);
+                                    $files = array_filter($files);
+                                @endphp
+                                <div class="mb-2">
+                                    @foreach($files as $index => $file)
+                                        @if($file)
+                                            @php
+                                                $fileName = basename(trim($file));
+                                                $fileExtension = strtolower(pathinfo(trim($file), PATHINFO_EXTENSION));
+                                            @endphp
+                                            <div class="mb-2">
+                                                <a href="{{ asset('storage/' . trim($file)) }}" 
+                                                   target="_blank" 
+                                                   class="btn btn-info btn-sm me-2"
+                                                   title="Xem file">
+                                                    @if($fileExtension == 'pdf')
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    @elseif(in_array($fileExtension, ['doc', 'docx']))
+                                                        <i class="fas fa-file-word"></i>
+                                                    @elseif(in_array($fileExtension, ['xls', 'xlsx']))
+                                                        <i class="fas fa-file-excel"></i>
+                                                    @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
+                                                        <i class="fas fa-file-image"></i>
+                                                    @else
+                                                        <i class="fas fa-file"></i>
+                                                    @endif
+                                                    File {{ $index + 1 }}: {{ $fileName }}
+                                                </a>
+                                                <a href="{{ asset('storage/' . trim($file)) }}" 
+                                                   download="{{ $fileName }}"
+                                                   class="btn btn-success btn-sm"
+                                                   title="Tải xuống">
+                                                    <i class="fas fa-download"></i> Tải xuống
+                                                </a>
                                             </div>
-                                        </div>
-                                                                                 <div class="col-md-4">
-                                             <div class="form-group">
-                                                 <label class="font-weight-bold">Loại file:</label>
-                                                 <p class="form-control-static">
-                                                     @php
-                                                         $fileExtension = strtolower(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION));
-                                                     @endphp
-                                                     @if($fileExtension == 'pdf')
-                                                         <span class="badge badge-danger"><i class="fas fa-file-pdf"></i> PDF</span>
-                                                     @elseif(in_array($fileExtension, ['doc', 'docx']))
-                                                         <span class="badge badge-primary"><i class="fas fa-file-word"></i> Word</span>
-                                                     @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp']))
-                                                         <span class="badge badge-info"><i class="fas fa-file-image"></i> Hình ảnh</span>
-                                                     @else
-                                                         <span class="badge badge-secondary"><i class="fas fa-file"></i> {{ strtoupper($fileExtension) }}</span>
-                                                     @endif
-                                                 </p>
-                                             </div>
-                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Thao tác:</label>
-                                                <div class="mt-2">
-                                                                                                         <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" 
-                                                        target="_blank" 
-                                                        class="btn btn-primary btn-sm">
-                                                         <i class="fas fa-eye"></i> Xem file
-                                                     </a>
-                                                     <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" 
-                                                        download="{{ basename($hopDong->duong_dan_file) }}"
-                                                        class="btn btn-success btn-sm">
-                                                         <i class="fas fa-download"></i> Tải xuống
-                                                     </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                                                         <!-- Preview file -->
-                                     <div class="mt-3">
-                                         @php
-                                             $fileExtension = strtolower(pathinfo($hopDong->duong_dan_file, PATHINFO_EXTENSION));
-                                         @endphp
-                                        
-                                        @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp']))
-                                            <!-- Hiển thị hình ảnh -->
-                                                                                         <div class="text-center">
-                                                 <img src="{{ asset('storage/' . $hopDong->duong_dan_file) }}" 
-                                                      alt="File hợp đồng" 
-                                                      class="img-fluid" 
-                                                      style="max-height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                                 <div class="mt-2">
-                                                     <small class="text-muted">Click vào hình để xem kích thước đầy đủ</small>
-                                                 </div>
-                                             </div>
-                                        @elseif($fileExtension == 'pdf')
-                                            <!-- Hiển thị PDF -->
-                                                                                         <div class="text-center">
-                                                 <div class="border rounded p-2" style="background-color: #f8f9fa;">
-                                                     <iframe src="{{ asset('storage/' . $hopDong->duong_dan_file) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                                             width="100%" 
-                                                             height="500px" 
-                                                             style="border: 1px solid #ddd; border-radius: 5px;">
-                                                         <p class="text-center p-3">
-                                                             <i class="fas fa-file-pdf text-danger"></i><br>
-                                                             Trình duyệt của bạn không hỗ trợ hiển thị PDF.<br>
-                                                             <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" target="_blank" class="btn btn-primary btn-sm mt-2">
-                                                                 <i class="fas fa-external-link-alt"></i> Mở trong tab mới
-                                                             </a>
-                                                         </p>
-                                                     </iframe>
-                                                 </div>
-                                             </div>
-                                        @elseif(in_array($fileExtension, ['doc', 'docx']))
-                                            <!-- File Word -->
-                                                                                         <div class="alert alert-warning text-center">
-                                                 <i class="fas fa-file-word text-primary"></i><br>
-                                                 <strong>File Microsoft Word</strong><br>
-                                                 File này không thể hiển thị trực tiếp trong trình duyệt.<br>
-                                                 <div class="mt-2">
-                                                     <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" target="_blank" class="btn btn-primary btn-sm">
-                                                         <i class="fas fa-external-link-alt"></i> Mở file
-                                                     </a>
-                                                     <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" download class="btn btn-success btn-sm">
-                                                         <i class="fas fa-download"></i> Tải xuống
-                                                     </a>
-                                                 </div>
-                                             </div>
-                                        @else
-                                            <!-- File khác -->
-                                                                                         <div class="alert alert-info text-center">
-                                                 <i class="fas fa-file text-secondary"></i><br>
-                                                 <strong>File không xác định</strong><br>
-                                                 File này không thể hiển thị trực tiếp.<br>
-                                                 <div class="mt-2">
-                                                     <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" target="_blank" class="btn btn-primary btn-sm">
-                                                         <i class="fas fa-external-link-alt"></i> Mở file
-                                                     </a>
-                                                     <a href="{{ asset('storage/' . $hopDong->duong_dan_file) }}" download class="btn btn-success btn-sm">
-                                                         <i class="fas fa-download"></i> Tải xuống
-                                                     </a>
-                                                 </div>
-                                             </div>
                                         @endif
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                             @endif
 
                             <!-- File hợp đồng đã ký -->
                             @if($hopDong->file_hop_dong_da_ky)
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-file-signature"></i> File hợp đồng đã ký
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Tên file:</label>
-                                                <p class="form-control-static">
-                                                    <i class="fas fa-file"></i> {{ basename($hopDong->file_hop_dong_da_ky) }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Loại file:</label>
-                                                <p class="form-control-static">
-                                                    @php
-                                                        $fileExtension = strtolower(pathinfo($hopDong->file_hop_dong_da_ky, PATHINFO_EXTENSION));
-                                                    @endphp
-                                                    @if($fileExtension == 'pdf')
-                                                        <span class="badge badge-danger"><i class="fas fa-file-pdf"></i> PDF</span>
-                                                    @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp']))
-                                                        <span class="badge badge-info"><i class="fas fa-file-image"></i> Hình ảnh</span>
-                                                    @else
-                                                        <span class="badge badge-secondary"><i class="fas fa-file"></i> {{ strtoupper($fileExtension) }}</span>
-                                                    @endif
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Thao tác:</label>
-                                                <div class="mt-2">
-                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" 
-                                                       target="_blank" 
-                                                       class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-eye"></i> Xem file
-                                                    </a>
-                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" 
-                                                       download="{{ basename($hopDong->file_hop_dong_da_ky) }}"
-                                                       class="btn btn-success btn-sm">
-                                                        <i class="fas fa-download"></i> Tải xuống
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Preview file đã ký -->
-                                    <div class="mt-3">
+                            <div class="mb-4">
+                                <h5 class="text-success mb-3">
+                                    <i class="fas fa-file-signature"></i> File hợp đồng đã ký
+                                </h5>
+                                @php
+                                    // Tách danh sách file (cách nhau bằng dấu chấm phẩy)
+                                    $files = explode(';', $hopDong->file_hop_dong_da_ky);
+                                    $files = array_filter($files); // Loại bỏ các phần tử rỗng
+                                @endphp
+                                
+                                <div class="mb-2">
+                                    @foreach($files as $index => $filePath)
                                         @php
-                                            $fileExtension = strtolower(pathinfo($hopDong->file_hop_dong_da_ky, PATHINFO_EXTENSION));
+                                            $fileName = basename($filePath);
+                                            $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                                         @endphp
-                                        
-                                        @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp']))
-                                            <!-- Hiển thị hình ảnh -->
-                                            <div class="text-center">
-                                                <img src="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" 
-                                                     alt="File hợp đồng đã ký" 
-                                                     class="img-fluid" 
-                                                     style="max-height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                                <div class="mt-2">
-                                                    <small class="text-muted">Click vào hình để xem kích thước đầy đủ</small>
-                                                </div>
-                                            </div>
-                                        @elseif($fileExtension == 'pdf')
-                                            <!-- Hiển thị PDF -->
-                                            <div class="text-center">
-                                                <div class="border rounded p-2" style="background-color: #f8f9fa;">
-                                                    <iframe src="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}#toolbar=1&navpanes=1&scrollbar=1" 
-                                                            width="100%" 
-                                                            height="500px" 
-                                                            style="border: 1px solid #ddd; border-radius: 5px;">
-                                                        <p class="text-center p-3">
-                                                            <i class="fas fa-file-pdf text-danger"></i><br>
-                                                            Trình duyệt của bạn không hỗ trợ hiển thị PDF.<br>
-                                                            <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" target="_blank" class="btn btn-primary btn-sm mt-2">
-                                                                <i class="fas fa-external-link-alt"></i> Mở trong tab mới
-                                                            </a>
-                                                        </p>
-                                                    </iframe>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <!-- File khác -->
-                                            <div class="alert alert-info text-center">
-                                                <i class="fas fa-file text-secondary"></i><br>
-                                                <strong>File không xác định</strong><br>
-                                                File này không thể hiển thị trực tiếp.<br>
-                                                <div class="mt-2">
-                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" target="_blank" class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-external-link-alt"></i> Mở file
-                                                    </a>
-                                                    <a href="{{ asset('storage/' . $hopDong->file_hop_dong_da_ky) }}" download class="btn btn-success btn-sm">
-                                                        <i class="fas fa-download"></i> Tải xuống
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
+                                        <div class="mb-2">
+                                            <a href="{{ asset('storage/' . $filePath) }}" 
+                                               target="_blank" 
+                                               class="btn btn-success btn-sm me-2"
+                                               title="Xem file">
+                                                <i class="fas fa-file-signature"></i>
+                                                File đã ký {{ $index + 1 }}: {{ $fileName }}
+                                            </a>
+                                            <a href="{{ asset('storage/' . $filePath) }}" 
+                                               download="{{ $fileName }}"
+                                               class="btn btn-outline-success btn-sm"
+                                               title="Tải xuống">
+                                                <i class="fas fa-download"></i> Tải xuống
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                    
+                                    <!-- Thông tin ký chung cho tất cả file -->
+                                    @if($hopDong->thoi_gian_ky)
+                                        <small class="text-success d-block mt-2">
+                                            <i class="fas fa-calendar-check"></i> 
+                                            Đã ký: {{ $hopDong->thoi_gian_ky->format('d/m/Y H:i') }}
+                                        </small>
+                                    @endif
+                                    @if($hopDong->nguoiKy && $hopDong->nguoiKy->hoSo)
+                                        <small class="text-success d-block">
+                                            <i class="fas fa-user-check"></i> 
+                                            Ký bởi: {{ $hopDong->nguoiKy->hoSo->ho . ' ' . $hopDong->nguoiKy->hoSo->ten }}
+                                        </small>
+                                    @endif
                                 </div>
                             </div>
                             @endif
 
                             <!-- Thông báo hợp đồng đã ký -->
-                            @if($hopDong->trang_thai_ky == 'da_ky' && $hopDong->file_hop_dong_da_ky)
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-check-circle text-success"></i> Hợp đồng đã được ký
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="alert alert-success">
-                                        <i class="fas fa-check-circle"></i>
-                                        <strong>Hợp đồng đã được ký thành công!</strong>
-                                        <p class="mb-0 mt-2">File hợp đồng đã ký đã được lưu vào hệ thống và có thể xem/tải xuống ở phần trên.</p>
-                                    </div>
-                                    
-                                    @if($hopDong->trang_thai_hop_dong == 'hieu_luc')
-                                        <div class="alert alert-info">
-                                            <i class="fas fa-info-circle"></i>
-                                            <strong>Trạng thái hợp đồng:</strong> Hợp đồng đã chuyển sang trạng thái <span class="badge badge-success">Hiệu lực</span> và đang có hiệu lực thi hành.
-                                        </div>
-                                    @endif
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Người ký:</label>
-                                                <p class="form-control-static">
-                                                    {{ $hopDong->nguoiKy ? ($hopDong->nguoiKy->hoSo ? ($hopDong->nguoiKy->hoSo->ho . ' ' . $hopDong->nguoiKy->hoSo->ten) : 'N/A') : 'N/A' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Thời gian ký:</label>
-                                                <p class="form-control-static">
-                                                    {{ $hopDong->thoi_gian_ky ? $hopDong->thoi_gian_ky->format('d/m/Y H:i') : 'N/A' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
+                           
 
                             <!-- Thông báo hợp đồng đã từ chối ký -->
                             @if($hopDong->trang_thai_ky == 'tu_choi_ky')
@@ -528,23 +320,15 @@
                                         <strong>Hợp đồng chưa được ký!</strong>
                                         <p class="mb-0 mt-2">Vui lòng xem xét kỹ nội dung hợp đồng và thực hiện ký hợp đồng.</p>
                                     </div>
-                                    <div class="alert alert-danger">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        <strong>Lưu ý quan trọng:</strong>
-                                        <ul class="mb-0 mt-2">
-                                            <li>Khi ký hợp đồng, bạn <strong>PHẢI</strong> upload file hợp đồng đã được ký</li>
-                                            <li>File phải là bản hợp đồng có chữ ký của bạn</li>
-                                            <li>Hệ thống sẽ không cho phép ký mà không có file</li>
-                                        </ul>
-                                    </div>
+                                    
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <a href="{{ route('hopdong.ky', $hopDong->id) }}" class="btn btn-primary btn-lg w-100">
+                                        <div class="col-md-5">
+                                            <a href="{{ route('hopdong.ky', $hopDong->id) }}" class="btn btn-primary btn-sm w-100">
                                                 <i class="fas fa-signature"></i> Ký hợp đồng ngay
                                             </a>
                                         </div>
-                                        <div class="col-md-6">
-                                            <button class="btn btn-danger btn-lg w-100" onclick="showTuChoiForm()">
+                                        <div class="col-md-5">
+                                            <button class="btn btn-danger btn-sm w-100" onclick="showTuChoiForm()">
                                                 <i class="fas fa-times-circle"></i> Từ chối ký
                                             </button>
                                         </div>

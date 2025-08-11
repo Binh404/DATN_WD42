@@ -22,6 +22,7 @@
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('assets/admin/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom-spacing.css') }}">
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.png') }}" />
     @yield('style')

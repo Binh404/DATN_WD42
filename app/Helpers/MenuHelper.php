@@ -95,7 +95,7 @@ class MenuHelper
                 // 'hopdong' => ['cua_toi'], // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 
-                'thongke' => ['hopdong', 'chamcong'],
+                'thongke' => ['hopdong', 'chamcong', 'luong'],
 
 
                 // 'xinnghiphep' => ['danhsach']
