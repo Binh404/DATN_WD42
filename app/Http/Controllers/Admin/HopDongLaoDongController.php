@@ -212,28 +212,56 @@ class HopDongLaoDongController extends Controller
         // 1. Có hồ sơ (hoSo)
         // 2. Đang làm việc (trang_thai = 1)
         // 3. KHÔNG có vai trò admin
-        // 4. Chưa có hợp đồng nào ở trạng thái hiệu lực hoặc tạo mới
+        // 4. KHÔNG có hợp đồng với các trạng thái:
+        //    - trạng thái ký = 'cho_ky' và trạng thái hợp đồng = 'tao_moi'
+        //    - trạng thái ký = 'da_ky' và trạng thái hợp đồng = 'hieu_luc'
+        //    - trạng thái ký = 'cho_ky' và trạng thái hợp đồng = 'chua_hieu_luc'
         // 5. HOẶC có hợp đồng đã từ chối ký (trang_thai_ky = 'tu_choi_ky')
-        // 6. HOẶC có hợp đồng chưa hiệu lực và chờ ký (trang_thai_hop_dong = 'chua_hieu_luc' AND trang_thai_ky = 'cho_ky')
-        $nhanViens = NguoiDung::whereHas('hoSo')
-            ->where('trang_thai', 1) // Chỉ lấy nhân viên đang làm việc
+        
+        // Lấy tất cả nhân viên trước
+        $allNhanViens = NguoiDung::whereHas('hoSo')
+            ->where('trang_thai', 1)
             ->whereDoesntHave('vaiTros', function ($query) {
-                $query->where('name', 'admin'); // Loại trừ người dùng có vai trò admin
+                $query->where('name', 'admin');
             })
-            ->where(function ($query) {
-                $query->whereDoesntHave('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->whereIn('trang_thai_hop_dong', ['hieu_luc', 'tao_moi']);
-                })
-                ->orWhereHas('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->where('trang_thai_ky', 'tu_choi_ky');
-                })
-                ->orWhereHas('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->where('trang_thai_hop_dong', 'chua_hieu_luc')
-                             ->where('trang_thai_ky', 'cho_ky');
-                });
-            })
-            ->with('hoSo')
+            ->with(['hoSo', 'hopDongLaoDong'])
             ->get();
+        
+        // Lọc nhân viên theo điều kiện
+        $nhanViens = $allNhanViens->filter(function ($nhanVien) {
+            // Nhân viên chưa có hợp đồng nào
+            if ($nhanVien->hopDongLaoDong->isEmpty()) {
+                return true;
+            }
+            
+            // Kiểm tra từng hợp đồng của nhân viên
+            foreach ($nhanVien->hopDongLaoDong as $hopDong) {
+                // Nếu có hợp đồng với trạng thái không được phép, loại trừ
+                if (($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong == 'tao_moi') ||
+                    ($hopDong->trang_thai_ky == 'da_ky' && $hopDong->trang_thai_hop_dong == 'hieu_luc') ||
+                    ($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong == 'chua_hieu_luc')) {
+                    return false;
+                }
+            }
+            
+            // Nếu không có hợp đồng nào bị loại trừ, cho phép
+            return true;
+        });
+
+        // Debug: In ra danh sách nhân viên để kiểm tra
+        // Log::info('Danh sách nhân viên được chọn:', $nhanViens->pluck('id')->toArray());
+        
+        // Debug: In ra chi tiết từng nhân viên và hợp đồng của họ
+        // foreach ($nhanViens as $nhanVien) {
+        //     Log::info("Nhân viên: {$nhanVien->hoSo->ho} {$nhanVien->hoSo->ten} (ID: {$nhanVien->id})");
+        //     if ($nhanVien->hopDongLaoDong->isNotEmpty()) {
+        //         foreach ($nhanVien->hopDongLaoDong as $hopDong) {
+        //             Log::info("  - Hợp đồng: {$hopDong->so_hop_dong}, Trạng thái ký: {$hopDong->trang_thai_ky}, Trạng thái hợp đồng: {$hopDong->trang_thai_hop_dong}");
+        //         }
+        //     } else {
+        //         Log::info("  - Không có hợp đồng nào");
+        //     }
+        // }
 
         // Nếu có một nhân viên được chỉ định để tái ký nhưng không nằm trong danh sách trên
         // (trường hợp hiếm), hãy thêm họ vào danh sách.
@@ -290,6 +318,7 @@ class HopDongLaoDongController extends Controller
         // Khi tạo mới hợp đồng, mặc định ở trạng thái "tạo mới"
         $data['trang_thai_hop_dong'] = 'tao_moi';
         $data['trang_thai_ky'] = 'cho_ky';
+        $data['created_by'] = Auth::id(); // Lưu ID người tạo hợp đồng
 
         // Xử lý file hợp đồng - upload nhiều file
         if ($request->hasFile('file_hop_dong')) {
@@ -368,7 +397,42 @@ class HopDongLaoDongController extends Controller
             return redirect()->route('hopdong.index')->with('error', $errorMessage);
         }
 
-        $nhanViens = NguoiDung::with('hoSo')->whereHas('hoSo')->get();
+        // Lấy danh sách nhân viên tương tự như create, nhưng bao gồm cả nhân viên hiện tại của hợp đồng
+        
+        // Lấy tất cả nhân viên trước
+        $allNhanViens = NguoiDung::whereHas('hoSo')
+            ->where('trang_thai', 1)
+            ->whereDoesntHave('vaiTros', function ($query) {
+                $query->where('name', 'admin');
+            })
+            ->with(['hoSo', 'hopDongLaoDong'])
+            ->get();
+        
+        // Lọc nhân viên theo điều kiện
+        $nhanViens = $allNhanViens->filter(function ($nhanVien) use ($hopDong) {
+            // Luôn cho phép nhân viên hiện tại của hợp đồng đang chỉnh sửa
+            if ($nhanVien->id == $hopDong->nguoi_dung_id) {
+                return true;
+            }
+            
+            // Nhân viên chưa có hợp đồng nào
+            if ($nhanVien->hopDongLaoDong->isEmpty()) {
+                return true;
+            }
+            
+            // Kiểm tra từng hợp đồng của nhân viên
+            foreach ($nhanVien->hopDongLaoDong as $hopDongItem) {
+                // Nếu có hợp đồng với trạng thái không được phép, loại trừ
+                if (($hopDongItem->trang_thai_ky == 'cho_ky' && $hopDongItem->trang_thai_hop_dong == 'tao_moi') ||
+                    ($hopDongItem->trang_thai_ky == 'da_ky' && $hopDongItem->trang_thai_hop_dong == 'hieu_luc') ||
+                    ($hopDongItem->trang_thai_ky == 'cho_ky' && $hopDongItem->trang_thai_hop_dong == 'chua_hieu_luc')) {
+                    return false;
+                }
+            }
+            
+            // Nếu không có hợp đồng nào bị loại trừ, cho phép
+            return true;
+        });
         $chucVus = ChucVu::all();
         return view('admin.hopdong.edit', compact('hopDong', 'nhanViens', 'chucVus'));
     }
@@ -948,7 +1012,7 @@ class HopDongLaoDongController extends Controller
      */
     public function kyHopDong($id)
     {
-        $hopDong = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu'])->findOrFail($id);
+        $hopDong = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu', 'nguoiGuiHopDong.hoSo'])->findOrFail($id);
         
         // Kiểm tra quyền: chỉ nhân viên sở hữu hợp đồng mới được ký
         if ($hopDong->nguoi_dung_id !== Auth::id()) {

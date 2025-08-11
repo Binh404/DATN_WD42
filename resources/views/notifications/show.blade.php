@@ -21,8 +21,21 @@
                 @endif
 
                 <div class="alert alert-info">
-                    {{ $notification->data['message'] }}
+                    <i class="fas fa-user-check"></i>
+                    <strong>{{ $notification->data['message'] }}</strong>
                 </div>
+
+                <!-- Thông tin người gửi hợp đồng -->
+                @if($hopdong && $hopdong->nguoiGuiHopDong && $hopdong->nguoiGuiHopDong->hoSo)
+                    <div class="alert alert-success">
+                        <i class="fas fa-user-tie"></i>
+                        <strong>Người gửi hợp đồng:</strong> 
+                        {{ $hopdong->nguoiGuiHopDong->hoSo->ho ?? '' }} {{ $hopdong->nguoiGuiHopDong->hoSo->ten ?? '' }}
+                        @if($hopdong->nguoiGuiHopDong->vaiTro)
+                            <span class="badge badge-info ml-2">{{ ucfirst($hopdong->nguoiGuiHopDong->vaiTro) }}</span>
+                        @endif
+                    </div>
+                @endif
 
                 @if($hopdong)
                     <h5>Thông tin hợp đồng</h5>

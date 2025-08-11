@@ -36,6 +36,7 @@ class HopDongLaoDong extends Model
         'nguoi_huy_id',
         'thoi_gian_huy',
         'trang_thai_tai_ky',
+        'created_by',
     ];
 
     protected $casts = [
@@ -62,6 +63,11 @@ class HopDongLaoDong extends Model
     public function nguoiHuy()
     {
         return $this->belongsTo(NguoiDung::class, 'nguoi_huy_id');
+    }
+
+    public function nguoiGuiHopDong()
+    {
+        return $this->belongsTo(NguoiDung::class, 'created_by');
     }
 
     public function hoSoNguoiDung()

@@ -24,7 +24,7 @@ class NotificationController extends Controller
         }
 
         $hopdongId = $notification->data['hopdong_id'] ?? null;
-        $hopdong = $hopdongId ? HopDongLaoDong::find($hopdongId) : null;
+        $hopdong = $hopdongId ? HopDongLaoDong::with(['nguoiGuiHopDong.hoSo'])->find($hopdongId) : null;
 
         return view('notifications.show', compact('notification', 'hopdong'));
     }
