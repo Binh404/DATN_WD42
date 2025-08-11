@@ -67,7 +67,7 @@ class TinTuyenDungController extends Controller
             'so_vi_tri' => 'required|integer|min:1',
             'mo_ta_cong_viec' => 'required|string',
             'yeu_cau' => 'required|string',
-            'phuc_loi' => 'nullable|string',
+            'phuc_loi' => 'required|string',
             'ky_nang_yeu_cau' => 'nullable|array',
             'ky_nang_yeu_cau.*' => 'string',
             'trinh_do_hoc_van' => 'nullable|string|max:255',
@@ -140,6 +140,8 @@ class TinTuyenDungController extends Controller
             'yeu_cau_id.required' => 'Vui lòng chọn yêu cầu tuyển dụng liên quan.',
             'yeu_cau_id.integer' => 'Yêu cầu tuyển dụng phải là số nguyên.',
             'yeu_cau_id.exists' => 'Yêu cầu tuyển dụng không tồn tại.',
+
+            'phuc_loi.required' => 'Vui lòng điền phúc lợi.',
         ]);
 
 
@@ -198,5 +200,15 @@ class TinTuyenDungController extends Controller
             return view("admin.tintuyendung.show", compact('tuyenDung'));
         }
         abort(403, 'Bạn không có quyền truy cập trang này.');
+    }
+
+    public function capNhatTrangThaiketThuc(string $id){
+        $tinTuyenDung = TinTuyenDung::findOrFail($id);
+        $tinTuyenDung->update([
+            'trang_thai' => 'ket_thuc'
+        ]);
+
+        return redirect()->route('hr.tintuyendung.index')
+            ->with('success', 'Cập nhật trạng thái kết thúc thành công!');
     }
 }

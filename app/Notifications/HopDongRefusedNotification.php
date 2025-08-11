@@ -61,4 +61,4 @@ class HopDongRefusedNotification extends Notification
             'so_hop_dong' => $this->hopdong->so_hop_dong,
         ];
     }
-} 
+}   

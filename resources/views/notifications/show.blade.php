@@ -24,6 +24,10 @@
                     <i class="fas fa-user-check"></i>
                     <strong>{{ $notification->data['message'] }}</strong>
                 </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        {{ $notification->data['message'] }}
+                    </div>
 
                 <!-- Thông tin người gửi hợp đồng -->
                 @if($hopdong && $hopdong->nguoiGuiHopDong && $hopdong->nguoiGuiHopDong->hoSo)
@@ -194,24 +198,24 @@
                         
                         <!-- Form từ chối ký (ẩn ban đầu) -->
                         <div id="tuChoiForm" style="display: none; margin-top: 20px;">
-                           
+
                             <form action="{{ route('hopdong.tu-choi-ky', $hopdong->id) }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="ly_do_tu_choi">
                                         <strong>Lý do từ chối ký <span class="text-danger">*</span></strong>
                                     </label>
-                                    <textarea 
-                                        class="form-control @error('ly_do_tu_choi') is-invalid @enderror" 
-                                        id="ly_do_tu_choi" 
-                                        name="ly_do_tu_choi" 
-                                        rows="4" 
+                                    <textarea
+                                        class="form-control @error('ly_do_tu_choi') is-invalid @enderror"
+                                        id="ly_do_tu_choi"
+                                        name="ly_do_tu_choi"
+                                        rows="4"
                                         placeholder="Vui lòng nêu rõ lý do từ chối ký hợp đồng..."
                                         required></textarea>
                                     @error('ly_do_tu_choi')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                   
+
                                 </div>
                                 <div class="form-group">
                                     <div class="btn-group-custom">
@@ -256,9 +260,7 @@
                             </div>
                         @endif
                     @endif
-                @else
-                    <div class="alert alert-warning">Không tìm thấy thông tin hợp đồng.</div>
-                @endif
+                </div>
             </div>
         </div>
     </div>
@@ -298,4 +300,4 @@ function hideTuChoiForm() {
     document.getElementById('ly_do_tu_choi').value = '';
 }
 </script>
-@endsection 
+@endsection

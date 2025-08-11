@@ -65,13 +65,13 @@
                     <label for="inputPassword4" class="form-label">Phòng ban<span class="required">*</span></label>
                     <select id="phong_ban_id" name="phong_ban_id"
                         class="{{ $errors->has('phong_ban_id') ? 'error' : '' }} form-control">
-                        <option value="">Chọn phòng ban</option>
-                        @foreach ($phongBans as $key => $item)
-                            <option value="{{ $item->id }}"
-                                {{ old('phong_ban_id') == $item->id || (isset($yeuCau) && $item->id === $yeuCau->phongBan->id) ? 'selected' : '' }}>
-                                {{ $item->ten_phong_ban }}
-                            </option>
-                        @endforeach
+                        {{-- <option value="">Chọn phòng ban</option> --}}
+                        {{-- @foreach ($phongBans as $key => $item) --}}
+                        <option value="{{ $yeuCau->phong_ban_id }}"
+                            {{ old('phong_ban_id') == $yeuCau->phong_ban_id ? 'selected' : '' }}>
+                            {{ $yeuCau->phongBan->ten_phong_ban }}
+                        </option>
+                        {{-- @endforeach --}}
                     </select>
                     @error('phong_ban_id')
                         <span class="error-message">{{ $message }}</span>
@@ -102,7 +102,7 @@
                         <option value="">Chọn vai trò</option>
                         @foreach ($vaiTros as $key => $item)
                             <option value="{{ $item->id }}">
-                                {{ $item->ten }}
+                                {{ $item->ten == 'department' ? 'Trưởng phòng' : ($item->ten == 'hr' ? 'HR' : 'Nhân viên')  }}
                             </option>
                         @endforeach
                     </select>
@@ -167,7 +167,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="exampleInputEmail1">King nghiệm tối đa<span class="required">*</span></label>
+                    <label for="exampleInputEmail1">Kinh nghiệm tối đa<span class="required">*</span></label>
                     <input type="number" id="kinh_nghiem_toi_da" name="kinh_nghiem_toi_da"
                         value="{{ old('kinh_nghiem_toi_da', $yeuCau->kinh_nghiem_toi_da ?? '') }}"
                         class="{{ $errors->has('kinh_nghiem_toi_da') ? 'error' : '' }} form-control">
@@ -286,7 +286,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4" class="form-label">Phúc lợi</label>
+                    <label for="inputEmail4" class="form-label">Phúc lợi<span class="required">*</span></label>
                     <textarea id="phuc_loi" name="phuc_loi"
                         placeholder="Các phúc lợi dành cho nhân viên: bảo hiểm, thưởng, nghỉ phép..."
                         class="{{ $errors->has('phuc_loi') ? 'error' : '' }}">{{ old('phuc_loi') }}</textarea>

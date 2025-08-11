@@ -692,7 +692,7 @@
                         </h3>
                         <div class="info-row">
                             <span class="info-label">Bàn giao cho:</span>
-                         <span class="info-value" id="handoverTo">{{ $donNghiPhep->banGiaoCho ? $donNghiPhep->banGiaoCho->ten_dang_nhap : 'Không có' }}</span>
+                            <span class="info-value" id="handoverTo">{{ $donNghiPhep->banGiaoCho ? $donNghiPhep->banGiaoCho->ten_dang_nhap : 'Không có' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ghi chú bàn giao:</span>

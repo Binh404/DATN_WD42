@@ -278,7 +278,7 @@
                     <h3 class="section-title">Thông tin cơ bản</h3>
                     <div class="info-grid">
                         <div class="info-item">
-                            <div class="info-label">Mã yêu cầu</div>
+                            <div class="info-label">Mã tin tuyển dụng</div>
                             <div class="info-value highlight">{{ $tuyenDung->ma }}</div>
                         </div>
                         <div class="info-item">
@@ -378,13 +378,19 @@
             </div>
             <div class="footer">
                 <div class="actions">
-                    {{-- @if ($tuyenDung->trang_thai_dang === 'chua_dang')
-                    <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
-                        <button class="btn btn-primary">
-                            Đăng tin tuyển dụng
-                        </button>
-                    </a>
-                @endif --}}
+                    @if ($tuyenDung->trang_thai === 'dang_tuyen')
+                        <form action="{{ route('hr.tintuyendung.end', $tuyenDung->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <button class="btn btn-primary" type="submit">Kết thúc tuyển</button>
+                        </form>
+
+                        {{-- <a href="{{ route('hr.tintuyendung.create-from-request', $tuyenDung->id) }}">
+                            <button class="btn btn-primary">
+                                Đăng tin tuyển dụng
+                            </button>
+                        </a> --}}
+                    @endif
 
                 </div>
             </div>
