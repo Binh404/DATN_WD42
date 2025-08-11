@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
+use App\Models\NguoiDung;
 use App\Models\SoDuNghiPhepNhanVien;
 use App\Models\VaiTro;
 use Illuminate\Http\Request;
@@ -80,6 +81,14 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $donXinNghi->save();
 
+        // tạo thông báo
+        $nguoiNhanThongBaoId = $donXinNghi->nguoi_dung_id;
+        $nguoiNhanThongBao = NguoiDung::findOrFail($nguoiNhanThongBaoId);
+
+        if ($nguoiNhanThongBao) {
+            $nguoiNhanThongBao->notify(new \App\Notifications\DuyetDonXinNghi($donXinNghi));
+        }
+
         return redirect()->route('department.donxinnghi.danhsach')->with('success', 'Duyệt đơn thành công.');
     }
 
@@ -124,6 +133,14 @@ class LichSuDuyetDonXinNghiController extends Controller
                 'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                 'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
             ]);
+
+        // tạo thông báo
+        $nguoiNhanThongBaoId = $donXinNghi->nguoi_dung_id;
+        $nguoiNhanThongBao = NguoiDung::findOrFail($nguoiNhanThongBaoId);
+
+        if ($nguoiNhanThongBao) {
+            $nguoiNhanThongBao->notify(new \App\Notifications\TuChoiDonXinNghi($donXinNghi));
+        }
 
         return redirect()->route('department.donxinnghi.danhsach')->with('success', 'Từ chối đơn thành công.');
     }

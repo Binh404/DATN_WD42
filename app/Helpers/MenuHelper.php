@@ -12,7 +12,7 @@ class MenuHelper
         }
 
         $user = auth()->user();
-        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0];
+        $userRole = optional($user->vaiTros)->pluck('name')->toArray()[0];
         // dd($userRole);
         $menuPermissions = [
             'admin' => [
@@ -29,7 +29,7 @@ class MenuHelper
                 'duyetdon',
                 // 'xinnghiphep',
                 'loainghiphep',
-                'dondexuat',
+                // 'dondexuat',
                 'thongke'
 
             ],
@@ -81,7 +81,7 @@ class MenuHelper
         }
 
         $user = auth()->user();
-        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0];
+        $userRole = optional($user->vaiTros)->pluck('name')->toArray()[0];
         // dd($userRole);
         $subMenuPermissions = [
             'admin' => [

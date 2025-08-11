@@ -8,8 +8,8 @@
         @csrf
         @method('PUT')
         <div class="mb-3">
-            <label for="ten" class="form-label">Tên vai trò</label>
-            <input type="text" name="ten" class="form-control" value="{{ $role->ten }}" required>
+            <label for="name" class="form-label">Tên vai trò</label>
+            <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
         </div>
         <div class="mb-3">
             <label for="display_name" class="form-label">Tên hiển thị</label>

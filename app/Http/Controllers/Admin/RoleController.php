@@ -21,9 +21,11 @@ class RoleController extends Controller
 
 public function store(Request $request)
 {
+    // dd($request->all());
+
  VaiTro::create([
-    'name' => 'ok', // dùng cho spatie
-    'ten' => $request->name,  // gán name vào ten
+    // 'name' => 'ok', // dùng cho spatie
+     'name' => $request->name, // ✅ Bắt buộc
     'ten_hien_thi' => $request->ten_hien_thi,
     'mo_ta' => $request->mo_ta,
     'guard_name' => 'web',
@@ -61,7 +63,7 @@ public function store(Request $request)
     public function update(Request $request, string $id)
     {
         $role = VaiTro::findOrFail($id);
-        $role->update($request->only(['ten', 'ten_hien_thi', 'mo_ta']));
+        $role->update($request->only(['name', 'ten_hien_thi', 'mo_ta']));
 
         // // Cập nhật quyền
         // if (!empty($request->permissions)) {
@@ -78,13 +80,9 @@ public function store(Request $request)
 
 public function destroy(string $id)
 {
-    $role = VaiTro::findOrFail($id);
+  VaiTro::find($id)->delete();
 
-    // Gỡ quyền và người dùng trước khi xóa
-    // $role->permissions()->detach();
-    // $role->users()->detach(); // Nếu có định nghĩa quan hệ users()
 
-    $role->delete();
 
     return redirect()->route('vaitro.index')->with('success', "Đã xóa vai trò thành công!");
 }

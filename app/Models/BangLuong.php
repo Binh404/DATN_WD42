@@ -16,7 +16,7 @@ class BangLuong extends Model
         'loai_bang_luong',
         'nam',
         'thang',
-        'ngay_tra_luong',
+        // 'ngay_tra_luong',
         'trang_thai',
         'nguoi_xu_ly_id',
         'thoi_gian_xu_ly',
@@ -27,7 +27,7 @@ class BangLuong extends Model
     protected $casts = [
         'nam' => 'integer',
         'thang' => 'integer',
-        'ngay_tra_luong' => 'date',
+        // 'ngay_tra_luong' => 'date',
         'thoi_gian_xu_ly' => 'datetime',
         'thoi_gian_phe_duyet' => 'datetime',
         'created_at' => 'datetime',

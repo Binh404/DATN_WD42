@@ -77,4 +77,9 @@ class HopDongLaoDong extends Model
     {
         return $this->hasMany(PhuLucHopDong::class, 'hop_dong_id');
     }
+
+    public function luong()
+    {
+        return $this->hasOne(Luong::class, 'hop_dong_lao_dong_id');
+    }
 }

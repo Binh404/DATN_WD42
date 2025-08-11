@@ -31,7 +31,7 @@
                                     <li class="breadcrumb-item active">Chỉnh sửa</li>
                                 </ol>
                             </nav> --}}
-                            
+
                     <p class="mb-0 opacity-75">Chỉnh sửa thông tin bản ghi tài khoản</p>
 
                 </div>
@@ -174,7 +174,7 @@
                                             @foreach ($ds_vaitro as $vaitro)
                                                 <option value="{{ $vaitro->id }}"
                                                     {{ $taikhoan->vai_tro_id == $vaitro->id ? 'selected' : '' }}>
-                                                    {{ $vaitro->ten }}
+                                                    {{ $vaitro->name }}
                                                 </option>
                                             @endforeach
                                         </select>

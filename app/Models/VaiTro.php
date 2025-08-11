@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Spatie\Permission\Models\Role as SpatieRole;
+// use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class VaiTro extends SpatieRole
+class VaiTro extends Model
 {
     use HasFactory;
 
     protected $table = 'vai_tro';
 
     protected $fillable = [
-        'ten',
+        'name',
         'ten_hien_thi',
         'mo_ta',
         // 'la_vai_tro_he_thong',
@@ -25,11 +26,11 @@ class VaiTro extends SpatieRole
     // ];
 
     // Relationships
-    public function quyens()
-    {
-        return $this->belongsToMany(Quyen::class, 'vai_tro_quyen', 'vai_tro_id', 'quyen_id')
-                    ->withTimestamps();
-    }
+    // public function quyens()
+    // {
+    //     return $this->belongsToMany(Quyen::class, 'vai_tro_quyen', 'vai_tro_id', 'quyen_id')
+    //                 ->withTimestamps();
+    // }
 
     public function nguoiDungs()
     {
