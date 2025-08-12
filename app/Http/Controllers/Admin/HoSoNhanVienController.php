@@ -190,7 +190,7 @@ public function update(Request $request, $id)
         'ten' => 'required|string|max:50',
         'so_dien_thoai' => ['required',
                             'regex:/^0[0-9]{9}$/',
-                            Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id, 'nguoi_dung_id')],
+                            Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id)],
         'ngay_sinh' => [
             'required',
             'date',

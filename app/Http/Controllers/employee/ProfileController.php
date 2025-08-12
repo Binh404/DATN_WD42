@@ -121,8 +121,8 @@ class ProfileController extends Controller
         // Cho phép bỏ trống nhưng phải đúng định dạng khi có
         'so_ho_chieu'         => ['nullable','string','max:20'],
         'anh_dai_dien'        => ['nullable','image','max:2048'],
-        'anh_cccd_truoc' => ['nullable|image|max:2048'],
-        'anh_cccd_sau' => ['nullable|image|max:2048'],
+        'anh_cccd_truoc' => ['nullable', 'image', 'max:2048'],
+        'anh_cccd_sau'   => ['nullable', 'image', 'max:2048'],
         'lien_he_khan_cap'    => ['nullable','string','max:100'],
         'sdt_khan_cap'        => ['nullable','regex:/^0[0-9]{9}$/',
                                     function ($attribute, $value, $fail) use ($request) {
