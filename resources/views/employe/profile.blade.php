@@ -75,7 +75,7 @@ use Illuminate\Support\Facades\Auth;
                                         <label class="form-label">Quyền <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                                            value="{{ $vaitros->vaiTro->ten   }}" disabled>
+                                            value="{{ $vaitros->vaiTro->name   }}" disabled>
                                         @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

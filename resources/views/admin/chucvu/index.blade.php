@@ -54,10 +54,10 @@
                 <thead class="table-dark">
                     <tr>
                         <th>#</th>
-                        <th>Tên</th>
                         <th>Mã</th>
-                        <th>Lương cơ bản</th>
-                        <th>Trạng thái</th>
+                        <th>Tên</th>
+                        {{-- <th>Lương cơ bản</th> --}}
+                        {{-- <th>Trạng thái</th> --}}
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -67,14 +67,14 @@
     <tr>
         <td>{{ ($chucvus->currentPage() - 1) * $chucvus->perPage() + $loop->iteration }}</td>
 
-        <td>{{ $chucvu->ten }}</td>
         <td>{{ $chucvu->ma }}</td>
-        <td>{{ number_format($chucvu->luong_co_ban) }} đ</td>
-        <td>
+        <td>{{ $chucvu->ten }}</td>
+        {{-- <td>{{ number_format($chucvu->luong_co_ban) }} đ</td> --}}
+        {{-- <td>
             <span class="badge bg-{{ $chucvu->trang_thai ? 'success' : 'secondary' }}">
                 {{ $chucvu->trang_thai ? 'Hoạt động' : 'Ẩn' }}
             </span>
-        </td>
+        </td> --}}
         <td>
             <button class="btn btn-sm btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#editForm{{ $chucvu->id }}">
                 Sửa
@@ -95,28 +95,28 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Tên chức vụ</label>
-                        <input type="text" name="ten" class="form-control" value="{{ $chucvu->ten }}" required>
-                    </div>
-                    <div class="col-md-6">
                         <label class="form-label">Mã chức vụ</label>
                         <input type="text" name="ma" class="form-control" value="{{ $chucvu->ma }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tên chức vụ</label>
+                        <input type="text" name="ten" class="form-control" value="{{ $chucvu->ten }}" required>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Mô tả</label>
                         <textarea name="mo_ta" class="form-control" rows="2">{{ $chucvu->mo_ta }}</textarea>
                     </div>
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <label class="form-label">Lương cơ bản</label>
                         <input type="number" name="luong_co_ban" class="form-control" value="{{ $chucvu->luong_co_ban }}" required>
-                    </div>
-                    <div class="col-md-6">
+                    </div> --}}
+                    {{-- <div class="col-md-6">
                         <label class="form-label">Trạng thái</label>
                         <select name="trang_thai" class="form-select">
                             <option value="1" {{ $chucvu->trang_thai ? 'selected' : '' }}>Hoạt động</option>
                             <option value="0" {{ !$chucvu->trang_thai ? 'selected' : '' }}>Ẩn</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success">Cập nhật</button>
                     </div>

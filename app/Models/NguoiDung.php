@@ -75,6 +75,12 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     {
         return $this->hasMany(LuongNhanVien::class, 'nguoi_dung_id');
     }
+
+    public function luong()
+    {
+        return $this->hasMany(Luong::class, 'nguoi_dung_id');
+    }
+
     public function chamCong()
     {
         return $this->hasMany(ChamCong::class, 'nguoi_dung_id');
@@ -118,12 +124,12 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
 
     public function coVaiTro($tenVaiTro)
     {
-        return $this->vaiTros()->where('ten', $tenVaiTro)->exists();
+        return $this->vaiTros()->where('name', $tenVaiTro)->exists();
     }
 
     public function coBatKyVaiTro(array $dsTenVaiTro)
     {
-        return $this->vaiTro()->whereIn('ten', $dsTenVaiTro)->exists();
+        return $this->vaiTro()->whereIn('name', $dsTenVaiTro)->exists();
     }
 
     public function duyetDonNghi()
@@ -147,5 +153,14 @@ class NguoiDung extends Authenticatable  implements CanResetPassword
     public function cacDeXuatDuyet()
     {
         return $this->hasMany(DonDeXuat::class, 'nguoi_duyet_id');
+    }
+    public function senderMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receiverMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 }

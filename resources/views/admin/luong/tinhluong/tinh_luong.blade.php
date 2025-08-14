@@ -38,7 +38,15 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Số ngày công OT</label>
-        <input type="number" name="so_cong_tang_ca" id="soCongTangCaInput" class="form-control" value="{{ old('so_ngay_cong_tang_ca') }}">
+       <input
+        type="number"
+        step="0.1"
+        min="0"
+        name="so_cong_tang_ca"
+        id="soCongTangCaInput"
+        class="form-control"
+        value="{{ old('so_ngay_cong_tang_ca') }}"
+    >
     </div>
 
 

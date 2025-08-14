@@ -39,13 +39,13 @@ class CheckRole
             }
         }
 
-        // Nếu quan hệ belongsTo (trong trường hợp khác)
-        $userRole = optional($user->vaiTro)->ten;
+        // Nếu quan hệ belongsTo
+        $userRole = optional($user->vaiTro)->name;
 
         if (in_array($userRole, $roles)) {
             return $next($request);
         }
 
-        abort(403, 'Bạn không có quyền truy cập.');
+        abort(403, 'Bạn không có quyền truy cậpp.');
     }
 }

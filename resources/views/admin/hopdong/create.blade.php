@@ -29,6 +29,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                           
                             @error('nguoi_dung_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -58,7 +59,8 @@
                         <div class="form-group">
                             <label for="so_hop_dong">Số hợp đồng <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('so_hop_dong') is-invalid @enderror"
-                                   id="so_hop_dong" name="so_hop_dong" value="{{ old('so_hop_dong') }}" required>
+                                   id="so_hop_dong" name="so_hop_dong" value="{{ $soHopDongTuDong }}" readonly required>
+                          
                             @error('so_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -154,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-
+<!-- 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-info">
@@ -167,7 +169,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-group">
                     <label for="dieu_khoan">Điều khoản <span class="text-danger">*</span></label>

@@ -24,7 +24,7 @@ class DashboardController extends Controller
             return view('employe.complete-profile', compact('hoSo'));
         }
         // dd($user->vai_tro);
-        $tenVaiTro = optional($user->vaiTro)->ten;
+        $tenVaiTro = optional($user->vaiTro)->name;
         if (!in_array($tenVaiTro, ['admin', 'hr'])) {
             return redirect()->route('personal.department.dashboard' );
         }
@@ -288,7 +288,9 @@ class DashboardController extends Controller
 
     // }
    $user = auth()->user();
-   $tenVaiTro = optional($user->vaiTro)->ten;
+//    dd($user);
+   $tenVaiTro = optional($user->vaiTro)->name;
+    // dd($tenVaiTro);
     // dd($tenVaiTro);
     // Kiểm tra vai trò là 'employee' hoặc 'department'
     if (in_array($tenVaiTro, ['employee', 'department'])) {

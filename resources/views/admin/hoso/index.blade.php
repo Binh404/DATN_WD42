@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="tab-content tab-content-basic">
-                        
+
                         <div class="row">
                             <div class="col-lg-12 grid-margin stretch-card mt-4">
                                 <div class="card">
@@ -258,7 +258,7 @@
             Gửi nhắc nhở
         </button>
     </form>
-@endif                                                                            
+@endif
                                                                         @else
                                                                             <span class="text-muted fst-italic">Chưa có hồ sơ</span>
                                                                         @endif
@@ -320,7 +320,7 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     });
-    
+
 </script>
 
 @endsection

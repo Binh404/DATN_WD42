@@ -165,7 +165,8 @@
         </div>
 
         <!-- Today's Statistics -->
-        <div class="row g-3 mb-4">
+        <div id="chamCongSection">
+<div  class="row g-3 mb-4"  >
             <div class="col-md-6 col-lg-4 col-xl-3">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body text-center">
@@ -244,6 +245,8 @@
                 </div>
             </div>
         </div>
+        </div>
+
 
         <!-- Overtime Section -->
         <div id="overtimeSection" class="mb-4">
@@ -444,7 +447,7 @@
                 // Bạn có thể truy cập WORK_SCHEDULE.start_time, end_time, v.v
 
             } catch (error) {
-                console.error('Lỗi khi tải lịch làm việc:', error);
+                console.error('Lịch làm việc chưa được cập nhật');
             }
         }
             function needsReason(type, isDayOff = false, date = new Date()) {
@@ -808,15 +811,16 @@
                 }
             }
             function hideAttendanceInfo() {
-                const attendanceSection = document.querySelector('.stat-cards');
+                console.log('hideAttendanceInfo');
+                const attendanceSection = document.getElementById('chamCongSection');
                 if (attendanceSection) {
                     attendanceSection.style.display = 'none';
                 }
             }
             function showAttendanceInfo() {
-                const attendanceSection = document.querySelector('.stat-cards');
+                const attendanceSection = document.getElementById('chamCongSection');
                 if (attendanceSection) {
-                    attendanceSection.style.display = 'grid';
+                    attendanceSection.style.display = 'block';
                 }
             }
 

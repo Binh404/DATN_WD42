@@ -20,15 +20,15 @@ class DatabaseSeeder extends Seeder
         ChucVuSeeder::class,
 
         // 2. Phân quyền - phải chạy trước User
-        NhomQuyenSeeder::class,
-        QuyenSeeder::class,
+        // NhomQuyenSeeder::class,
+        // QuyenSeeder::class,
         VaiTroSeeder::class,
-        VaiTroQuyenSeeder::class,
+        // VaiTroQuyenSeeder::class,
 
         // 3. Người dùng
         NguoiDungSeeder::class,
         NguoiDungVaiTroSeeder::class,
-        NguoiDungQuyenSeeder::class,
+        // NguoiDungQuyenSeeder::class,
         HoSoNguoiDungSeeder::class,
 
         // 4. Hợp đồng, phụ cấp, lương
