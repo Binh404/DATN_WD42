@@ -129,7 +129,7 @@
                                    class="form-control @error('luong_co_ban') is-invalid @enderror"
                                    id="luong_co_ban" 
                                    name="luong_co_ban" 
-                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" 
+                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban ? (int)$hopDong->luong_co_ban : '') }}" 
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
@@ -148,7 +148,7 @@
                                    class="form-control @error('phu_cap') is-invalid @enderror"
                                    id="phu_cap" 
                                    name="phu_cap" 
-                                   value="{{ old('phu_cap', $hopDong->phu_cap) }}"
+                                   value="{{ old('phu_cap', $hopDong->phu_cap ? (int)$hopDong->phu_cap : '') }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
@@ -282,46 +282,7 @@
                 </div>
             </form>
             
-            <script>
-                setTimeout(function() {
-                    var loaiHopDong = document.getElementById('loai_hop_dong');
-                    var ngayKetThuc = document.getElementById('ngay_ket_thuc');
-                    var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
-                    var trangThaiHopDong = '{{ $hopDong->trang_thai_hop_dong }}';
-                    
-                    if (loaiHopDong && ngayKetThuc) {
-                        // Xử lý khi thay đổi loại hợp đồng
-                        loaiHopDong.addEventListener('change', function() {
-                            // Chỉ xử lý khi hợp đồng có thể chỉnh sửa
-                            if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
-                                if (this.value === 'khong_xac_dinh_thoi_han') {
-                                    ngayKetThuc.disabled = true;
-                                    ngayKetThuc.value = '';
-                                    ngayKetThuc.required = false;
-                                    ngayKetThucRequired.style.display = 'none';
-                                } else {
-                                    ngayKetThuc.disabled = false;
-                                    ngayKetThuc.required = true;
-                                    ngayKetThucRequired.style.display = 'inline';
-                                }
-                            }
-                        });
-                        
-                        // Chạy lần đầu
-                        if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
-                            if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
-                                ngayKetThuc.disabled = true;
-                                ngayKetThuc.value = '';
-                                ngayKetThuc.required = false;
-                                ngayKetThucRequired.style.display = 'none';
-                            } else {
-                                ngayKetThuc.required = true;
-                                ngayKetThucRequired.style.display = 'inline';
-                            }
-                        }
-                    }
-                }, 100);
-            </script>
+
         </div>
     </div>
 
@@ -332,6 +293,36 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        // Xử lý logic ẩn/hiện ngày kết thúc dựa trên loại hợp đồng
+        function handleContractTypeChange() {
+            var loaiHopDong = $('#loai_hop_dong').val();
+            var ngayKetThuc = $('#ngay_ket_thuc');
+            var ngayKetThucRequired = $('#ngay_ket_thuc_required');
+            var trangThaiHopDong = '{{ $hopDong->trang_thai_hop_dong }}';
+            
+            // Chỉ xử lý khi hợp đồng có thể chỉnh sửa
+            if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
+                if (loaiHopDong === 'khong_xac_dinh_thoi_han') {
+                    ngayKetThuc.prop('disabled', true);
+                    ngayKetThuc.val('');
+                    ngayKetThuc.prop('required', false);
+                    ngayKetThucRequired.hide();
+                } else {
+                    ngayKetThuc.prop('disabled', false);
+                    ngayKetThuc.prop('required', true);
+                    ngayKetThucRequired.show();
+                }
+            }
+        }
+        
+        // Chạy lần đầu khi trang load
+        handleContractTypeChange();
+        
+        // Xử lý khi thay đổi loại hợp đồng
+        $('#loai_hop_dong').on('change', function() {
+            handleContractTypeChange();
+        });
+        
         // Validate ngày kết thúc phải sau ngày bắt đầu
         $('#ngay_ket_thuc').on('change', function() {
             var ngayBatDau = new Date($('#ngay_bat_dau').val());

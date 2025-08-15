@@ -282,25 +282,36 @@ class HopDongLaoDongController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Tạo validation rules động dựa trên loại hợp đồng
+        $validationRules = [
             'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'so_hop_dong' => 'required|string|unique:hop_dong_lao_dong,so_hop_dong',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
-            // 'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
-            // 'hinh_thuc_lam_viec' => 'required|string', // Đã bỏ trường hình thức làm việc
             'dia_diem_lam_viec' => 'required|string',
             'dieu_khoan' => 'required|string',
             'ghi_chu' => 'nullable|string',
             'file_hop_dong' => 'required|array|min:1',
             'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
-        ], [
+        ];
+
+        // Chỉ bắt buộc ngày kết thúc nếu không phải hợp đồng không xác định thời hạn
+        if ($request->loai_hop_dong !== 'khong_xac_dinh_thoi_han') {
+            $validationRules['ngay_ket_thuc'] = 'required|date|after:ngay_bat_dau';
+        } else {
+            $validationRules['ngay_ket_thuc'] = 'nullable|date|after:ngay_bat_dau';
+        }
+
+        $request->validate($validationRules, [
             'so_hop_dong.required' => 'Số hợp đồng không được để trống.',
             'so_hop_dong.unique' => 'Số hợp đồng đã tồn tại.',
+            'ngay_ket_thuc.required' => 'Vui lòng chọn ngày kết thúc.',
+            'ngay_ket_thuc.date' => 'Ngày kết thúc không hợp lệ.',
+            'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
             'file_hop_dong.required' => 'Vui lòng chọn file hợp đồng.',
             'file_hop_dong.array' => 'File hợp đồng không hợp lệ.',
             'file_hop_dong.min' => 'Vui lòng chọn ít nhất 1 file hợp đồng.',
@@ -450,21 +461,29 @@ class HopDongLaoDongController extends Controller
             return redirect()->route('hopdong.index')->with('error', $errorMessage);
         }
 
-        $request->validate([
+        // Tạo validation rules động dựa trên loại hợp đồng
+        $validationRules = [
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
-            'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
-            // 'hinh_thuc_lam_viec' => 'required|string', // Đã bỏ trường hình thức làm việc
             'dia_diem_lam_viec' => 'required|string',
             'ghi_chu' => 'nullable|string',
             'trang_thai_ky' => 'required|in:cho_ky,da_ky',
             'file_hop_dong' => 'nullable|array|min:1',
             'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
-        ], [
+        ];
+
+        // Chỉ bắt buộc ngày kết thúc nếu không phải hợp đồng không xác định thời hạn
+        if ($request->loai_hop_dong !== 'khong_xac_dinh_thoi_han') {
+            $validationRules['ngay_ket_thuc'] = 'required|date|after:ngay_bat_dau';
+        } else {
+            $validationRules['ngay_ket_thuc'] = 'nullable|date|after:ngay_bat_dau';
+        }
+
+        $request->validate($validationRules, [
             'chuc_vu_id.required' => 'Vui lòng chọn chức vụ.',
             'chuc_vu_id.exists' => 'Chức vụ không tồn tại.',
             'loai_hop_dong.required' => 'Vui lòng chọn loại hợp đồng.',
@@ -478,7 +497,6 @@ class HopDongLaoDongController extends Controller
             'luong_co_ban.min' => 'Lương cơ bản không được âm.',
             'phu_cap.numeric' => 'Phụ cấp phải là số.',
             'phu_cap.min' => 'Phụ cấp không được âm.',
-            // 'hinh_thuc_lam_viec.required' => 'Vui lòng chọn hình thức làm việc.', // Đã bỏ trường hình thức làm việc
             'dia_diem_lam_viec.required' => 'Vui lòng nhập địa điểm làm việc.',
             'trang_thai_ky.required' => 'Vui lòng chọn trạng thái ký.',
             'trang_thai_ky.in' => 'Trạng thái ký không hợp lệ.',

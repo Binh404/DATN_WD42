@@ -117,7 +117,7 @@
                                    class="form-control @error('luong_co_ban') is-invalid @enderror"
                                    id="luong_co_ban" 
                                    name="luong_co_ban" 
-                                   value="{{ old('luong_co_ban') }}" 
+                                   value="{{ old('luong_co_ban') ? (int)old('luong_co_ban') : '' }}" 
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
@@ -135,7 +135,7 @@
                                    class="form-control @error('phu_cap') is-invalid @enderror"
                                    id="phu_cap" 
                                    name="phu_cap" 
-                                   value="{{ old('phu_cap') }}"
+                                   value="{{ old('phu_cap') ? (int)old('phu_cap') : '' }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)">
