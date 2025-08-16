@@ -24,7 +24,7 @@ class NotificationController extends Controller
         }
 
         $hopdongId = $notification->data['hopdong_id'] ?? null;
-        $hopdong = $hopdongId ? HopDongLaoDong::find($hopdongId) : null;
+        $hopdong = $hopdongId ? HopDongLaoDong::with(['nguoiGuiHopDong.hoSo'])->find($hopdongId) : null;
 
         return view('notifications.show', compact('notification', 'hopdong'));
     }
@@ -32,19 +32,39 @@ class NotificationController extends Controller
     public function xacNhanKy(Request $request, $id)
     {
         $hopdong = \App\Models\HopDongLaoDong::findOrFail($id);
-        // Cập nhật trạng thái ký
-        $hopdong->update([
+        
+        // Chuẩn bị dữ liệu cập nhật
+        $updateData = [
             'trang_thai_ky' => 'da_ky',
-            'trang_thai_hop_dong' => 'hieu_luc',
             'nguoi_ky_id' => \Illuminate\Support\Facades\Auth::id(),
             'thoi_gian_ky' => now(),
-        ]);
-        // Gửi thông báo cho HR
-        $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
-            $q->where('ten', 'hr');
+        ];
+        
+        // Tự động chuyển trạng thái hợp đồng thành "hiệu lực" khi ký
+        if (in_array($hopdong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) {
+            $updateData['trang_thai_hop_dong'] = 'hieu_luc';
+        }
+        
+        // Cập nhật thông tin hợp đồng
+        $hopdong->update($updateData);
+        
+        // Gửi thông báo cho HR và Admin
+        $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+            $q->where('name', 'hr');
         })->get();
+        
+        $adminUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
+            $q->where('name', 'admin');
+        })->get();
+        
+        // Gửi thông báo cho HR
         foreach ($hrUsers as $hr) {
             $hr->notify(new \App\Notifications\HopDongSignedNotification($hopdong));
+        }
+        
+        // Gửi thông báo cho Admin
+        foreach ($adminUsers as $admin) {
+            $admin->notify(new \App\Notifications\HopDongSignedNotification($hopdong));
         }
         return redirect()->route('notifications.show', $request->notification_id ?? $id)
             ->with('success', 'Bạn đã ký hợp đồng thành công!');
@@ -58,13 +78,23 @@ class NotificationController extends Controller
                 'trang_thai_ky' => 'tu_choi_ky',
             ]);
 
-            // Gửi thông báo cho HR
+            // Gửi thông báo cho HR và Admin
             $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
-                $q->where('ten', 'hr');
+                $q->where('name', 'hr');
+            })->get();
+            
+            $adminUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'admin');
             })->get();
 
+            // Gửi thông báo cho HR
             foreach ($hrUsers as $hr) {
                 $hr->notify(new \App\Notifications\HopDongRefusedNotification($hopdong));
+            }
+            
+            // Gửi thông báo cho Admin
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new \App\Notifications\HopDongRefusedNotification($hopdong));
             }
 
             return redirect()->back()->with('success', 'Bạn đã từ chối ký hợp đồng!');

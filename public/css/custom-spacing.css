@@ -1,0 +1,141 @@
+/* Custom Spacing for Rows */
+.row {
+    margin-bottom: 1.5rem;
+}
+
+.row:last-child {
+    margin-bottom: 0;
+}
+
+/* Spacing variations */
+.row-spacing-sm {
+    margin-bottom: 0.75rem;
+}
+
+.row-spacing-md {
+    margin-bottom: 1.5rem;
+}
+
+.row-spacing-lg {
+    margin-bottom: 2rem;
+}
+
+.row-spacing-xl {
+    margin-bottom: 3rem;
+}
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+    .row {
+        margin-bottom: 1rem;
+    }
+    
+    .row-spacing-sm {
+        margin-bottom: 0.5rem;
+    }
+    
+    .row-spacing-md {
+        margin-bottom: 1rem;
+    }
+    
+    .row-spacing-lg {
+        margin-bottom: 1.5rem;
+    }
+    
+    .row-spacing-xl {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Specific spacing for different sections */
+.card + .row {
+    margin-top: 1rem;
+}
+
+.tab-content .row {
+    margin-bottom: 2rem;
+}
+
+.tab-content .row:last-child {
+    margin-bottom: 0;
+}
+
+/* Spacing for form sections */
+.form-section .row {
+    margin-bottom: 1.5rem;
+}
+
+/* Spacing for dashboard cards */
+.dashboard-stats .row {
+    margin-bottom: 2rem;
+}
+
+/* Spacing for table sections */
+.table-section .row {
+    margin-bottom: 1.5rem;
+}
+
+/* Additional utility classes for spacing */
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: 0.25rem !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.mb-3 { margin-bottom: 1rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mb-5 { margin-bottom: 3rem !important; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: 0.25rem !important; }
+.mt-2 { margin-top: 0.5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.mt-5 { margin-top: 3rem !important; }
+
+/* Section spacing */
+.section-spacing {
+    margin-bottom: 3rem;
+}
+
+.section-spacing-sm {
+    margin-bottom: 2rem;
+}
+
+.section-spacing-lg {
+    margin-bottom: 4rem;
+}
+
+/* Card spacing */
+.card-spacing {
+    margin-bottom: 1.5rem;
+}
+
+.card-spacing-sm {
+    margin-bottom: 1rem;
+}
+
+.card-spacing-lg {
+    margin-bottom: 2rem;
+}
+
+/* Form spacing */
+.form-spacing {
+    margin-bottom: 2rem;
+}
+
+.form-group-spacing {
+    margin-bottom: 1rem;
+}
+
+/* Table spacing */
+.table-spacing {
+    margin-bottom: 1.5rem;
+}
+
+/* Button group spacing */
+.btn-group-spacing {
+    margin-bottom: 1rem;
+}
+
+/* Alert spacing */
+.alert-spacing {
+    margin-bottom: 1rem;
+}

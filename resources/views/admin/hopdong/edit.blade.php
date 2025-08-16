@@ -17,7 +17,7 @@
 @if(($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky')
     <div class="alert alert-warning">
         <i class="fas fa-exclamation-triangle"></i>
-        <strong>Lưu ý:</strong> 
+        <strong>Lưu ý:</strong>
         @if($hopDong->trang_thai_ky === 'tu_choi_ky')
             Hợp đồng này đã bị từ chối ký. Bạn có thể xem thông tin nhưng không thể sửa đổi.
         @else
@@ -86,7 +86,7 @@
     <option value="thu_viec" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
     <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
     <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-    
+
 </select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -109,10 +109,10 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="ngay_ket_thuc">Ngày kết thúc</label>
+                            <label for="ngay_ket_thuc">Ngày kết thúc <span class="text-danger" id="ngay_ket_thuc_required" style="display: none;">*</span></label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
     id="ngay_ket_thuc" name="ngay_ket_thuc"
-    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" 
+    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}"
     @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -124,9 +124,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
+                            <label for="luong_co_ban">Lương <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   class="form-control @error('luong_co_ban') is-invalid @enderror"
+                                   id="luong_co_ban"
+                                   name="luong_co_ban"
+                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban ? (int)$hopDong->luong_co_ban : '') }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   required
+                                   @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -136,8 +144,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap', $hopDong->phu_cap) }}" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
+                            <input type="text"
+                                   class="form-control @error('phu_cap') is-invalid @enderror"
+                                   id="phu_cap"
+                                   name="phu_cap"
+                                   value="{{ old('phu_cap', $hopDong->phu_cap ? (int)$hopDong->phu_cap : '') }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -146,18 +161,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
-                                   id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec', $hopDong->hinh_thuc_lam_viec) }}" required @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
-                            @error('hinh_thuc_lam_viec')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
@@ -222,15 +226,47 @@
                     <label for="file_hop_dong">File hợp đồng</label>
                     @if($hopDong->duong_dan_file)
                         <div class="mb-2">
-                            <a href="{{ \Illuminate\Support\Facades\Storage::url($hopDong->duong_dan_file) }}" target="_blank" class="btn btn-info btn-sm">
-                                <i class="fas fa-file-pdf"></i> Xem file hiện tại
-                            </a>
+                            <h6>File hiện tại:</h6>
+                            @php
+                                $files = explode(';', $hopDong->duong_dan_file);
+                                $files = array_filter($files); // Loại bỏ các phần tử rỗng
+                            @endphp
+                            @foreach($files as $index => $file)
+                                @if($file)
+                                    <div class="mb-1">
+                                        <a href="{{ \Illuminate\Support\Facades\Storage::url(trim($file)) }}" target="_blank" class="btn btn-info btn-sm">
+                                            <i class="fas fa-file-pdf"></i> File {{ $index + 1 }}: {{ basename(trim($file)) }}
+                                        </a>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
                     @endif
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
-                                                           id="file_hop_dong" name="file_hop_dong" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
-                    <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB. Để trống nếu muốn giữ file hiện tại.</small>
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
+                           id="file_hop_dong" name="file_hop_dong[]" multiple @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
+
+                    <div id="file-list" class="mt-2"></div>
                     @error('file_hop_dong')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="file_dinh_kem">File đính kèm</label>
+                    @if($hopDong->file_dinh_kem)
+                        <div class="mb-2">
+                            <h6>File đính kèm hiện tại:</h6>
+                            <div class="mb-1">
+                                <a href="{{ \Illuminate\Support\Facades\Storage::url($hopDong->file_dinh_kem) }}" target="_blank" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-paperclip"></i> {{ basename($hopDong->file_dinh_kem) }}
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror"
+                           id="file_dinh_kem" name="file_dinh_kem" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
+
+                    @error('file_dinh_kem')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -239,23 +275,20 @@
                                             <button type="submit" class="btn btn-primary" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
                         <i class="fas fa-save"></i> Lưu thay đổi
                     </button>
-                    @if($hopDong->trang_thai_hop_dong === 'hieu_luc')
-                        <a href="{{ route('hopdong.phuluc.create', $hopDong->id) }}" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Thêm phụ lục
-                        </a>
-                    @endif
+                    {{-- Nút thêm phụ lục đã được xóa --}}
                     <a href="{{ route('hopdong.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
                 </div>
             </form>
-            
+
             <script>
                 setTimeout(function() {
                     var loaiHopDong = document.getElementById('loai_hop_dong');
                     var ngayKetThuc = document.getElementById('ngay_ket_thuc');
+                    var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
                     var trangThaiHopDong = '{{ $hopDong->trang_thai_hop_dong }}';
-                    
+
                     if (loaiHopDong && ngayKetThuc) {
                         // Xử lý khi thay đổi loại hợp đồng
                         loaiHopDong.addEventListener('change', function() {
@@ -264,17 +297,26 @@
                                 if (this.value === 'khong_xac_dinh_thoi_han') {
                                     ngayKetThuc.disabled = true;
                                     ngayKetThuc.value = '';
+                                    ngayKetThuc.required = false;
+                                    ngayKetThucRequired.style.display = 'none';
                                 } else {
                                     ngayKetThuc.disabled = false;
+                                    ngayKetThuc.required = true;
+                                    ngayKetThucRequired.style.display = 'inline';
                                 }
                             }
                         });
-                        
+
                         // Chạy lần đầu
                         if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
                             if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
                                 ngayKetThuc.disabled = true;
                                 ngayKetThuc.value = '';
+                                ngayKetThuc.required = false;
+                                ngayKetThucRequired.style.display = 'none';
+                            } else {
+                                ngayKetThuc.required = true;
+                                ngayKetThucRequired.style.display = 'inline';
                             }
                         }
                     }
@@ -283,49 +325,7 @@
         </div>
     </div>
 
-    @if($hopDong->phuLucs->isNotEmpty())
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Phụ lục hợp đồng đã tạo</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Số phụ lục</th>
-                            <th>Tên phụ lục</th>
-                            <th>Ngày ký</th>
-                            <th>Ngày có hiệu lực PL</th>
-                            <th>Trạng thái ký</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($hopDong->phuLucs as $phuLuc)
-                        <tr>
-                            <td>{{ $phuLuc->so_phu_luc }}</td>
-                            <td>{{ $phuLuc->ten_phu_luc ?? '-' }}</td>
-                            <td>{{ $phuLuc->ngay_ky->format('d/m/Y') }}</td>
-                            <td>{{ $phuLuc->ngay_hieu_luc->format('d/m/Y') }}</td>
-                            <td>
-                                @if($phuLuc->trang_thai_ky == 'da_ky')
-                                    <span class="badge badge-success">Đã ký</span>
-                                @else
-                                    <span class="badge badge-warning">Chờ ký</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('phuluc.show', $phuLuc->id) }}" class="btn btn-info btn-sm">Xem</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @endif
+    {{-- Phần phụ lục hợp đồng đã được xóa --}}
 </div>
 @endsection
 
@@ -343,13 +343,99 @@
             }
         });
 
-        // Format số tiền
+        // Format số tiền - chỉ cho phép nhập số
         $('#luong_co_ban, #phu_cap').on('input', function() {
-            var value = $(this).val();
+            // Loại bỏ tất cả ký tự không phải số
+            var value = $(this).val().replace(/[^0-9]/g, '');
+            $(this).val(value);
+
+            // Nếu giá trị âm thì đặt về 0
             if (value < 0) {
                 $(this).val(0);
             }
         });
+
+        // Xử lý hiển thị danh sách file đã chọn
+        var selectedFiles = []; // Mảng lưu trữ các file đã chọn
+
+        $('#file_hop_dong').on('change', function() {
+            console.log('Files selected:', this.files.length);
+
+            // Thêm các file mới vào mảng selectedFiles
+            for (var i = 0; i < this.files.length; i++) {
+                var file = this.files[i];
+                console.log('File ' + (i + 1) + ':', file.name, file.size);
+
+                // Kiểm tra xem file đã tồn tại chưa
+                var exists = selectedFiles.some(function(existingFile) {
+                    return existingFile.name === file.name && existingFile.size === file.size;
+                });
+
+                if (!exists) {
+                    selectedFiles.push(file);
+                }
+            }
+
+            // Hiển thị lại tất cả file đã chọn
+            displaySelectedFiles();
+
+            // Tạo DataTransfer object để cập nhật input
+            updateFileInput();
+        });
+
+        function displaySelectedFiles() {
+            var fileList = $('#file-list');
+            fileList.empty();
+
+            if (selectedFiles.length > 0) {
+                var list = $('<ul class="list-group list-group-flush"></ul>');
+
+                for (var i = 0; i < selectedFiles.length; i++) {
+                    var file = selectedFiles[i];
+
+                    var item = $(`
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-file"></i> ${file.name}
+                                <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
+                            </div>
+                            <div>
+                                <span class="badge badge-primary badge-pill me-2">${i + 1}</span>
+                                <button type="button" class="btn btn-danger btn-sm remove-file-btn" data-index="${i}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </li>
+                    `);
+                    list.append(item);
+                }
+
+                // Thêm event listener cho các nút xóa
+                list.find('.remove-file-btn').on('click', function() {
+                    var index = parseInt($(this).attr('data-index'));
+                    removeFile(index);
+                });
+
+                fileList.append(list);
+            }
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displaySelectedFiles();
+            updateFileInput();
+        }
+
+        function updateFileInput() {
+            var fileInput = document.getElementById('file_hop_dong');
+            var dataTransfer = new DataTransfer();
+
+            selectedFiles.forEach(function(file) {
+                dataTransfer.items.add(file);
+            });
+
+            fileInput.files = dataTransfer.files;
+        }
     });
 </script>
 @endsection
