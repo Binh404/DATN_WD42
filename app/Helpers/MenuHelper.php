@@ -22,7 +22,7 @@ class MenuHelper
                 'luong',
                 'chamcong',
                 'ungvien',
-                'hopdong',
+                // 'hopdong', // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly', // Quản lý hợp đồng (danh sách, lưu trữ, thống kê)
                 // 'tintuyendung',
                 // 'thongbao',
@@ -89,13 +89,13 @@ class MenuHelper
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
-                'luong' => ['luong', 'phieuluong'],
+                'luong' => ['luong', 'phieuluong', 'danhsach'],
                 'dondexuat' => ['danhsach'],
 
-                'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
+                // 'hopdong' => ['cua_toi'], // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 
-                'thongke' => ['hopdong', 'chamcong'],
+                'thongke' => ['hopdong', 'chamcong', 'luong'],
 
 
                 // 'xinnghiphep' => ['danhsach']

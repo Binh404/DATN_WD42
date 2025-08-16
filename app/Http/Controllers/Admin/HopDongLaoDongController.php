@@ -7,12 +7,15 @@ use App\Models\HopDongLaoDong;
 use App\Models\NguoiDung;
 use App\Models\ChucVu;
 use App\Models\HoSoNguoiDung;
-use App\Models\PhuLucHopDong;
+// PhuLucHopDong model đã được xóa
 use App\Models\PhongBan;
 use App\Models\Luong;
+use App\Models\VaiTro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 use Carbon\Carbon;
 use App\Exports\HopDongExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -51,9 +54,10 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', request('trang_thai_ky'));
         }
 
-        // Loại trừ hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        // Loại trừ hợp đồng đã hủy bỏ, hợp đồng hết hạn đã được tái ký thành công, và hợp đồng từ chối ký
         $query->where(function($q) {
             $q->where('trang_thai_hop_dong', '!=', 'huy_bo')
+              ->where('trang_thai_ky', '!=', 'tu_choi_ky') // Loại trừ hợp đồng từ chối ký
               ->where(function($subQ) {
                   $subQ->where('trang_thai_hop_dong', '!=', 'het_han')
                        ->orWhere(function($innerQ) {
@@ -105,18 +109,16 @@ class HopDongLaoDongController extends Controller
     public function cuaToi()
     {
         $user = Auth::user();
-        
-        // Chỉ lấy hợp đồng đã được HR phê duyệt (trạng thái: hieu_luc, chua_hieu_luc, het_han)
-        // Loại trừ hợp đồng: tao_moi (chưa phê duyệt), huy_bo (đã hủy)
+
+        // Chỉ lấy hợp đồng đã được HR gửi (trạng thái: hieu_luc, chua_hieu_luc, het_han)
+        // Loại trừ hợp đồng: tao_moi (chưa gửi), huy_bo (đã hủy)
         $hopDongs = HopDongLaoDong::with([
             'hoSoNguoiDung',
             'nguoiDung.phongBan',
             'nguoiKy.hoSo',
             'chucVu',
             'nguoiHuy.hoSo',
-            'phuLucs' => function($query) {
-                $query->orderBy('ngay_hieu_luc', 'desc');
-            }
+            // Phụ lục đã được xóa
         ])->where('nguoi_dung_id', $user->id)
           ->whereIn('trang_thai_hop_dong', ['hieu_luc', 'chua_hieu_luc', 'het_han'])
           ->orderBy('created_at', 'desc')
@@ -124,19 +126,19 @@ class HopDongLaoDongController extends Controller
 
         // Lấy hợp đồng hiện tại (ưu tiên hợp đồng hiệu lực)
         $hopDong = $hopDongs->where('trang_thai_hop_dong', 'hieu_luc')->first();
-        
+
         if (!$hopDong) {
             // Nếu không có hợp đồng hiệu lực, lấy hợp đồng chưa hiệu lực
             $hopDong = $hopDongs->where('trang_thai_hop_dong', 'chua_hieu_luc')->first();
         }
-        
+
         if (!$hopDong) {
             // Nếu không có hợp đồng chưa hiệu lực, lấy hợp đồng hết hạn
             $hopDong = $hopDongs->where('trang_thai_hop_dong', 'het_han')->first();
         }
 
         if (!$hopDong) {
-            return view('admin.hopdong.cua-toi', compact('hopDong'))->with('message', 'Bạn chưa có hợp đồng nào được HR phê duyệt.');
+            return view('admin.hopdong.cua-toi', compact('hopDong'))->with('message', 'Bạn chưa có hợp đồng nào được HR gửi.');
         }
 
         return view('admin.hopdong.cua-toi', compact('hopDong'));
@@ -169,9 +171,10 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', request('trang_thai_ky'));
         }
 
-        // Chỉ lấy hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        // Chỉ lấy hợp đồng đã hủy bỏ, hợp đồng hết hạn đã được tái ký thành công, và hợp đồng từ chối ký
         $query->where(function($q) {
             $q->where('trang_thai_hop_dong', 'huy_bo')
+              ->orWhere('trang_thai_ky', 'tu_choi_ky') // Thêm hợp đồng từ chối ký
               ->orWhere(function($subQ) {
                   $subQ->where('trang_thai_hop_dong', 'het_han')
                        ->where('trang_thai_tai_ky', 'da_tai_ky');
@@ -208,25 +211,57 @@ class HopDongLaoDongController extends Controller
         // Lấy danh sách nhân viên:
         // 1. Có hồ sơ (hoSo)
         // 2. Đang làm việc (trang_thai = 1)
-        // 3. Chưa có hợp đồng nào ở trạng thái hiệu lực hoặc tạo mới
-        // 4. HOẶC có hợp đồng đã từ chối ký (trang_thai_ky = 'tu_choi_ky')
-        // 5. HOẶC có hợp đồng chưa hiệu lực và chờ ký (trang_thai_hop_dong = 'chua_hieu_luc' AND trang_thai_ky = 'cho_ky')
-        $nhanViens = NguoiDung::whereHas('hoSo')
-            ->where('trang_thai', 1) // Chỉ lấy nhân viên đang làm việc
-            ->where(function ($query) {
-                $query->whereDoesntHave('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->whereIn('trang_thai_hop_dong', ['hieu_luc', 'tao_moi']);
-                })
-                ->orWhereHas('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->where('trang_thai_ky', 'tu_choi_ky');
-                })
-                ->orWhereHas('hopDongLaoDong', function ($subQuery) {
-                    $subQuery->where('trang_thai_hop_dong', 'chua_hieu_luc')
-                             ->where('trang_thai_ky', 'cho_ky');
-                });
+        // 3. KHÔNG có vai trò admin
+        // 4. KHÔNG có hợp đồng với các trạng thái:
+        //    - trạng thái ký = 'cho_ky' và trạng thái hợp đồng = 'tao_moi'
+        //    - trạng thái ký = 'da_ky' và trạng thái hợp đồng = 'hieu_luc'
+        //    - trạng thái ký = 'cho_ky' và trạng thái hợp đồng = 'chua_hieu_luc'
+        // 5. HOẶC có hợp đồng đã từ chối ký (trang_thai_ky = 'tu_choi_ky')
+
+        // Lấy tất cả nhân viên trước
+        $allNhanViens = NguoiDung::whereHas('hoSo')
+            ->where('trang_thai', 1)
+            ->whereDoesntHave('vaiTros', function ($query) {
+                $query->where('name', 'admin');
             })
-            ->with('hoSo')
+            ->with(['hoSo', 'hopDongLaoDong'])
             ->get();
+
+        // Lọc nhân viên theo điều kiện
+        $nhanViens = $allNhanViens->filter(function ($nhanVien) {
+            // Nhân viên chưa có hợp đồng nào
+            if ($nhanVien->hopDongLaoDong->isEmpty()) {
+                return true;
+            }
+
+            // Kiểm tra từng hợp đồng của nhân viên
+            foreach ($nhanVien->hopDongLaoDong as $hopDong) {
+                // Nếu có hợp đồng với trạng thái không được phép, loại trừ
+                if (($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong == 'tao_moi') ||
+                    ($hopDong->trang_thai_ky == 'da_ky' && $hopDong->trang_thai_hop_dong == 'hieu_luc') ||
+                    ($hopDong->trang_thai_ky == 'cho_ky' && $hopDong->trang_thai_hop_dong == 'chua_hieu_luc')) {
+                    return false;
+                }
+            }
+
+            // Nếu không có hợp đồng nào bị loại trừ, cho phép
+            return true;
+        });
+
+        // Debug: In ra danh sách nhân viên để kiểm tra
+        // Log::info('Danh sách nhân viên được chọn:', $nhanViens->pluck('id')->toArray());
+
+        // Debug: In ra chi tiết từng nhân viên và hợp đồng của họ
+        // foreach ($nhanViens as $nhanVien) {
+        //     Log::info("Nhân viên: {$nhanVien->hoSo->ho} {$nhanVien->hoSo->ten} (ID: {$nhanVien->id})");
+        //     if ($nhanVien->hopDongLaoDong->isNotEmpty()) {
+        //         foreach ($nhanVien->hopDongLaoDong as $hopDong) {
+        //             Log::info("  - Hợp đồng: {$hopDong->so_hop_dong}, Trạng thái ký: {$hopDong->trang_thai_ky}, Trạng thái hợp đồng: {$hopDong->trang_thai_hop_dong}");
+        //         }
+        //     } else {
+        //         Log::info("  - Không có hợp đồng nào");
+        //     }
+        // }
 
         // Nếu có một nhân viên được chỉ định để tái ký nhưng không nằm trong danh sách trên
         // (trường hợp hiếm), hãy thêm họ vào danh sách.
@@ -256,18 +291,26 @@ class HopDongLaoDongController extends Controller
             // 'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
-            'hinh_thuc_lam_viec' => 'required|string',
+            // 'hinh_thuc_lam_viec' => 'required|string', // Đã bỏ trường hình thức làm việc
             'dia_diem_lam_viec' => 'required|string',
             'dieu_khoan' => 'required|string',
             'ghi_chu' => 'nullable|string',
-            'file_hop_dong' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'file_hop_dong' => 'required|array|min:1',
+            'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ], [
             'so_hop_dong.required' => 'Số hợp đồng không được để trống.',
             'so_hop_dong.unique' => 'Số hợp đồng đã tồn tại.',
             'file_hop_dong.required' => 'Vui lòng chọn file hợp đồng.',
-            'file_hop_dong.file' => 'File hợp đồng không hợp lệ.',
-            'file_hop_dong.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
-            'file_hop_dong.max' => 'File hợp đồng không được vượt quá 2MB.',
+            'file_hop_dong.array' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.min' => 'Vui lòng chọn ít nhất 1 file hợp đồng.',
+            'file_hop_dong.*.required' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.*.file' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.*.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
+            'file_hop_dong.*.max' => 'File hợp đồng không được vượt quá 2MB.',
+            'file_dinh_kem.file' => 'File đính kèm không hợp lệ.',
+            'file_dinh_kem.mimes' => 'File đính kèm phải có định dạng PDF, DOC, DOCX, JPG, JPEG hoặc PNG.',
+            'file_dinh_kem.max' => 'File đính kèm không được vượt quá 2MB.',
         ]);
 
         $data = $request->all();
@@ -275,12 +318,25 @@ class HopDongLaoDongController extends Controller
         // Khi tạo mới hợp đồng, mặc định ở trạng thái "tạo mới"
         $data['trang_thai_hop_dong'] = 'tao_moi';
         $data['trang_thai_ky'] = 'cho_ky';
+        $data['created_by'] = Auth::id(); // Lưu ID người tạo hợp đồng
 
-        // Xử lý file hợp đồng
+        // Xử lý file hợp đồng - upload nhiều file
         if ($request->hasFile('file_hop_dong')) {
-            $file = $request->file('file_hop_dong');
-            $path = $file->store('hop_dong', 'public');
-            $data['duong_dan_file'] = $path;
+            $filePaths = [];
+            $files = $request->file('file_hop_dong');
+
+            foreach ($files as $file) {
+                $path = $file->store('hop_dong', 'public');
+                $filePaths[] = $path;
+            }
+            $data['duong_dan_file'] = implode(';', $filePaths);
+        }
+
+        // Xử lý file đính kèm
+        if ($request->hasFile('file_dinh_kem')) {
+            $file = $request->file('file_dinh_kem');
+            $path = $file->store('file_dinh_kem', 'public');
+            $data['file_dinh_kem'] = $path;
         }
 
         $nguoiDungId = $request->nguoi_dung_id;
@@ -318,9 +374,7 @@ class HopDongLaoDongController extends Controller
             'nguoiKy.hoSo',
             'chucVu',
             'nguoiHuy.hoSo',
-            'phuLucs' => function($query) {
-                $query->orderBy('ngay_hieu_luc', 'desc');
-            }
+            // Phụ lục đã được xóa
         ])->findOrFail($id);
 
         return view('admin.hopdong.show', compact('hopDong'));
@@ -331,21 +385,54 @@ class HopDongLaoDongController extends Controller
         $hopDong = HopDongLaoDong::with([
             'hoSoNguoiDung',
             'chucVu',
-            'phuLucs' => function($query) {
-                $query->orderBy('ngay_hieu_luc', 'desc');
-            }
+            // Phụ lục đã được xóa
         ])->findOrFail($id);
 
         // Kiểm tra điều kiện không cho phép sửa đổi
-        if (($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || 
+        if (($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') ||
             $hopDong->trang_thai_ky === 'tu_choi_ky') {
-            $errorMessage = $hopDong->trang_thai_ky === 'tu_choi_ky' 
+            $errorMessage = $hopDong->trang_thai_ky === 'tu_choi_ky'
                 ? 'Không thể sửa đổi hợp đồng đã bị từ chối ký.'
-                : 'Không thể sửa đổi hợp đồng đang ở trạng thái chờ ký và chưa hiệu lực.';
+                : 'Không thể sửa đổi hợp đồng khi đã gửi hợp đồng đó cho nhân viên.';
             return redirect()->route('hopdong.index')->with('error', $errorMessage);
         }
 
-        $nhanViens = NguoiDung::with('hoSo')->whereHas('hoSo')->get();
+        // Lấy danh sách nhân viên tương tự như create, nhưng bao gồm cả nhân viên hiện tại của hợp đồng
+
+        // Lấy tất cả nhân viên trước
+        $allNhanViens = NguoiDung::whereHas('hoSo')
+            ->where('trang_thai', 1)
+            ->whereDoesntHave('vaiTros', function ($query) {
+                $query->where('name', 'admin');
+            })
+            ->with(['hoSo', 'hopDongLaoDong'])
+            ->get();
+
+        // Lọc nhân viên theo điều kiện
+        $nhanViens = $allNhanViens->filter(function ($nhanVien) use ($hopDong) {
+            // Luôn cho phép nhân viên hiện tại của hợp đồng đang chỉnh sửa
+            if ($nhanVien->id == $hopDong->nguoi_dung_id) {
+                return true;
+            }
+
+            // Nhân viên chưa có hợp đồng nào
+            if ($nhanVien->hopDongLaoDong->isEmpty()) {
+                return true;
+            }
+
+            // Kiểm tra từng hợp đồng của nhân viên
+            foreach ($nhanVien->hopDongLaoDong as $hopDongItem) {
+                // Nếu có hợp đồng với trạng thái không được phép, loại trừ
+                if (($hopDongItem->trang_thai_ky == 'cho_ky' && $hopDongItem->trang_thai_hop_dong == 'tao_moi') ||
+                    ($hopDongItem->trang_thai_ky == 'da_ky' && $hopDongItem->trang_thai_hop_dong == 'hieu_luc') ||
+                    ($hopDongItem->trang_thai_ky == 'cho_ky' && $hopDongItem->trang_thai_hop_dong == 'chua_hieu_luc')) {
+                    return false;
+                }
+            }
+
+            // Nếu không có hợp đồng nào bị loại trừ, cho phép
+            return true;
+        });
         $chucVus = ChucVu::all();
         return view('admin.hopdong.edit', compact('hopDong', 'nhanViens', 'chucVus'));
     }
@@ -355,27 +442,36 @@ class HopDongLaoDongController extends Controller
         $hopDong = HopDongLaoDong::findOrFail($id);
 
         // Kiểm tra điều kiện không cho phép sửa đổi
-        if (($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || 
+        if (($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') ||
             $hopDong->trang_thai_ky === 'tu_choi_ky') {
-            $errorMessage = $hopDong->trang_thai_ky === 'tu_choi_ky' 
+            $errorMessage = $hopDong->trang_thai_ky === 'tu_choi_ky'
                 ? 'Không thể sửa đổi hợp đồng đã bị từ chối ký.'
-                : 'Không thể sửa đổi hợp đồng đang ở trạng thái chờ ký và chưa hiệu lực.';
+                : 'Không thể sửa đổi hợp đồng khi đã gửi hợp đồng đó cho nhân viên.';
             return redirect()->route('hopdong.index')->with('error', $errorMessage);
         }
 
-        $request->validate([
+        $validationRules = [
             'chuc_vu_id' => 'required|exists:chuc_vu,id',
             'loai_hop_dong' => 'required|string',
             'ngay_bat_dau' => 'required|date',
-            'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'luong_co_ban' => 'required|numeric|min:0',
             'phu_cap' => 'nullable|numeric|min:0',
-            'hinh_thuc_lam_viec' => 'required|string',
             'dia_diem_lam_viec' => 'required|string',
             'ghi_chu' => 'nullable|string',
             'trang_thai_ky' => 'required|in:cho_ky,da_ky',
-            'file_hop_dong' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        ], [
+            'file_hop_dong' => 'nullable|array|min:1',
+            'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
+        ];
+
+        // Chỉ bắt buộc ngày kết thúc nếu không phải hợp đồng không xác định thời hạn
+        if ($request->loai_hop_dong !== 'khong_xac_dinh_thoi_han') {
+            $validationRules['ngay_ket_thuc'] = 'required|date|after:ngay_bat_dau';
+        } else {
+            $validationRules['ngay_ket_thuc'] = 'nullable|date|after:ngay_bat_dau';
+        }
+
+        $request->validate($validationRules, [
             'chuc_vu_id.required' => 'Vui lòng chọn chức vụ.',
             'chuc_vu_id.exists' => 'Chức vụ không tồn tại.',
             'loai_hop_dong.required' => 'Vui lòng chọn loại hợp đồng.',
@@ -389,13 +485,18 @@ class HopDongLaoDongController extends Controller
             'luong_co_ban.min' => 'Lương cơ bản không được âm.',
             'phu_cap.numeric' => 'Phụ cấp phải là số.',
             'phu_cap.min' => 'Phụ cấp không được âm.',
-            'hinh_thuc_lam_viec.required' => 'Vui lòng chọn hình thức làm việc.',
             'dia_diem_lam_viec.required' => 'Vui lòng nhập địa điểm làm việc.',
             'trang_thai_ky.required' => 'Vui lòng chọn trạng thái ký.',
             'trang_thai_ky.in' => 'Trạng thái ký không hợp lệ.',
-            'file_hop_dong.file' => 'File hợp đồng không hợp lệ.',
-            'file_hop_dong.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
-            'file_hop_dong.max' => 'File hợp đồng không được vượt quá 2MB.',
+            'file_hop_dong.array' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.min' => 'Vui lòng chọn ít nhất 1 file hợp đồng.',
+            'file_hop_dong.*.required' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.*.file' => 'File hợp đồng không hợp lệ.',
+            'file_hop_dong.*.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
+            'file_hop_dong.*.max' => 'File hợp đồng không được vượt quá 2MB.',
+            'file_dinh_kem.file' => 'File đính kèm không hợp lệ.',
+            'file_dinh_kem.mimes' => 'File đính kèm phải có định dạng PDF, DOC, DOCX, JPG, JPEG hoặc PNG.',
+            'file_dinh_kem.max' => 'File đính kèm không được vượt quá 2MB.',
         ]);
 
         // Kiểm tra ngày bắt đầu >= ngày hiện tại khi hợp đồng ở trạng thái "chưa hiệu lực"
@@ -412,24 +513,49 @@ class HopDongLaoDongController extends Controller
             return redirect()->back()->withErrors(['trang_thai_ky' => 'Không thể thay đổi trạng thái của hợp đồng đã ký.'])->withInput();
         }
 
-        $data = $request->except(['file_hop_dong', 'trang_thai_hop_dong']);
+        $data = $request->except(['file_hop_dong', 'file_dinh_kem', 'trang_thai_hop_dong']);
 
         // Không tự động thay đổi trạng thái hợp đồng khi update
-        // Trạng thái hợp đồng chỉ thay đổi thông qua các action riêng biệt (phê duyệt, ký, hủy)
+        // Trạng thái hợp đồng chỉ thay đổi thông qua các action riêng biệt (gửi, ký, hủy)
 
-        // Xử lý file hợp đồng (bắt buộc)
+        // Xử lý file hợp đồng - upload nhiều file
         if ($request->hasFile('file_hop_dong')) {
             // Xóa file cũ nếu có
             if ($hopDong->duong_dan_file) {
-                Storage::disk('public')->delete($hopDong->duong_dan_file);
+                $oldFiles = explode(';', $hopDong->duong_dan_file);
+                foreach ($oldFiles as $oldFile) {
+                    if (trim($oldFile)) {
+                        Storage::disk('public')->delete(trim($oldFile));
+                    }
+                }
             }
 
-            $file = $request->file('file_hop_dong');
-            $path = $file->store('hop_dong', 'public');
-            $data['duong_dan_file'] = $path;
+            $filePaths = [];
+            $files = $request->file('file_hop_dong');
+
+            foreach ($files as $file) {
+                $path = $file->store('hop_dong', 'public');
+                $filePaths[] = $path;
+            }
+            $data['duong_dan_file'] = implode(';', $filePaths);
         } else {
             // Nếu không có file mới, giữ lại file cũ
             $data['duong_dan_file'] = $hopDong->duong_dan_file;
+        }
+
+        // Xử lý file đính kèm
+        if ($request->hasFile('file_dinh_kem')) {
+            // Xóa file đính kèm cũ nếu có
+            if ($hopDong->file_dinh_kem) {
+                Storage::disk('public')->delete($hopDong->file_dinh_kem);
+            }
+
+            $file = $request->file('file_dinh_kem');
+            $path = $file->store('file_dinh_kem', 'public');
+            $data['file_dinh_kem'] = $path;
+        } else {
+            // Nếu không có file đính kèm mới, giữ lại file cũ
+            $data['file_dinh_kem'] = $hopDong->file_dinh_kem;
         }
 
         $hopDong->update($data);
@@ -437,7 +563,7 @@ class HopDongLaoDongController extends Controller
         // Cập nhật bản ghi lương tương ứng nếu lương cơ bản hoặc phụ cấp thay đổi
         try {
             $luong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
-            
+
             if ($luong) {
                 // Chỉ cập nhật nếu có thay đổi về lương cơ bản hoặc phụ cấp
                 if ($luong->luong_co_ban != $request->luong_co_ban || $luong->phu_cap != ($request->phu_cap ?? 0)) {
@@ -527,8 +653,14 @@ class HopDongLaoDongController extends Controller
                 'thoi_gian_huy' => now(),
             ]);
 
+            // Gửi thông báo cho nhân viên
+            $nhanVien = $hopDong->nguoiDung;
+            if ($nhanVien) {
+                $nhanVien->notify(new \App\Notifications\HopDongCancelledNotification($hopDong));
+            }
+
             return redirect()->route('hopdong.show', $hopDong->id)
-                ->with('success', 'Hủy hợp đồng thành công');
+                ->with('success', 'Hủy hợp đồng thành công. Thông báo đã được gửi đến nhân viên.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi hủy hợp đồng. Vui lòng thử lại.');
         }
@@ -539,12 +671,12 @@ class HopDongLaoDongController extends Controller
         try {
             $hopDong = HopDongLaoDong::findOrFail($id);
 
-            // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
+            // Kiểm tra quyền gửi hợp đồng (chỉ admin và HR mới có quyền)
             $user = Auth::user();
             $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
 
             if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
-                return redirect()->back()->with('error', 'Bạn không có quyền phê duyệt hợp đồng');
+                return redirect()->back()->with('error', 'Bạn không có quyền gửi hợp đồng cho nhân viên');
             }
 
             if ($hopDong->trang_thai_hop_dong !== 'tao_moi') {
@@ -563,11 +695,11 @@ class HopDongLaoDongController extends Controller
             }
 
             return redirect()->route('hopdong.show', $hopDong->id)
-                ->with('success', 'Phê duyệt hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Chưa hiệu lực" và sẵn sàng để ký.');
+                ->with('success', 'Gửi hợp đồng cho nhân viên thành công! Hợp đồng đã chuyển sang trạng thái "Chưa hiệu lực" và sẵn sàng để ký.');
 
         } catch (\Exception $e) {
-            \Log::error('Lỗi phê duyệt hợp đồng: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi phê duyệt hợp đồng: ' . $e->getMessage());
+            \Log::error('Lỗi gửi hợp đồng cho nhân viên: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi gửi hợp đồng cho nhân viên: ' . $e->getMessage());
         }
     }
 
@@ -575,15 +707,15 @@ class HopDongLaoDongController extends Controller
     // {
     //     try {
     //         $hopDong = HopDongLaoDong::findOrFail($id);
-            
+
     //         // Kiểm tra quyền ký (chỉ admin và HR mới có quyền)
     //         $user = Auth::user();
     //         $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
-            
+
     //         if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
     //             return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng');
     //         }
-            
+
     //         if ($hopDong->trang_thai_hop_dong !== 'chua_hieu_luc') {
     //             return redirect()->back()->with('error', 'Hợp đồng phải ở trạng thái "Chưa hiệu lực" để có thể ký');
     //         }
@@ -610,7 +742,7 @@ class HopDongLaoDongController extends Controller
 
     //         return redirect()->route('hopdong.show', $hopDong->id)
     //             ->with('success', 'Ký hợp đồng thành công! Hợp đồng đã chuyển sang trạng thái "Hiệu lực".');
-                
+
     //     } catch (\Exception $e) {
     //         \Log::error('Lỗi ký hợp đồng: ' . $e->getMessage());
     //         return redirect()->back()->with('error', 'Có lỗi xảy ra khi ký hợp đồng: ' . $e->getMessage());
@@ -619,96 +751,7 @@ class HopDongLaoDongController extends Controller
 
 
 
-    public function createPhuLuc(HopDongLaoDong $hopDong)
-    {
-        $chucVus = ChucVu::all();
-        return view('admin.hopdong.phuluc.create', compact('hopDong', 'chucVus'));
-    }
-
-    public function storePhuLuc(Request $request, HopDongLaoDong $hopDong)
-    {
-        $validatedData = $request->validate([
-            'so_phu_luc' => 'required|string|unique:phu_luc_hop_dong,so_phu_luc',
-            'ten_phu_luc' => 'nullable|string|max:255',
-            'ngay_ky' => 'required|date',
-            'ngay_hieu_luc_pl' => 'required|date|after_or_equal:ngay_ky',
-            'trang_thai_ky' => 'required|in:cho_ky,da_ky',
-            'chuc_vu_id' => 'required|exists:chuc_vu,id',
-            'loai_hop_dong' => 'required|string',
-            'ngay_het_han_moi' => 'required|date|after:ngay_hieu_luc_pl',
-            'luong_co_ban_moi' => 'required|numeric|min:0',
-            'phu_cap_moi' => 'required|numeric|min:0',
-            'hinh_thuc_lam_viec' => 'required|string|max:255',
-            'dia_diem_lam_viec' => 'required|string|max:255',
-            'tep_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'noi_dung_thay_doi' => 'required|string',
-            'ghi_chu' => 'nullable|string',
-        ]);
-
-        // 1. Create and save the appendix
-        $phuLuc = new PhuLucHopDong([
-            'so_phu_luc' => $validatedData['so_phu_luc'],
-            'ten_phu_luc' => $validatedData['ten_phu_luc'],
-            'ngay_ky' => $validatedData['ngay_ky'],
-            'ngay_hieu_luc' => $validatedData['ngay_hieu_luc_pl'],
-            'trang_thai_ky' => $validatedData['trang_thai_ky'],
-            'hop_dong_id' => $hopDong->id,
-            'nguoi_tao_id' => Auth::id(),
-            'chuc_vu_id' => $validatedData['chuc_vu_id'],
-            'loai_hop_dong' => $validatedData['loai_hop_dong'],
-            'ngay_ket_thuc' => $validatedData['ngay_het_han_moi'],
-            'luong_co_ban' => $validatedData['luong_co_ban_moi'],
-            'phu_cap' => $validatedData['phu_cap_moi'],
-            'hinh_thuc_lam_viec' => $validatedData['hinh_thuc_lam_viec'],
-            'dia_diem_lam_viec' => $validatedData['dia_diem_lam_viec'],
-            'noi_dung_thay_doi' => $validatedData['noi_dung_thay_doi'],
-            'ghi_chu' => $validatedData['ghi_chu'],
-        ]);
-
-        if ($request->hasFile('tep_dinh_kem')) {
-            $path = $request->file('tep_dinh_kem')->store('phu_luc', 'public');
-            $phuLuc->tep_dinh_kem = $path;
-        }
-        $phuLuc->save();
-
-        // 2. Update the original contract if the appendix is signed
-        if ($phuLuc->trang_thai_ky === 'da_ky') {
-            $hopDong->update([
-                'chuc_vu_id' => $phuLuc->chuc_vu_id,
-                'loai_hop_dong' => $phuLuc->loai_hop_dong,
-                'ngay_ket_thuc' => $phuLuc->ngay_ket_thuc,
-                'luong_co_ban' => $phuLuc->luong_co_ban,
-                'phu_cap' => $phuLuc->phu_cap,
-                'hinh_thuc_lam_viec' => $phuLuc->hinh_thuc_lam_viec,
-                'dia_diem_lam_viec' => $phuLuc->dia_diem_lam_viec,
-            ]);
-
-            // Cập nhật bản ghi lương tương ứng
-            try {
-                $luong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
-                
-                if ($luong) {
-                    $luong->update([
-                        'luong_co_ban' => $phuLuc->luong_co_ban,
-                        'phu_cap' => $phuLuc->phu_cap,
-                    ]);
-                } else {
-                    // Nếu chưa có bản ghi lương, tạo mới
-                    Luong::create([
-                        'nguoi_dung_id' => $hopDong->nguoi_dung_id,
-                        'hop_dong_lao_dong_id' => $hopDong->id,
-                        'luong_co_ban' => $phuLuc->luong_co_ban,
-                        'phu_cap' => $phuLuc->phu_cap,
-                    ]);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Lỗi cập nhật bản ghi lương từ phụ lục: ' . $e->getMessage());
-            }
-        }
-
-        return redirect()->route('hopdong.show', $hopDong->id)
-            ->with('success', 'Tạo phụ lục hợp đồng thành công!');
-    }
+    // Methods phụ lục đã được xóa
 
     public function export(Request $request)
     {
@@ -786,9 +829,10 @@ class HopDongLaoDongController extends Controller
             $query->where('trang_thai_ky', $request->trang_thai_ky);
         }
 
-        // Chỉ export hợp đồng đã hủy bỏ và hợp đồng hết hạn đã được tái ký thành công
+        // Chỉ export hợp đồng đã hủy bỏ, hợp đồng hết hạn đã được tái ký thành công, và hợp đồng từ chối ký
         $query->where(function($q) {
             $q->where('trang_thai_hop_dong', 'huy_bo')
+              ->orWhere('trang_thai_ky', 'tu_choi_ky') // Thêm hợp đồng từ chối ký
               ->orWhere(function($subQ) {
                   $subQ->where('trang_thai_hop_dong', 'het_han')
                        ->where('trang_thai_tai_ky', 'da_tai_ky');
@@ -807,15 +851,15 @@ class HopDongLaoDongController extends Controller
         // Lấy tham số thời gian từ request
         $tuNgay = $request->input('tu_ngay');
         $denNgay = $request->input('den_ngay');
-        
+
         // Tạo query builder cơ bản
         $query = HopDongLaoDong::query();
-        
+
         // Áp dụng filter thời gian nếu có
         if ($tuNgay && $denNgay) {
             $query->whereBetween('hop_dong_lao_dong.created_at', [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59']);
         }
-        
+
         // Thống kê tổng quan
         $tongHopDong = (clone $query)->count();
         $hopDongHieuLuc = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'hieu_luc')->count();
@@ -823,19 +867,19 @@ class HopDongLaoDongController extends Controller
         $hopDongHetHan = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'het_han')->count();
         $hopDongHuyBo = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'huy_bo')->count();
         $hopDongTaoMoi = (clone $query)->where('hop_dong_lao_dong.trang_thai_hop_dong', 'tao_moi')->count();
-        
+
         // Thống kê theo loại hợp đồng
         $thongKeLoaiHopDong = (clone $query)->selectRaw('hop_dong_lao_dong.loai_hop_dong, COUNT(*) as so_luong')
             ->groupBy('hop_dong_lao_dong.loai_hop_dong')
             ->get()
             ->keyBy('loai_hop_dong');
-        
+
         // Thống kê theo trạng thái ký
         $thongKeTrangThaiKy = (clone $query)->selectRaw('hop_dong_lao_dong.trang_thai_ky, COUNT(*) as so_luong')
             ->groupBy('hop_dong_lao_dong.trang_thai_ky')
             ->get()
             ->keyBy('trang_thai_ky');
-        
+
         // Thống kê theo tháng trong năm hiện tại hoặc năm được chọn
         $namHienTai = $tuNgay ? date('Y', strtotime($tuNgay)) : now()->year;
         $thongKeTheoThang = (clone $query)->selectRaw('MONTH(hop_dong_lao_dong.created_at) as thang, COUNT(*) as so_luong')
@@ -843,7 +887,7 @@ class HopDongLaoDongController extends Controller
             ->groupBy('thang')
             ->orderBy('thang')
             ->get();
-        
+
         // Thống kê theo phòng ban
         $thongKeTheoPhongBan = (clone $query)->join('nguoi_dung', 'hop_dong_lao_dong.nguoi_dung_id', '=', 'nguoi_dung.id')
             ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
@@ -851,36 +895,36 @@ class HopDongLaoDongController extends Controller
             ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
             ->orderBy('so_luong', 'desc')
             ->get();
-        
+
         // Thống kê hợp đồng sắp hết hạn (30 ngày tới)
         $hopDongSapHetHan = HopDongLaoDong::where('trang_thai_hop_dong', 'hieu_luc')
             ->where('ngay_ket_thuc', '>', now())
             ->where('ngay_ket_thuc', '<=', now()->addDays(30))
             ->with(['hoSoNguoiDung', 'chucVu'])
             ->get();
-        
+
         // Thống kê hợp đồng mới trong tháng
         $hopDongMoiTrongThang = (clone $query)->whereMonth('hop_dong_lao_dong.created_at', now()->month)
             ->whereYear('hop_dong_lao_dong.created_at', now()->year)
             ->count();
-        
+
         // Thống kê hợp đồng hết hạn trong tháng
         $hopDongHetHanTrongThang = (clone $query)->whereMonth('hop_dong_lao_dong.ngay_ket_thuc', now()->month)
             ->whereYear('hop_dong_lao_dong.ngay_ket_thuc', now()->year)
             ->where('hop_dong_lao_dong.trang_thai_hop_dong', 'het_han')
             ->count();
-        
+
         // Thống kê lương trung bình theo loại hợp đồng
         $luongTrungBinhTheoLoai = (clone $query)->selectRaw('hop_dong_lao_dong.loai_hop_dong, AVG(hop_dong_lao_dong.luong_co_ban) as luong_trung_binh')
             ->groupBy('hop_dong_lao_dong.loai_hop_dong')
             ->get();
-        
+
         // Thống kê theo năm
         $thongKeTheoNam = HopDongLaoDong::selectRaw('YEAR(created_at) as nam, COUNT(*) as so_luong')
             ->groupBy('nam')
             ->orderBy('nam', 'desc')
             ->get();
-        
+
         return view('admin.hopdong.thong-ke', compact(
             'tongHopDong',
             'hopDongHieuLuc',
@@ -956,16 +1000,16 @@ class HopDongLaoDongController extends Controller
     {
         $year = date('Y');
         $prefix = 'HD';
-        
+
         do {
             // Tạo số ngẫu nhiên 4 chữ số
             $randomNumber = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
             $soHopDong = $prefix . $randomNumber . '-' . $year;
-            
+
             // Kiểm tra xem số hợp đồng đã tồn tại chưa
             $exists = HopDongLaoDong::where('so_hop_dong', $soHopDong)->exists();
         } while ($exists);
-        
+
         return $soHopDong;
     }
 
@@ -974,21 +1018,21 @@ class HopDongLaoDongController extends Controller
      */
     public function kyHopDong($id)
     {
-        $hopDong = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu'])->findOrFail($id);
-        
+        $hopDong = HopDongLaoDong::with(['hoSoNguoiDung', 'nguoiKy', 'chucVu', 'nguoiGuiHopDong.hoSo'])->findOrFail($id);
+
         // Kiểm tra quyền: chỉ nhân viên sở hữu hợp đồng mới được ký
         if ($hopDong->nguoi_dung_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng này.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Bạn không có quyền ký hợp đồng này.');
         }
 
         // Kiểm tra trạng thái hợp đồng - chỉ cho phép ký hợp đồng đã được HR phê duyệt
         if (!in_array($hopDong->trang_thai_hop_dong, ['hieu_luc', 'chua_hieu_luc', 'het_han'])) {
-            return redirect()->back()->with('error', 'Hợp đồng này chưa được HR phê duyệt. Vui lòng chờ phê duyệt trước khi ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này chưa được HR phê duyệt. Vui lòng chờ phê duyệt trước khi ký.');
         }
 
         // Kiểm tra trạng thái ký
         if ($hopDong->trang_thai_ky === 'da_ky') {
-            return redirect()->back()->with('error', 'Hợp đồng này đã được ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này đã được ký.');
         }
 
         return view('admin.hopdong.ky-hop-dong', compact('hopDong'));
@@ -1000,68 +1044,111 @@ class HopDongLaoDongController extends Controller
     public function xuLyKyHopDong(Request $request, $id)
     {
         $request->validate([
-            'file_hop_dong_da_ky' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240', // Max 10MB
+            'file_hop_dong_da_ky' => 'required|array',
+            'file_hop_dong_da_ky.*' => 'file|mimes:pdf,jpg,jpeg,png|max:10240', // Max 10MB per file
         ], [
             'file_hop_dong_da_ky.required' => 'BẮT BUỘC: Vui lòng upload file hợp đồng đã được ký. Không thể ký hợp đồng mà không có file.',
-            'file_hop_dong_da_ky.file' => 'File không hợp lệ. Vui lòng chọn file hợp đồng đã ký.',
-            'file_hop_dong_da_ky.mimes' => 'File phải có định dạng PDF, JPG, JPEG hoặc PNG.',
-            'file_hop_dong_da_ky.max' => 'File không được lớn hơn 10MB.',
+            'file_hop_dong_da_ky.array' => 'Vui lòng chọn ít nhất một file hợp đồng đã ký.',
+            'file_hop_dong_da_ky.*.file' => 'File không hợp lệ. Vui lòng chọn file hợp đồng đã ký.',
+            'file_hop_dong_da_ky.*.mimes' => 'File phải có định dạng PDF, JPG, JPEG hoặc PNG.',
+            'file_hop_dong_da_ky.*.max' => 'File không được lớn hơn 10MB.',
         ]);
 
         $hopDong = HopDongLaoDong::findOrFail($id);
-        
+
         // Kiểm tra quyền
         if ($hopDong->nguoi_dung_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Bạn không có quyền ký hợp đồng này.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Bạn không có quyền ký hợp đồng này.');
         }
 
         // Kiểm tra trạng thái hợp đồng - chỉ cho phép ký hợp đồng đã được HR phê duyệt
         if (!in_array($hopDong->trang_thai_hop_dong, ['hieu_luc', 'chua_hieu_luc', 'het_han'])) {
-            return redirect()->back()->with('error', 'Hợp đồng này chưa được HR phê duyệt. Vui lòng chờ phê duyệt trước khi ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này chưa được HR phê duyệt. Vui lòng chờ phê duyệt trước khi ký.');
         }
 
         // Kiểm tra trạng thái ký
         if ($hopDong->trang_thai_ky === 'da_ky') {
-            return redirect()->back()->with('error', 'Hợp đồng này đã được ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này đã được ký.');
         }
 
         try {
-            // Upload file hợp đồng đã ký
+            // Upload nhiều file hợp đồng đã ký
             if ($request->hasFile('file_hop_dong_da_ky')) {
-                $file = $request->file('file_hop_dong_da_ky');
-                $fileName = 'hop_dong_da_ky_' . $hopDong->so_hop_dong . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $filePath = $file->storeAs('hop_dong_da_ky', $fileName, 'public');
-                
+                $files = $request->file('file_hop_dong_da_ky');
+                $uploadedFiles = [];
+
+                // Kiểm tra tổng kích thước file (tối đa 50MB)
+                $totalSize = 0;
+                foreach ($files as $file) {
+                    $totalSize += $file->getSize();
+                }
+
+                if ($totalSize > 50 * 1024 * 1024) { // 50MB
+                    return redirect()->back()->with('error', 'Tổng kích thước file quá lớn! Tối đa 50MB cho tất cả file.');
+                }
+
+                // Upload từng file
+                foreach ($files as $index => $file) {
+                    $fileName = 'hop_dong_da_ky_' . $hopDong->so_hop_dong . '_' . time() . '_' . $index . '.' . $file->getClientOriginalExtension();
+                    $filePath = $file->storeAs('hop_dong_da_ky', $fileName, 'public');
+                    $uploadedFiles[] = $filePath;
+                }
+
+                // Lưu danh sách file (cách nhau bằng dấu chấm phẩy)
+                $filePathsString = implode(';', $uploadedFiles);
+
                 // Chuẩn bị dữ liệu cập nhật
                 $updateData = [
-                    'file_hop_dong_da_ky' => $filePath,
+                    'file_hop_dong_da_ky' => $filePathsString,
                     'trang_thai_ky' => 'da_ky',
                     'nguoi_ky_id' => Auth::id(),
                     'thoi_gian_ky' => now(),
                 ];
-                
-                // Nếu hợp đồng đang ở trạng thái "chưa hiệu lực" và đã đến ngày hiệu lực
-                if ($hopDong->trang_thai_hop_dong === 'chua_hieu_luc' && $hopDong->ngay_bat_dau <= now()) {
+
+                // Tự động chuyển trạng thái hợp đồng thành "hiệu lực" khi ký
+                if (in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc'])) {
                     $updateData['trang_thai_hop_dong'] = 'hieu_luc';
                 }
-                
+
                 // Cập nhật thông tin hợp đồng
                 $hopDong->update($updateData);
-                
-                $successMessage = 'Ký hợp đồng thành công! File hợp đồng đã ký đã được lưu vào hệ thống.';
-                
+
+                $fileCount = count($uploadedFiles);
+                $successMessage = "Ký hợp đồng thành công! Đã upload {$fileCount} file hợp đồng đã ký vào hệ thống.";
+
                 // Thêm thông báo nếu trạng thái hợp đồng đã thay đổi
                 if (isset($updateData['trang_thai_hop_dong']) && $updateData['trang_thai_hop_dong'] === 'hieu_luc') {
                     $successMessage .= ' Hợp đồng đã chuyển sang trạng thái hiệu lực.';
                 }
-                
+
+                // Gửi thông báo cho HR và Admin
+                $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                    $q->where('name', 'hr');
+                })->get();
+
+                $adminUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                    $q->where('name', 'admin');
+                })->get();
+
+                // Gửi thông báo cho HR
+                foreach ($hrUsers as $hr) {
+                    $hr->notify(new \App\Notifications\HopDongSignedNotification($hopDong));
+                }
+
+                // Gửi thông báo cho Admin
+                foreach ($adminUsers as $admin) {
+                    $admin->notify(new \App\Notifications\HopDongSignedNotification($hopDong));
+                }
+
                 return redirect()->route('hopdong.cua-toi')->with('success', $successMessage);
+            } else {
+                return redirect()->back()->with('error', 'Không có file nào được upload.');
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi upload file: ' . $e->getMessage());
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Có lỗi xảy ra khi upload file: ' . $e->getMessage());
         }
 
-        return redirect()->back()->with('error', 'Có lỗi xảy ra khi ký hợp đồng.');
+        return redirect()->route('hopdong.cua-toi')->with('error', 'Có lỗi xảy ra khi ký hợp đồng.');
     }
 
     /**
@@ -1078,24 +1165,24 @@ class HopDongLaoDongController extends Controller
         ]);
 
         $hopDong = HopDongLaoDong::findOrFail($id);
-        
+
         // Kiểm tra quyền
         if ($hopDong->nguoi_dung_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Bạn không có quyền từ chối ký hợp đồng này.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Bạn không có quyền từ chối ký hợp đồng này.');
         }
 
         // Kiểm tra trạng thái hợp đồng - chỉ cho phép từ chối hợp đồng đã được HR phê duyệt
         if (!in_array($hopDong->trang_thai_hop_dong, ['hieu_luc', 'chua_hieu_luc', 'het_han'])) {
-            return redirect()->back()->with('error', 'Hợp đồng này chưa được HR phê duyệt.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này chưa được HR phê duyệt.');
         }
 
         // Kiểm tra trạng thái ký
         if ($hopDong->trang_thai_ky === 'da_ky') {
-            return redirect()->back()->with('error', 'Hợp đồng này đã được ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này đã được ký.');
         }
 
         if ($hopDong->trang_thai_ky === 'tu_choi_ky') {
-            return redirect()->back()->with('error', 'Hợp đồng này đã được từ chối ký.');
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Hợp đồng này đã được từ chối ký.');
         }
 
         try {
@@ -1105,9 +1192,66 @@ class HopDongLaoDongController extends Controller
                 'ghi_chu' => 'Từ chối ký: ' . $request->ly_do_tu_choi,
             ]);
 
+            // Gửi thông báo cho HR và Admin
+            $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'hr');
+            })->get();
+
+            $adminUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'admin');
+            })->get();
+
+            // Gửi thông báo cho HR
+            foreach ($hrUsers as $hr) {
+                $hr->notify(new \App\Notifications\HopDongRefusedNotification($hopDong));
+            }
+
+            // Gửi thông báo cho Admin
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new \App\Notifications\HopDongRefusedNotification($hopDong));
+            }
+
             return redirect()->route('hopdong.cua-toi')->with('success', 'Đã từ chối ký hợp đồng thành công. Lý do từ chối đã được gửi đến phòng Nhân sự.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi từ chối ký hợp đồng: ' . $e->getMessage());
+            return redirect()->route('hopdong.cua-toi')->with('error', 'Có lỗi xảy ra khi từ chối ký hợp đồng: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Ẩn hợp đồng khỏi danh sách chính
+     */
+    public function anKhoiDanhSach(Request $request)
+    {
+        $request->validate([
+            'hop_dong_id' => 'required|exists:hop_dong_lao_dong,id',
+        ], [
+            'hop_dong_id.required' => 'ID hợp đồng không được để trống.',
+            'hop_dong_id.exists' => 'Hợp đồng không tồn tại.',
+        ]);
+
+        $hopDong = HopDongLaoDong::findOrFail($request->hop_dong_id);
+
+        // Kiểm tra quyền - chỉ admin và hr mới có thể ẩn hợp đồng
+        $user = Auth::user();
+        if (!in_array($user->vaiTro->name, ['admin', 'hr'])) {
+            return redirect()->back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+        }
+
+        // Chỉ cho phép ẩn hợp đồng hết hạn
+        if ($hopDong->trang_thai_hop_dong !== 'het_han') {
+            return redirect()->back()->with('error', 'Chỉ có thể ẩn hợp đồng đã hết hạn.');
+        }
+
+        try {
+            // Cập nhật trạng thái tái ký để ẩn khỏi danh sách chính
+            $hopDong->update([
+                'trang_thai_tai_ky' => 'da_tai_ky',
+                'ghi_chu' => 'Đã ẩn khỏi danh sách chính bởi ' . $user->email . ' vào ' . now()->format('d/m/Y H:i:s'),
+            ]);
+
+            return redirect()->back()->with('success', 'Đã ẩn hợp đồng khỏi danh sách chính thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi ẩn hợp đồng: ' . $e->getMessage());
         }
     }
 }

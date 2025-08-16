@@ -16,6 +16,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\LuongCoBanExport;
 use App\Helpers\RemoveNameHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Exports\LuongNhanVienExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -139,11 +140,13 @@ use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 
 class LuongController extends Controller
 {
-  public function luongPdf($user_id, $thang, $nam)
+  public function luongPdf(Request $request, $user_id, $thang, $nam)
 {
 
    $luong = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu')
         ->where('nguoi_dung_id', $user_id)
+        ->where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
         ->latest('created_at') // lấy bản ghi mới nhất
         ->first();
 
@@ -219,16 +222,27 @@ class LuongController extends Controller
 
     $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'bangLuong', 'nguoiDung.chucVu')
         ->when($thang, function ($query) use ($thang) {
-            $query->whereMonth('created_at', $thang);
+            $query->where('luong_thang', $thang);
         })
         ->when($nam, function ($query) use ($nam) {
-            $query->whereYear('created_at', $nam);
+            $query->where('luong_nam', $nam);
         })
         ->orderBy('created_at', 'desc')
         ->paginate(10)
         ->appends(request()->query());
 
     $dsLuong = BangLuong::with('luongNhanVien')->get();
+
+    //  // Lọc ra những nhân viên chưa được tính lương trong tháng/năm này
+    //     $nhanViensChuaTinhLuong = $luongs->filter(function ($nhanVien) use ($thang, $nam) {
+    //         // Kiểm tra xem nhân viên này đã có lương trong tháng/năm này chưa
+    //         $daCoLuong = LuongNhanVien::where('nguoi_dung_id', $nhanVien->id)
+    //             ->where('luong_thang', $thang)
+    //             ->where('luong_nam', $nam)
+    //             ->exists();
+
+    //         return !$daCoLuong;
+    //     });
 
     return view('admin.luong.bangluong.index', compact('luongs', 'thang', 'nam', 'ngay', 'dsLuong'));
 }
@@ -241,8 +255,8 @@ class LuongController extends Controller
 
     $luong = LuongNhanVien::with('nguoiDung.hoSo', 'bangLuong', 'nguoiDung.chucVu')
         ->where('id', $id)
-        ->whereMonth('created_at', $thang)
-        ->whereYear('created_at', $nam)
+        ->where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
         ->first(); // Dùng first thay vì find vì bạn có thêm điều kiện where
 
     if (!$luong) {
@@ -281,52 +295,111 @@ class LuongController extends Controller
 
   public function create(Request $request)
 {
-    $thang = $request->thang ?? now()->month;
-    $nam = $request->nam ?? now()->year;
+    // Mặc định lấy tháng trước nếu không có tham số
+    if ($request->has('thang') && $request->has('nam')) {
+        $thang = $request->thang;
+        $nam = $request->nam;
 
-    $nhanViens = NguoiDung::where('da_hoan_thanh_ho_so', 1)
-        ->with('hoSo')
-        ->get();
+        // Kiểm tra xem có được phép tính lương tháng này không
+        if (!$this->coDuocPhepTinhLuong($thang, $nam)) {
+            $thangNamHienTai = $this->getThangNamHienTai();
 
-    // Tạo mã bảng lương ngẫu nhiên
-    $maBangLuong = 'DVT' . mt_rand(1000000, 9999999);
+            // Tự động chuyển hướng về tháng trước
+            $thangTruoc = $thangNamHienTai['thang'] == 1 ? 12 : $thangNamHienTai['thang'] - 1;
+            $namTruoc = $thangNamHienTai['thang'] == 1 ? $thangNamHienTai['nam'] - 1 : $thangNamHienTai['nam'];
 
-    // Lấy số công của từng nhân viên trong tháng/năm hiện tại
-    $bangChamCong = DB::table('cham_cong')
-        ->select('nguoi_dung_id', DB::raw('SUM(so_cong) as tong_so_cong'))
-        ->whereMonth('ngay_cham_cong', $thang)
-        ->whereYear('ngay_cham_cong', $nam)
-        ->groupBy('nguoi_dung_id')
-        ->pluck('tong_so_cong', 'nguoi_dung_id'); // dạng [id => công]
+            return redirect()->route('luong.create', ['thang' => $thangTruoc, 'nam' => $namTruoc])
+                ->with('info', "Bạn đã được chuyển hướng về tháng {$thangTruoc}/{$namTruoc} vì không thể tính lương tháng {$thang}/{$nam} (tháng hiện tại).");
+        }
+    } else {
+        // Lấy tháng trước
+        $thangHienTai = now()->month;
+        $namHienTai = now()->year;
 
+        if ($thangHienTai == 1) {
+            $thang = 12;
+            $nam = $namHienTai - 1;
+        } else {
+            $thang = $thangHienTai - 1;
+            $nam = $namHienTai;
+        }
+    }
 
-   $congTangCa = [];
+    // Lấy thông tin tháng năm hiện tại
+    $thangNamHienTai = $this->getThangNamHienTai();
 
-foreach ($nhanViens as $nhanVien) {
-    $soCongTangCa = DB::table('thuc_hien_tang_ca')
-        ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
-        ->where('dang_ky_tang_ca.nguoi_dung_id', $nhanVien->id)
-        ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-        ->whereYear('thuc_hien_tang_ca.created_at', $nam)
-        ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+    // Kiểm tra xem có được phép tính lương tháng này không
+    if (!$this->coDuocPhepTinhLuong($thang, $nam)) {
+        // Thay vì redirect, hiển thị cảnh báo và cho phép xem trang
+        $canTinhLuong = false;
+        $warningMessage = 'Chỉ được phép tính lương cho tháng trước. Tháng hiện tại: ' . $thangNamHienTai['thang'] . '/' . $thangNamHienTai['nam'] . ' chưa kết thúc.';
+    } else {
+        $canTinhLuong = true;
+        $warningMessage = null;
+    }
 
-    $congTangCa[$nhanVien->id] = $soCongTangCa;
-}
+    try {
+        $nhanViens = NguoiDung::where('da_hoan_thanh_ho_so', 1)
+            ->with('hoSo')
+            ->get();
 
+        // Lọc ra những nhân viên chưa được tính lương trong tháng/năm này
+        $nhanViensChuaTinhLuong = $nhanViens->filter(function ($nhanVien) use ($thang, $nam) {
+            // Kiểm tra xem nhân viên này đã có lương trong tháng/năm này chưa
+            $daCoLuong = LuongNhanVien::where('nguoi_dung_id', $nhanVien->id)
+                ->where('luong_thang', $thang)
+                ->where('luong_nam', $nam)
+                ->exists();
 
-    // dd($congTangCa); // test từng nhân viên
+            return !$daCoLuong;
+        });
 
+        // Nếu không còn nhân viên nào để tính lương
+        if ($nhanViensChuaTinhLuong->isEmpty()) {
+            $canTinhLuong = false;
+            $warningMessage = 'Tất cả nhân viên đã được tính lương cho tháng ' . $thang . '/' . $nam;
+        }
 
+        // Tạo mã bảng lương ngẫu nhiên
+        $maBangLuong = 'DVT' . mt_rand(1000000, 9999999);
 
+        // Lấy số công của từng nhân viên trong tháng/năm được chọn
+        $bangChamCong = DB::table('cham_cong')
+            ->select('nguoi_dung_id', DB::raw('SUM(so_cong) as tong_so_cong'))
+            ->whereMonth('ngay_cham_cong', $thang)
+            ->whereYear('ngay_cham_cong', $nam)
+            ->groupBy('nguoi_dung_id')
+            ->pluck('tong_so_cong', 'nguoi_dung_id'); // dạng [id => công]
 
-    return view('admin.luong.tinhluong.tinh_luong', compact(
-        'nhanViens',
-        'maBangLuong',
-        'bangChamCong',
-        'congTangCa',
-        'thang',
-        'nam'
-    ));
+       $congTangCa = [];
+
+    foreach ($nhanViensChuaTinhLuong as $nhanVien) {
+        $soCongTangCa = DB::table('thuc_hien_tang_ca')
+            ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
+            ->where('dang_ky_tang_ca.nguoi_dung_id', $nhanVien->id)
+            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
+            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+            ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+
+        $congTangCa[$nhanVien->id] = $soCongTangCa;
+    }
+
+        return view('admin.luong.tinhluong.tinh_luong', compact(
+            'nhanViensChuaTinhLuong',
+            'maBangLuong',
+            'bangChamCong',
+            'congTangCa',
+            'thang',
+            'nam',
+            'thangNamHienTai',
+            'canTinhLuong',
+            'warningMessage'
+        ));
+    } catch (\Exception $e) {
+        // Log lỗi và chuyển hướng với thông báo lỗi
+        Log::error('Lỗi khi tạo trang tính lương: ' . $e->getMessage());
+        return redirect()->route('luong.index')->with('error', 'Có lỗi xảy ra khi tải trang tính lương: ' . $e->getMessage());
+    }
 }
 
 
@@ -376,111 +449,204 @@ foreach ($nhanViens as $nhanVien) {
 // }
 public function tinhLuongVaLuu(Request $request)
 {
-    // Tạo mã bảng lương
-    $maBangLuong = $request->ma_bang_luong;
+    // Validation cơ bản
+    $request->validate([
+        'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
+        'so_ngay_cong' => 'nullable|numeric|min:0',
+        'so_cong_tang_ca' => 'nullable|numeric|min:0',
+        'ngay_tinh_luong' => 'required|date',
+        'ma_bang_luong' => 'required|string',
+    ], [
+        'nguoi_dung_id.required' => 'Vui lòng chọn nhân viên',
+        'nguoi_dung_id.exists' => 'Nhân viên không tồn tại',
+        'so_ngay_cong.numeric' => 'Số ngày công phải là số',
+        'so_ngay_cong.min' => 'Số ngày công không được âm',
+        'so_cong_tang_ca.numeric' => 'Số công tăng ca phải là số',
+        'so_cong_tang_ca.min' => 'Số công tăng ca không được âm',
+        'ngay_tinh_luong.required' => 'Vui lòng chọn ngày tính lương',
+        'ngay_tinh_luong.date' => 'Ngày tính lương không hợp lệ',
+        'ma_bang_luong.required' => 'Mã bảng lương không được để trống',
+    ]);
+
+    // Lấy tháng/năm lương từ request (tháng trước tháng hiện tại)
+    $thang = $request->thang ?? (now()->month == 1 ? 12 : now()->month - 1);
+    $nam = $request->nam ?? (now()->month == 1 ? now()->year - 1 : now()->year);
+
+    // Kiểm tra xem có được phép tính lương tháng này không
+    if (!$this->coDuocPhepTinhLuong($thang, $nam)) {
+        $thangNamHienTai = $this->getThangNamHienTai();
+        return redirect()->route('luong.create', ['thang' => $thang, 'nam' => $nam])->with('error', 'Chỉ được phép tính lương cho tháng trước. Tháng hiện tại: ' . $thangNamHienTai['thang'] . '/' . $thangNamHienTai['nam'] . ' chưa kết thúc. Bạn phải đợi sang tháng mới để tính lương tháng này.');
+    }
+
+    // Kiểm tra xem nhân viên này đã được tính lương trong tháng/năm này chưa
+    $daCoLuong = LuongNhanVien::where('nguoi_dung_id', $request->nguoi_dung_id)
+        ->where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
+        ->exists();
+
+    if ($daCoLuong) {
+        return redirect()->route('luong.create', ['thang' => $thang, 'nam' => $nam])->with('error', 'Nhân viên này đã được tính lương cho tháng ' . $thang . '/' . $nam);
+    }
+
+    try {
+        // Bắt đầu transaction
+        DB::beginTransaction();
+
+        // Tạo mã bảng lương
+        $maBangLuong = $request->ma_bang_luong;
+
+        // Tạo bảng lương
+        $bangLuong = BangLuong::create([
+            'ma_bang_luong' => $maBangLuong,
+            'nam' => Carbon::parse($request->ngay_tinh_luong)->year,
+            'thang' => Carbon::parse($request->ngay_tinh_luong)->month,
+            'trang_thai' => 'dang_xu_ly',
+            'nguoi_xu_ly_id' => auth()->id(),
+            'thoi_gian_xu_ly' => Carbon::now(),
+        ]);
+
+        $nguoiDung = NguoiDung::with('chucVu', 'hopDongLaoDongMoiNhat')->find($request->nguoi_dung_id);
+
+        if (!$nguoiDung || !$nguoiDung->chucVu) {
+            return redirect()->route('luong.index')->with('error', 'Không tìm thấy thông tin người dùng hoặc chức vụ.');
+        }
+
+        // Lấy thông tin lương cơ bản từ bảng luong
+        $luongCoBanRecord = Luong::where('nguoi_dung_id', $request->nguoi_dung_id)->first();
+
+        if (!$luongCoBanRecord) {
+            return redirect()->route('luong.index')->with('error', 'Không tìm thấy lương cơ bản cho nhân viên này.');
+        }
+
+        // Lấy lương cơ bản và phụ cấp
+        $luongCoBan = $luongCoBanRecord->luong_co_ban;
+        $phuCap = $luongCoBanRecord->phu_cap;
+        $tongLuongCoBan = $luongCoBan + $phuCap;
+        // dd($tongLuongCoBan);
+        // ======= 1. SỐ NGÀY CÔNG =======
+        if ($request->filled('so_ngay_cong')) {
+            $soNgayCong = (float) $request->so_ngay_cong;
+        } else {
+            // Tính từ bảng chấm công
+            $soNgayCong = DB::table('cham_cong')
+                ->where('nguoi_dung_id', $nguoiDung->id)
+                ->whereMonth('ngay', $thang)
+                ->whereYear('ngay', $nam)
+                ->where('trang_thai', 'di_lam') // chỉ tính ngày đi làm
+                ->count();
+        }
+
+        // ======= 2. SỐ CÔNG TĂNG CA =======
+        if ($request->filled('so_cong_tang_ca')) {
+            $tongCongTangCa = (float) $request->so_cong_tang_ca;
+        } else {
+            $tongCongTangCa = DB::table('thuc_hien_tang_ca')
+                ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
+                ->where('dang_ky_tang_ca.nguoi_dung_id', $nguoiDung->id)
+                ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
+                ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+                ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+        }
+
+        // ======= 3. TÍNH TOÁN LƯƠNG =======
+        // Tính lương theo ngày (26 ngày công/tháng)
+        $luongNgay = $tongLuongCoBan / 26; // = 615.000
+
+        // Lương cơ bản theo số ngày công thực tế
+        $tongLuong = $luongNgay * $soNgayCong; // = 615.000
+
+        // Lương tăng ca (tính theo công, 1 công = 8 giờ)
+        $luongTangCa = $tongCongTangCa * $luongNgay;
+
+        // ======= 4. TÍNH THUẾ THU NHẬP CÁ NHÂN =======
+        $tongLuongTruocThue = $tongLuong + $luongTangCa;
+
+        // Thu nhập chịu thuế = tổng lương - giảm trừ bản thân (11 triệu)
+        $giamTruBanThan = 11000000; //
+        $thuNhapChiuThue = max(0, $tongLuongTruocThue - $giamTruBanThan);
+
+        // Tính thuế theo function đã tạo
+        $thongTinThue = $this->tinhThueThueNhapCaNhan($thuNhapChiuThue);
+            // dd($thongTinThue);
+
+        $thuePhaiNop = $thongTinThue['thue_phai_nop'];
+
+        // Lương thực nhận sau thuế
+        $luongThucNhan = $tongLuongTruocThue - $thuePhaiNop;
+        // dd($thuePhaiNop);
+
+
+
+        // ======= 5. LƯU DỮ LIỆU =======
+        $luongNhanVien = LuongNhanVien::create([
+            'bang_luong_id' => $bangLuong->id,
+            'luong_thang' => $thang,        // Tháng lương (7)
+            'luong_nam' => $nam,            // Năm lương (2025)
+            'nguoi_dung_id' => $nguoiDung->id,
+            'luong_co_ban' => $luongCoBan,
+            'tong_luong' => round($tongLuong, 0),
+            'luong_thuc_nhan' => round($luongThucNhan, 0),
+            'thue_thu_nhap_ca_nhan' => round($thuePhaiNop, 0),
+            'so_ngay_cong' => $soNgayCong,
+            'gio_tang_ca' => $tongCongTangCa * 8,
+            'cong_tang_ca' => $tongCongTangCa,
+            'tong_phu_cap' => $phuCap,
+            'ngay_nghi_phep' => 0,
+            'ngay_nghi_khong_phep' => 0,
+            'ngay_le' => 0,
+            'ghi_chu' => $request->mo_ta ?? null,
+            // created_at, updated_at để mặc định (ngày hiện tại)
+        ]);
+
+
+
+        // Commit transaction
+        DB::commit();
+
+        return redirect()->route('luong.index')->with('success', "Đã tính và lưu lương cho nhân viên {$nguoiDung->hoSo->ho} {$nguoiDung->hoSo->ten} tháng {$thang}/{$nam}");
+    } catch (\Exception $e) {
+        // Rollback transaction nếu có lỗi
+        DB::rollBack();
+
+        // Log lỗi và chuyển hướng với thông báo lỗi
+        Log::error('Lỗi khi tính lương: ' . $e->getMessage());
+
+        return redirect()->route('luong.create', ['thang' => $thang, 'nam' => $nam])
+            ->with('error', 'Có lỗi xảy ra khi tính lương: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Hiển thị danh sách nhân viên đã được tính lương trong tháng/năm
+ */
+public function danhSachDaTinhLuong(Request $request)
+{
     $thang = $request->thang ?? now()->month;
     $nam = $request->nam ?? now()->year;
 
-    // Tạo bảng lương
-    $bangLuong = BangLuong::create([
-        'ma_bang_luong' => $maBangLuong,
-        'nam' => Carbon::parse($request->ngay_tinh_luong)->year,
-        'thang' => Carbon::parse($request->ngay_tinh_luong)->month,
-        // 'ngay_tra_luong' => now()->endOfMonth()->format('Y-m-d'),
-        'trang_thai' => 'dang_xu_ly',
-        'nguoi_xu_ly_id' => auth()->id(),
-        'thoi_gian_xu_ly' => Carbon::now(),
-    ]);
+    $nhanViensDaTinhLuong = LuongNhanVien::with(['nguoiDung.hoSo', 'nguoiDung.chucVu', 'bangLuong'])
+        ->where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
+        ->get()
+        ->map(function ($luong) {
+            return [
+                'id' => $luong->id,
+                'ma_nhan_vien' => $luong->nguoiDung->hoSo->ma_nhan_vien ?? 'N/A',
+                'ho_ten' => ($luong->nguoiDung->hoSo->ho ?? '') . ' ' . ($luong->nguoiDung->hoSo->ten ?? ''),
+                'chuc_vu' => $luong->nguoiDung->chucVu->ten ?? 'N/A',
+                'luong_co_ban' => number_format($luong->luong_co_ban, 0, ',', '.'),
+                'tong_luong' => number_format($luong->tong_luong, 0, ',', '.'),
+                'luong_thuc_nhan' => number_format($luong->luong_thuc_nhan, 0, ',', '.'),
+                'so_ngay_cong' => $luong->so_ngay_cong,
+                'cong_tang_ca' => $luong->cong_tang_ca,
+                'ngay_tinh' => $luong->created_at->format('d/m/Y H:i'),
+                'trang_thai' => $luong->bangLuong->trang_thai_label,
+                'luong_thang' => $luong->luong_thang,
+                'luong_nam' => $luong->luong_nam
+            ];
+        });
 
-    $nguoiDung = NguoiDung::with('chucVu', 'hopDongLaoDongMoiNhat')->find($request->nguoi_dung_id);
-
-    if (!$nguoiDung || !$nguoiDung->chucVu) {
-        return back()->with('error', 'Không tìm thấy thông tin người dùng hoặc chức vụ.');
-    }
-
-    // Lấy thông tin lương cơ bản từ bảng luong
-    $luongCoBanRecord = Luong::where('nguoi_dung_id', $request->nguoi_dung_id)->first();
-
-    if (!$luongCoBanRecord) {
-        return back()->with('error', 'Không tìm thấy lương cơ bản cho nhân viên này.');
-    }
-
-    // Lấy lương cơ bản và phụ cấp
-    $luongCoBan = $luongCoBanRecord->luong_co_ban;
-    $phuCap = $luongCoBanRecord->phu_cap;
-    $tongLuongCoBan = $luongCoBan + $phuCap;
-    // dd($tongLuongCoBan);
-    // ======= 1. SỐ NGÀY CÔNG =======
-    if ($request->filled('so_ngay_cong')) {
-        $soNgayCong = (float) $request->so_ngay_cong;
-    } else {
-        // Tính từ bảng chấm công
-        $soNgayCong = DB::table('cham_cong')
-            ->where('nguoi_dung_id', $nguoiDung->id)
-            ->whereMonth('ngay', $thang)
-            ->whereYear('ngay', $nam)
-            ->where('trang_thai', 'di_lam') // chỉ tính ngày đi làm
-            ->count();
-    }
-
-    // ======= 2. SỐ CÔNG TĂNG CA =======
-    if ($request->filled('so_cong_tang_ca')) {
-        $tongCongTangCa = (float) $request->so_cong_tang_ca;
-    } else {
-        $tongCongTangCa = DB::table('thuc_hien_tang_ca')
-            ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
-            ->where('dang_ky_tang_ca.nguoi_dung_id', $nguoiDung->id)
-            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
-            ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
-    }
-
-    // ======= 3. TÍNH TOÁN LƯƠNG =======
-    // Tính lương theo ngày (26 ngày công/tháng)
-    $luongNgay = $tongLuongCoBan / 26; // = 615.000
-
-    // Lương cơ bản theo số ngày công thực tế
-    $tongLuong = $luongNgay * $soNgayCong; // = 615.000
-
-    // Lương tăng ca (tính theo công, 1 công = 8 giờ)
-    $luongTangCa = $tongCongTangCa * $luongNgay;
-
-    // ======= 4. TÍNH THUẾ THU NHẬP CÁ NHÂN =======
-    $tongLuongTruocThue = $tongLuong + $luongTangCa;
-
-    // Thu nhập chịu thuế = tổng lương - giảm trừ bản thân (11 triệu)
-    $giamTruBanThan = 11000000; //
-    $thuNhapChiuThue = max(0, $tongLuongTruocThue - $giamTruBanThan);
-
-    // Tính thuế theo function đã tạo
-    $thongTinThue = $this->tinhThueThueNhapCaNhan($thuNhapChiuThue);
-        // dd($thongTinThue);
-
-    $thuePhaiNop = $thongTinThue['thue_phai_nop'];
-
-    // Lương thực nhận sau thuế
-    $luongThucNhan = $tongLuongTruocThue - $thuePhaiNop;
-    // dd($thuePhaiNop);
-
-    // ======= 5. LƯU DỮ LIỆU =======
-    LuongNhanVien::create([
-        'bang_luong_id' => $bangLuong->id,
-        'nguoi_dung_id' => $nguoiDung->id,
-        'luong_co_ban' => $luongCoBan,
-        'tong_luong' => round($tongLuong, 0),
-        'luong_thuc_nhan' => round($luongThucNhan, 0),
-        'thue_thu_nhap_ca_nhan' => round($thuePhaiNop, 0),
-        'so_ngay_cong' => $soNgayCong,
-        'gio_tang_ca' => $tongCongTangCa * 8,
-        'cong_tang_ca' => $tongCongTangCa,
-        'tong_phu_cap' => $phuCap,
-        'ngay_nghi_phep' => 0,
-        'ngay_nghi_khong_phep' => 0,
-        'ngay_le' => 0,
-        'ghi_chu' => null,
-    ]);
-
-    return redirect()->back()->with('success', 'Đã tính và lưu lương cho nhân viên');
+    return view('admin.luong.tinhluong.danh_sach_da_tinh_luong', compact('nhanViensDaTinhLuong', 'thang', 'nam'));
 }
     public function chiTiet($id)
     {
@@ -508,10 +674,14 @@ public function tinhLuongVaLuu(Request $request)
             return redirect()->back()->with('error', 'Phiếu lương không tồn tại.');
         }
 
+        // Lưu thông tin tháng/năm lương để hiển thị thông báo
+        $thang = $luong->luong_thang;
+        $nam = $luong->luong_nam;
+
         // Xóa phiếu lương
         $luong->delete();
 
-        return redirect()->back()->with('success', 'Đã xoá phiếu lương thành công.');
+        return redirect()->back()->with('success', "Đã xoá phiếu lương tháng {$thang}/{$nam} thành công.");
     }
 //    public function guiTatCaMailLuong(Request $request)
 // {
@@ -552,8 +722,8 @@ public function guiTatCaMailLuong(Request $request)
     $nam = $request->nam;
 
     $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu')
-        ->whereMonth('created_at', $thang)
-        ->whereYear('created_at', $nam)
+        ->where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
         ->get();
 
     // Tên nhân viên, phòng ban, chức vụ
@@ -705,6 +875,133 @@ private function tinhThueThueNhapCaNhan($thuNhapChiuThue)
         'thue_phai_nop' => round($thuePhaiNop, 0),
         'thue_suat_ap_dung' => $thueSuatApDung * 100 // chuyển về %
     ];
+}
+
+/**
+ * Kiểm tra xem có được phép tính lương cho tháng/năm này không
+ */
+private function coDuocPhepTinhLuong($thang, $nam)
+{
+    $thangHienTai = now()->month;
+    $namHienTai = now()->year;
+
+    // Chỉ cho phép tính lương tháng trước khi đã sang tháng mới
+    // Ví dụ: đang ở tháng 8 thì chỉ được tính lương tháng 7 trở xuống
+    if ($nam < $namHienTai) {
+        return true; // Năm trước luôn được phép
+    }
+
+    if ($nam == $namHienTai) {
+        // Cùng năm, chỉ cho phép tính lương tháng trước
+        return $thang < $thangHienTai;
+    }
+
+    return false; // Năm tương lai không được phép
+}
+
+/**
+ * Lấy thông tin tháng/năm hiện tại
+ */
+private function getThangNamHienTai()
+{
+    return [
+        'thang' => now()->month,
+        'nam' => now()->year
+    ];
+}
+
+/**
+ * Kiểm tra trạng thái tính lương của tháng hiện tại
+ */
+
+// này ch fix
+public function trangThaiTinhLuongHienTai()
+{
+    $thangNamHienTai = $this->getThangNamHienTai();
+    $thang = $thangNamHienTai['thang'];
+    $nam = $thangNamHienTai['nam'];
+
+    // Đếm tổng số nhân viên
+    $tongNhanVien = NguoiDung::where('da_hoan_thanh_ho_so', 1)->count();
+
+    // Đếm số nhân viên đã được tính lương
+    $daTinhLuong = LuongNhanVien::where('luong_thang', $thang)
+        ->where('luong_nam', $nam)
+        ->count();
+
+    // Đếm số nhân viên chưa được tính lương
+    $chuaTinhLuong = $tongNhanVien - $daTinhLuong;
+
+    $trangThai = [
+        'thang' => $thang,
+        'nam' => $nam,
+        'tong_nhan_vien' => $tongNhanVien,
+        'da_tinh_luong' => $daTinhLuong,
+        'chua_tinh_luong' => $chuaTinhLuong,
+        'ti_le_hoan_thanh' => $tongNhanVien > 0 ? round(($daTinhLuong / $tongNhanVien) * 100, 1) : 0
+    ];
+
+    return view('admin.luong.tinhluong.trang_thai_tinh_luong', compact('trangThai'));
+}
+
+/**
+ * Method test để kiểm tra controller
+ */
+// public function test()
+// {
+//     $thangHienTai = now()->month;
+//     $namHienTai = now()->year;
+
+//     $thangTruoc = $thangHienTai == 1 ? 12 : $thangHienTai - 1;
+//     $namTruoc = $thangHienTai == 1 ? $namHienTai - 1 : $namHienTai;
+
+//     $data = [
+//         'thang_hien_tai' => $thangHienTai,
+//         'nam_hien_tai' => $namHienTai,
+//         'thang_truoc' => $thangTruoc,
+//         'nam_truoc' => $namTruoc,
+//         'co_duoc_phep_tinh_luong_hien_tai' => $this->coDuocPhepTinhLuong($thangHienTai, $namHienTai),
+//         'co_duoc_phep_tinh_luong_thang_truoc' => $this->coDuocPhepTinhLuong($thangTruoc, $namTruoc),
+//         'message' => 'Controller đang hoạt động bình thường'
+//     ];
+
+//     return response()->json($data);
+// }
+
+/**
+ * Kiểm tra các bản ghi lương vi phạm quy tắc thời gian
+ */
+public function kiemTraViPhamQuyTac()
+{
+    $thangHienTai = now()->month;
+    $namHienTai = now()->year;
+
+    // Tìm các bản ghi lương được tạo trong tháng hiện tại
+    $luongViPham = LuongNhanVien::where('luong_thang', $thangHienTai)
+        ->where('luong_nam', $namHienTai)
+        ->with(['nguoiDung.hoSo', 'bangLuong'])
+        ->get()
+        ->map(function ($luong) {
+            return [
+                'id' => $luong->id,
+                'ma_nhan_vien' => $luong->nguoiDung->hoSo->ma_nhan_vien ?? 'N/A',
+                'ho_ten' => ($luong->nguoiDung->hoSo->ho ?? '') . ' ' . ($luong->nguoiDung->hoSo->ten ?? ''),
+                'luong_thang' => $luong->luong_thang,
+                'luong_nam' => $luong->luong_nam,
+                'ngay_tao' => $luong->created_at->format('d/m/Y H:i'),
+                'trang_thai' => $luong->bangLuong->trang_thai_label ?? 'N/A'
+            ];
+        });
+
+    $data = [
+        'thang_hien_tai' => $thangHienTai,
+        'nam_hien_tai' => $namHienTai,
+        'so_luong_vi_pham' => $luongViPham->count(),
+        'danh_sach_vi_pham' => $luongViPham,
+        'message' => 'Kiểm tra hoàn tất'
+    ];
+
+    return response()->json($data);
 }
 
 //     public function guiTatCaMailLuong(Request $request)
@@ -880,5 +1177,107 @@ private function tinhThueThueNhapCaNhan($thuNhapChiuThue)
         $luong->delete();
 
         return redirect()->route('luong.list')->with('success', 'Xóa lương thành công.');
+    }
+
+    /**
+     * Thống kê lương
+     */
+    public function thongKe(Request $request)
+    {
+        // Lấy tham số từ request
+        $tuNgay = $request->tu_ngay ?? now()->startOfMonth()->format('Y-m-d');
+        $denNgay = $request->den_ngay ?? now()->endOfMonth()->format('Y-m-d');
+        $namHienTai = now()->year;
+
+        // Thống kê tổng quan
+        $tongLuongNhanVien = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->count();
+        $tongTienLuong = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('tong_luong');
+        $tongLuongThucNhan = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('luong_thuc_nhan');
+        $tongThue = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('thue_thu_nhap_ca_nhan');
+        $tongPhuCap = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])->sum('tong_phu_cap');
+
+        // Thống kê theo phòng ban
+        $thongKeTheoPhongBan = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('phong_ban.ten_phong_ban, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('tong_luong', 'desc')
+            ->get();
+
+        // Thống kê theo chức vụ
+        $thongKeTheoChucVu = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('chuc_vu', 'nguoi_dung.chuc_vu_id', '=', 'chuc_vu.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('chuc_vu.ten as ten_chuc_vu, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy('chuc_vu.id', 'chuc_vu.ten')
+            ->orderBy('tong_luong', 'desc')
+            ->get();
+
+        // Thống kê theo tháng trong năm
+        $thongKeTheoThang = LuongNhanVien::whereYear('created_at', $namHienTai)
+            ->selectRaw('MONTH(created_at) as thang, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->orderBy('thang')
+            ->get();
+
+        // Thống kê theo năm
+        $thongKeTheoNam = LuongNhanVien::selectRaw('YEAR(created_at) as nam, COUNT(*) as so_nhan_vien, SUM(tong_luong) as tong_luong, AVG(tong_luong) as luong_trung_binh')
+            ->groupBy(DB::raw('YEAR(created_at)'))
+            ->orderBy('nam', 'desc')
+            ->get();
+
+        // Thống kê lương cơ bản theo phòng ban
+        $thongKeLuongCoBan = LuongNhanVien::join('nguoi_dung', 'luong_nhan_vien.nguoi_dung_id', '=', 'nguoi_dung.id')
+            ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
+            ->whereBetween('luong_nhan_vien.created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('phong_ban.ten_phong_ban, AVG(luong_co_ban) as luong_co_ban_trung_binh, MIN(luong_co_ban) as luong_co_ban_thap_nhat, MAX(luong_co_ban) as luong_co_ban_cao_nhat')
+            ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
+            ->orderBy('luong_co_ban_trung_binh', 'desc')
+            ->get();
+
+        // Thống kê tăng ca
+        $thongKeTangCa = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('SUM(gio_tang_ca) as tong_gio_tang_ca, AVG(gio_tang_ca) as gio_tang_ca_trung_binh, SUM(cong_tang_ca) as tong_cong_tang_ca')
+            ->first();
+
+        // Thống kê thuế
+        $thongKeThue = LuongNhanVien::whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->selectRaw('SUM(thue_thu_nhap_ca_nhan) as tong_thue, AVG(thue_thu_nhap_ca_nhan) as thue_trung_binh')
+            ->first();
+
+        // Top 10 nhân viên có lương cao nhất
+        $topLuongCaoNhat = LuongNhanVien::with(['nguoiDung.hoSo', 'nguoiDung.phongBan'])
+            ->whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->orderBy('tong_luong', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Top 10 nhân viên có lương thấp nhất
+        $topLuongThapNhat = LuongNhanVien::with(['nguoiDung.hoSo', 'nguoiDung.phongBan'])
+            ->whereBetween('created_at', [$tuNgay, $denNgay . ' 23:59:59'])
+            ->orderBy('tong_luong', 'asc')
+            ->limit(10)
+            ->get();
+
+        return view('admin.luong.thong-ke', compact(
+            'tuNgay',
+            'denNgay',
+            'namHienTai',
+            'tongLuongNhanVien',
+            'tongTienLuong',
+            'tongLuongThucNhan',
+            'tongThue',
+            'tongPhuCap',
+            'thongKeTheoPhongBan',
+            'thongKeTheoChucVu',
+            'thongKeTheoThang',
+            'thongKeTheoNam',
+            'thongKeLuongCoBan',
+            'thongKeTangCa',
+            'thongKeThue',
+            'topLuongCaoNhat',
+            'topLuongThapNhat'
+        ));
     }
 }

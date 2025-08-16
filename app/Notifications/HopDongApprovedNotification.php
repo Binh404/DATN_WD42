@@ -23,8 +23,16 @@ class HopDongApprovedNotification extends Notification
 
     public function toDatabase($notifiable)
     {
+        // Lấy thông tin người gửi (HR hoặc Admin)
+        $nguoiGui = auth()->user();
+        $tenNguoiGui = 'HR';
+        
+        if ($nguoiGui && $nguoiGui->hoSo) {
+            $tenNguoiGui = $nguoiGui->hoSo->ho . ' ' . $nguoiGui->hoSo->ten;
+        }
+        
         return [
-            'message' => 'Hợp đồng #' . $this->hopDong->so_hop_dong . ' đã được HR phê duyệt. Vui lòng kiểm tra và ký hợp đồng.',
+            'message' => $tenNguoiGui . ' đã gửi hợp đồng #' . $this->hopDong->so_hop_dong . ' cho bạn. Vui lòng kiểm tra và ký hợp đồng.',
             'hopdong_id' => $this->hopDong->id,
         ];
     }

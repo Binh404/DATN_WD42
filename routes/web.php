@@ -57,6 +57,8 @@ use App\Http\Controllers\Admin\DangKyTangCaAdminController;
 use App\Http\Controllers\Admin\ThucHienTangCaAdminController;
 use App\Http\Controllers\Admin\LichSuDuyetDonXinNghiController;
 
+
+
 Route::middleware(['auth'])->group(function () {
     Route::post('/send-otp', [PasswordOTPController::class, 'sendOtp'])->name('password.send-otp');
     Route::get('/verify-otp', function () {
@@ -168,12 +170,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::post('/{id}/phe-duyet', [HopDongLaoDongController::class, 'pheDuyetHopDong'])->name('phe-duyet');
         Route::post('/{id}/ky', [HopDongLaoDongController::class, 'kyHopDong'])->name('ky');
         Route::post('/{id}/huy', [HopDongLaoDongController::class, 'huyHopDong'])->name('huy');
-        Route::get('/{hopDong}/phu-luc/create', [HopDongLaoDongController::class, 'createPhuLuc'])->name('phuluc.create');
-        Route::post('/{hopDong}/phu-luc', [HopDongLaoDongController::class, 'storePhuLuc'])->name('phuluc.store');
-    });
-
-    Route::prefix('phu-luc')->name('phuluc.')->group(function () {
-        Route::get('/{phuLuc}', [\App\Http\Controllers\Admin\PhuLucHopDongController::class, 'show'])->name('show');
+        Route::post('/an-khoi-danh-sach', [HopDongLaoDongController::class, 'anKhoiDanhSach'])->name('an-khoi-danh-sach');
+        // Routes phụ lục đã được xóa
     });
 });
 
@@ -189,8 +187,8 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     // Route test để kiểm tra role
     Route::get('/test-role', function() {
         $user = auth()->user();
-        $roles = optional($user->vaiTros)->pluck('ten')->toArray();
-        $userRole = optional($user->vaiTros)->pluck('ten')->toArray()[0] ?? null;
+        $roles = optional($user->vaiTros)->pluck('name')->toArray();
+        $userRole = optional($user->vaiTros)->pluck('name')->toArray()[0] ?? null;
 
         return response()->json([
             'user_id' => $user->id,
@@ -256,8 +254,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     // Route::get('/ungvien/export', [UngTuyenController::class, 'exportExcel']);
     // // Route xuất file excel trúng tuyển
     // Route::get('/ungvien/trungtuyen/export', [UngTuyenController::class, 'trungTuyenExport']);
-    // Admin Thoong baos
-    Route::get('/thongbao', [ThongBaoController::class, 'index'])->name('thongbao.index');
+    // Admin Thong baos
+    Route::get('/thongbao', [NotificationController::class, 'index'])->name('thongbao.index');
 
 
     // Admin Vai Trò
@@ -336,13 +334,20 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
         Route::get('/export-luongcb', [LuongController::class, 'luongcbExcel'])->name('export.luongcb');
         Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
-        Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
+        Route::delete('/{id}/delete', [LuongController::class, 'destroy'])->name('delete');
+        Route::get('/danh-sach-da-tinh-luong', [LuongController::class, 'danhSachDaTinhLuong'])->name('danh-sach-da-tinh-luong');
+        Route::get('/trang-thai-tinh-luong-hien-tai', [LuongController::class, 'trangThaiTinhLuongHienTai'])->name('trang-thai-hien-tai');
+        Route::get('/test', [LuongController::class, 'test'])->name('test');
+        Route::get('/kiem-tra-vi-pham', [LuongController::class, 'kiemTraViPhamQuyTac'])->name('kiem-tra-vi-pham');
 
         // Routes cho bảng luong cơ bản
         Route::get('/list', [LuongController::class, 'listLuong'])->name('list');
         Route::get('/{id}/edit', [LuongController::class, 'edit'])->name('edit');
         Route::put('/{id}', [LuongController::class, 'update'])->name('update');
-        Route::delete('/{id}/delete', [LuongController::class, 'delete'])->name('delete');
+
+
+        // Thống kê lương
+        Route::get('/thong-ke', [LuongController::class, 'thongKe'])->name('thong-ke');
 
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');

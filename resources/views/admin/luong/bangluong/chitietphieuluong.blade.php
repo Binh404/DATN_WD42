@@ -31,7 +31,7 @@
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
-        <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG</h3>
+        <h3 class="text-center fw-bold text-uppercase">PHIẾU LƯƠNG tháng {{ $luong->luong_thang }}/{{ $luong->luong_nam }}</h3>
     </div>
 </div>
 

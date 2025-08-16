@@ -13,6 +13,8 @@ class LuongNhanVien extends Model
 
     protected $fillable = [
         'bang_luong_id',
+        'luong_thang',
+        'luong_nam',
         'nguoi_dung_id',
         'luong_co_ban',
         'tong_phu_cap',
