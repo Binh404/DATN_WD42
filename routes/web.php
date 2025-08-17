@@ -6,6 +6,7 @@ use App\Http\Controllers\DonDeXuatController;
 
 use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Controllers\GioLamViecController;
+use App\Http\Controllers\QuyDinhController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ThemeController;
@@ -610,7 +611,7 @@ Route::middleware('auth')->group(function () {
     Route::post('api/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
-
+    Route::get('quyDinh',[QuyDinhController::class, 'index'])->name('quyDinh');
 });
 Route::post('/chat/typing', [ChatController::class, 'typing'])->middleware('auth');
 Route::post('/chat/stopped-typing', [ChatController::class, 'stoppedTyping'])->middleware('auth');

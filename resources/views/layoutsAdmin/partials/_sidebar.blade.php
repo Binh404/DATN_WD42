@@ -389,6 +389,12 @@
             </a>
         </li>
         @endif
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('quyDinh') }}">
+                <i class="menu-icon mdi mdi-file-document-edit-outline"></i>
+                <span class="menu-title">Quy định</span>
+            </a>
+        </li>
          @if(MenuHelper::hasMenuPermission('dondexuat'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#dondexuat" aria-expanded="false" aria-controls="form-elements">
