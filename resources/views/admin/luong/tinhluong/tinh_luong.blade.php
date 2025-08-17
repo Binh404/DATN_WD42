@@ -149,7 +149,7 @@
         const nhanVienId = document.getElementById('nhanVienSelect').value;
         if (!nhanVienId) return;
 
-        const soCong = parseFloat(bangChamCong[nhanVienId]) ?? 0;
+        const soCong = parseFloat(bangChamCong[nhanVienId]) || 0;        
         document.getElementById('soCongInput').value = soCong;
 
         const soCongTangCa = parseFloat(congTangCa[nhanVienId]) ;

@@ -28,7 +28,7 @@ class DuyetDonTuController extends Controller
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
 
         if ($yeuCau->trang_thai !== 'cho_duyet') {
-            return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
+            return redirect()->route('admin.duyetdon.tuyendung.index')->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
         $yeuCau->update([
@@ -42,7 +42,7 @@ class DuyetDonTuController extends Controller
         $truongPhong->notify(new \App\Notifications\DuyetDonYeuCauTuyenDung($yeuCau));
 
         $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
-            $q->where('ten', 'hr');
+            $q->where('name', 'hr');
         })->get();
         foreach ($hrUsers as $hr) {
             $hr->notify(new \App\Notifications\ThongBaoTuyenDung($yeuCau));
@@ -55,7 +55,7 @@ class DuyetDonTuController extends Controller
         $user = auth()->user();
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
         if ($yeuCau->trang_thai !== 'cho_duyet') {
-            return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
+            return redirect()->route('admin.duyetdon.tuyendung.index')->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
         $yeuCau->update([

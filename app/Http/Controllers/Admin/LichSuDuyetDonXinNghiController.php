@@ -19,16 +19,20 @@ class LichSuDuyetDonXinNghiController extends Controller
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
 
-        if (!$vaiTro || !in_array($vaiTro->ten, ['department', 'hr', 'admin'])) {
+        if (!$vaiTro || !in_array($vaiTro->name, ['department', 'hr', 'admin'])) {
             return redirect()->back()->with('error', 'Bạn không có quyền duyệt đơn.');
         }
 
         $donXinNghi = DonXinNghi::findOrFail($id);
+
+        if($donXinNghi->trang_thai == 'huy_bo'){
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
         $ngayBatDau = $donXinNghi->ngay_bat_dau;
         $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
         // dd($ngayBatDau, $ngayKetThuc);
         // Gán cấp duyệt theo vai trò
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         // Kiểm tra đã duyệt cấp này chưa
         $daDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)
@@ -102,9 +106,12 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
+        if ($donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
 
         // Tránh từ chối trùng cấp
         if (LichSuDuyetDonNghi::where('don_xin_nghi_id', $donXinNghi->id)->where('cap_duyet', $capDuyet)->exists()) {

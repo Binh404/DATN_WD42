@@ -108,7 +108,7 @@ class YeuCauTuyenDungController extends Controller
 
         // tạo thông báo
         $admin = NguoiDung::whereHas('vaiTros', function ($query) {
-            $query->where('ten', 'admin');
+            $query->where('name', 'admin');
         })
             ->get();
         foreach ($admin as $adm) {

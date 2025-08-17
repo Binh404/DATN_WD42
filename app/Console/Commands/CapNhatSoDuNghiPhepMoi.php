@@ -47,7 +47,11 @@ class CapNhatSoDuNghiPhepMoi extends Command
 
                 if (!$daCo) {
                     $gioiTinh = HoSoNguoiDung::where('nguoi_dung_id', $nguoiDung->id)->value('gioi_tinh');
-                    if (strcasecmp($loai->ten, 'Nghỉ thai sản') == 0 && $gioiTinh != 'nu') {
+                    // Kiểm tra điều kiện giới tính áp dụng
+                    if ($loai->gioi_tinh_ap_dung === 'nu' && $gioiTinh !== 'nu') {
+                        continue;
+                    }
+                    if ($loai->gioi_tinh_ap_dung === 'nam' && $gioiTinh !== 'nam') {
                         continue;
                     }
 

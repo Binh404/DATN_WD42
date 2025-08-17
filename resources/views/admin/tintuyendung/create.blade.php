@@ -102,7 +102,7 @@
                         <option value="">Chọn vai trò</option>
                         @foreach ($vaiTros as $key => $item)
                             <option value="{{ $item->id }}">
-                                {{ $item->ten == 'department' ? 'Trưởng phòng' : ($item->ten == 'hr' ? 'HR' : 'Nhân viên')  }}
+                                {{ $item->name == 'department' ? 'Trưởng phòng' : ($item->name == 'hr' ? 'HR' : 'Nhân viên')  }}
                             </option>
                         @endforeach
                     </select>

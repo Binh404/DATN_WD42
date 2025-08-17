@@ -342,7 +342,7 @@ class HopDongLaoDongController extends Controller
         $nguoiDungId = $request->nguoi_dung_id;
         $hopDong = HopDongLaoDong::create($data);
 
-        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo
+        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo 
         try {
             Luong::create([
                 'nguoi_dung_id' => $nguoiDungId,
@@ -638,7 +638,7 @@ class HopDongLaoDongController extends Controller
 
         // Kiểm tra quyền hủy hợp đồng (chỉ admin và HR mới có quyền)
         $user = Auth::user();
-                    $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
+        $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
 
         if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
             return redirect()->back()->with('error', 'Bạn không có quyền hủy hợp đồng');

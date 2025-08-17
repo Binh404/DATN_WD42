@@ -804,7 +804,7 @@
 
                 @php
                     $ketQua = $donNghiPhep->ketQuaDuyetTheoCap(
-                        $vaiTro->ten == 'hr' ? 2 : ($vaiTro->ten == 'admin' ? 3 : 1),
+                        $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1),
                     );
                 @endphp
                 <!-- Các hành động -->
