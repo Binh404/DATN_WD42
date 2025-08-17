@@ -41,25 +41,19 @@ class NguoiDungVaiTroSeeder extends Seeder
             ],
             [
                 'nguoi_dung_id' => 5,
-                'vai_tro_id' => 4, // Employee
+                'vai_tro_id' => 3, // Employee
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
             ],
             [
                 'nguoi_dung_id' => 6,
-                'vai_tro_id' => 4, // Employee
+                'vai_tro_id' => 3, // Employee
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
             ],
             [
                 'nguoi_dung_id' => 7,
-                'vai_tro_id' => 4, // Employee
-                'model_type' => NguoiDung::class,
-                'created_at' => now(),
-            ],
-            [
-                'nguoi_dung_id' => 8,
-                'vai_tro_id' => 3, // Employee
+                'vai_tro_id' => 4, // Department
                 'model_type' => NguoiDung::class,
                 'created_at' => now(),
             ]

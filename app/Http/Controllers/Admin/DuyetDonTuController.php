@@ -28,7 +28,7 @@ class DuyetDonTuController extends Controller
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
 
         if ($yeuCau->trang_thai !== 'cho_duyet') {
-            return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
+            return redirect()->route('admin.duyetdon.tuyendung.index')->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
         $yeuCau->update([
@@ -55,7 +55,7 @@ class DuyetDonTuController extends Controller
         $user = auth()->user();
         $yeuCau = YeuCauTuyenDung::findOrFail($id);
         if ($yeuCau->trang_thai !== 'cho_duyet') {
-            return back()->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
+            return redirect()->route('admin.duyetdon.tuyendung.index')->with('error', 'Yêu cầu này không còn ở trạng thái chờ duyệt.');
         }
 
         $yeuCau->update([

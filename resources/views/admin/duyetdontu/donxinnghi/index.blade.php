@@ -127,21 +127,6 @@
                 </h2>
             </div>
 
-            <div class="col-md-5">
-                <form method="GET" action="/yeu$yeuCauTuyenDung">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" name="search"
-                            placeholder="Tìm kiếm yêu cầu..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </form>
-            </div>
-
         </div>
 
         @if (session('success'))
@@ -241,10 +226,13 @@
                                                     $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1),
                                                 );
                                                 // dd($item->lichSuDuyet->toArray(), $vaiTro->name, $cap = $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1));
-
                                             @endphp
 
-                                            @if ($ketQua === 'da_duyet')
+                                            @if ($item->trang_thai == 'huy_bo')
+                                                <span class="bg-danger-subtle text-danger">
+                                                    Hủy bỏ
+                                                </span>
+                                            @elseif ($ketQua === 'da_duyet')
                                                 <span class="bg-success-subtle text-success">
                                                     Đã duyệt
                                                 </span>
@@ -261,7 +249,12 @@
                                         </td>
 
                                         <td class="px-4 py-3 align-middle">
-                                            @if ($ketQua === 'da_duyet')
+                                            @if ($item->trang_thai == 'huy_bo')
+                                                <a class="btn btn-outline-success btn-sm rounded-pill"
+                                                    href="{{ route('department.donxinnghi.show', $item->id) }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            @elseif ($ketQua === 'da_duyet')
                                                 <a class="btn btn-outline-success btn-sm rounded-pill"
                                                     href="{{ route('department.donxinnghi.show', $item->id) }}">
                                                     <i class="fas fa-eye"></i>

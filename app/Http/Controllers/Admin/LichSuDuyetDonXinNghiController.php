@@ -24,6 +24,10 @@ class LichSuDuyetDonXinNghiController extends Controller
         }
 
         $donXinNghi = DonXinNghi::findOrFail($id);
+
+        if($donXinNghi->trang_thai == 'huy_bo'){
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
         $ngayBatDau = $donXinNghi->ngay_bat_dau;
         $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
         // dd($ngayBatDau, $ngayKetThuc);
@@ -105,6 +109,9 @@ class LichSuDuyetDonXinNghiController extends Controller
         $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
+        if ($donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
 
         // Tránh từ chối trùng cấp
         if (LichSuDuyetDonNghi::where('don_xin_nghi_id', $donXinNghi->id)->where('cap_duyet', $capDuyet)->exists()) {
