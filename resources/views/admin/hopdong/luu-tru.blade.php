@@ -183,8 +183,12 @@
                                                                                                                                     <td>
                                                                         @if($hopDong->trang_thai_hop_dong == 'huy_bo')
                                                                             <span class="badge badge-secondary">Hủy bỏ</span>
+                                                                        @elseif($hopDong->trang_thai_ky == 'tu_choi_ky')
+                                                                            <span class="badge badge-danger">Từ chối ký</span>
                                                                         @elseif($hopDong->trang_thai_hop_dong == 'het_han' && $hopDong->trang_thai_tai_ky == 'da_tai_ky')
-                                                                            <span class="badge badge-warning">Hết hạn</span>
+                                                                            <span class="badge badge-warning">Hết hạn (Đã tái ký)</span>
+                                                                        @elseif($hopDong->trang_thai_hop_dong == 'het_han')
+                                                                            <span class="badge badge-warning">Hết hạn (Đã tái ký)</span>
                                                                         @endif
                                                                     </td>
                                                                 <td>

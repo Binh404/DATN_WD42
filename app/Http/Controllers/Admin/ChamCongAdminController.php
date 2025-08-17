@@ -106,7 +106,7 @@ class ChamCongAdminController extends Controller
                 $q->where('phong_ban_id', $phongBanId)
                 ->where('id', '<>', $userId)
                 ->whereHas('vaiTro', function ($qr) {
-                    $qr->where('ten', '<>', 'department'); // loại trưởng phòng khác
+                    $qr->where('name', '<>', 'department'); // loại trưởng phòng khác
                 });;
             });
         } else {

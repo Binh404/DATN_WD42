@@ -24,6 +24,7 @@ class HopDongLaoDong extends Model
         'hinh_thuc_lam_viec',
         'dia_diem_lam_viec',
         'duong_dan_file',
+        'file_dinh_kem',
         'file_hop_dong_da_ky',
         'dieu_khoan',
         'trang_thai_hop_dong',
@@ -35,6 +36,7 @@ class HopDongLaoDong extends Model
         'nguoi_huy_id',
         'thoi_gian_huy',
         'trang_thai_tai_ky',
+        'created_by',
     ];
 
     protected $casts = [
@@ -63,6 +65,11 @@ class HopDongLaoDong extends Model
         return $this->belongsTo(NguoiDung::class, 'nguoi_huy_id');
     }
 
+    public function nguoiGuiHopDong()
+    {
+        return $this->belongsTo(NguoiDung::class, 'created_by');
+    }
+
     public function hoSoNguoiDung()
     {
         return $this->belongsTo(HoSoNguoiDung::class, 'nguoi_dung_id', 'nguoi_dung_id');
@@ -73,10 +80,7 @@ class HopDongLaoDong extends Model
         return $this->belongsTo(ChucVu::class, 'chuc_vu_id');
     }
 
-    public function phuLucs()
-    {
-        return $this->hasMany(PhuLucHopDong::class, 'hop_dong_id');
-    }
+    // Relationship phụ lục đã được xóa
 
     public function luong()
     {

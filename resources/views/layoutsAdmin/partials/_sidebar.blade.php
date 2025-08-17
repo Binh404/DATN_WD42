@@ -422,31 +422,41 @@
         @endif
 
         {{-- Thống kê hợp đồng - admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('hopdong'))
+        @if(MenuHelper::hasMenuPermission('thongke'))
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="thongke">
                 <i class="menu-icon mdi mdi-clock-check"></i>
                 <span class="menu-title">Thống kê</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="thongke">
                 <ul class="nav flex-column sub-menu">
+                    @if(MenuHelper::hasSubMenuPermission('thongke', 'hopdong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.thong-ke') }}">Hợp đồng</a>
                     </li>
+                    @endif
 
+                    @if(MenuHelper::hasSubMenuPermission('thongke', 'chamcong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.chamcong.thong-ke') }}">Chấm công</a>
                     </li>
+                    @endif
 
+                    @if(MenuHelper::hasSubMenuPermission('thongke', 'luong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.thong-ke') }}">Lương</a>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </li>
-
         @endif
 
 
     </ul>
 </nav>
+
+
 
 
