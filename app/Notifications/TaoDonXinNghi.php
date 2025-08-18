@@ -36,9 +36,10 @@ class TaoDonXinNghi extends Notification
      */
     public function toDatabase($notifiable)
     {
+        $tenNguoiTao = $this->donXinNghi->nguoiDung->hoSo->ten ?? 'chưa rõ';
 
         return [
-            'message' => 'Nhân viên ' . $this->donXinNghi->nguoi_dung_id . 'vừa tạo đơn xin nghỉ.',
+            'message' => 'Nhân viên ' . $tenNguoiTao . ' vừa tạo đơn xin nghỉ.',
             'url' => route('department.donxinnghi.show', $this->donXinNghi->id),
         ];
     }
@@ -50,8 +51,10 @@ class TaoDonXinNghi extends Notification
      */
     public function toArray($notifiable)
     {
+        $tenNguoiTao = $this->donXinNghi->nguoiDung->hoSo->ten ?? 'chưa rõ';
+
         return [
-            'message' => 'Nhân viên Nguyễn Văn A vừa tạo đơn xin nghỉ.',
+            'message' => 'Nhân viên ' . $tenNguoiTao . ' vừa tạo đơn xin nghỉ.',
             'url' => route('department.donxinnghi.show', $this->donXinNghi->id),
         ];
     }

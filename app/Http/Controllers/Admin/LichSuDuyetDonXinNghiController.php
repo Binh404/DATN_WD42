@@ -25,7 +25,7 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $donXinNghi = DonXinNghi::findOrFail($id);
 
-        if($donXinNghi->trang_thai == 'huy_bo'){
+        if ($donXinNghi->trang_thai == 'huy_bo') {
             return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
         }
         $ngayBatDau = $donXinNghi->ngay_bat_dau;
@@ -57,6 +57,14 @@ class LichSuDuyetDonXinNghiController extends Controller
         if ($capDuyet == 1) {
             // Trưởng phòng duyệt xong → đẩy lên HR
             $donXinNghi->cap_duyet_hien_tai = 2;
+
+            // tạo thông báo lên hr
+            $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'hr');
+            })->get();
+            foreach ($hrUsers as $hr) {
+                $hr->notify(new \App\Notifications\TaoDonXinNghi($donXinNghi));
+            }
         } elseif ($capDuyet == 2 || $capDuyet == 3) {
             // HR hoặc Admin duyệt xong → duyệt hoàn tất
             $donXinNghi->trang_thai = 'da_duyet';
