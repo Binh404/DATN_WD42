@@ -159,7 +159,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
         Route::get('/thong-ke', [HopDongLaoDongController::class, 'thongKe'])->name('thong-ke');
-        Route::get('/luu-tru', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
+        Route::get('/luu-tru-', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
         Route::get('/export', [HopDongLaoDongController::class, 'export'])->name('export');
         Route::get('/export-luu-tru', [HopDongLaoDongController::class, 'exportLuuTru'])->name('export-luu-tru');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
@@ -328,7 +328,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // lương admin - hr
      Route::prefix('luong')->name('luong.')->controller(LuongController::class)->group(function () {
-        Route::get('/', [LuongController::class, 'index'])->name('index');
+        Route::get('/danh-sach', [LuongController::class, 'index'])->name('index');
         Route::get('/tinh-luong', [LuongController::class, 'create'])->name('create');
         Route::post('/tinh-luong', [LuongController::class, 'tinhLuongVaLuu'])->name('store');
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
@@ -576,7 +576,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr,ad
     Route::get('/ungvien.index', [UngTuyenController::class, 'index'])->name('ungvien.index');
     Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');
     Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
-    Route::get('/ungvien/luu-tru', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
+    Route::get('/ungvien/luu-tru.>', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
     Route::post('/ungvien/phe-duyet', [UngTuyenController::class, 'pheDuyet'])->name('ungvien.phe-duyet');
     Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
     Route::get('/ungvien/{id}/show', [UngTuyenController::class, 'show'])->name('ungvien.show');
