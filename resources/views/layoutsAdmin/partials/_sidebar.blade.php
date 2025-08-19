@@ -217,6 +217,18 @@
                         <a class="nav-link" href="{{ route('admin.giolamviec.index') }}">Quản lý thời gian</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'guiyeucau'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('yeu-cau-dieu-chinh-cong.index')}}">Yêu cầu chỉnh công</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('chamcong', 'pheduyetyeucau'))
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('admin.yeu-cau-dieu-chinh-cong.index')}}">Yêu cầu chỉnh công</a>
+                    </li>
+                    @endif
 
 
                 </ul>
@@ -451,6 +463,7 @@
             </div>
         </li>
         @endif
+
 
 
 
