@@ -228,7 +228,7 @@ class LuongController extends Controller
             $query->where('luong_nam', $nam);
         })
         ->orderBy('created_at', 'desc')
-        ->paginate(10)
+        ->paginate(1)
         ->appends(request()->query());
 
     $dsLuong = BangLuong::with('luongNhanVien')->get();

@@ -51,8 +51,8 @@
 </div>
 
 
-                <div class="table-responsive">
-                    <table id="salary" class="table table-sm table-bordered table-striped table-hover">
+               <div class="table-responsive">
+					<table id="salary" class="table table-sm table-bordered table-striped table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -118,10 +118,9 @@
                     </table>
                 </div>
 
-                <div class="d-flex" style="justify-content: right; padding-right: 20px;margin-bottom: 15px;">
-                {{-- Pagination links --}}
-                {{ $luongs->links() }}
-                </div>
+                <div class="d-flex justify-content-end pe-3 mb-3">
+				{{ $luongs->links() }}
+			</div>
 
         </div>
     </div>
