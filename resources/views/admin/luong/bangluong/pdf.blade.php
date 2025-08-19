@@ -112,7 +112,7 @@
             <tr>
                 <td>4</td>
                 <td>Công tăng ca</td>
-                <td>{{ $congOT }} </td>
+                <td>{{ $congTangCa }} </td>
             </tr>
             <tr>
                 <td>5</td>

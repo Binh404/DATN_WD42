@@ -162,7 +162,7 @@ class LuongController extends Controller
     $tongLuong = $luong->tong_luong;
     $luongThucNhan = $luong->luong_thuc_nhan;
     $luongCoBan = $luong->luong_co_ban;
-    $congOT = $luong->cong_tang_ca ?? 0; // Công tăng ca nếu có, mặc định là 0 nếu không có
+    $congTangCa = $luong->cong_tang_ca ?? 0; // Công tăng ca nếu có, mặc định là 0 nếu không có
 // dd($congOT); // test từng nhân viên
 
     // Tên nhân viên, phòng ban, chức vụ
@@ -202,7 +202,7 @@ class LuongController extends Controller
         'tongLuong',
         'luongThucNhan',
         'luongCoBan',
-        'congOT',
+        'congTangCa',
         // 'congTangCa',
         'base64'
     );
@@ -228,7 +228,7 @@ class LuongController extends Controller
             $query->where('luong_nam', $nam);
         })
         ->orderBy('created_at', 'desc')
-        ->paginate(10)
+        ->paginate(1)
         ->appends(request()->query());
 
     $dsLuong = BangLuong::with('luongNhanVien')->get();
@@ -255,8 +255,8 @@ class LuongController extends Controller
 
     $luong = LuongNhanVien::with('nguoiDung.hoSo', 'bangLuong', 'nguoiDung.chucVu')
         ->where('id', $id)
-        ->where('luong_thang', $thang)
-        ->where('luong_nam', $nam)
+        // ->where('luong_thang', $thang)
+        // ->where('luong_nam', $nam)
         ->first(); // Dùng first thay vì find vì bạn có thêm điều kiện where
 
     if (!$luong) {
@@ -723,15 +723,27 @@ public function guiTatCaMailLuong(Request $request)
     $thang = $request->thang;
     $nam = $request->nam;
 
-    $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu')
-        ->where('luong_thang', $thang)
-        ->where('luong_nam', $nam)
+    // Nếu không chọn tháng/năm, mặc định lấy theo đợt lương mới nhất
+    if (empty($thang) || empty($nam)) {
+        $lastLuong = LuongNhanVien::orderByDesc('created_at')->first();
+        if ($lastLuong) {
+            $thang = $lastLuong->luong_thang;
+            $nam = $lastLuong->luong_nam;
+        }
+    }
+
+    $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu', 'nguoiDung.phongBan')
+        ->when($thang, function ($q) use ($thang) {
+            $q->where('luong_thang', $thang);
+        })
+        ->when($nam, function ($q) use ($nam) {
+            $q->where('luong_nam', $nam);
+        })
         ->get();
 
-    // Tên nhân viên, phòng ban, chức vụ
-
-
-
+    if ($luongs->isEmpty()) {
+        return back()->with('error', 'Không tìm thấy phiếu lương để gửi cho tháng/năm đã chọn.');
+    }
 
     // Xử lý logo base64
     $pathToImage = public_path('assets/images/dvlogo.png');
@@ -742,70 +754,180 @@ public function guiTatCaMailLuong(Request $request)
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 
-
-
-
     foreach ($luongs as $luong) {
+        $tenNhanVienGoc = ($luong->nguoiDung->hoSo->ho ?? '') . ' ' . ($luong->nguoiDung->hoSo->ten ?? '');
+        $tenKhongDau = RemoveNameHelper::removeVietnameseTones($tenNhanVienGoc);
+        $tenSlug = Str::slug($tenKhongDau);
 
-    $tenNhanVienGoc = $luong->nguoiDung->hoSo->ho . ' ' . $luong->nguoiDung->hoSo->ten;
-    $tenKhongDau = RemoveNameHelper::removeVietnameseTones($tenNhanVienGoc);
-    $tenSlug = Str::slug($tenKhongDau); // le-quoc-binh
-
-
-    $fileName = "{$tenSlug}_luong_{$thang}_{$nam}.pdf";
-
-
-    $soCong = $luong->so_ngay_cong;
-    $gioTangCa = $luong->gio_tang_ca;
-    $tongLuong = $luong->tong_luong;
-    $luongThucNhan = $luong->luong_thuc_nhan;
-    $luongCoBan = $luong->luong_co_ban;
-
-    $nhanVien = $tenNhanVienGoc;
-    $phongBan = $luong->nguoiDung->phongBan->ten_phong_ban ?? '-';
-    $chucVu = $luong->nguoiDung->chucVu->ten ?? '-';
-
-    $congTangCa = DB::table('thuc_hien_tang_ca')
-        ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
-        ->where('dang_ky_tang_ca.nguoi_dung_id', $luongs->first()->nguoiDung->id)
-        ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-        ->whereYear('thuc_hien_tang_ca.created_at', $nam)
-        ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
-
-
-        $tenNhanVien = $luong->nguoiDung->hoSo->ho . ' ' . $luong->nguoiDung->hoSo->ten ?? '';
-        $data = compact('luong', 'tenNhanVien', 'thang', 'nam','nhanVien',
-        'phongBan',
-        'chucVu',
-        'thang',
-        'nam',
-        'soCong',
-        'gioTangCa',
-        'tongLuong',
-        'luongThucNhan',
-        'luongCoBan',
-        'congTangCa',
-        'base64');
-
-        // Xuất PDF tạm
-        $pdf = Pdf::loadView('admin.luong.bangluong.pdf', $data);
         $fileName = "{$tenSlug}_luong_{$thang}_{$nam}.pdf";
-        $pdfPath = storage_path("app/public/luong/{$fileName}");
-        // Kiểm tra và tạo thư mục nếu chưa có
-        if (!file_exists(dirname($pdfPath))) {
-            mkdir(dirname($pdfPath), 0775, true);
-        }
 
-        // Ghi file
-        file_put_contents($pdfPath, $pdf->output());
+        $soCong = $luong->so_ngay_cong;
+        $gioTangCa = $luong->gio_tang_ca;
+        $tongLuong = $luong->tong_luong;
+        $luongThucNhan = $luong->luong_thuc_nhan;
+        $luongCoBan = $luong->luong_co_ban;
 
-        // Gửi email
-        Mail::to($luong->nguoiDung->email)->send(
-            new GuiPhieuLuong($tenNhanVien, $thang, $nam, $pdfPath)
+        $nhanVien = $tenNhanVienGoc;
+        $phongBan = $luong->nguoiDung->phongBan->ten_phong_ban ?? '-';
+        $chucVu = $luong->nguoiDung->chucVu->ten ?? '-';
+
+        // Sửa lỗi: dùng đúng người của vòng lặp hiện tại để tính công tăng ca
+        $congTangCa = DB::table('thuc_hien_tang_ca')
+            ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
+            ->where('dang_ky_tang_ca.nguoi_dung_id', $luong->nguoi_dung_id)
+            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
+            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+            ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+
+        $tenNhanVien = $tenNhanVienGoc;
+        $data = compact(
+            'luong',
+            'tenNhanVien',
+            'thang',
+            'nam',
+            'nhanVien',
+            'phongBan',
+            'chucVu',
+            'soCong',
+            'gioTangCa',
+            'tongLuong',
+            'luongThucNhan',
+            'luongCoBan',
+            'congTangCa',
+            'base64'
         );
+
+        try {
+            // Xuất PDF tạm
+            $pdf = Pdf::loadView('admin.luong.bangluong.pdf', $data);
+            $pdfPath = storage_path("app/public/luong/{$fileName}");
+            if (!file_exists(dirname($pdfPath))) {
+                mkdir(dirname($pdfPath), 0775, true);
+            }
+
+            file_put_contents($pdfPath, $pdf->output());
+
+            // Gửi email
+            Mail::to($luong->nguoiDung->email)->send(
+                new GuiPhieuLuong($tenNhanVien, $thang, $nam, $pdfPath)
+            );
+        } catch (\Throwable $e) {
+            Log::error('Lỗi gửi phiếu lương', [
+                'luong_id' => $luong->id,
+                'user_id' => $luong->nguoi_dung_id,
+                'message' => $e->getMessage(),
+            ]);
+            continue; // Không dừng cả batch
+        }
     }
 
     return back()->with('success', 'Đã gửi tất cả phiếu lương qua email thành công!');
+}
+
+public function guiMailLuongDaChon(Request $request)
+{
+    $selectedIds = $request->input('selected_ids', []);
+
+    if (empty($selectedIds) || !is_array($selectedIds)) {
+        return back()->with('error', 'Vui lòng chọn ít nhất một phiếu lương.');
+    }
+
+    $luongs = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu', 'nguoiDung.phongBan')
+        ->whereIn('id', $selectedIds)
+        ->get();
+
+    if ($luongs->isEmpty()) {
+        return back()->with('error', 'Không tìm thấy phiếu lương tương ứng với lựa chọn.');
+    }
+
+    // Xử lý logo base64
+    $pathToImage = public_path('assets/images/dvlogo.png');
+    $base64 = null;
+    if (file_exists($pathToImage)) {
+        $type = pathinfo($pathToImage, PATHINFO_EXTENSION);
+        $data = file_get_contents($pathToImage);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
+    $successCount = 0;
+    $failCount = 0;
+
+    foreach ($luongs as $luong) {
+        $thang = $luong->luong_thang;
+        $nam = $luong->luong_nam;
+
+        $tenNhanVienGoc = ($luong->nguoiDung->hoSo->ho ?? '') . ' ' . ($luong->nguoiDung->hoSo->ten ?? '');
+        $tenKhongDau = RemoveNameHelper::removeVietnameseTones($tenNhanVienGoc);
+        $tenSlug = Str::slug($tenKhongDau);
+
+        $fileName = "{$tenSlug}_luong_{$thang}_{$nam}.pdf";
+
+        $soCong = $luong->so_ngay_cong;
+        $gioTangCa = $luong->gio_tang_ca;
+        $tongLuong = $luong->tong_luong;
+        $luongThucNhan = $luong->luong_thuc_nhan;
+        $luongCoBan = $luong->luong_co_ban;
+
+        $nhanVien = $tenNhanVienGoc;
+        $phongBan = $luong->nguoiDung->phongBan->ten_phong_ban ?? '-';
+        $chucVu = $luong->nguoiDung->chucVu->ten ?? '-';
+
+        $congTangCa = DB::table('thuc_hien_tang_ca')
+            ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
+            ->where('dang_ky_tang_ca.nguoi_dung_id', $luong->nguoi_dung_id)
+            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
+            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+            ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+
+        $tenNhanVien = $tenNhanVienGoc;
+        $data = compact(
+            'luong',
+            'tenNhanVien',
+            'thang',
+            'nam',
+            'nhanVien',
+            'phongBan',
+            'chucVu',
+            'soCong',
+            'gioTangCa',
+            'tongLuong',
+            'luongThucNhan',
+            'luongCoBan',
+            'congTangCa',
+            'base64'
+        );
+
+        try {
+            $pdf = Pdf::loadView('admin.luong.bangluong.pdf', $data);
+            $pdfPath = storage_path("app/public/luong/{$fileName}");
+            if (!file_exists(dirname($pdfPath))) {
+                mkdir(dirname($pdfPath), 0775, true);
+            }
+            file_put_contents($pdfPath, $pdf->output());
+
+            Mail::to($luong->nguoiDung->email)->send(
+                new GuiPhieuLuong($tenNhanVien, $thang, $nam, $pdfPath)
+            );
+            $successCount++;
+        } catch (\Throwable $e) {
+            $failCount++;
+            Log::error('Lỗi gửi phiếu lương (chọn): ' . $e->getMessage(), [
+                'luong_id' => $luong->id,
+                'user_id' => $luong->nguoi_dung_id,
+            ]);
+            continue;
+        }
+    }
+
+    if ($failCount > 0 && $successCount === 0) {
+        return back()->with('error', 'Gửi thất bại. Vui lòng kiểm tra cấu hình email hoặc dữ liệu.');
+    }
+
+    if ($failCount > 0) {
+        return back()->with('success', "Đã gửi {$successCount} phiếu. {$failCount} phiếu bị lỗi (xem log). ");
+    }
+
+    return back()->with('success', "Đã gửi {$successCount} phiếu lương qua email thành công!");
 }
 function removeVietnameseTones($str) {
     $str = preg_replace([
@@ -1140,7 +1262,7 @@ public function kiemTraViPhamQuyTac()
             $query->whereYear('created_at', $request->nam);
         }
 
-        $luongs = $query->paginate(10)->appends(request()->query());
+        $luongs = $query->paginate(6)->appends(request()->query());
 
         return view('admin.luong.list', compact('luongs', 'thang', 'nam'));
     }

@@ -356,6 +356,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         Route::post('/luong/gui-mail-luong', [LuongController::class, 'guiTatCaMailLuong'])->name('gui-mail-tat-ca');
+        Route::post('/gui-mail-da-chon', [LuongController::class, 'guiMailLuongDaChon'])->name('gui-mail-da-chon');
         // Route::get('/api/bang-luong-json', function () {
         //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
         // });
