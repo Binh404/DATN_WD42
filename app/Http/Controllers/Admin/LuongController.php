@@ -368,6 +368,7 @@ class LuongController extends Controller
             ->select('nguoi_dung_id', DB::raw('SUM(so_cong) as tong_so_cong'))
             ->whereMonth('ngay_cham_cong', $thang)
             ->whereYear('ngay_cham_cong', $nam)
+            ->where('trang_thai_duyet', 1)
             ->groupBy('nguoi_dung_id')
             ->pluck('tong_so_cong', 'nguoi_dung_id'); // dạng [id => công]
 
@@ -377,13 +378,14 @@ class LuongController extends Controller
         $soCongTangCa = DB::table('thuc_hien_tang_ca')
             ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
             ->where('dang_ky_tang_ca.nguoi_dung_id', $nhanVien->id)
-            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+            ->whereMonth('dang_ky_tang_ca.ngay_tang_ca', $thang)
+            ->whereYear('dang_ky_tang_ca.ngay_tang_ca', $nam)
+            ->where('thuc_hien_tang_ca.trang_thai', 'hoan_thanh')
             ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
 
         $congTangCa[$nhanVien->id] = $soCongTangCa;
     }
-
+    // dd($congTangCa);
         return view('admin.luong.tinhluong.tinh_luong', compact(
             'nhanViensChuaTinhLuong',
             'maBangLuong',

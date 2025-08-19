@@ -76,16 +76,10 @@ use Illuminate\Support\Facades\Auth;
                 </div>
             </li>
             <li class="nav-item position-relative">
-                <a href="#" class="nav-link" id="toggle-search">
-                    <i class="fas fa-search"></i>
+                <a href="{{ route('chat.index') }}" class="nav-link" id="toggle-search">
+                    <i class="mdi mdi-message-processing-outline"></i>
                 </a>
-                <form class="search-form d-none position-absolute" id="search-form"
-                    style="top: 100%; right: 0; z-index: 1000;">
-                    <div class="input-group mt-2">
-                        <input type="search" class="form-control" placeholder="Tìm kiếm ..." title="Search here">
-                        <button class="btn btn-primary" type="submit"><i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </form>
+
             </li>
             <li class="nav-item d-flex align-items-center">
                 <form action="{{ route('toggle.theme') }}" method="GET" class="me-3">

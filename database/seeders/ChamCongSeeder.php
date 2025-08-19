@@ -18,7 +18,7 @@ class ChamCongSeeder extends Seeder
         $chamCongs = [];
 
         // Tạo dữ liệu chấm công cho 30 ngày gần đây
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $ngay = $today->copy()->subDays($i);
 
             // Bỏ qua thứ 7 và chủ nhật
@@ -39,6 +39,7 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 5',
                 'dia_chi_ip' => '192.168.1.100',
                 'ghi_chu' => 'Đi muộn do kẹt xe',
+                'trang_thai_duyet' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -58,6 +59,7 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -76,6 +78,8 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -94,6 +98,8 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -112,6 +118,8 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -130,6 +138,8 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -148,6 +158,8 @@ class ChamCongSeeder extends Seeder
                 'vi_tri_check_out' => 'Tòa nhà ABC, Tầng 3',
                 'dia_chi_ip' => '192.168.1.101',
                 'ghi_chu' => '',
+                'trang_thai_duyet' => 1,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
