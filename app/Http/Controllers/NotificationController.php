@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HopDongLaoDong;
 use Illuminate\Notifications\DatabaseNotification;
-
+use App\Models\User;
+use App\Notifications\NewMessageNotification;
 class NotificationController extends Controller
 {
     public function show($id)
@@ -39,7 +40,7 @@ class NotificationController extends Controller
             'thoi_gian_ky' => now(),
         ]);
         // Gửi thông báo cho HR
-        $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+        $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
             $q->where('ten', 'hr');
         })->get();
         foreach ($hrUsers as $hr) {
@@ -58,7 +59,7 @@ class NotificationController extends Controller
             ]);
 
             // Gửi thông báo cho HR
-            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function($q) {
+            $hrUsers = \App\Models\NguoiDung::whereHas('vaiTros', function ($q) {
                 $q->where('ten', 'hr');
             })->get();
 

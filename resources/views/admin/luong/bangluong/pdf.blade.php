@@ -90,19 +90,19 @@
             <tr>
                 <th style="width: 10%">STT</th>
                 <th style="width: 50%">Chỉ tiêu</th>
-                <th style="width: 40%">Số tiền / Số giờ</th>
+                <th style="width: 40%">Số tiền / Số công</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>1</td>
                 <td>Lương cơ bản</td>
-                <td>{{ number_format($luongCoBan) }} VNĐ</td>
+                <td>{{ number_format($luongCoBan) }} đ</td>
             </tr>
             <tr>
                 <td>2</td>
                 <td>Số ngày công</td>
-                <td>{{ number_format($soCong) }} ngày</td>
+                <td>{{ number_format($soCong) }}</td>
             </tr>
             <tr>
                 <td>3</td>
@@ -112,17 +112,22 @@
             <tr>
                 <td>4</td>
                 <td>Công tăng ca</td>
-                <td>{{ number_format($congTangCa) }} </td>
+                <td>{{ $congOT }} </td>
             </tr>
             <tr>
                 <td>5</td>
                 <td>Tổng lương</td>
-                <td>{{ number_format($tongLuong) }} VNĐ</td>
+                <td>{{ number_format($tongLuong) }} đ</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Thuế TNCN</td>
+                <td>- {{ number_format($luong->thue_thu_nhap_ca_nhan ?? 0) }} đ</td>
             </tr>
             <tr class="highlight">
-                <td>6</td>
+                <td>7</td>
                 <td>Thực nhận</td>
-                <td><strong>{{ number_format($luongThucNhan) }} </strong>VNĐ</td>
+                <td><strong>{{ number_format($luongThucNhan) }} </strong>đ</td>
             </tr>
         </tbody>
     </table>

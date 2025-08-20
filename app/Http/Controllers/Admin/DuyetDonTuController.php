@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\NguoiDung;
 use App\Models\YeuCauTuyenDung;
 use Illuminate\Http\Request;
 
@@ -35,6 +36,17 @@ class DuyetDonTuController extends Controller
             'nguoi_duyet_id' => $user->id,
             'thoi_gian_duyet' => now()
         ]);
+
+        // tạo thông báo
+        $truongPhong = NguoiDung::findOrFail($yeuCau->nguoi_tao_id);
+        $truongPhong->notify(new \App\Notifications\DuyetDonYeuCauTuyenDung($yeuCau));
+
+        $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+            $q->where('ten', 'hr');
+        })->get();
+        foreach ($hrUsers as $hr) {
+            $hr->notify(new \App\Notifications\ThongBaoTuyenDung($yeuCau));
+        }
         return redirect()->route('admin.duyetdon.tuyendung.index')->with('success', 'Đã duyệt yêu cầu tuyển dụng.');
     }
 
@@ -51,6 +63,10 @@ class DuyetDonTuController extends Controller
             'nguoi_duyet_id' => $user->id,
             'thoi_gian_duyet' => now()
         ]);
+
+        // tạo thông báo
+        $truongPhong = NguoiDung::findOrFail($yeuCau->nguoi_tao_id);
+        $truongPhong->notify(new \App\Notifications\TuChoiYeuCauTuyenDung($yeuCau));
 
         return redirect()->route('admin.duyetdon.tuyendung.index')->with('success', 'Đã từ chối yêu cầu tuyển dụng.');
     }

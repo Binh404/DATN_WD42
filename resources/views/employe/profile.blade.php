@@ -1,4 +1,7 @@
 @extends('layoutsAdmin.master')
+@php
+use Illuminate\Support\Facades\Auth;
+@endphp
 
 @section('content')
     @if(session('success'))
@@ -19,6 +22,119 @@
                             Cập nhật thông tin cá nhân
                         </h4>
                     </div> --}}
+                    <form action="{{ route('tai-khoan.cap-nhat') }}" method="POST">
+                        @csrf
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="mdi mdi-account me-2"></i>
+                                    Thông tin tài khoản
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Tên đăng nhập -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                        <input type="text" name="ten_dang_nhap"
+                                            class="form-control @error('ten_dang_nhap') is-invalid @enderror"
+                                            value="{{ old('ten_dang_nhap', Auth::user()->ten_dang_nhap) }}">
+                                        @error('ten_dang_nhap')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email cá nhân <span class="text-danger">*</span></label>
+                                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ old('email', Auth::user()->email) }}">
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phòng ban <span class="text-danger">*</span></label>
+                                        {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
+                                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ $phongbans->phongBan->ten_phong_ban ?? ''  }}" disabled>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Chức vụ <span class="text-danger">*</span></label>
+                                        {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
+                                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ $chucvus->chucVu->ten ?? ''  }}" disabled>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Quyền <span class="text-danger">*</span></label>
+                                        {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
+                                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ $vaitros->vaiTro->name   }}" disabled>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Nút cập nhật -->
+                                    <div class="col-12 text-end">
+                                        <button type="submit" class="btn btn-primary">Cập nhật tài khoản</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form action="{{ route('tai-khoan.doi-mat-khau') }}" method="POST">
+                        @csrf
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="mdi mdi-lock me-2"></i>
+                                    Đổi mật khẩu
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Mật khẩu hiện tại -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                                        <input type="password" name="current_password"
+                                            class="form-control @error('current_password') is-invalid @enderror">
+                                        @error('current_password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Mật khẩu mới -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
+                                        <input type="password" name="new_password"
+                                            class="form-control @error('new_password') is-invalid @enderror">
+                                        @error('new_password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Xác nhận mật khẩu -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                                        <input type="password" name="new_password_confirmation" class="form-control">
+                                    </div>
+
+                                    <!-- Nút đổi mật khẩu -->
+                                    <div class="col-12 text-end">
+                                        <button type="submit" class="btn btn-warning">Đổi mật khẩu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="card-body">
                         <form action="{{ route('employee.profile.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -195,7 +311,7 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
 
                                         <div class="col-md-4">
@@ -207,7 +323,7 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
 
                                         <div class="col-md-4">
@@ -219,7 +335,7 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\employee;
 
-use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
-use App\Models\DangKyTangCa;
-use App\Models\thucHienTangCa;
 use App\Models\NguoiDung;
-use App\Services\GioLamViecService;
+use App\Models\DangKyTangCa;
 use Illuminate\Http\Request;
+use App\Models\thucHienTangCa;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\GioLamViecService;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ChamCongController extends Controller
 {
@@ -72,7 +73,8 @@ class ChamCongController extends Controller
             // dd($today->format('Y-m-d'));
             $isOvertime = false;
             $workingHours = $this->workScheduleService->getWorkingHours();
-            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']); // $workingHours['start_time_tang_ca']; // 18:45
+            // dd($workingHours);
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']) ?? '18:30'; // $workingHours['start_time_tang_ca']; // 18:45
 
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
@@ -288,6 +290,7 @@ class ChamCongController extends Controller
                 $chamCong->update([
                     'gio_ra' => $currentTime,
                     'vi_tri_check_out' => $this->layViTri($request),
+                    'ghi_chu' => $this->layLyDo($request),
                     'trang_thai_duyet' => $trangThaiDuyet
                 ]);
 
@@ -419,7 +422,7 @@ class ChamCongController extends Controller
             return response()->json($data);
 
         } catch (\Exception $e) {
-            \Log::error('Error fetching attendance data: ' . $e->getMessage());
+            Log::error('Error fetching attendance data: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Có lỗi xảy ra khi lấy dữ liệu',
                 'message' => config('app.debug') ? $e->getMessage() : 'Lỗi hệ thống'
@@ -463,7 +466,7 @@ class ChamCongController extends Controller
             $today = now();
             $currentTime = now();
             $workingHours = $this->workScheduleService->getWorkingHours();
-            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca']);
+            $overtimeStartTime = Carbon::parse($workingHours['start_time_tang_ca'] ?? '18:30');
             $isWeekend = $today->isWeekend();
             $isHoliday = $this->kiemTraNgayLe($today);
 

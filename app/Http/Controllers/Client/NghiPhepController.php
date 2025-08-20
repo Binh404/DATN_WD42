@@ -146,6 +146,33 @@ class NghiPhepController extends Controller
 
         $don = DonXinNghi::create($validated);
 
+        // tạo thông báo
+        if ($don->cap_duyet_hien_tai == 1) {
+            $truongPhong = NguoiDung::where('phong_ban_id', $user->phong_ban_id)
+                ->whereHas('vaiTros', function ($query) {
+                    $query->where('name', 'department');
+                })
+                ->get();
+            foreach ($truongPhong as $tp) {
+                $tp->notify(new \App\Notifications\TaoDonXinNghi($don));
+            }
+        } elseif ($don->cap_duyet_hien_tai == 2) {
+            $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'hr');
+            })->get();
+            foreach ($hrUsers as $hr) {
+                $hr->notify(new \App\Notifications\TaoDonXinNghi($don));
+            }
+        } else {
+            $admin = NguoiDung::whereHas('vaiTros', function ($query) {
+                $query->where('name', 'admin');
+            })
+                ->get();
+            foreach ($admin as $adm) {
+                $adm->notify(new \App\Notifications\TaoDonXinNghi($don));
+            }
+        }
+
         // cập nhật số ngày còn lại, ...
         SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
             ->where('loai_nghi_phep_id', $validated['loai_nghi_phep_id'])
@@ -168,10 +195,11 @@ class NghiPhepController extends Controller
 
     public function chiTiet($id)
     {
+        $user = auth()->user();
+        $vaiTro = VaiTro::where('id', $user->vai_tro_id)->first();
         $donNghiPhep = DonXinNghi::with('loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')->findOrFail($id);
-        $lichSuTruongPhong = $donNghiPhep->lichSuDuyet->firstWhere('cap_duyet', 1);
 
-        return view('admin.duyetdontu.donxinnghi.show', compact('donNghiPhep', 'lichSuTruongPhong'));
+        return view('admin.duyetdontu.donxinnghi.show', compact('donNghiPhep', 'vaiTro'));
     }
 
     public function huyDonXinNghi($id)
@@ -181,8 +209,8 @@ class NghiPhepController extends Controller
         $donXinNghi = DonXinNghi::find($id);
         $nam = Carbon::today()->year;
         $lichSuDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)->get();
-        if ($lichSuDuyet->isNotEmpty()) {
-            return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt không thể hủy!');
+        if ($lichSuDuyet->isNotEmpty() || $donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route('nghiphep.index')->with('error', 'Đơn đang trong quá trình duyệt hoặc đã hủy trước đó!');
         }
 
         DonXinNghi::where('id', $id)->update([
@@ -260,7 +288,7 @@ class NghiPhepController extends Controller
         $thongKe = [];
         $soDonChuaDuyet = 0;
 
-        if ($vaiTro->ten == 'department') {
+        if ($vaiTro->name == 'department') {
 
             $donXinNghis = DonXinNghi::with([
                 'nguoiDung.phongBan',
@@ -272,7 +300,7 @@ class NghiPhepController extends Controller
                 ->whereHas('nguoiDung', function ($query) use ($user) {
                     $query->where('phong_ban_id', $user->phong_ban_id)
                         ->whereHas('vaiTro', function ($q) {
-                            $q->where('ten', '!=', 'department');
+                            $q->where('name', '!=', 'department');
                         });
                 })
                 ->orderBy('created_at', 'desc')
@@ -289,11 +317,11 @@ class NghiPhepController extends Controller
             })
                 ->whereHas('nguoiDung', function ($query) {
                     $query->whereHas('vaiTro', function ($q) {
-                        $q->where('ten', '!=', 'department');
+                        $q->where('name', '!=', 'department');
                     });
                 })
                 ->count();
-        } elseif ($vaiTro->ten == 'hr') {
+        } elseif ($vaiTro->name == 'hr') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
                 ->where('cap_duyet_hien_tai', 2)
                 ->orderBy('created_at', 'desc')
@@ -309,11 +337,11 @@ class NghiPhepController extends Controller
             })->where('cap_duyet_hien_tai', 2)
                 ->whereHas('nguoiDung', function ($query) {
                     $query->whereHas('vaiTro', function ($q) {
-                        $q->where('ten', '!=', 'hr');
+                        $q->where('name', '!=', 'hr');
                     });
                 })
                 ->count();
-        } elseif ($vaiTro->ten == 'admin') {
+        } elseif ($vaiTro->name == 'admin') {
             $donXinNghis = DonXinNghi::with('nguoiDung.phongBan', 'nguoiDung.hoSo', 'loaiNghiPhep', 'banGiaoCho', 'lichSuDuyet')
                 ->where('cap_duyet_hien_tai', 3)
                 ->orderBy('created_at', 'desc')
