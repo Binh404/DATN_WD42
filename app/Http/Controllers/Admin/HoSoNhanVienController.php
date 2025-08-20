@@ -18,6 +18,7 @@ class HoSoNhanVienController extends Controller
 public function indexAll(Request $request)
 {
     $keyword = $request->input('search');
+    $currentUserId = auth()->id(); // lấy id user đang đăng nhập
 
     $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
         // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
@@ -31,6 +32,7 @@ public function indexAll(Request $request)
                          ->orWhere('email_cong_ty', 'like', "%$keyword%");
             });
         })
+        ->where('id', '!=', $currentUserId)
         ->orderByDesc('created_at')
         ->paginate(10);
 

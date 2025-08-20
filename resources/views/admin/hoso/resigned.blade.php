@@ -26,7 +26,7 @@
                                 <div class="row">
                                     {{-- Ô tìm kiếm --}}
                                     <div class="col-md-8 mb-3">
-                                        <label for="search" class="form-label">Tìm theo tên, họ, email</label>
+                                        <label for="search" class="form-label">Tìm theo tên, họ</label>
                                         <div class="input-group">
                                             <span class="input-group-text">
                                                 <i class="mdi mdi-account-search"></i>

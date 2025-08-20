@@ -383,7 +383,7 @@ use Illuminate\Support\Facades\Auth;
                                     <div class="row">
                                         <div class="col-md-8">
                                             <label class="form-label">Chọn ảnh mới</label>
-                                            <input type="file" id="inputImage" name="anh_cccd_truoc" class="form-control @error('anh_cccd_truoc') is-invalid @enderror" accept="image/*">
+                                            <input type="file"  name="anh_cccd_truoc" id="anh_cccd_truoc" class="form-control @error('anh_cccd_truoc') is-invalid @enderror" accept="image/*">
                                             @error('anh_cccd_truoc')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -393,7 +393,7 @@ use Illuminate\Support\Facades\Auth;
                                             <div class="col-md-4">
                                                 <label class="form-label">Ảnh hiện tại</label>
                                                 <div class="text-center">
-                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_truoc) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                    <img id="preview_truoc" src="{{ asset($hoSo->anh_cccd_truoc) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
                                                 </div>
                                             </div>
                                         @endif
@@ -413,7 +413,7 @@ use Illuminate\Support\Facades\Auth;
                                     <div class="row">
                                         <div class="col-md-8">
                                             <label class="form-label">Chọn ảnh mới</label>
-                                            <input type="file" id="inputImage" name="anh_cccd_sau" class="form-control @error('anh_cccd_sau') is-invalid @enderror" accept="image/*">
+                                            <input type="file" name="anh_cccd_sau" id="anh_cccd_sau" class="form-control @error('anh_cccd_sau') is-invalid @enderror" accept="image/*">
                                             @error('anh_cccd_sau')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -423,7 +423,7 @@ use Illuminate\Support\Facades\Auth;
                                             <div class="col-md-4">
                                                 <label class="form-label">Ảnh hiện tại</label>
                                                 <div class="text-center">
-                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_sau) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                    <img id="preview_sau" src="{{ asset($hoSo->anh_cccd_sau) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
                                                 </div>
                                             </div>
                                         @endif
@@ -461,6 +461,28 @@ use Illuminate\Support\Facades\Auth;
                 reader.readAsDataURL(file);
             }
         });
+        function previewImage(input, previewId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Gắn sự kiện onchange bằng JS nếu chưa làm inline
+    document.getElementById('anh_cccd_truoc').addEventListener('change', function () {
+        previewImage(this, 'preview_truoc');
+    });
+
+    document.getElementById('anh_cccd_sau').addEventListener('change', function () {
+        previewImage(this, 'preview_sau');
+    });
     </script>
     <style>
         .card {

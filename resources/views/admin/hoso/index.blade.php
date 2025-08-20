@@ -48,7 +48,7 @@
                                                         <!-- Tên nhân viên -->
                                                         <div class="col-md-8 mb-3">
                                                             <label for="search" class="form-label">Tìm theo
-                                                                tên, họ, email</label>
+                                                                tên, họ</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text"><i
                                                                         class="mdi mdi-account-search"></i></span>
