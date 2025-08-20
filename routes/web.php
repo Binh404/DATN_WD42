@@ -6,6 +6,7 @@ use App\Http\Controllers\DonDeXuatController;
 
 use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Controllers\GioLamViecController;
+use App\Http\Controllers\QuyDinhController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ThemeController;
@@ -158,7 +159,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
         Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
         Route::get('/thong-ke', [HopDongLaoDongController::class, 'thongKe'])->name('thong-ke');
-        Route::get('/luu-tru', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
+        Route::get('/luu-tru-', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
         Route::get('/export', [HopDongLaoDongController::class, 'export'])->name('export');
         Route::get('/export-luu-tru', [HopDongLaoDongController::class, 'exportLuuTru'])->name('export-luu-tru');
         Route::get('/create', [HopDongLaoDongController::class, 'create'])->name('create');
@@ -327,7 +328,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // lương admin - hr
      Route::prefix('luong')->name('luong.')->controller(LuongController::class)->group(function () {
-        Route::get('/', [LuongController::class, 'index'])->name('index');
+        Route::get('/danh-sach', [LuongController::class, 'index'])->name('index');
         Route::get('/tinh-luong', [LuongController::class, 'create'])->name('create');
         Route::post('/tinh-luong', [LuongController::class, 'tinhLuongVaLuu'])->name('store');
         Route::get('/{id}/chi-tiet', [LuongController::class, 'chiTietPhieuLuong'])->name('chitiet');
@@ -353,6 +354,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         // Route::post('/gui-mail-luong/{id}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         // Route::post('/gui-mail-luong/{user_id}/{thang}/{nam}', [LuongController::class, 'guiMailLuong'])->name('gui-mail-luong');
         Route::post('/luong/gui-mail-luong', [LuongController::class, 'guiTatCaMailLuong'])->name('gui-mail-tat-ca');
+        Route::post('/gui-mail-da-chon', [LuongController::class, 'guiMailLuongDaChon'])->name('gui-mail-da-chon');
         // Route::get('/api/bang-luong-json', function () {
         //     return response()->json(App\Models\BangLuong::with('luongNhanVien')->get());
         // });
@@ -575,7 +577,7 @@ Route::middleware(['auth', PreventBackHistory::class, CheckRole::class . ':hr,ad
     Route::get('/ungvien.index', [UngTuyenController::class, 'index'])->name('ungvien.index');
     Route::get('/ungvien/tiem-nang', [UngTuyenController::class, 'danhSachTiemNang'])->name('ungvien.tiem-nang');
     Route::get('/ungvien/phong-van', [UngTuyenController::class, 'danhSachPhongVan'])->name('ungvien.phong-van');
-    Route::get('/ungvien/luu-tru', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
+    Route::get('/ungvien/luu-tru.>', [UngTuyenController::class, 'danhSachLuuTru'])->name('ungvien.luu-tru');
     Route::post('/ungvien/phe-duyet', [UngTuyenController::class, 'pheDuyet'])->name('ungvien.phe-duyet');
     Route::delete('/ungvien/delete/{id}', [UngTuyenController::class, 'destroy']);
     Route::get('/ungvien/{id}/show', [UngTuyenController::class, 'show'])->name('ungvien.show');
@@ -615,7 +617,7 @@ Route::middleware('auth')->group(function () {
     Route::post('api/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
-
+    Route::get('quyDinh',[QuyDinhController::class, 'index'])->name('quyDinh');
 });
 Route::post('/chat/typing', [ChatController::class, 'typing'])->middleware('auth');
 Route::post('/chat/stopped-typing', [ChatController::class, 'stoppedTyping'])->middleware('auth');

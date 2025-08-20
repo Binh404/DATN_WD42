@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChucVu extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'chuc_vu';
 
@@ -16,6 +16,7 @@ class ChucVu extends Model
         'ma',
         'mo_ta',
         'luong_co_ban',
+        'phong_ban_id',
         'trang_thai',
     ];
 

@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChucVu;
+use App\Models\PhongBan;
 use Illuminate\Http\Request;
 
 class ChucVuController extends Controller
 {
     public function index()
     {
+        $phongBan = PhongBan::all();
         $chucvus = ChucVu::orderBy('created_at', 'desc')->paginate(7); // 5 bản ghi mỗi trang
-        return view('admin.chucvu.index', compact('chucvus'));
+        // $chucvus = ChucVu::with('phongBan')->get();
+        return view('admin.chucvu.index', compact('chucvus', 'phongBan'));
     }
 
     public function store(Request $request)
@@ -20,6 +23,7 @@ class ChucVuController extends Controller
             'ten' => 'required',
             'ma' => 'required|unique:chuc_vu,ma',
             'luong_co_ban' => 'required|numeric',
+            'phong_ban_id' => 'required',
         ]);
 
         ChucVu::create($request->all());

@@ -19,7 +19,7 @@
 
     <div class="d-flex gap-2 align-items-end">
         <!-- Form tìm kiếm trước -->
-        <form method="GET" action="{{ route('luong.list') }}" class="d-flex flex-wrap gap-2 align-items-end">
+        {{-- <form method="GET" action="{{ route('luong.list') }}" class="d-flex flex-wrap gap-2 align-items-end">
             <div class="me-2">
                 <select name="thang" id="thang" class="form-select">
                     <option value="">Tất cả tháng</option>
@@ -43,7 +43,7 @@
                     <i class="fas fa-search"></i>
                 </button>
             </div>
-        </form>
+        </form> --}}
 
         <!-- Nút xuất Excel sau -->
         <a href="{{ route('luong.export.luongcb') }}" class="btn btn-success">📤 Xuất Excel</a>
@@ -51,8 +51,8 @@
 </div>
 
 
-                <div class="table-responsive">
-                    <table id="salary" class="table table-bordered table-striped table-hover">
+               <div class="table-responsive">
+					<table id="salary" class="table table-sm table-bordered table-striped table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -118,10 +118,9 @@
                     </table>
                 </div>
 
-                <div class="d-flex" style="justify-content: right; padding-right: 20px;margin-bottom: 15px;">
-                {{-- Pagination links --}}
-                {{ $luongs->links() }}
-                </div>
+                <div class="d-flex justify-content-end pe-3 mb-3">
+				{{ $luongs->links() }}
+			</div>
 
         </div>
     </div>
@@ -178,6 +177,10 @@
     background-color: #f9f9f9;
     border-color: #ddd;
     cursor: not-allowed;
+}
+
+.content-wrapper{
+    padding: 0px;
 }
 
 </style>

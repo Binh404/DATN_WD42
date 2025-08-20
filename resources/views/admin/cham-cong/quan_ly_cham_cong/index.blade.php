@@ -436,8 +436,8 @@
                                                                                         Phòng:
                                                                                         {{ $cc->nguoiDung->phongBan->ten_phong_ban ?? 'N/A' }}
                                                                                     </div>
-                                                                                    <div><i class="mdi mdi-account-badge me-1"></i>
-                                                                                        Vai trò: {{ $cc->nguoiDung->vaiTro->ten_hien_thi }}</div>
+                                                                                    <div><i class="mdi mdi-email me-1"></i>
+                                                                                        email: {{ $cc->nguoiDung->email }}</div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -558,7 +558,7 @@
                                                                                         tiết
                                                                                     </a>
                                                                                 </li>
-                                                                                @if($userTrangThai)
+                                                                                {{-- @if($userTrangThai)
                                                                                 <li>
                                                                                     <a class="dropdown-item"
                                                                                         href="{{ route('admin.chamcong.edit', $cc->id) }}">
@@ -566,7 +566,7 @@
                                                                                         sửa
                                                                                     </a>
                                                                                 </li>
-                                                                                @endif
+                                                                                @endif --}}
                                                                                 @if($cc->trang_thai_duyet == 3 || !$cc->trang_thai_duyet || $cc->trang_thai_duyet == 4)
                                                                                     <li>
                                                                                         <hr class="dropdown-divider">
@@ -866,31 +866,273 @@
                 }
             };
         });
-        function bulkAction(ids, action, successMessage, reason = null) {
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('ids', JSON.stringify(ids));
-            formData.append('action', action);
-            if (reason) formData.append('reason', reason);
+    function bulkAction(ids, action, successMessage, reason = null) {
+    // Validate input
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        showNotification('Vui lòng chọn ít nhất một bản ghi!', 'warning');
+        return;
+    }
 
-            fetch('{{ route('admin.phe-duyet.bulk-action') }}', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(successMessage);
-                        location.reload();
-                    } else {
-                        alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi thực hiện thao tác!');
-                });
+    // Show loading state
+    showLoadingOverlay(true);
+
+    const formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('ids', JSON.stringify(ids));
+    formData.append('action', action);
+    if (reason) formData.append('reason', reason);
+
+    fetch('{{ route('admin.phe-duyet.bulk-action') }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
+    })
+    .then(response => {
+        // Hide loading
+        showLoadingOverlay(false);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        if (data.success) {
+            // Success notification with details
+            const message = data.message || successMessage;
+            const count = data.affected_count || ids.length;
+
+            showNotification(
+                `✅ ${message}${count ? ` (${count} bản ghi)` : ''}`,
+                'success',
+                () => {
+                    // Reload page after notification
+                    location.reload();
+                }
+            );
+        } else {
+            // Handle different error types
+            handleErrorResponse(data);
+        }
+    })
+    .catch(error => {
+        showLoadingOverlay(false);
+        console.error('Bulk action error:', error);
+
+        showNotification(
+            '❌ Có lỗi xảy ra khi thực hiện thao tác! Vui lòng kiểm tra kết nối mạng và thử lại.',
+            'error'
+        );
+    });
+}
+
+/**
+ * Handle different types of error responses
+ */
+function handleErrorResponse(data) {
+    let message = '';
+    let type = 'error';
+
+    // Handle validation errors
+    if (data.errors && typeof data.errors === 'object') {
+        const errorMessages = Object.values(data.errors).flat();
+        message = '⚠️ Dữ liệu không hợp lệ:\n' + errorMessages.join('\n');
+        type = 'warning';
+    }
+    // Handle business logic errors
+    else if (data.message) {
+        if (data.message.includes('chốt lương')) {
+            message = '🔒 ' + data.message;
+            type = 'warning';
+        } else if (data.message.includes('không tồn tại')) {
+            message = '📋 ' + data.message;
+            type = 'info';
+        } else {
+            message = '❌ ' + data.message;
+        }
+    }
+    // Generic error
+    else {
+        message = '❌ Có lỗi xảy ra! Vui lòng thử lại sau.';
+    }
+
+    showNotification(message, type);
+}
+
+/**
+ * Show notification with different types
+ */
+function showNotification(message, type = 'info', callback = null) {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.custom-notification');
+    existingNotifications.forEach(notification => notification.remove());
+
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `custom-notification notification-${type}`;
+
+    // Set styles based on type
+    const styles = {
+        success: { bg: '#d4edda', border: '#c3e6cb', text: '#155724' },
+        error: { bg: '#f8d7da', border: '#f5c6cb', text: '#721c24' },
+        warning: { bg: '#fff3cd', border: '#ffeaa7', text: '#856404' },
+        info: { bg: '#d1ecf1', border: '#bee5eb', text: '#0c5460' }
+    };
+
+    const style = styles[type] || styles.info;
+
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        padding: 15px 20px;
+        background-color: ${style.bg};
+        border: 1px solid ${style.border};
+        border-left: 4px solid ${style.border};
+        color: ${style.text};
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        max-width: 400px;
+        word-wrap: break-word;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+        animation: slideInRight 0.3s ease-out;
+    `;
+
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: ${style.text};
+        opacity: 0.7;
+    `;
+
+    closeBtn.onclick = () => {
+        notification.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+    };
+
+    // Format message with line breaks
+    const messageElement = document.createElement('div');
+    messageElement.innerHTML = message.replace(/\n/g, '<br>');
+    messageElement.style.paddingRight = '20px';
+
+    notification.appendChild(messageElement);
+    notification.appendChild(closeBtn);
+    document.body.appendChild(notification);
+
+    // Auto remove after delay
+    const autoRemoveDelay = type === 'success' ? 3000 : 5000;
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.remove();
+                    if (callback) callback();
+                }
+            }, 300);
+        }
+    }, autoRemoveDelay);
+}
+
+/**
+ * Show/hide loading overlay
+ */
+function showLoadingOverlay(show) {
+    let overlay = document.querySelector('.loading-overlay');
+
+    if (show) {
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 9998;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, sans-serif;
+            `;
+
+            const spinner = document.createElement('div');
+            spinner.style.cssText = `
+                background: white;
+                padding: 20px 30px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            `;
+
+            spinner.innerHTML = `
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid #f3f3f3;
+                    border-top: 2px solid #3498db;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                "></div>
+                <span style="color: #333; font-size: 14px;">Đang xử lý...</span>
+            `;
+
+            overlay.appendChild(spinner);
+            document.body.appendChild(overlay);
+        }
+        overlay.style.display = 'flex';
+    } else {
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+    }
+}
+
+// Add CSS animations
+if (!document.querySelector('#bulk-action-animations')) {
+    const style = document.createElement('style');
+    style.id = 'bulk-action-animations';
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .custom-notification {
+            transition: all 0.3s ease;
+        }
+        .custom-notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+    `;
+    document.head.appendChild(style);
+}
         // Hàm phê duyệt
         function pheDuyet(id, trangThai) {
             if (!pheDuyetModalInstance) {
