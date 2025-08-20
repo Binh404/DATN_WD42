@@ -30,7 +30,10 @@ class MenuHelper
                 // 'xinnghiphep',
                 'loainghiphep',
                 // 'dondexuat',
-                'thongke'
+                'thongke',
+                'vaitro',
+                'chucvu',
+                'phongban'
 
             ],
             'hr' => [
@@ -91,7 +94,9 @@ class MenuHelper
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong', 'danhsach'],
                 'dondexuat' => ['danhsach'],
-
+                'vaitro' => ['danhsach'],
+                'chucvu' => ['danhsach'],
+                'phongban' => ['danhsach'],
                 // 'hopdong' => ['cua_toi'], // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 

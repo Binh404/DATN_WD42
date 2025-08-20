@@ -162,7 +162,7 @@ class LuongController extends Controller
     $tongLuong = $luong->tong_luong;
     $luongThucNhan = $luong->luong_thuc_nhan;
     $luongCoBan = $luong->luong_co_ban;
-    $congTangCa = $luong->cong_tang_ca ?? 0; // Công tăng ca nếu có, mặc định là 0 nếu không có
+    $congOT = $luong->cong_tang_ca ?? 0; // Công tăng ca nếu có, mặc định là 0 nếu không có
 // dd($congOT); // test từng nhân viên
 
     // Tên nhân viên, phòng ban, chức vụ
@@ -202,7 +202,7 @@ class LuongController extends Controller
         'tongLuong',
         'luongThucNhan',
         'luongCoBan',
-        'congTangCa',
+        'congOT',
         // 'congTangCa',
         'base64'
     );
@@ -228,7 +228,7 @@ class LuongController extends Controller
             $query->where('luong_nam', $nam);
         })
         ->orderBy('created_at', 'desc')
-        ->paginate(1)
+        ->paginate(10)
         ->appends(request()->query());
 
     $dsLuong = BangLuong::with('luongNhanVien')->get();
@@ -368,7 +368,6 @@ class LuongController extends Controller
             ->select('nguoi_dung_id', DB::raw('SUM(so_cong) as tong_so_cong'))
             ->whereMonth('ngay_cham_cong', $thang)
             ->whereYear('ngay_cham_cong', $nam)
-            ->where('trang_thai_duyet', 1)
             ->groupBy('nguoi_dung_id')
             ->pluck('tong_so_cong', 'nguoi_dung_id'); // dạng [id => công]
 
@@ -378,14 +377,13 @@ class LuongController extends Controller
         $soCongTangCa = DB::table('thuc_hien_tang_ca')
             ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
             ->where('dang_ky_tang_ca.nguoi_dung_id', $nhanVien->id)
-            ->whereMonth('dang_ky_tang_ca.ngay_tang_ca', $thang)
-            ->whereYear('dang_ky_tang_ca.ngay_tang_ca', $nam)
-            ->where('thuc_hien_tang_ca.trang_thai', 'hoan_thanh')
+            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
+            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
             ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
 
         $congTangCa[$nhanVien->id] = $soCongTangCa;
     }
-    // dd($congTangCa);
+
         return view('admin.luong.tinhluong.tinh_luong', compact(
             'nhanViensChuaTinhLuong',
             'maBangLuong',
@@ -1246,6 +1244,61 @@ public function kiemTraViPhamQuyTac()
 
     }
 
+    public function employeeLuongPdf(Request $request, $thang, $nam)
+    {
+        $userId = Auth::id();
+
+        $luong = LuongNhanVien::with('nguoiDung.hoSo', 'nguoiDung.chucVu', 'nguoiDung.phongBan')
+            ->where('nguoi_dung_id', $userId)
+            ->where('luong_thang', $thang)
+            ->where('luong_nam', $nam)
+            ->latest('created_at')
+            ->first();
+
+        if (!$luong) {
+            abort(404, 'Không tìm thấy dữ liệu lương.');
+        }
+
+        $soCong = $luong->so_ngay_cong;
+        $gioTangCa = $luong->gio_tang_ca;
+        $tongLuong = $luong->tong_luong;
+        $luongThucNhan = $luong->luong_thuc_nhan;
+        $luongCoBan = $luong->luong_co_ban;
+        $congTangCa = $luong->cong_tang_ca ?? 0;
+
+        $nhanVien = ($luong->nguoiDung->hoSo->ho ?? '') . ' ' . ($luong->nguoiDung->hoSo->ten ?? '');
+        $phongBan = $luong->nguoiDung->phongBan->ten_phong_ban ?? '-';
+        $chucVu = $luong->nguoiDung->chucVu->ten ?? '-';
+
+        // Logo base64 nếu có
+        $pathToImage = public_path('assets/images/dvlogo.png');
+        $base64 = null;
+        if (file_exists($pathToImage)) {
+            $type = pathinfo($pathToImage, PATHINFO_EXTENSION);
+            $data = file_get_contents($pathToImage);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $data = compact(
+            'luong',
+            'nhanVien',
+            'phongBan',
+            'chucVu',
+            'thang',
+            'nam',
+            'soCong',
+            'gioTangCa',
+            'tongLuong',
+            'luongThucNhan',
+            'luongCoBan',
+            'congTangCa',
+            'base64'
+        );
+
+        $pdf = Pdf::loadView('admin.luong.bangluong.pdf', $data);
+        return $pdf->download("phieu_luong_NV{$userId}_{$thang}_{$nam}.pdf");
+    }
+
     public function listLuong(Request $request){
         $thang = $request->thang ?? now()->month;
         $nam = $request->nam ?? now()->year;
@@ -1262,7 +1315,7 @@ public function kiemTraViPhamQuyTac()
             $query->whereYear('created_at', $request->nam);
         }
 
-        $luongs = $query->paginate(6)->appends(request()->query());
+        $luongs = $query->paginate(10)->appends(request()->query());
 
         return view('admin.luong.list', compact('luongs', 'thang', 'nam'));
     }

@@ -464,6 +464,7 @@ Route::prefix('employee')->middleware(['auth', PreventBackHistory::class, CheckR
         Route::post('/tai-khoan/doi-mat-khau', [ProfileController::class, 'capNhatMatKhau'])->name('tai-khoan.doi-mat-khau');
     });
         Route::get('/luong-employee', [LuongController::class, 'listEmploy'])->name('danh-sach-luong');
+        Route::get('/luong/pdf/{thang}/{nam}', [LuongController::class, 'employeeLuongPdf'])->name('luong.pdf.employee');
     // Route::get('/luong/download/{id}', [LuongController::class, 'download'])->name('nhanvien.luong.download');
     Route::prefix('de-xuat')->name('de-xuat.')->group(function () {
         Route::get('/index.dexuat', [DonDeXuatController::class, 'index'])->name('index');

@@ -74,27 +74,33 @@
 
                     <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
                     </li>
+                     @if(MenuHelper::hasSubMenuPermission('chucvu', 'danhsach'))
                      <li class="nav-item">
                         <a class="nav-link" href="{{route('chucvu.index')}}">
                            Chức vụ
                         </a>
                     </li>
                     @endif
+                    @endif
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
                     @endif
+                     @if(MenuHelper::hasSubMenuPermission('vaitro', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('vaitro.index')}}">
                            Vai trò
                         </a>
                     </li>
+                    @endif
+                     @if(MenuHelper::hasSubMenuPermission('phongban', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('phongban.index') }}">
                            Phòng ban
                         </a>
                     </li>
+                    @endif
                 </ul>
 
             </div>
@@ -143,9 +149,11 @@
                 <ul class="nav flex-column sub-menu">
                     {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
                     <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
+                     @if(MenuHelper::hasSubMenuPermission('luong', 'danhsach'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
                     </li>
+                    @endif
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
