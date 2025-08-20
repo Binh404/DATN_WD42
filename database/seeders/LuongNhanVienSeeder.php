@@ -41,6 +41,8 @@ class LuongNhanVienSeeder extends Seeder
 
                 $luongNhanVienData[] = [
                     'bang_luong_id' => $bangLuongId,
+                    'luong_thang' => 7,
+                    'luong_nam' => 2025,
                     'nguoi_dung_id' => $nguoiDungId,
                     'luong_co_ban' => $luongCoBan,
                     'tong_phu_cap' => $tongPhuCap,

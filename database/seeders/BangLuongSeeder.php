@@ -47,7 +47,7 @@ class BangLuongSeeder extends Seeder
                 'loai_bang_luong' => 'thuong',
                 'nam' => 2025,
                 'thang' => 1,
-                'ngay_tra_luong' => '2025-01-20',
+                // 'ngay_tra_luong' => '2025-01-20',
                 'trang_thai' => 'cho_duyet',
                 'nguoi_xu_ly_id' => 1,
                 'thoi_gian_xu_ly' => '2025-01-15 11:00:00',

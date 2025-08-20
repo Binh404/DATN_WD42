@@ -36,7 +36,8 @@ class DatabaseSeeder extends Seeder
         PhuCapSeeder::class,
         PhuCapNhanVienSeeder::class,
         BangLuongSeeder::class,
-        LuongNhanVienSeeder::class,
+        // LuongNhanVienSeeder::class,
+        LuongSeeder::class,
 
         // 5. Kỹ năng
         KyNangSeeder::class,
@@ -51,6 +52,7 @@ class DatabaseSeeder extends Seeder
         // 7. Công việc
         CongViecSeeder::class,
         PhanCongCongViecSeeder::class,
+        GioLamViecSeeder::class,
 
         // 8. Tuyển dụng
         TinTuyenDungSeeder::class,
