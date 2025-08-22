@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\TaoDonYeuCauChinhCong;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +95,7 @@ class YeuCauDieuChinhCongController extends Controller
                 ->withErrors(['ngay' => 'Bạn đã có yêu cầu điều chỉnh cho ngày này'])
                 ->withInput();
         }
+        $user = auth()->user();
 
         DB::beginTransaction();
 
@@ -106,7 +109,7 @@ class YeuCauDieuChinhCongController extends Controller
                 $tepDinhKem = $file->storeAs('yeu-cau-dieu-chinh-cong', $fileName, 'public');
             }
 
-            YeuCauDieuChinhCong::create([
+            $donYeuCau =YeuCauDieuChinhCong::create([
                 'nguoi_dung_id' => Auth::id(),
                 'ngay' => $request->ngay,
                 'gio_vao' => $request->gio_vao,
@@ -115,7 +118,18 @@ class YeuCauDieuChinhCongController extends Controller
                 'tep_dinh_kem' => $tepDinhKem,
                 'trang_thai' => 'cho_duyet'
             ]);
+           $nguoiNhan = NguoiDung::where(function ($query) use ($user) {
+                $query->where('phong_ban_id', $user->phong_ban_id)
+                    ->whereHas('vaiTros', function ($q) {
+                        $q->where('name', 'department');
+                    });
+            })
+            ->orWhereHas('vaiTros', function ($q) {
+                $q->whereIn('name', ['hr', 'admin']);
+            })
+            ->get();
 
+        Notification::send($nguoiNhan, new TaoDonYeuCauChinhCong($donYeuCau));
             DB::commit();
 
             return redirect()->route('yeu-cau-dieu-chinh-cong.index')
@@ -261,8 +275,15 @@ class YeuCauDieuChinhCongController extends Controller
     public function destroy($id)
     {
         $yeuCau = YeuCauDieuChinhCong::where('nguoi_dung_id', Auth::id())
+            ->where('id', $id)
             ->where('trang_thai', 'cho_duyet')
-            ->findOrFail($id);
+            ->first();
+
+        if (!$yeuCau) {
+            return redirect()->back()->withErrors([
+                'error' => 'Không thể xóa bản ghi đã duyệt.'
+            ]);
+        }
 
         DB::beginTransaction();
 

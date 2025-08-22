@@ -473,7 +473,20 @@ public function tinhLuongVaLuu(Request $request)
     // Lấy tháng/năm lương từ request (tháng trước tháng hiện tại)
     $thang = $request->thang ?? (now()->month == 1 ? 12 : now()->month - 1);
     $nam = $request->nam ?? (now()->month == 1 ? now()->year - 1 : now()->year);
+    // Ngày bắt đầu và kết thúc của tháng
+    $start = Carbon::create($nam, $thang, 1);
+    $end = $start->copy()->endOfMonth();
 
+    // Đếm số ngày làm việc (trừ thứ 7 & CN)
+    $soNgayLamViec = 0;
+
+    for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+        // Carbon: 0 = CN, 6 = Thứ 7
+        if (!in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+            $soNgayLamViec++;
+        }
+    }
+    // dd($soNgayLamViec);
     // Kiểm tra xem có được phép tính lương tháng này không
     if (!$this->coDuocPhepTinhLuong($thang, $nam)) {
         $thangNamHienTai = $this->getThangNamHienTai();
@@ -552,7 +565,7 @@ public function tinhLuongVaLuu(Request $request)
 
         // ======= 3. TÍNH TOÁN LƯƠNG =======
         // Tính lương theo ngày (26 ngày công/tháng)
-        $luongNgay = $tongLuongCoBan / 26; // = 615.000
+        $luongNgay = $tongLuongCoBan / $soNgayLamViec; // = 615.000
 
         // Lương cơ bản theo số ngày công thực tế
         $tongLuong = $luongNgay * $soNgayCong; // = 615.000

@@ -7,6 +7,7 @@ use App\Models\BangLuong;
 use App\Models\ChamCong;
 use App\Models\Luong;
 use App\Models\PhongBan;
+use App\Notifications\PheDuyetYeuCauChinhCong;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -109,9 +110,17 @@ class YeuCauDieuChinhCongAdminController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+            // dd($request->all());
 
-        $yeuCau = YeuCauDieuChinhCong::where('trang_thai', 'cho_duyet')
-            ->findOrFail($id);
+        $yeuCau = YeuCauDieuChinhCong::where('id', $id)
+        ->where('trang_thai', 'cho_duyet')
+        ->first();
+        // dd($yeuCau);
+        if (!$yeuCau) {
+            return redirect()->back()->withErrors([
+                'error' => 'Không tìm thấy bản ghi hoặc yêu cầu đã được duyệt.'
+            ]);
+        }
         $chamCong = ChamCong::where('nguoi_dung_id', $yeuCau->nguoi_dung_id)
             ->where('ngay_cham_cong', $yeuCau->ngay)
             ->first();
@@ -171,7 +180,7 @@ class YeuCauDieuChinhCongAdminController extends Controller
                 'duyet_vao' => Carbon::now(),
                 'ghi_chu_duyet' => $request->ghi_chu_duyet
             ]);
-
+            $yeuCau->nguoiDung->notify(new PheDuyetYeuCauChinhCong($yeuCau, $trangThaiMoi));
             // DB::commit();
 
             $thongBao = $request->hanh_dong === 'duyet'
@@ -220,6 +229,7 @@ class YeuCauDieuChinhCongAdminController extends Controller
             $dsYeuCau = YeuCauDieuChinhCong::whereIn('id', $request->yeu_cau_ids)
                 ->where('trang_thai', 'cho_duyet')
                 ->get();
+
              $soLuongCapNhat = 0;
 
             foreach ($dsYeuCau as $yeuCau) {
@@ -276,6 +286,7 @@ class YeuCauDieuChinhCongAdminController extends Controller
                     $chamCong->capNhatTrangThai();
                     $chamCong->save();
                 }
+                $yeuCau->nguoiDung->notify(new PheDuyetYeuCauChinhCong($yeuCau, $trangThaiMoi));
 
                 $soLuongCapNhat++;
             }

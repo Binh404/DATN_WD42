@@ -55,7 +55,7 @@ class MenuHelper
                 'chamcong',
                 'duyetdon',
                 'xinnghiphep',
-                'dondexuat',
+                // 'dondexuat',
                 'hopdong', // Chỉ xem hợp đồng của mình
             ],
             'employee' => [
@@ -89,7 +89,7 @@ class MenuHelper
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong', 'danhsach'],
-                'dondexuat' => ['danhsach'],
+                // 'dondexuat' => ['danhsach'],
 
                 // 'hopdong' => ['cua_toi'], // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
@@ -109,7 +109,7 @@ class MenuHelper
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
                 'thongbaotuyendung' => ['danhsach'],
-                'dondexuat' => ['guidexuat'],
+                // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 
@@ -121,7 +121,7 @@ class MenuHelper
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca','guiyeucau'],
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
-                'dondexuat' => ['guidexuat'],
+                // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
 
             ],

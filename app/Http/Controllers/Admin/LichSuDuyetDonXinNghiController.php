@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
+use App\Models\LoaiNghiPhep;
 use App\Models\NguoiDung;
 use App\Models\SoDuNghiPhepNhanVien;
 use App\Models\VaiTro;
@@ -76,19 +77,29 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                     'so_ngay_da_dung'   => DB::raw('so_ngay_da_dung + ' . $donXinNghi->so_ngay_nghi),
                 ]);
+                $coLuong = optional(LoaiNghiPhep::find($donXinNghi->loai_nghi_phep_id))->co_luong == 1;
 
-            for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
-                ChamCong::create([
-                    'ngay_cham_cong' => $ngay->format('Y-m-d'),
-                    'nguoi_dung_id' => $donXinNghi->nguoi_dung_id,
-                    'gio_vao' => '08:30',
-                    'gio_ra' => '17:30',
-                    'so_gio_lam' => 8,
-                    'so_cong' => 1,
-                    'trang_thai' => 'nghi_phep',
-                    'trang_thai_duyet' => 1
-                ]);
-            }
+                for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
+                    // Điều kiện tìm kiếm bản ghi chấm công theo ngày + user
+                    $conditions = [
+                        'ngay_cham_cong' => $ngay->format('Y-m-d'),
+                        'nguoi_dung_id' => $donXinNghi->nguoi_dung_id
+                    ];
+
+                    // Dữ liệu sẽ cập nhật hoặc tạo mới
+                    $data = [
+                        'gio_vao' => $coLuong ? '08:30' : '00:00',
+                        'gio_ra' => $coLuong ? '17:30' : '00:00',
+                        'so_gio_lam' => $coLuong ? 8 : 0,
+                        'so_cong' => $coLuong ? 1 : 0,
+                        'trang_thai' => 'nghi_phep',
+                        'trang_thai_duyet' => 1
+                    ];
+
+                    // Update hoặc tạo mới nếu chưa có
+                    ChamCong::updateOrCreate($conditions, $data);
+                }
+
         }
 
         $donXinNghi->save();
