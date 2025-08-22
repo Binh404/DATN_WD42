@@ -188,7 +188,7 @@
                     </div>
 
                     <!-- Thống kê theo tháng và năm -->
-                    <div class="row">
+                    <div class="row mb-4 mt-4">
                         <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-header">
@@ -216,7 +216,7 @@
                     </div>
 
                     <!-- Thống kê theo loại hợp đồng, trạng thái ký và phòng ban -->
-                    <div class="row">
+                    <div class="row mb-4">
                         <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-header">
@@ -256,7 +256,7 @@
                     </div>
 
                     <!-- Bảng hợp đồng sắp hết hạn -->
-                    <div class="row">
+                    <div class="row mb-4">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header">
