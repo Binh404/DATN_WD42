@@ -367,7 +367,7 @@
 
                 </div> --}}
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label class="form-label">Cho phép chuyển năm</label>
                     <input type="hidden" name="cho_phep_chuyen_nam" value="0">
                     <input type="checkbox" id="cho_phep_chuyen_nam" name="cho_phep_chuyen_nam" value="1"
@@ -377,7 +377,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputEmail4" class="form-label">Yêu cầu giấy tờ</label>
                     <input type="hidden" name="yeu_cau_giay_to" value="0">
 
@@ -391,7 +391,7 @@
 
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputEmail4" class="form-label">Có lương</label>
                     <input type="hidden" name="co_luong" value="0">
 
@@ -403,12 +403,34 @@
                     @enderror
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputEmail4" class="form-label">Trạng thái hoạt động</label>
                     <input type="hidden" name="trang_thai" value="0">
                     <input type="checkbox" id="trang_thai" name="trang_thai" value="1"
                         {{ old('trang_thai') ? 'checked' : '' }}>
                     @error('trang_thai')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputEmail4" class="form-label">Nghỉ chế độ</label>
+                    <input type="hidden" name="nghi_che_do" value="0">
+                    <input type="checkbox" id="nghi_che_do" name="nghi_che_do" value="1"
+                        {{ old('nghi_che_do') ? 'checked' : '' }}>
+                    @error('nghi_che_do')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
+
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputEmail4" class="form-label">Tính theo tỷ lệ</label>
+                    <input type="hidden" name="tinh_theo_ty_le" value="0">
+                    <input type="checkbox" id="tinh_theo_ty_le" name="tinh_theo_ty_le" value="1"
+                        {{ old('tinh_theo_ty_le') ? 'checked' : '' }}>
+                    @error('tinh_theo_ty_le')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
 

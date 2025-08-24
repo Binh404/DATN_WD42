@@ -25,6 +25,8 @@ class LoaiNghiPhep extends Model
         'co_luong',
         'mau_sac',
         'trang_thai',
+        'nghi_che_do',
+        'tinh_theo_ty_le',
     ];
 
     protected $casts = [
@@ -34,6 +36,8 @@ class LoaiNghiPhep extends Model
         'cho_phep_chuyen_nam' => 'boolean',
         'toi_da_ngay_chuyen' => 'integer',
         'yeu_cau_giay_to' => 'boolean',
+        'nghi_che_do' => 'boolean',
+        'tinh_theo_ty_le' => 'boolean',
         'co_luong' => 'boolean',
         'trang_thai' => 'boolean',
         'created_at' => 'datetime',

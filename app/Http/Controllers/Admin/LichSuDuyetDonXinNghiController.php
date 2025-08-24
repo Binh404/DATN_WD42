@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
+use App\Models\LoaiNghiPhep;
 use App\Models\NguoiDung;
 use App\Models\SoDuNghiPhepNhanVien;
 use App\Models\VaiTro;
@@ -117,6 +118,8 @@ class LichSuDuyetDonXinNghiController extends Controller
         $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
+        $loaiNghiPhep = LoaiNghiPhep::where('id', $donXinNghi->loai_nghi_phep_id)->first();
+
         if ($donXinNghi->trang_thai == 'huy_bo') {
             return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
         }
@@ -142,12 +145,21 @@ class LichSuDuyetDonXinNghiController extends Controller
         ]);
 
         // cập nhật số dư nghỉ phép
-        SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
-            ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
-            ->update([
-                'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
-                'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
-            ]);
+        if($loaiNghiPhep->nghi_che_do == 0){
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                    'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
+                ]);
+        }else{
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                ]);
+        }
+        
 
         // tạo thông báo
         $nguoiNhanThongBaoId = $donXinNghi->nguoi_dung_id;
