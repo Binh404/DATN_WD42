@@ -84,7 +84,7 @@ class MenuHelper
         // dd($userRole);
         $subMenuPermissions = [
             'admin' => [
-                'hoso' => ['qlhoso','qltk'],
+                'hoso' => ['qlhoso','qltk', 'qlvaitro'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc','pheduyetyeucau'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],

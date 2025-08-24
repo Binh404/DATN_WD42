@@ -342,7 +342,7 @@ class HopDongLaoDongController extends Controller
         $nguoiDungId = $request->nguoi_dung_id;
         $hopDong = HopDongLaoDong::create($data);
 
-        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo 
+        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo
         try {
             Luong::create([
                 'nguoi_dung_id' => $nguoiDungId,

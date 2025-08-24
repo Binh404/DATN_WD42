@@ -85,6 +85,7 @@
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
                     @endif
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qlvaitro'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('vaitro.index')}}">
                            Vai trò
@@ -95,6 +96,8 @@
                            Phòng ban
                         </a>
                     </li>
+                    @endif
+
                 </ul>
 
             </div>
