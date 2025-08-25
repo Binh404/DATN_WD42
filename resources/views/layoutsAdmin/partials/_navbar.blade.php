@@ -126,9 +126,9 @@ use Illuminate\Support\Facades\Auth;
                     @empty
                         <span class="dropdown-item">Không có thông báo mới</span>
                     @endforelse
-                    @if ($unreadCount > 0)
+                    {{-- @if ($unreadCount > 0)
                         <span class="count">{{ $unreadCount }}</span>
-                    @endif
+                    @endif --}}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0"
                         aria-labelledby="notificationDropdown">

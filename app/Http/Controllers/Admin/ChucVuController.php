@@ -12,7 +12,7 @@ class ChucVuController extends Controller
     public function index()
     {
         $phongBan = PhongBan::all();
-        $chucvus = ChucVu::orderBy('created_at', 'desc')->paginate(7); // 5 bản ghi mỗi trang
+        $chucvus = ChucVu::orderBy('created_at', 'desc')->paginate(7); // 7 bản ghi mỗi trang
         // $chucvus = ChucVu::with('phongBan')->get();
         return view('admin.chucvu.index', compact('chucvus', 'phongBan'));
     }
@@ -46,8 +46,24 @@ class ChucVuController extends Controller
 
     public function getByPhongBan($phongBanId)
     {
-        $chucVus = \App\Models\ChucVu::where('phong_ban_id', $phongBanId)->get();
+        $chucVus = \App\Models\ChucVu::where('phong_ban_id', $phongBanId)
+            ->where('trang_thai', true)
+            ->get();
 
         return response()->json($chucVus);
+    }
+
+    public function hide($id)
+    {
+        $chucvu = ChucVu::findOrFail($id);
+        $chucvu->update(['trang_thai' => false]);
+        return redirect()->route('chucvu.index')->with('success', 'Đã ẩn chức vụ thành công');
+    }
+
+    public function showAgain($id)
+    {
+        $chucvu = ChucVu::findOrFail($id);
+        $chucvu->update(['trang_thai' => true]);
+        return redirect()->route('chucvu.index')->with('success', 'Đã hiện chức vụ thành công');
     }
 }

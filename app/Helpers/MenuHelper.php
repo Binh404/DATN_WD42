@@ -50,7 +50,6 @@ class MenuHelper
                 'duyetdon',
                 'xinnghiphep',
                 'loainghiphep',
-                'dondexuat'
             ],
             'department' => [
                 'dashboard',
@@ -60,8 +59,8 @@ class MenuHelper
                 'chamcong',
                 'duyetdon',
                 'xinnghiphep',
-                'dondexuat',
-                'hopdong' // Chỉ xem hợp đồng của mình
+                // 'dondexuat',
+                'hopdong', // Chỉ xem hợp đồng của mình
             ],
             'employee' => [
                 'dashboard',
@@ -69,7 +68,7 @@ class MenuHelper
                 'chamcong',
                 'xinnghiphep',
                 'luong',
-                'hopdong' // Chỉ xem hợp đồng của mình
+                'hopdong', // Chỉ xem hợp đồng của mình
             ]
         ];
 
@@ -112,11 +111,11 @@ class MenuHelper
                 'luong' => ['luong', 'phieuluong', 'phieuluongnv'],
 
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'pheduyetyeucau'],
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
                 'thongbaotuyendung' => ['danhsach'],
-                'dondexuat' => ['guidexuat'],
+                // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 
@@ -125,19 +124,20 @@ class MenuHelper
             'department' => [
                 'hoso' => [ 'hosocn'],
                 'luong' => ['phieuluongnv'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
+
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca','guiyeucau'],
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
-                'dondexuat' => ['guidexuat'],
+                // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
 
             ],
             'employee' => [
-                'chamcong' => ['chamcong', 'donxintangca'],
+                'chamcong' => ['chamcong', 'donxintangca', 'guiyeucau'],
                 'hoso' => ['hosocn'],
                 'xinnghiphep' => ['donxinnghiphep'],
                 'luong' => ['phieuluongnv'],
-                'hopdong' => ['cua_toi'] // Chỉ xem hợp đồng của mình
+                'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
 
             ]
         ];

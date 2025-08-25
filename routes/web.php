@@ -1,12 +1,14 @@
 <?php
 
 
+use App\Http\Controllers\Admin\YeuCauDieuChinhCongAdminController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DonDeXuatController;
 
 use App\Http\Controllers\Admin\ImportChamCongController;
 use App\Http\Controllers\GioLamViecController;
 use App\Http\Controllers\QuyDinhController;
+use App\Http\Controllers\YeuCauDieuChinhCongController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ThemeController;
@@ -157,7 +159,7 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
 
     // Hợp đồng lao động
     Route::prefix('hop-dong')->name('hopdong.')->group(function () {
-        Route::get('/', [HopDongLaoDongController::class, 'index'])->name('index');
+        Route::get('/zxc', [HopDongLaoDongController::class, 'index'])->name('index');
         Route::get('/thong-ke', [HopDongLaoDongController::class, 'thongKe'])->name('thong-ke');
         Route::get('/luu-tru-', [HopDongLaoDongController::class, 'luuTru'])->name('luu-tru');
         Route::get('/export', [HopDongLaoDongController::class, 'export'])->name('export');
@@ -367,6 +369,8 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'update')->name('update');
+        Route::patch('/{id}/hide', 'hide')->name('hide');
+        Route::patch('/{id}/show-again', 'showAgain')->name('show-again');
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
     Route::get('don-xin-nghi', [NghiPhepController::class, 'donXinNghi'])->name('donxinnghi.danhsach');
@@ -619,6 +623,82 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::get('api/chat/users', [ChatController::class, 'getChatUsers']);
     Route::get('quyDinh',[QuyDinhController::class, 'index'])->name('quyDinh');
+
+    Route::controller(YeuCauDieuChinhCongController::class)
+        ->prefix('yeu-cau-dieu-chinh-cong')
+        ->name('yeu-cau-dieu-chinh-cong.')
+        ->group(function () {
+
+            // Danh sách yêu cầu
+            Route::get('/', 'index')->name('index');
+
+            // Tạo yêu cầu mới
+            Route::get('/tao-moi', 'create')->name('create');
+            Route::post('/tao-moi', 'store')->name('store');
+
+            // Xem chi tiết yêu cầu
+            Route::get('/{id}/chi-tiet', 'show')->name('show');
+
+            // Sửa yêu cầu (chỉ với trạng thái chờ duyệt)
+            Route::get('/{id}/sua', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+
+            // Xóa yêu cầu (chỉ với trạng thái chờ duyệt)
+            Route::delete('/{id}', 'destroy')->name('destroy');
+
+            // Download file đính kèm
+            Route::get('/{id}/download-file', 'downloadFile')->name('download');
+
+            // API cho Ajax
+            Route::get('/api/data', 'getAjaxData')->name('ajax-data');
+        });
+
+});
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,hr'])->group(function () {
+
+    // Route group cho yêu cầu điều chỉnh công
+    Route::prefix('yeu-cau-dieu-chinh-cong')->name('yeu-cau-dieu-chinh-cong.')->group(function () {
+
+        // Hiển thị danh sách tất cả yêu cầu điều chỉnh công
+        Route::get('/', [YeuCauDieuChinhCongAdminController::class, 'index'])
+            ->name('index');
+
+        // Hiển thị chi tiết yêu cầu
+        Route::get('/{id}/chi-tiet', [YeuCauDieuChinhCongAdminController::class, 'show'])
+            ->name('show')
+            ->where('id', '[0-9]+');
+
+        // Duyệt yêu cầu điều chỉnh công (đơn lẻ)
+        Route::post('/{id}/duyet', [YeuCauDieuChinhCongAdminController::class, 'duyet'])
+            ->name('duyet')
+            ->where('id', '[0-9]+');
+
+        // Duyệt hàng loạt
+        Route::post('/duyet-hang-loat', [YeuCauDieuChinhCongAdminController::class, 'duyetHangLoat'])
+            ->name('duyet-hang-loat');
+
+        // Download file đính kèm
+        Route::get('/{id}/download-file', [YeuCauDieuChinhCongAdminController::class, 'downloadFile'])
+            ->name('download')
+            ->where('id', '[0-9]+');
+
+        // Xóa yêu cầu (chỉ admin mới được xóa)
+        Route::delete('/{id}', [YeuCauDieuChinhCongAdminController::class, 'destroy'])
+            ->name('destroy')
+            ->where('id', '[0-9]+');
+
+        // Báo cáo thống kê
+        Route::get('/bao-cao', [YeuCauDieuChinhCongAdminController::class, 'baoCao'])
+            ->name('bao-cao');
+
+        // Export báo cáo Excel
+        Route::get('/export-bao-cao', [YeuCauDieuChinhCongAdminController::class, 'exportBaoCao'])
+            ->name('export-bao-cao');
+
+        // Lấy dữ liệu JSON cho Ajax
+        Route::get('/ajax/data', [YeuCauDieuChinhCongAdminController::class, 'getAjaxData'])
+            ->name('ajax-data');
+    });
 });
 Route::post('/chat/typing', [ChatController::class, 'typing'])->middleware('auth');
 Route::post('/chat/stopped-typing', [ChatController::class, 'stoppedTyping'])->middleware('auth');

@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Auth;
                                 <div class="row g-3">
                                     <!-- Tên đăng nhập -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                        <label class="form-label">Tên người dùng: <span class="text-danger">*</span></label>
                                         <input type="text" name="ten_dang_nhap"
                                             class="form-control @error('ten_dang_nhap') is-invalid @enderror"
                                             value="{{ old('ten_dang_nhap', Auth::user()->ten_dang_nhap) }}">
@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Auth;
 
                                     <!-- Email -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Email cá nhân <span class="text-danger">*</span></label>
+                                        <label class="form-label">Email: <span class="text-danger">*</span></label>
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ old('email', Auth::user()->email) }}">
                                         @error('email')
@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Phòng ban <span class="text-danger">*</span></label>
+                                        <label class="form-label">Phòng ban: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $phongbans->phongBan->ten_phong_ban ?? ''  }}" disabled>
@@ -63,7 +63,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Chức vụ <span class="text-danger">*</span></label>
+                                        <label class="form-label">Chức vụ: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $chucvus->chucVu->ten ?? ''  }}" disabled>
@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Quyền <span class="text-danger">*</span></label>
+                                        <label class="form-label">Quyền: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $vaitros->vaiTro->name   }}" disabled>

@@ -14,7 +14,30 @@
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('hopdong.store') }}" method="POST" enctype="multipart/form-data">
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra:
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('hopdong.store') }}" method="POST" enctype="multipart/form-data" id="hopdongForm">
                 @csrf
 
                 <div class="row">
@@ -47,6 +70,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                           
                             @error('chuc_vu_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -264,120 +288,71 @@
 
     // Validate ngày kết thúc phải sau ngày bắt đầu
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('ngay_ket_thuc').addEventListener('change', function() {
-            var ngayBatDau = new Date(document.getElementById('ngay_bat_dau').value);
-            var ngayKetThuc = new Date(this.value);
-
-            if (ngayKetThuc < ngayBatDau) {
-                alert('Ngày kết thúc phải sau ngày bắt đầu');
-                this.value = '';
-            }
-        });
-
-        // Format số tiền - chỉ cho phép nhập số
-        document.getElementById('luong_co_ban').addEventListener('input', function() {
-            // Loại bỏ tất cả ký tự không phải số
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Nếu giá trị âm thì đặt về 0
-            if (this.value < 0) {
-                this.value = 0;
-            }
-        });
-
-        document.getElementById('phu_cap').addEventListener('input', function() {
-            // Loại bỏ tất cả ký tự không phải số
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Nếu giá trị âm thì đặt về 0
-            if (this.value < 0) {
-                this.value = 0;
-            }
-        });
-
-        // Xử lý hiển thị danh sách file đã chọn
-        var selectedFiles = []; // Mảng lưu trữ các file đã chọn
+        var ngayBatDau = document.getElementById('ngay_bat_dau');
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc');
         
-        document.getElementById('file_hop_dong').addEventListener('change', function() {
-            console.log('Files selected:', this.files.length);
-            
-            // Thêm các file mới vào mảng selectedFiles
-            for (var i = 0; i < this.files.length; i++) {
-                var file = this.files[i];
-                console.log('File ' + (i + 1) + ':', file.name, file.size);
-                
-                // Kiểm tra xem file đã tồn tại chưa
-                var exists = selectedFiles.some(function(existingFile) {
-                    return existingFile.name === file.name && existingFile.size === file.size;
-                });
-                
-                if (!exists) {
-                    selectedFiles.push(file);
-                }
-            }
-            
-            // Hiển thị lại tất cả file đã chọn
-            displaySelectedFiles();
-            
-            // Tạo DataTransfer object để cập nhật input
-            updateFileInput();
-        });
-        
-        function displaySelectedFiles() {
-            var fileList = document.getElementById('file-list');
-            fileList.innerHTML = '';
-            
-            if (selectedFiles.length > 0) {
-                var list = document.createElement('ul');
-                list.className = 'list-group list-group-flush';
-                
-                for (var i = 0; i < selectedFiles.length; i++) {
-                    var file = selectedFiles[i];
-                    
-                    var item = document.createElement('li');
-                    item.className = 'list-group-item d-flex justify-content-between align-items-center';
-                    item.innerHTML = `
-                        <div>
-                            <i class="fas fa-file"></i> ${file.name}
-                            <small class="text-muted">(${(file.size / 1024 / 1024).toFixed(2)} MB)</small>
-                        </div>
-                        <div>
-                            <span class="badge badge-primary badge-pill me-2">${i + 1}</span>
-                            <button type="button" class="btn btn-danger btn-sm remove-file-btn" data-index="${i}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                    list.appendChild(item);
-                }
-                
-                // Thêm event listener cho các nút xóa
-                list.querySelectorAll('.remove-file-btn').forEach(function(btn) {
-                    btn.addEventListener('click', function() {
-                        var index = parseInt(this.getAttribute('data-index'));
-                        removeFile(index);
-                    });
-                });
-                
-                fileList.appendChild(list);
-            }
-        }
-        
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
-            displaySelectedFiles();
-            updateFileInput();
-        }
-        
-        function updateFileInput() {
-            var fileInput = document.getElementById('file_hop_dong');
-            var dataTransfer = new DataTransfer();
-            
-            selectedFiles.forEach(function(file) {
-                dataTransfer.items.add(file);
+        if (ngayBatDau && ngayKetThuc) {
+            ngayBatDau.addEventListener('change', function() {
+                ngayKetThuc.min = this.value;
             });
-            
-            fileInput.files = dataTransfer.files;
+        }
+    });
+
+    // Form validation trước khi submit
+    document.getElementById('hopdongForm').addEventListener('submit', function(e) {
+        var nguoiDungId = document.getElementById('nguoi_dung_id').value;
+        var chucVuId = document.getElementById('chuc_vu_id').value;
+        var soHopDong = document.getElementById('so_hop_dong').value;
+        var loaiHopDong = document.getElementById('loai_hop_dong').value;
+        var ngayBatDau = document.getElementById('ngay_bat_dau').value;
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc').value;
+        var luongCoBan = document.getElementById('luong_co_ban').value;
+        var diaDiemLamViec = document.getElementById('dia_diem_lam_viec').value;
+        var dieuKhoan = document.getElementById('dieu_khoan').value;
+        var fileHopDong = document.getElementById('file_hop_dong').files;
+
+        var errors = [];
+
+        if (!nguoiDungId) errors.push('Vui lòng chọn nhân viên');
+        if (!chucVuId) errors.push('Vui lòng chọn chức vụ');
+        if (!soHopDong) errors.push('Vui lòng nhập số hợp đồng');
+        if (!loaiHopDong) errors.push('Vui lòng chọn loại hợp đồng');
+        if (!ngayBatDau) errors.push('Vui lòng chọn ngày bắt đầu');
+        if (!luongCoBan) errors.push('Vui lòng nhập lương cơ bản');
+        if (!diaDiemLamViec) errors.push('Vui lòng nhập địa điểm làm việc');
+        if (!dieuKhoan) errors.push('Vui lòng nhập điều khoản');
+        if (fileHopDong.length === 0) errors.push('Vui lòng chọn file hợp đồng');
+
+        // Kiểm tra ngày kết thúc nếu không phải hợp đồng không xác định thời hạn
+        if (loaiHopDong !== 'khong_xac_dinh_thoi_han' && ngayKetThuc) {
+            if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                errors.push('Ngày kết thúc phải sau ngày bắt đầu');
+            }
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert('Vui lòng sửa các lỗi sau:\n' + errors.join('\n'));
+            return false;
+        }
+
+        // Disable submit button để tránh double submit
+        var submitBtn = document.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    });
+
+    // Hiển thị danh sách file được chọn
+    document.getElementById('file_hop_dong').addEventListener('change', function() {
+        var fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+        
+        for (var i = 0; i < this.files.length; i++) {
+            var file = this.files[i];
+            var fileInfo = document.createElement('div');
+            fileInfo.className = 'alert alert-info';
+            fileInfo.innerHTML = '<i class="fas fa-file"></i> ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+            fileList.appendChild(fileInfo);
         }
     });
 </script>

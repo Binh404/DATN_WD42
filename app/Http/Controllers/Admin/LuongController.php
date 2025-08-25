@@ -340,6 +340,9 @@ class LuongController extends Controller
 
     try {
         $nhanViens = NguoiDung::where('da_hoan_thanh_ho_so', 1)
+            ->whereHas('hopDongLaoDong', function($query) {
+                $query->where('trang_thai_hop_dong', 'hieu_luc');
+            })
             ->with('hoSo')
             ->get();
 
@@ -471,7 +474,20 @@ public function tinhLuongVaLuu(Request $request)
     // Lấy tháng/năm lương từ request (tháng trước tháng hiện tại)
     $thang = $request->thang ?? (now()->month == 1 ? 12 : now()->month - 1);
     $nam = $request->nam ?? (now()->month == 1 ? now()->year - 1 : now()->year);
+    // Ngày bắt đầu và kết thúc của tháng
+    $start = Carbon::create($nam, $thang, 1);
+    $end = $start->copy()->endOfMonth();
 
+    // Đếm số ngày làm việc (trừ thứ 7 & CN)
+    $soNgayLamViec = 0;
+
+    for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+        // Carbon: 0 = CN, 6 = Thứ 7
+        if (!in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+            $soNgayLamViec++;
+        }
+    }
+    // dd($soNgayLamViec);
     // Kiểm tra xem có được phép tính lương tháng này không
     if (!$this->coDuocPhepTinhLuong($thang, $nam)) {
         $thangNamHienTai = $this->getThangNamHienTai();
@@ -512,10 +528,15 @@ public function tinhLuongVaLuu(Request $request)
         }
 
         // Lấy thông tin lương cơ bản từ bảng luong
-        $luongCoBanRecord = Luong::where('nguoi_dung_id', $request->nguoi_dung_id)->first();
+        // Chỉ lấy lương từ hợp đồng có hiệu lực, không lấy từ hợp đồng hết hạn
+        $luongCoBanRecord = Luong::where('nguoi_dung_id', $request->nguoi_dung_id)
+            ->whereHas('hopDongLaoDong', function($query) {
+                $query->where('trang_thai_hop_dong', 'hieu_luc');
+            })
+            ->first();
 
         if (!$luongCoBanRecord) {
-            return redirect()->route('luong.index')->with('error', 'Không tìm thấy lương cơ bản cho nhân viên này.');
+            return redirect()->route('luong.index')->with('error', 'Không tìm thấy lương cơ bản cho nhân viên này hoặc hợp đồng đã hết hạn.');
         }
 
         // Lấy lương cơ bản và phụ cấp
@@ -550,7 +571,7 @@ public function tinhLuongVaLuu(Request $request)
 
         // ======= 3. TÍNH TOÁN LƯƠNG =======
         // Tính lương theo ngày (26 ngày công/tháng)
-        $luongNgay = $tongLuongCoBan / 26; // = 615.000
+        $luongNgay = $tongLuongCoBan / $soNgayLamViec; // = 615.000
 
         // Lương cơ bản theo số ngày công thực tế
         $tongLuong = $luongNgay * $soNgayCong; // = 615.000
@@ -1043,8 +1064,12 @@ public function trangThaiTinhLuongHienTai()
     $thang = $thangNamHienTai['thang'];
     $nam = $thangNamHienTai['nam'];
 
-    // Đếm tổng số nhân viên
-    $tongNhanVien = NguoiDung::where('da_hoan_thanh_ho_so', 1)->count();
+    // Đếm tổng số nhân viên có hợp đồng hiệu lực
+    $tongNhanVien = NguoiDung::where('da_hoan_thanh_ho_so', 1)
+        ->whereHas('hopDongLaoDong', function($query) {
+            $query->where('trang_thai_hop_dong', 'hieu_luc');
+        })
+        ->count();
 
     // Đếm số nhân viên đã được tính lương
     $daTinhLuong = LuongNhanVien::where('luong_thang', $thang)

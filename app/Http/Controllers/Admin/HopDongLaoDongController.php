@@ -15,8 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 use App\Exports\HopDongExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -282,88 +283,135 @@ class HopDongLaoDongController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
-            'chuc_vu_id' => 'required|exists:chuc_vu,id',
-            'so_hop_dong' => 'required|string|unique:hop_dong_lao_dong,so_hop_dong',
-            'loai_hop_dong' => 'required|string',
-            'ngay_bat_dau' => 'required|date',
-            // 'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
-            'luong_co_ban' => 'required|numeric|min:0',
-            'phu_cap' => 'nullable|numeric|min:0',
-            // 'hinh_thuc_lam_viec' => 'required|string', // Đã bỏ trường hình thức làm việc
-            'dia_diem_lam_viec' => 'required|string',
-            'dieu_khoan' => 'required|string',
-            'ghi_chu' => 'nullable|string',
-            'file_hop_dong' => 'required|array|min:1',
-            'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
-        ], [
-            'so_hop_dong.required' => 'Số hợp đồng không được để trống.',
-            'so_hop_dong.unique' => 'Số hợp đồng đã tồn tại.',
-            'file_hop_dong.required' => 'Vui lòng chọn file hợp đồng.',
-            'file_hop_dong.array' => 'File hợp đồng không hợp lệ.',
-            'file_hop_dong.min' => 'Vui lòng chọn ít nhất 1 file hợp đồng.',
-            'file_hop_dong.*.required' => 'File hợp đồng không hợp lệ.',
-            'file_hop_dong.*.file' => 'File hợp đồng không hợp lệ.',
-            'file_hop_dong.*.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
-            'file_hop_dong.*.max' => 'File hợp đồng không được vượt quá 2MB.',
-            'file_dinh_kem.file' => 'File đính kèm không hợp lệ.',
-            'file_dinh_kem.mimes' => 'File đính kèm phải có định dạng PDF, DOC, DOCX, JPG, JPEG hoặc PNG.',
-            'file_dinh_kem.max' => 'File đính kèm không được vượt quá 2MB.',
-        ]);
-
-        $data = $request->all();
-
-        // Khi tạo mới hợp đồng, mặc định ở trạng thái "tạo mới"
-        $data['trang_thai_hop_dong'] = 'tao_moi';
-        $data['trang_thai_ky'] = 'cho_ky';
-        $data['created_by'] = Auth::id(); // Lưu ID người tạo hợp đồng
-
-        // Xử lý file hợp đồng - upload nhiều file
-        if ($request->hasFile('file_hop_dong')) {
-            $filePaths = [];
-            $files = $request->file('file_hop_dong');
-
-            foreach ($files as $file) {
-                $path = $file->store('hop_dong', 'public');
-                $filePaths[] = $path;
-            }
-            $data['duong_dan_file'] = implode(';', $filePaths);
+        // Kiểm tra quyền truy cập
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        // Xử lý file đính kèm
-        if ($request->hasFile('file_dinh_kem')) {
-            $file = $request->file('file_dinh_kem');
-            $path = $file->store('file_dinh_kem', 'public');
-            $data['file_dinh_kem'] = $path;
+        // Kiểm tra role
+        $user = auth()->user();
+        $hasPermission = $user->vaiTros()->whereIn('name', ['admin', 'hr'])->exists();
+        
+        if (!$hasPermission) {
+            return redirect()->back()->with('error', 'Bạn không có quyền tạo hợp đồng.');
         }
 
-        $nguoiDungId = $request->nguoi_dung_id;
-        $hopDong = HopDongLaoDong::create($data);
-
-        // Tạo bản ghi lương tương ứng với hợp đồng vừa tạo 
+        // Debug: Log request data
+        Log::info('HopDong store request:', $request->all());
+        
         try {
-            Luong::create([
-                'nguoi_dung_id' => $nguoiDungId,
-                'hop_dong_lao_dong_id' => $hopDong->id,
-                'luong_co_ban' => $request->luong_co_ban,
-                'phu_cap' => $request->phu_cap ?? 0,
+            $request->validate([
+                'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
+                'chuc_vu_id' => 'required|exists:chuc_vu,id',
+                'so_hop_dong' => 'required|string|unique:hop_dong_lao_dong,so_hop_dong',
+                'loai_hop_dong' => 'required|string',
+                'ngay_bat_dau' => 'required|date',
+                'ngay_ket_thuc' => 'nullable|date|after:ngay_bat_dau',
+                'luong_co_ban' => 'required|numeric|min:0',
+                'phu_cap' => 'nullable|numeric|min:0',
+                'dia_diem_lam_viec' => 'required|string',
+                'dieu_khoan' => 'required|string',
+                'ghi_chu' => 'nullable|string',
+                'file_hop_dong' => 'required|array|min:1',
+                'file_hop_dong.*' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                'file_dinh_kem' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
+            ], [
+                'nguoi_dung_id.required' => 'Vui lòng chọn nhân viên.',
+                'nguoi_dung_id.exists' => 'Nhân viên không tồn tại.',
+                'chuc_vu_id.required' => 'Vui lòng chọn chức vụ.',
+                'chuc_vu_id.exists' => 'Chức vụ không tồn tại.',
+                'so_hop_dong.required' => 'Số hợp đồng không được để trống.',
+                'so_hop_dong.unique' => 'Số hợp đồng đã tồn tại.',
+                'loai_hop_dong.required' => 'Vui lòng chọn loại hợp đồng.',
+                'ngay_bat_dau.required' => 'Vui lòng chọn ngày bắt đầu.',
+                'ngay_bat_dau.date' => 'Ngày bắt đầu không hợp lệ.',
+                'ngay_ket_thuc.date' => 'Ngày kết thúc không hợp lệ.',
+                'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+                'luong_co_ban.required' => 'Vui lòng nhập lương cơ bản.',
+                'luong_co_ban.numeric' => 'Lương cơ bản phải là số.',
+                'luong_co_ban.min' => 'Lương cơ bản không được âm.',
+                'phu_cap.numeric' => 'Phụ cấp phải là số.',
+                'phu_cap.min' => 'Phụ cấp không được âm.',
+                'dia_diem_lam_viec.required' => 'Vui lòng nhập địa điểm làm việc.',
+                'dieu_khoan.required' => 'Vui lòng nhập điều khoản hợp đồng.',
+                'file_hop_dong.required' => 'Vui lòng chọn file hợp đồng.',
+                'file_hop_dong.array' => 'File hợp đồng không hợp lệ.',
+                'file_hop_dong.min' => 'Vui lòng chọn ít nhất 1 file hợp đồng.',
+                'file_hop_dong.*.required' => 'File hợp đồng không hợp lệ.',
+                'file_hop_dong.*.file' => 'File hợp đồng không hợp lệ.',
+                'file_hop_dong.*.mimes' => 'File hợp đồng phải có định dạng PDF, DOC hoặc DOCX.',
+                'file_hop_dong.*.max' => 'File hợp đồng không được vượt quá 2MB.',
+                'file_dinh_kem.file' => 'File đính kèm không hợp lệ.',
+                'file_dinh_kem.mimes' => 'File đính kèm phải có định dạng PDF, DOC, DOCX, JPG, JPEG hoặc PNG.',
+                'file_dinh_kem.max' => 'File đính kèm không được vượt quá 2MB.',
             ]);
+
+            $data = $request->all();
+
+            // Khi tạo mới hợp đồng, mặc định ở trạng thái "tạo mới"
+            $data['trang_thai_hop_dong'] = 'tao_moi';
+            $data['trang_thai_ky'] = 'cho_ky';
+            $data['created_by'] = Auth::id(); // Lưu ID người tạo hợp đồng
+
+            // Xử lý file hợp đồng - upload nhiều file
+            if ($request->hasFile('file_hop_dong')) {
+                $filePaths = [];
+                $files = $request->file('file_hop_dong');
+
+                foreach ($files as $file) {
+                    $path = $file->store('hop_dong', 'public');
+                    $filePaths[] = $path;
+                }
+                $data['duong_dan_file'] = implode(';', $filePaths);
+            }
+
+            // Xử lý file đính kèm
+            if ($request->hasFile('file_dinh_kem')) {
+                $file = $request->file('file_dinh_kem');
+                $path = $file->store('file_dinh_kem', 'public');
+                $data['file_dinh_kem'] = $path;
+            }
+
+            // Debug: Log data before create
+            Log::info('HopDong data before create:', $data);
+
+            $nguoiDungId = $request->nguoi_dung_id;
+            $hopDong = HopDongLaoDong::create($data);
+
+            // Debug: Log created hopdong
+            Log::info('HopDong created successfully:', $hopDong->toArray());
+
+            // KHÔNG tạo bản ghi lương ngay khi tạo hợp đồng
+            // Bản ghi lương sẽ được tạo khi nhân viên ký hợp đồng
+
+            // Cập nhật trạng thái tái ký cho các hợp đồng đã hết hạn trước đó
+            HopDongLaoDong::where('nguoi_dung_id', $nguoiDungId)
+                ->where('id', '!=', $hopDong->id) // Loại trừ hợp đồng vừa tạo
+                ->where('trang_thai_hop_dong', 'het_han')
+                ->where('trang_thai_tai_ky', 'cho_tai_ky')
+                ->update(['trang_thai_tai_ky' => 'da_tai_ky']);
+
+            return redirect()->route('hopdong.index')->with('success', 'Hợp đồng đã được tạo thành công. Nhân viên cần ký hợp đồng để kích hoạt lương.');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Debug: Log validation errors
+            Log::error('HopDong validation error:', $e->errors());
+            
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+                
         } catch (\Exception $e) {
-            // Nếu tạo bản ghi lương thất bại, xóa hợp đồng vừa tạo và trả về lỗi
-            $hopDong->delete();
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo bản ghi lương: ' . $e->getMessage())->withInput();
+            // Debug: Log error
+            Log::error('HopDong store error: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi tạo hợp đồng: ' . $e->getMessage())
+                ->withInput();
         }
-
-        // Cập nhật trạng thái tái ký cho các hợp đồng đã hết hạn trước đó
-        HopDongLaoDong::where('nguoi_dung_id', $nguoiDungId)
-            ->where('id', '!=', $hopDong->id) // Loại trừ hợp đồng vừa tạo
-            ->where('trang_thai_hop_dong', 'het_han')
-            ->where('trang_thai_tai_ky', 'cho_tai_ky')
-            ->update(['trang_thai_tai_ky' => 'da_tai_ky']);
-
-        return redirect()->route('hopdong.index')->with('success', 'Hợp đồng đã được tạo thành công và bản ghi lương đã được tạo.');
     }
 
     public function show($id)
@@ -561,30 +609,8 @@ class HopDongLaoDongController extends Controller
         $hopDong->update($data);
 
         // Cập nhật bản ghi lương tương ứng nếu lương cơ bản hoặc phụ cấp thay đổi
-        try {
-            $luong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
-
-            if ($luong) {
-                // Chỉ cập nhật nếu có thay đổi về lương cơ bản hoặc phụ cấp
-                if ($luong->luong_co_ban != $request->luong_co_ban || $luong->phu_cap != ($request->phu_cap ?? 0)) {
-                    $luong->update([
-                        'luong_co_ban' => $request->luong_co_ban,
-                        'phu_cap' => $request->phu_cap ?? 0,
-                    ]);
-                }
-            } else {
-                // Nếu chưa có bản ghi lương, tạo mới
-                Luong::create([
-                    'nguoi_dung_id' => $hopDong->nguoi_dung_id,
-                    'hop_dong_lao_dong_id' => $hopDong->id,
-                    'luong_co_ban' => $request->luong_co_ban,
-                    'phu_cap' => $request->phu_cap ?? 0,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Log lỗi nhưng không dừng quá trình cập nhật hợp đồng
-            \Log::error('Lỗi cập nhật bản ghi lương: ' . $e->getMessage());
-        }
+        // KHÔNG cập nhật bản ghi lương khi cập nhật hợp đồng
+        // Bản ghi lương chỉ được tạo khi nhân viên ký hợp đồng
 
         return redirect()->route('hopdong.index')
             ->with('success', 'Cập nhật hợp đồng thành công');
@@ -594,12 +620,8 @@ class HopDongLaoDongController extends Controller
     {
         $hopDong = HopDongLaoDong::findOrFail($id);
 
-        // Xóa bản ghi lương tương ứng trước
-        try {
-            Luong::where('hop_dong_lao_dong_id', $hopDong->id)->delete();
-        } catch (\Exception $e) {
-            \Log::error('Lỗi xóa bản ghi lương: ' . $e->getMessage());
-        }
+        // KHÔNG xóa bản ghi lương vì không có bản ghi lương khi tạo hợp đồng
+        // Bản ghi lương chỉ được tạo khi nhân viên ký hợp đồng
 
         // Xóa file hợp đồng nếu có
         if ($hopDong->duong_dan_file) {
@@ -1112,6 +1134,31 @@ class HopDongLaoDongController extends Controller
 
                 // Cập nhật thông tin hợp đồng
                 $hopDong->update($updateData);
+
+                // Tạo bản ghi lương cơ bản khi nhân viên ký hợp đồng thành công
+                try {
+                    // Kiểm tra xem đã có bản ghi lương chưa
+                    $existingLuong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
+                    
+                    if (!$existingLuong) {
+                        // Tạo mới bản ghi lương
+                        Luong::create([
+                            'nguoi_dung_id' => $hopDong->nguoi_dung_id,
+                            'hop_dong_lao_dong_id' => $hopDong->id,
+                            'luong_co_ban' => $hopDong->luong_co_ban,
+                            'phu_cap' => $hopDong->phu_cap ?? 0,
+                        ]);
+                    } else {
+                        // Cập nhật bản ghi lương nếu có thay đổi
+                        $existingLuong->update([
+                            'luong_co_ban' => $hopDong->luong_co_ban,
+                            'phu_cap' => $hopDong->phu_cap ?? 0,
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    // Log lỗi nhưng không dừng quá trình ký hợp đồng
+                    \Log::error('Lỗi tạo/cập nhật bản ghi lương khi ký hợp đồng: ' . $e->getMessage());
+                }
 
                 $fileCount = count($uploadedFiles);
                 $successMessage = "Ký hợp đồng thành công! Đã upload {$fileCount} file hợp đồng đã ký vào hệ thống.";

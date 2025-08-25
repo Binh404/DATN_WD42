@@ -10,9 +10,14 @@ class LuongSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * 
+     * Lưu ý: Seeder này chỉ tạo dữ liệu mẫu cho mục đích test
+     * Trong thực tế, dữ liệu lương sẽ được tạo tự động khi nhân viên ký hợp đồng
      */
     public function run(): void
     {
+        // Chỉ tạo lương cho hợp đồng có hiệu lực
+        // Trong thực tế, lương sẽ được tạo khi nhân viên ký hợp đồng
         DB::table('luong')->insert([
             [
                 'nguoi_dung_id' => 1,

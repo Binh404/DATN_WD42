@@ -68,6 +68,54 @@
         .sidebar .nav .nav-item > .nav-link[href*="thong-ke"]:hover i {
             color: #1F3BB3 !important;
         }
+
+        /* Giữ sidebar cố định, nội dung cuộn riêng */
+        :root { --navbar-height: 60px; }
+        #sidebar.sidebar {
+            position: fixed;
+            /* top: var(--navbar-height); */
+            left: 0;
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+            z-index: 1000;
+            width: 240px; /* rộng mặc định khi sidebar mở */
+        }
+        /* Đẩy nội dung sang phải bằng độ rộng sidebar mặc định */
+        .page-body-wrapper {
+            overflow-x: hidden;
+        }
+        .main-panel {
+            margin-left: 240px; /* khớp với width mặc định của sidebar */
+            width: calc(100% - 240px);
+            height: 100vh;
+            overflow-y: auto; /* cho phép nội dung cuộn */
+        }
+
+        /* Khi sidebar thu gọn (icon-only) */
+        .sidebar-icon-only #sidebar.sidebar {
+            width: 70px;
+            top: var(--navbar-height);
+            height: calc(100vh - var(--navbar-height));
+        }
+        .sidebar-icon-only .main-panel {
+            margin-left: 70px;
+            width: calc(100% - 70px);
+            height: 100vh;
+            overflow-y: auto;
+        }
+        /* Responsive: về mặc định trên màn nhỏ */
+        @media (max-width: 991.98px) {
+            #sidebar.sidebar {
+                position: static;
+                height: auto;
+                width: 100%;
+            }
+            .main-panel {
+                margin-left: 0;
+                width: 100%;
+            }
+            :root { --navbar-height: 56px; }
+        }
     </style>
   </head>
   @livewireScripts

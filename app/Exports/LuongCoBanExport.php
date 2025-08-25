@@ -11,7 +11,11 @@ class LuongCoBanExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        return Luong::with(['nguoiDung.hoSo', 'nguoiDung.chucVu', 'hopDongLaoDong'])->get();
+        return Luong::with(['nguoiDung.hoSo', 'nguoiDung.chucVu', 'hopDongLaoDong'])
+            ->whereHas('hopDongLaoDong', function($query) {
+                $query->where('trang_thai_hop_dong', 'hieu_luc');
+            })
+            ->get();
     }
 
     public function map($row): array
