@@ -29,7 +29,7 @@ class LoaiNghiPhepController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {        
         $validated = $request->validate([
             'ten' => 'required|string|max:255',
             'ma' => 'required|string|max:255|unique:loai_nghi_phep,ma',
@@ -38,11 +38,13 @@ class LoaiNghiPhepController extends Controller
             'toi_da_ngay_lien_tiep' => 'required|integer|min:0',
             'so_ngay_bao_truoc' => 'required|integer|min:0|max:127',
             'cho_phep_chuyen_nam' => 'required|boolean',
-            'toi_da_ngay_chuyen' => 'min:0|max:255',
+            'toi_da_ngay_chuyen' => 'nullable|min:0|max:255',
             'gioi_tinh_ap_dung' => 'required|in:tat_ca,nam,nu',
             'yeu_cau_giay_to' => 'required|boolean',
             'co_luong' => 'required|boolean',
             'trang_thai' => 'required|boolean',
+            'nghi_che_do' => 'required|boolean',
+            'tinh_theo_ty_le' => 'required|boolean',
         ], [
             'ten.required' => 'Tên loại nghỉ phép không được để trống.',
 
@@ -70,6 +72,9 @@ class LoaiNghiPhepController extends Controller
             'gioi_tinh_ap_dung.in' => 'Giới tính áp dụng không hợp lệ.',
         ]);
 
+        $validated['toi_da_ngay_chuyen'] = $validated['toi_da_ngay_chuyen'] ?? 0;
+
+        // dd($validated);
         LoaiNghiPhep::create($validated);
 
         return redirect()->route('hr.loainghiphep.index')
@@ -114,6 +119,8 @@ class LoaiNghiPhepController extends Controller
             'yeu_cau_giay_to' => 'required|boolean',
             'co_luong' => 'required|boolean',
             'trang_thai' => 'required|boolean',
+            'tinh_theo_ty_le' => 'required|boolean',
+            'nghi_che_do' => 'required|boolean',
         ]);
 
         $loaiNghiPhep->update($validated);
