@@ -2,8 +2,10 @@
 
 namespace App\Notifications;
 
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -15,9 +17,11 @@ class TaoDonYeuCauChinhCong extends Notification
      * Create a new notification instance.
      */
     public $donYeuCauChinhCong;
-    public function __construct($donYeuCauChinhCong)
+    public $user;
+    public function __construct($donYeuCauChinhCong, $user)
     {
         $this->donYeuCauChinhCong = $donYeuCauChinhCong;
+        $this->user = $user;
     }
 
     /**
@@ -40,6 +44,22 @@ class TaoDonYeuCauChinhCong extends Notification
     //         ->action('Notification Action', url('/'))
     //         ->line('Thank you for using our application!');
     // }
+    public function toBroadcast(object $notifiable): BroadcastMessage
+{
+    $tenNguoiTao = ($this->donYeuCauChinhCong->nguoiDung->hoSo->ho .' '.$this->donYeuCauChinhCong->nguoiDung->hoSo->ten) ?? 'chưa rõ';
+
+    return new BroadcastMessage([
+        'message' => 'Nhân viên ' . $tenNguoiTao . ' vừa tạo yêu cầu chỉnh công.',
+        'url' => route('admin.yeu-cau-dieu-chinh-cong.show', $this->donYeuCauChinhCong->id),
+        'created_at' => now()->toDateTimeString(),
+    ]);
+}
+public function broadcastOn()
+{
+    // Laravel sẽ tự truyền $notifiable khi broadcast
+    return new PrivateChannel('App.Models.User.' . $this->user->id);
+}
+
 
     /**
      * Get the array representation of the notification.

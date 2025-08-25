@@ -2,12 +2,14 @@
 
 namespace App\Notifications;
 
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PheDuyetYeuCauChinhCong extends Notification
+class PheDuyetYeuCauChinhCong extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -31,7 +33,7 @@ class PheDuyetYeuCauChinhCong extends Notification
     public function via(object $notifiable): array
     {
           // Gửi qua database + realtime broadcast
-        return ['database'];
+        return ['database','broadcast'];
     }
 
     /**
@@ -64,7 +66,17 @@ class PheDuyetYeuCauChinhCong extends Notification
     //         'data' => $this->toDatabase($notifiable)
     //     ];
     // }
-
+    public function toBroadcast(object $notifiable)
+{
+    return new \Illuminate\Notifications\Messages\BroadcastMessage([
+        'message' => $this->toDatabase($notifiable)['message'],
+        'url' => route('yeu-cau-dieu-chinh-cong.show', $this->donYeuCauChinhCong->id),
+    ]);
+}
+    public function broadcastOn()
+{
+    return new PrivateChannel('App.Models.User.' . $this->donYeuCauChinhCong->nguoi_dung_id);
+}
     /**
      * Get the array representation of the notification.
      *
