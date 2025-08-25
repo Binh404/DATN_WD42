@@ -35,7 +35,7 @@
                         @if($hopDong->nguoiGuiHopDong && $hopDong->nguoiGuiHopDong->hoSo)
                             <div class="alert alert-success">
                                 <i class="fas fa-user-tie"></i>
-                                <strong>Người gửi hợp đồng:</strong> 
+                                <strong>Người gửi hợp đồng:</strong>
                                 {{ $hopDong->nguoiGuiHopDong->hoSo->ho ?? '' }} {{ $hopDong->nguoiGuiHopDong->hoSo->ten ?? '' }}
                                 {{-- @if($hopDong->nguoiGuiHopDong->vaiTro)
                                     <span class="badge badge-info ml-2">{{ ucfirst($hopDong->nguoiGuiHopDong->vaiTro) }}</span>
@@ -44,8 +44,8 @@
                         @endif
 
                         <div class="">
-                          
-                            <!-- <strong>Trạng thái hợp đồng:</strong> 
+
+                            <!-- <strong>Trạng thái hợp đồng:</strong>
                             @switch($hopDong->trang_thai_hop_dong)
                                 @case('hieu_luc')
                                     <span class="badge badge-success">Đang hiệu lực</span> - Hợp đồng đã được HR gửi và đang có hiệu lực.
@@ -148,7 +148,7 @@
                                     $originalFiles = explode(';', $hopDong->duong_dan_file);
                                     $originalFiles = array_filter($originalFiles); // Loại bỏ các phần tử rỗng
                                 @endphp
-                                
+
                                 <div class="mb-2">
                                     @foreach($originalFiles as $index => $filePath)
                                         @php
@@ -156,8 +156,8 @@
                                             $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                                         @endphp
                                         <div class="mb-2">
-                                            <a href="{{ asset('storage/' . $filePath) }}" 
-                                               target="_blank" 
+                                            <a href="{{ asset('storage/' . $filePath) }}"
+                                               target="_blank"
                                                class="btn btn-info btn-sm me-2"
                                                title="Xem file">
                                                 @if($fileExtension == 'pdf')
@@ -173,7 +173,7 @@
                                                 @endif
                                                 File {{ $index + 1 }}: {{ $fileName }}
                                             </a>
-                                            <a href="{{ asset('storage/' . $filePath) }}" 
+                                            <a href="{{ asset('storage/' . $filePath) }}"
                                                download="{{ $fileName }}"
                                                class="btn btn-success btn-sm"
                                                title="Tải xuống">
@@ -194,20 +194,20 @@
                                 </h5>
                                 <form action="{{ route('hopdong.xu-ly-ky', $hopDong->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    
+
                                     <div class="form-group">
                                         <label for="file_hop_dong_da_ky">
                                             <strong>Upload file hợp đồng đã ký <span class="text-danger">*</span></strong>
                                         </label>
-                                        <input type="file" 
-                                               class="form-control @error('file_hop_dong_da_ky') is-invalid @enderror" 
-                                               id="file_hop_dong_da_ky" 
-                                               name="file_hop_dong_da_ky[]" 
+                                        <input type="file"
+                                               class="form-control @error('file_hop_dong_da_ky') is-invalid @enderror"
+                                               id="file_hop_dong_da_ky"
+                                               name="file_hop_dong_da_ky[]"
                                                accept=".pdf,.jpg,.jpeg,.png"
                                                multiple
                                                required>
                                         <small class="form-text text-muted">
-                                            <i class="fas fa-info-circle"></i> 
+                                            <i class="fas fa-info-circle"></i>
                                             Chấp nhận file PDF, JPG, JPEG, PNG. Kích thước tối đa 10MB mỗi file. Có thể chọn nhiều file.
                                         </small>
                                         @error('file_hop_dong_da_ky')
@@ -240,14 +240,14 @@
      const fileInput = document.getElementById('file_hop_dong_da_ky');
      const submitBtn = document.getElementById('btnKyHopDong');
      const fileList = document.getElementById('file-list');
-     
+
      // Mảng lưu trữ các file đã chọn
      let selectedFiles = [];
-     
+
      form.addEventListener('submit', function(e) {
          // Cập nhật input file với selectedFiles trước khi submit
          updateFileInput();
-         
+
          // Kiểm tra xem có file được chọn không
          if (selectedFiles.length === 0) {
              e.preventDefault();
@@ -255,21 +255,21 @@
              fileInput.focus();
              return false;
          }
-         
+
          // Kiểm tra từng file
          const maxSize = 10 * 1024 * 1024; // 10MB
          const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-         
+
          for (let i = 0; i < selectedFiles.length; i++) {
              const file = selectedFiles[i];
-             
+
              // Kiểm tra kích thước file
              if (file.size > maxSize) {
                  e.preventDefault();
                  alert(`File "${file.name}" quá lớn! Kích thước tối đa là 10MB.`);
                  return false;
              }
-             
+
              // Kiểm tra định dạng file
              if (!allowedTypes.includes(file.type)) {
                  e.preventDefault();
@@ -277,61 +277,61 @@
                  return false;
              }
          }
-         
+
          // Hiển thị thông báo xác nhận
          if (!confirm('Bạn có chắc chắn muốn ký hợp đồng này?\n\nLưu ý: Sau khi ký, bạn không thể thay đổi.')) {
              e.preventDefault();
              return false;
          }
-         
+
          // Disable button để tránh submit nhiều lần
          submitBtn.disabled = true;
          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
      });
-     
+
      // Xử lý hiển thị danh sách file đã chọn
      fileInput.addEventListener('change', function() {
          console.log('Files selected:', this.files.length);
-         
+
          // Thêm các file mới vào mảng selectedFiles
          for (let i = 0; i < this.files.length; i++) {
              const file = this.files[i];
              console.log('File ' + (i + 1) + ':', file.name, file.size);
-             
+
              // Kiểm tra xem file đã tồn tại chưa
              const exists = selectedFiles.some(function(existingFile) {
                  return existingFile.name === file.name && existingFile.size === file.size;
              });
-             
+
              if (!exists) {
                  selectedFiles.push(file);
              }
          }
-         
+
          // Hiển thị lại tất cả file đã chọn
          displaySelectedFiles();
-         
+
          // Cập nhật input file
          updateFileInput();
      });
-     
+
      // Hàm hiển thị danh sách file đã chọn
      function displaySelectedFiles() {
          if (selectedFiles.length === 0) {
              fileList.innerHTML = '';
              return;
          }
-         
+
          let html = '<div class="border rounded p-3"><h6><i class="fas fa-files-o"></i> Danh sách file đã chọn:</h6><ul class="mb-0">';
-         
+
          selectedFiles.forEach(function(file, index) {
              const fileSize = (file.size / 1024 / 1024).toFixed(2);
              const fileType = getFileTypeIcon(file.type);
-             
+
              html += `
                  <li>
-                     <i class="${fileType}"></i> 
-                     <strong>${file.name}</strong> 
+                     <i class="${fileType}"></i>
+                     <strong>${file.name}</strong>
                      <span class="text-muted">(${fileSize} MB)</span>
                      <button type="button" class="btn btn-sm btn-outline-danger ml-2" onclick="removeFile(${index})">
                          <i class="fas fa-times"></i>
@@ -339,11 +339,11 @@
                  </li>
              `;
          });
-         
+
          html += '</ul></div>';
          fileList.innerHTML = html;
      }
-     
+
      // Hàm lấy icon cho loại file
      function getFileTypeIcon(fileType) {
          switch(fileType) {
@@ -357,18 +357,18 @@
                  return 'fas fa-file text-secondary';
          }
      }
-     
+
      // Hàm cập nhật input file với selectedFiles
      function updateFileInput() {
          const dataTransfer = new DataTransfer();
-         
+
          selectedFiles.forEach(function(file) {
              dataTransfer.items.add(file);
          });
-         
+
          fileInput.files = dataTransfer.files;
      }
-     
+
      // Hàm xóa file khỏi danh sách
      window.removeFile = function(index) {
          selectedFiles.splice(index, 1);
@@ -377,4 +377,4 @@
      };
  });
  </script>
-@endsection 
+@endsection

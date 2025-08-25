@@ -9,7 +9,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <i class="mdi mdi-view-dashboard-outline menu-icon"></i>
-                <span class="menu-title">Thống kê</span>
+                <span class="menu-title">Tổng quan</span>
             </a>
         </li>
         {{-- <li class="nav-item">
@@ -74,11 +74,13 @@
 
                     <li class="nav-item"> <a class="nav-link" href="{{route('tkall')}}">Tài khoản</a>
                     </li>
+                     @if(MenuHelper::hasSubMenuPermission('chucvu', 'danhsach'))
                      <li class="nav-item">
                         <a class="nav-link" href="{{route('chucvu.index')}}">
                            Chức vụ
                         </a>
                     </li>
+                    @endif
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'hosocn'))
                     <li class="nav-item">
@@ -99,15 +101,10 @@
                         </a>
                     </li>
                     @endif
-
-
                 </ul>
-
             </div>
-
         </li>
         @endif
-
         {{-- Phòng ban - Chỉ admin, hr có quyền --}}
         {{-- @if(MenuHelper::hasMenuPermission('phongban'))
         <li class="nav-item">
@@ -125,57 +122,6 @@
             </div>
         </li>
         @endif --}}
-
-        @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
-        <li class="nav-item">
-            <a class="nav-link" href="{{route('hr.captrenthongbao.tuyendung.index')}}" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-office-building-outline"></i>
-                <span class="menu-title">Thông báo tuyển dụng</span>
-                <i class="menu-arrow"></i>
-            </a>
-
-        </li>
-        @endif
-
-        {{-- Lương - Chỉ admin có quyền --}}
-        @if(MenuHelper::hasMenuPermission('luong'))
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-                <i class="menu-icon mdi mdi-chart-line"></i>
-                <span class="menu-title">Lương</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-                <ul class="nav flex-column sub-menu">
-                    {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
-                    @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
-                    </li>
-                    @endif
-
-                    @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
-                    </li>
-                    @endif
-                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluong'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
-                    </li>
-                    @endif
-                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương của tôi</a>
-                    </li>
-                    @endif
-
-                </ul>
-            </div>
-        </li>
-        @endif
-
         {{-- Chấm công - admin, department, employee có quyền --}}
         @if(MenuHelper::hasMenuPermission('chamcong'))
         <li class="nav-item">
@@ -239,6 +185,45 @@
                     </li>
                     @endif
 
+
+                </ul>
+            </div>
+        </li>
+        @endif
+
+        {{-- Lương - Chỉ admin có quyền --}}
+        @if(MenuHelper::hasMenuPermission('luong'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+                <i class="menu-icon mdi mdi-chart-line"></i>
+                <span class="menu-title">Lương</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="charts">
+                <ul class="nav flex-column sub-menu">
+                    {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
+                    </li>
+                    @endif
+
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluong'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.index') }}">Bảng lương</a>
+                    </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương của tôi</a>
+                    </li>
+                    @endif
 
                 </ul>
             </div>
@@ -350,24 +335,6 @@
         </li>
         @endif
 
-        {{-- Thông báo - admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('thongbao'))
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#cttb" aria-expanded="false" aria-controls="cttb">
-                <i class="menu-icon mdi mdi-bell-outline"></i>
-                <span class="menu-title">Thông báo</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="cttb">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('hr.captrenthongbao.tuyendung.index') }}">Tuyển dụng</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        @endif
-
         {{-- Duyệt đơn - admin, hr, department có quyền --}}
         @if(MenuHelper::hasMenuPermission('duyetdon'))
         <li class="nav-item">
@@ -389,6 +356,24 @@
                         <a class="nav-link" href="{{ route('department.donxinnghi.danhsach') }}">Xin nghỉ phép</a>
                     </li>
                     @endif
+                </ul>
+            </div>
+        </li>
+        @endif
+
+        {{-- Thông báo - admin, hr có quyền --}}
+        @if(MenuHelper::hasMenuPermission('thongbao'))
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#cttb" aria-expanded="false" aria-controls="cttb">
+                <i class="menu-icon mdi mdi-bell-outline"></i>
+                <span class="menu-title">Thông báo</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="cttb">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('hr.captrenthongbao.tuyendung.index') }}">Tuyển dụng</a>
+                    </li>
                 </ul>
             </div>
         </li>

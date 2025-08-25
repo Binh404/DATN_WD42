@@ -31,6 +31,9 @@ class MenuHelper
                 'loainghiphep',
                 // 'dondexuat',
                 'thongke',
+                'vaitro',
+                'chucvu',
+                'phongban'
 
             ],
             'hr' => [
@@ -86,12 +89,14 @@ class MenuHelper
         $subMenuPermissions = [
             'admin' => [
                 'hoso' => ['qlhoso','qltk', 'hosocn', 'vaitro', 'phongban'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc','pheduyetyeucau'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong', 'danhsach'],
-                // 'dondexuat' => ['danhsach'],
-
+                'dondexuat' => ['danhsach'],
+                'vaitro' => ['danhsach'],
+                'chucvu' => ['danhsach'],
+                'phongban' => ['danhsach'],
                 // 'hopdong' => ['cua_toi'], // Admin không cần xem "Hợp đồng của tôi"
                 'hopdong_quanly' => ['danhsach', 'luutru'], // Quản lý hợp đồng
 
@@ -119,7 +124,8 @@ class MenuHelper
             'department' => [
                 'hoso' => [ 'hosocn'],
                 'luong' => ['phieuluongnv'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca'],
+
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca','guiyeucau'],
                 'duyetdon' => ['xinnghiphep'],
                 'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
                 // 'dondexuat' => ['guidexuat'],

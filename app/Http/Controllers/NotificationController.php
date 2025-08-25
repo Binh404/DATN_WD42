@@ -48,6 +48,31 @@ class NotificationController extends Controller
         // Cập nhật thông tin hợp đồng
         $hopdong->update($updateData);
         
+        // Tạo bản ghi lương cơ bản khi nhân viên ký hợp đồng thành công
+        try {
+            // Kiểm tra xem đã có bản ghi lương chưa
+            $existingLuong = \App\Models\Luong::where('hop_dong_lao_dong_id', $hopdong->id)->first();
+            
+            if (!$existingLuong) {
+                // Tạo mới bản ghi lương
+                \App\Models\Luong::create([
+                    'nguoi_dung_id' => $hopdong->nguoi_dung_id,
+                    'hop_dong_lao_dong_id' => $hopdong->id,
+                    'luong_co_ban' => $hopdong->luong_co_ban,
+                    'phu_cap' => $hopdong->phu_cap ?? 0,
+                ]);
+            } else {
+                // Cập nhật bản ghi lương nếu có thay đổi
+                $existingLuong->update([
+                    'luong_co_ban' => $hopdong->luong_co_ban,
+                    'phu_cap' => $hopdong->phu_cap ?? 0,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log lỗi nhưng không dừng quá trình ký hợp đồng
+            \Log::error('Lỗi tạo/cập nhật bản ghi lương khi ký hợp đồng: ' . $e->getMessage());
+        }
+        
         // Gửi thông báo cho HR và Admin
         $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
             $q->where('name', 'hr');
