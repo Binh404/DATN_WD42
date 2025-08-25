@@ -60,6 +60,9 @@ class DatabaseSeeder extends Seeder
 
         // 9. Tài liệu
         TaiLieuSeeder::class,
+
+        //tăng ca
+        TangCaSeeder::class
     ]);
 }
 

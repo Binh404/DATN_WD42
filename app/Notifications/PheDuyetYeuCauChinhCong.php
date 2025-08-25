@@ -31,7 +31,7 @@ class PheDuyetYeuCauChinhCong extends Notification
     public function via(object $notifiable): array
     {
           // Gửi qua database + realtime broadcast
-        return ['database', 'broadcast'];
+        return ['database'];
     }
 
     /**

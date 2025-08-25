@@ -291,14 +291,14 @@ class HopDongLaoDongController extends Controller
         // Kiểm tra role
         $user = auth()->user();
         $hasPermission = $user->vaiTros()->whereIn('name', ['admin', 'hr'])->exists();
-        
+
         if (!$hasPermission) {
             return redirect()->back()->with('error', 'Bạn không có quyền tạo hợp đồng.');
         }
 
         // Debug: Log request data
         Log::info('HopDong store request:', $request->all());
-        
+
         try {
             $request->validate([
                 'nguoi_dung_id' => 'required|exists:nguoi_dung,id',
@@ -392,22 +392,22 @@ class HopDongLaoDongController extends Controller
                 ->update(['trang_thai_tai_ky' => 'da_tai_ky']);
 
             return redirect()->route('hopdong.index')->with('success', 'Hợp đồng đã được tạo thành công. Nhân viên cần ký hợp đồng để kích hoạt lương.');
-            
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Debug: Log validation errors
             Log::error('HopDong validation error:', $e->errors());
-            
+
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->withInput();
-                
+
         } catch (\Exception $e) {
             // Debug: Log error
             Log::error('HopDong store error: ' . $e->getMessage(), [
                 'request' => $request->all(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra khi tạo hợp đồng: ' . $e->getMessage())
                 ->withInput();
@@ -1139,7 +1139,7 @@ class HopDongLaoDongController extends Controller
                 try {
                     // Kiểm tra xem đã có bản ghi lương chưa
                     $existingLuong = Luong::where('hop_dong_lao_dong_id', $hopDong->id)->first();
-                    
+
                     if (!$existingLuong) {
                         // Tạo mới bản ghi lương
                         Luong::create([

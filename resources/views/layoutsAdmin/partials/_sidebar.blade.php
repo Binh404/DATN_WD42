@@ -101,15 +101,10 @@
                         </a>
                     </li>
                     @endif
-
-
                 </ul>
-
             </div>
-
         </li>
         @endif
-
         {{-- Phòng ban - Chỉ admin, hr có quyền --}}
         {{-- @if(MenuHelper::hasMenuPermission('phongban'))
         <li class="nav-item">
@@ -127,9 +122,6 @@
             </div>
         </li>
         @endif --}}
-
-        
-
         {{-- Chấm công - admin, department, employee có quyền --}}
         @if(MenuHelper::hasMenuPermission('chamcong'))
         <li class="nav-item">

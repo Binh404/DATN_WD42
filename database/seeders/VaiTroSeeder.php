@@ -36,7 +36,7 @@ class VaiTroSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'employee',
+                'name' => 'department',
                 'ten_hien_thi' => 'Trưởng phòng nhân sự',
                 'mo_ta' => 'Quản lý toàn bộ hoạt động nhân sự, tuyển dụng, lương và chấm công',
                 'la_vai_tro_he_thong' => false,
@@ -46,7 +46,7 @@ class VaiTroSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'name' => 'department',
+                'name' => 'employee',
                 'ten_hien_thi' => 'Nhân viên nhân sự',
                 'mo_ta' => 'Thực hiện các công việc nhân sự cơ bản',
                 'la_vai_tro_he_thong' => false,

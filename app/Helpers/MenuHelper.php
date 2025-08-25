@@ -89,7 +89,7 @@ class MenuHelper
         $subMenuPermissions = [
             'admin' => [
                 'hoso' => ['qlhoso','qltk', 'hosocn', 'vaitro', 'phongban'],
-                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc'],
+                'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'vitri', 'importcc','pheduyetyeucau'],
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'duyetdon' => ['tuyendung', 'xinnghiphep'],
                 'luong' => ['luong', 'phieuluong', 'danhsach'],
