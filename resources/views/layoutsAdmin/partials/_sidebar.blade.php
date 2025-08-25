@@ -85,18 +85,21 @@
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
                     @endif
-                    @if(MenuHelper::hasSubMenuPermission('hoso', 'qlvaitro'))
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'vaitro'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('vaitro.index')}}">
                            Vai trò
                         </a>
                     </li>
+                    @endif
+                    @if(MenuHelper::hasSubMenuPermission('hoso', 'phongban'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('phongban.index') }}">
                            Phòng ban
                         </a>
                     </li>
                     @endif
+
 
                 </ul>
 
@@ -146,9 +149,12 @@
                 <ul class="nav flex-column sub-menu">
                     {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
                     <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
+                    @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
                     </li>
+                    @endif
+
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
@@ -161,7 +167,7 @@
                     @endif
                     @if(MenuHelper::hasSubMenuPermission('luong', 'phieuluongnv'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương</a>
+                        <a class="nav-link" href="{{ route('danh-sach-luong') }}">Bảng lương của tôi</a>
                     </li>
                     @endif
 

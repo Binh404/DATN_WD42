@@ -36,6 +36,16 @@ class VaiTroSeeder extends Seeder
             ],
             [
                 'id' => 3,
+                'name' => 'employee',
+                'ten_hien_thi' => 'Nhân viên nhân sự',
+                'mo_ta' => 'Thực hiện các công việc nhân sự cơ bản',
+                'la_vai_tro_he_thong' => false,
+                'trang_thai' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 4,
                 'name' => 'department',
                 'ten_hien_thi' => 'Trưởng phòng nhân sự',
                 'mo_ta' => 'Quản lý toàn bộ hoạt động nhân sự, tuyển dụng, lương và chấm công',
@@ -44,16 +54,7 @@ class VaiTroSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'id' => 4,
-                'name' => 'employee',
-                'ten_hien_thi' => 'Nhân viên nhân sự',
-                'mo_ta' => 'Thực hiện các công việc nhân sự cơ bản',
-                'la_vai_tro_he_thong' => false,
-                'trang_thai' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
+
         ]);
     }
 }

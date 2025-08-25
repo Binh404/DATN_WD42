@@ -37,9 +37,9 @@
                                 <i class="fas fa-user-tie"></i>
                                 <strong>Người gửi hợp đồng:</strong> 
                                 {{ $hopDong->nguoiGuiHopDong->hoSo->ho ?? '' }} {{ $hopDong->nguoiGuiHopDong->hoSo->ten ?? '' }}
-                                @if($hopDong->nguoiGuiHopDong->vaiTro)
+                                {{-- @if($hopDong->nguoiGuiHopDong->vaiTro)
                                     <span class="badge badge-info ml-2">{{ ucfirst($hopDong->nguoiGuiHopDong->vaiTro) }}</span>
-                                @endif
+                                @endif --}}
                             </div>
                         @endif
 

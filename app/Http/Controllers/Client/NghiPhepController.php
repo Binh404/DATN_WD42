@@ -174,14 +174,22 @@ class NghiPhepController extends Controller
         }
 
         // cập nhật số ngày còn lại, ...
-        SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
+        if($loaiNghiPhep->nghi_che_do == 0){
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
             ->where('loai_nghi_phep_id', $validated['loai_nghi_phep_id'])
             ->update([
                 'so_ngay_con_lai'   => DB::raw("so_ngay_con_lai - {$validated['so_ngay_nghi']}"),
                 'so_ngay_cho_duyet' => DB::raw("so_ngay_cho_duyet + {$validated['so_ngay_nghi']}"),
-
             ]);
 
+        }else{
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $user->id)
+                ->where('loai_nghi_phep_id', $validated['loai_nghi_phep_id'])
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw("so_ngay_cho_duyet + {$validated['so_ngay_nghi']}"),
+                ]);
+        }
+        
         return redirect()->route('nghiphep.index')->with('success', 'Tạo đơn xin nghỉ thành công!');
     }
 
