@@ -431,16 +431,16 @@
                                                                                     </a>
                                                                                 </li>
 
-                                                                                <li>
+                                                                                {{-- <li>
                                                                                     <hr class="dropdown-divider">
-                                                                                </li>
-                                                                                <li>
+                                                                                </li> --}}
+                                                                                {{-- <li>
                                                                                     <a class="dropdown-item text-danger"
                                                                                         href="#"
                                                                                         onclick="showConfirmDelete({{ $cc->id }})">
                                                                                         <i class="mdi mdi-delete me-2"></i>Xóa
                                                                                     </a>
-                                                                                </li>
+                                                                                </li> --}}
                                                                                 @endif
                                                                             </ul>
                                                                         </div>

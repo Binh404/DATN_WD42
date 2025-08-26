@@ -207,8 +207,8 @@ class ThucHienTangCaAdminController extends Controller
         // dd($thucHienTangCa);
         // Danh sách trạng thái chấm công
         $trangThaiList = [
-            'chua_lam' => 'Chưa làm',
-            'dang_lam' => 'Đang làm',
+            // 'chua_lam' => 'Chưa làm',
+            // 'dang_lam' => 'Đang làm',
             'hoan_thanh' => 'Hoàn thành',
             'khong_hoan_thanh' => 'Không hoàn thành',
         ];

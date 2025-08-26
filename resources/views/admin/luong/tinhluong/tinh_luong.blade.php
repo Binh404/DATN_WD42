@@ -79,7 +79,7 @@
 
     <div class="mb-3">
         <label class="form-label">Số ngày công</label>
-        <input type="text" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}" {{ isset($canTinhLuong) && !$canTinhLuong ? 'disabled' : '' }}>
+        <input type="text" name="so_ngay_cong" id="soCongInput" class="form-control" value="{{ old('so_ngay_cong') }}" {{ isset($canTinhLuong) && !$canTinhLuong ? 'disabled' : '' }} readonly>
     </div>
     <div class="mb-3">
         <label class="form-label">Số ngày công OT</label>
@@ -92,13 +92,14 @@
         class="form-control"
         value="{{ old('so_ngay_cong_tang_ca') }}"
         {{ isset($canTinhLuong) && !$canTinhLuong ? 'disabled' : '' }}
+        readonly
     >
     </div>
 
     <div class="mb-3">
         <label class="form-label">Ngày tính lương</label>
         <input type="date" class="form-control" name="ngay_tinh_luong"
-        value="{{ old('ngay_tinh_luong', \Carbon\Carbon::now()->toDateString()) }}" {{ isset($canTinhLuong) && !$canTinhLuong ? 'disabled' : '' }}>
+        value="{{ old('ngay_tinh_luong', \Carbon\Carbon::now()->toDateString()) }}" {{ isset($canTinhLuong) && !$canTinhLuong ? 'disabled' : '' }} readonly>
     </div>
 
     <div class="mb-3">
@@ -149,7 +150,7 @@
         const nhanVienId = document.getElementById('nhanVienSelect').value;
         if (!nhanVienId) return;
 
-        const soCong = parseFloat(bangChamCong[nhanVienId]) || 0;        
+        const soCong = parseFloat(bangChamCong[nhanVienId]) || 0;
         document.getElementById('soCongInput').value = soCong;
 
         const soCongTangCa = parseFloat(congTangCa[nhanVienId]) ;

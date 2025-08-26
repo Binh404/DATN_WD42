@@ -203,7 +203,7 @@
                                            id="gio_vao"
                                            name="gio_vao"
                                            value="{{ old('gio_vao', optional($thucHienTangCa->gio_bat_dau_thuc_te ? \Carbon\Carbon::parse($thucHienTangCa->gio_bat_dau_thuc_te) : null)->format('H:i')) }}"
-                                           step="60">
+                                           step="60" readonly>
                                     @error('gio_vao')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -219,7 +219,7 @@
                                            id="gio_ra"
                                            name="gio_ra"
                                            value="{{ old('gio_ra', optional($thucHienTangCa->gio_ket_thuc_thuc_te ? \Carbon\Carbon::parse($thucHienTangCa->gio_ket_thuc_thuc_te) : null)->format('H:i')) }}"
-                                           step="60">
+                                           step="60" readonly>
                                     @error('gio_ra')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -234,7 +234,7 @@
                                               id="ghi_chu"
                                               name="ghi_chu"
                                               rows="3"
-                                              placeholder="Nhập ghi chú (tùy chọn)">{{ old('ghi_chu', $thucHienTangCa->ghi_chu) }}</textarea>
+                                              placeholder="Nhập ghi chú (tùy chọn)" readonly>{{ old('ghi_chu', $thucHienTangCa->ghi_chu) }}</textarea>
                                     @error('ghi_chu')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -280,9 +280,9 @@
                                     <i class="mdi mdi-arrow-left me-2"></i>Hủy
                                 </a>
                                 <div>
-                                    <button type="button" class="btn btn-info me-2" onclick="autoCalculate()">
+                                    {{-- <button type="button" class="btn btn-info me-2" onclick="autoCalculate()">
                                         <i class="mdi mdi-calculator me-2"></i>Tính toán tự động
-                                    </button>
+                                    </button> --}}
                                     <button type="submit" class="btn btn-primary">
                                         <i class="mdi mdi-content-save me-2"></i>Cập nhật
                                     </button>
