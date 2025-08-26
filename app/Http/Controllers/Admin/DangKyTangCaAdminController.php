@@ -216,10 +216,10 @@ class DangKyTangCaAdminController extends Controller
             // dd($dangKyTangCa->nguoiDung);
             $dangKyTangCa->nguoiDung->notify(new PheDuyetYeuCauTangCa($dangKyTangCa, $validated['trang_thai'], $dangKyTangCa->ly_do_tu_choi));
 
-            // if($dangKyTangCa->trang_thai !== 'huy'){
-            //     $this->sendApprovalNotification($dangKyTangCa, $user);
+            if($dangKyTangCa->trang_thai !== 'huy'){
+                $this->sendApprovalNotification($dangKyTangCa, $user);
 
-            // }
+            }
             DB::commit();
             if($dangKyTangCa->trang_thai == 'tu_choi'){
                 $message = 'Từ chối chấm công!';
