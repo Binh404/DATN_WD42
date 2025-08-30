@@ -924,7 +924,7 @@ public function guiMailLuongDaChon(Request $request)
             }
             file_put_contents($pdfPath, $pdf->output());
 
-            Mail::to($luong->nguoiDung->email)->send(
+            Mail::to($luong->nguoiDung->email)->queue(
                 new GuiPhieuLuong($tenNhanVien, $thang, $nam, $pdfPath)
             );
             $successCount++;

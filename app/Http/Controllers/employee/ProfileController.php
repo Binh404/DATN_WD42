@@ -162,9 +162,12 @@ class ProfileController extends Controller
         'anh_cccd_sau.image' => 'Ảnh căn cước phải là tệp hình ảnh.',
         'anh_cccd_sau.max' => 'Ảnh đại diện tối đa 2MB.',
     ]);
+        // Ép email công ty = email của user đang đăng nhập
+        $validated['email_cong_ty'] = Auth::user()->email;
 
+        // Chỉ fill dữ liệu hợp lệ (đã validate), bỏ qua ảnh vì xử lý riêng
+        $hoSo->fill(collect($validated)->except('anh_dai_dien')->toArray());
 
-        $hoSo->fill($request->except('anh_dai_dien'));
 
         if ($request->hasFile('anh_dai_dien')) {
 
