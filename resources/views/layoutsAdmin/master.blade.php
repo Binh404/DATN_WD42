@@ -9,7 +9,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Star Admin2 </title>
+    <title>DV TECH </title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -43,7 +43,7 @@
         .sidebar .nav .nav-item.active > .nav-link[href*="thong-ke"] .menu-title {
             color: inherit !important;
         }
-        
+
         /* Đảm bảo font và hover giống với Đơn đề xuất */
         .sidebar .nav .nav-item > .nav-link[href*="thong-ke"] {
             font-size: 14px !important;
@@ -58,7 +58,7 @@
         .sidebar .nav .nav-item > .nav-link[href*="thong-ke"] i {
             color: #484848 !important;
         }
-        
+
         /* Hover effect giống với Đơn đề xuất */
         .sidebar .nav .nav-item > .nav-link[href*="thong-ke"]:hover {
             background: #fff !important;

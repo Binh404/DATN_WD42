@@ -113,7 +113,7 @@ class MenuHelper
                 'ungvien' => ['danhsach', 'phongvan', 'emaildagui', 'trungtuyen', 'luutru'],
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'pheduyetyeucau'],
                 'duyetdon' => ['xinnghiphep'],
-                'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
+                'xinnghiphep' => [ 'donxinnghiphep'],
                 'thongbaotuyendung' => ['danhsach'],
                 // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
@@ -127,7 +127,7 @@ class MenuHelper
 
                 'chamcong' => ['danhsach', 'pheduyet', 'tangca', 'chamcong', 'donxintangca','guiyeucau'],
                 'duyetdon' => ['xinnghiphep'],
-                'xinnghiphep' => ['danhsach', 'donxinnghiphep'],
+                'xinnghiphep' => [ 'donxinnghiphep'],
                 // 'dondexuat' => ['guidexuat'],
                 'hopdong' => ['cua_toi'], // Chỉ xem hợp đồng của mình
 

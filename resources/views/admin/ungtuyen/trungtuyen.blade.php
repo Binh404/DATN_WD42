@@ -216,7 +216,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @if($uv->trang_thai_email_trungtuyen === 'Đã gửi')
+                                    @if($uv->trang_thai_email_trungtuyen === 'da_gui')
                                     <span class="badge bg-success">Đã gửi</span>
                                     @else
                                     <span class="badge bg-danger">Chưa gửi</span>

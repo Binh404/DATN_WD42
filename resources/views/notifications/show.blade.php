@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header">
                     <h4>Chi tiết thông báo</h4>
@@ -258,6 +258,31 @@
     </div>
 
     <style>
+        /* Override layout admin để notifications có width đầy đủ */
+        .content-wrapper {
+            padding: 20px;
+        }
+        
+        .card {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .table {
+            width: 100%;
+            table-layout: auto;
+        }
+        
+        .table th {
+            min-width: 150px;
+            white-space: nowrap;
+        }
+        
+        .table td {
+            word-wrap: break-word;
+            max-width: 400px;
+        }
+        
         .btn-group-custom {
             display: flex;
             gap: 0.5rem;

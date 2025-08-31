@@ -52,7 +52,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                           
+
                             @error('nguoi_dung_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -70,7 +70,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                           
+
                             @error('chuc_vu_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -84,7 +84,7 @@
                             <label for="so_hop_dong">Số hợp đồng <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('so_hop_dong') is-invalid @enderror"
                                    id="so_hop_dong" name="so_hop_dong" value="{{ $soHopDongTuDong }}" readonly required>
-                          
+
                             @error('so_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -96,7 +96,7 @@
                             <label for="loai_hop_dong">Loại hợp đồng <span class="text-danger">*</span></label>
                             <select name="loai_hop_dong" id="loai_hop_dong" class="form-control @error('loai_hop_dong') is-invalid @enderror" required>
                                 <option value="">-- Chọn loại hợp đồng --</option>
-                                <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
+                                {{-- <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option> --}}
                                 <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
                                 <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
                                 <!-- <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option> -->
@@ -137,11 +137,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="luong_co_ban">Lương  <span class="text-danger">*</span></label>
-                            <input type="text" 
+                            <input type="text"
                                    class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" 
-                                   name="luong_co_ban" 
-                                   value="{{ old('luong_co_ban') }}" 
+                                   id="luong_co_ban"
+                                   name="luong_co_ban"
+                                   value="{{ old('luong_co_ban') }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
@@ -155,10 +155,10 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="text" 
+                            <input type="text"
                                    class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" 
-                                   name="phu_cap" 
+                                   id="phu_cap"
+                                   name="phu_cap"
                                    value="{{ old('phu_cap') }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
@@ -182,12 +182,12 @@
                         </div>
                     </div>
                 </div>
-<!-- 
+<!--
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <strong>Lưu ý:</strong> 
+                            <strong>Lưu ý:</strong>
                             <ul class="mb-0 mt-2">
                                 <li>Hợp đồng mới tạo sẽ ở trạng thái <strong>"Tạo mới"</strong></li>
                                 <li>Sau khi tạo, HR/Admin cần <strong>gửi cho nhân viên</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
@@ -208,9 +208,9 @@
 
                 <div class="form-group">
                     <label for="file_hop_dong">File hợp đồng <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
                            id="file_hop_dong" name="file_hop_dong[]" multiple required>
-                   
+
                     @error('file_hop_dong')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -219,9 +219,9 @@
 
                 <div class="form-group">
                     <label for="file_dinh_kem">File đính kèm (tùy chọn)</label>
-                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror"
                            id="file_dinh_kem" name="file_dinh_kem">
-                   
+
                     @error('file_dinh_kem')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -257,7 +257,7 @@
         var loaiHopDong = document.getElementById('loai_hop_dong');
         var ngayKetThuc = document.getElementById('ngay_ket_thuc');
         var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
-        
+
         if (loaiHopDong && ngayKetThuc) {
             // Xử lý khi thay đổi loại hợp đồng
             loaiHopDong.addEventListener('change', function() {
@@ -272,7 +272,7 @@
                     ngayKetThucRequired.style.display = 'inline';
                 }
             });
-            
+
             // Chạy lần đầu
             if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
                 ngayKetThuc.disabled = true;
@@ -290,7 +290,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         var ngayBatDau = document.getElementById('ngay_bat_dau');
         var ngayKetThuc = document.getElementById('ngay_ket_thuc');
-        
+
         if (ngayBatDau && ngayKetThuc) {
             ngayBatDau.addEventListener('change', function() {
                 ngayKetThuc.min = this.value;
@@ -346,7 +346,7 @@
     document.getElementById('file_hop_dong').addEventListener('change', function() {
         var fileList = document.getElementById('file-list');
         fileList.innerHTML = '';
-        
+
         for (var i = 0; i < this.files.length; i++) {
             var file = this.files[i];
             var fileInfo = document.createElement('div');

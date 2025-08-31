@@ -90,10 +90,10 @@
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
-                                                                <div class="col-md-6">
+                                                                {{-- <div class="col-md-6">
                                                                     <label class="form-label">Lương cơ bản</label>
                                                                     <input type="number" name="luong_co_ban" class="form-control" required>
-                                                                </div>
+                                                                </div> --}}
                                                                 <div class="col-md-12">
                                                                     <label class="form-label">Mô tả</label>
                                                                     <textarea name="mo_ta" class="form-control" rows="2"></textarea>
