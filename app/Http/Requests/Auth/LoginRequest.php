@@ -59,7 +59,7 @@ class LoginRequest extends FormRequest
             Auth::logout(); 
 
             throw ValidationException::withMessages([
-                'email' => 'Tài khoản của bạn đã bị vô hiệu hóa hãy liên hệ quản trị viên.',
+                'email' => 'Tài khoản của bạn đã bị vô hiệu hóa, hãy liên hệ quản trị viên.',
             ]);
         }
         $user->lan_dang_nhap_cuoi = Carbon::now('Asia/Ho_Chi_Minh');

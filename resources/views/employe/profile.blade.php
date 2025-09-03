@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Auth;
                                 <div class="row g-3">
                                     <!-- Tên đăng nhập -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                        <label class="form-label">Tên người dùng: <span class="text-danger">*</span></label>
                                         <input type="text" name="ten_dang_nhap"
                                             class="form-control @error('ten_dang_nhap') is-invalid @enderror"
                                             value="{{ old('ten_dang_nhap', Auth::user()->ten_dang_nhap) }}">
@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Auth;
 
                                     <!-- Email -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Email cá nhân <span class="text-danger">*</span></label>
+                                        <label class="form-label">Email: <span class="text-danger">*</span></label>
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ old('email', Auth::user()->email) }}">
                                         @error('email')
@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Phòng ban <span class="text-danger">*</span></label>
+                                        <label class="form-label">Phòng ban: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $phongbans->phongBan->ten_phong_ban ?? ''  }}" disabled>
@@ -63,7 +63,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Chức vụ <span class="text-danger">*</span></label>
+                                        <label class="form-label">Chức vụ: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $chucvus->chucVu->ten ?? ''  }}" disabled>
@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\Auth;
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Quyền <span class="text-danger">*</span></label>
+                                        <label class="form-label">Quyền: <span class="text-danger">*</span></label>
                                         {{-- <input type="" name="ma_nhan_vien" value="{{ $taiKhoan->$phongbans }}"> --}}
                                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                             value="{{ $vaitros->vaiTro->name   }}" disabled>
@@ -383,7 +383,7 @@ use Illuminate\Support\Facades\Auth;
                                     <div class="row">
                                         <div class="col-md-8">
                                             <label class="form-label">Chọn ảnh mới</label>
-                                            <input type="file" id="inputImage" name="anh_cccd_truoc" class="form-control @error('anh_cccd_truoc') is-invalid @enderror" accept="image/*">
+                                            <input type="file"  name="anh_cccd_truoc" id="anh_cccd_truoc" class="form-control @error('anh_cccd_truoc') is-invalid @enderror" accept="image/*">
                                             @error('anh_cccd_truoc')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -393,7 +393,7 @@ use Illuminate\Support\Facades\Auth;
                                             <div class="col-md-4">
                                                 <label class="form-label">Ảnh hiện tại</label>
                                                 <div class="text-center">
-                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_truoc) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                    <img id="preview_truoc" src="{{ asset($hoSo->anh_cccd_truoc) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
                                                 </div>
                                             </div>
                                         @endif
@@ -413,7 +413,7 @@ use Illuminate\Support\Facades\Auth;
                                     <div class="row">
                                         <div class="col-md-8">
                                             <label class="form-label">Chọn ảnh mới</label>
-                                            <input type="file" id="inputImage" name="anh_cccd_sau" class="form-control @error('anh_cccd_sau') is-invalid @enderror" accept="image/*">
+                                            <input type="file" name="anh_cccd_sau" id="anh_cccd_sau" class="form-control @error('anh_cccd_sau') is-invalid @enderror" accept="image/*">
                                             @error('anh_cccd_sau')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -423,7 +423,7 @@ use Illuminate\Support\Facades\Auth;
                                             <div class="col-md-4">
                                                 <label class="form-label">Ảnh hiện tại</label>
                                                 <div class="text-center">
-                                                    <img id="previewImage" src="{{ asset($hoSo->anh_cccd_sau) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
+                                                    <img id="preview_sau" src="{{ asset($hoSo->anh_cccd_sau) }}" class="img-thumbnail" style="max-width: 120px; max-height: 120px;">
                                                 </div>
                                             </div>
                                         @endif
@@ -461,6 +461,28 @@ use Illuminate\Support\Facades\Auth;
                 reader.readAsDataURL(file);
             }
         });
+        function previewImage(input, previewId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Gắn sự kiện onchange bằng JS nếu chưa làm inline
+    document.getElementById('anh_cccd_truoc').addEventListener('change', function () {
+        previewImage(this, 'preview_truoc');
+    });
+
+    document.getElementById('anh_cccd_sau').addEventListener('change', function () {
+        previewImage(this, 'preview_sau');
+    });
     </script>
     <style>
         .card {

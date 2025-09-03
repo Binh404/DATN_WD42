@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -38,7 +39,20 @@ class TuChoiDonXinNghi extends Notification
             'url' => route('nghiphep.show', ['id' => $this->donXinNghi->id]),
         ];
     }
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+               'message' => 'Quản lý cấp trên đã từ chối đơn xin nghỉ của bạn.',
+            'url' => route('nghiphep.show', ['id' => $this->donXinNghi->id]),
+        ]
 
+        );
+    }
+    public function broadcastOn()
+    {
+        // Gửi đến user cụ thể
+        return new \Illuminate\Broadcasting\PrivateChannel('App.Models.User.' . $this->donXinNghi->nguoi_dung_id);
+    }
     /**
      * Get the array representation of the notification.
      *

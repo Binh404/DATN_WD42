@@ -4,8 +4,8 @@
 @endphp
 <style>
     option {
-    color: black;
-}
+        color: black;
+    }
 </style>
 @section('content')
     <div class="row">
@@ -115,8 +115,8 @@
                                                     </div>
                                                     <div class="col-md-3 d-flex gap-2">
                                                         <button type="submit" class="btn btn-primary">Lọc</button>
-                                                        <a href="{{ route('tkall') }}"
-                                                            class="btn btn-secondary">Đặt lại</a>
+                                                        <a href="{{ route('tkall') }}" class="btn btn-secondary">Đặt
+                                                            lại</a>
                                                     </div>
                                                 </form>
 
@@ -130,8 +130,8 @@
                                                                 <th>Trạng thái</th>
                                                                 <th>Lần đăng nhập cuối</th>
                                                                 {{-- <th>IP đăng nhập cuối</th> --}}
-                                                                <th>Phòng ban</th>
-                                                                <th>Chức vụ</th>
+                                                                {{-- <th>Phòng ban</th>
+                                                                <th>Chức vụ</th> --}}
                                                                 <th>Hành động</th>
                                                             </tr>
                                                         </thead>
@@ -174,13 +174,13 @@
                                                                                     </div>
                                                                                     <div><i
                                                                                             class="mdi mdi-office-building me-1"></i>
-                                                                                        Phòng:
+                                                                                        Phòng ban:
                                                                                         {{ $item->phongBan->ten_phong_ban ?? 'N/A' }}
                                                                                     </div>
                                                                                     <div><i
                                                                                             class="mdi mdi-account-badge me-1"></i>
-                                                                                        Vai trò:
-                                                                                        {{ $item->vaiTro->ten_hien_thi ?? 'N/A' }}
+                                                                                        Chức vụ:
+                                                                                        {{ $item->chucVu->ten ?? 'N/A' }}
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -199,8 +199,8 @@
                                                                     </td>
                                                                     <td>{{ $item->lan_dang_nhap_cuoi }}</td>
                                                                     {{-- <td>{{ $item->ip_dang_nhap_cuoi }}</td> --}}
-                                                                    <td>{{ $item->PhongBan->ten_phong_ban }}</td>
-                                                                    <td>{{ $item->chucVu->ten }}</td>
+                                                                    {{-- <td>{{ $item->PhongBan->ten_phong_ban }}</td>
+                                                                    <td>{{ $item->chucVu->ten }}</td> --}}
                                                                     <td>
                                                                         <a href="{{ route('tkedit', $item->id) }}"
                                                                             class="btn btn-sm btn-warning">Sửa</a>

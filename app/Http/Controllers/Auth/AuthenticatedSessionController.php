@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
         // dd($request->session()->get('_token'));
 
         $roles = $user->vaiTros->pluck('name')->toArray();
-
+        // dd($roles);
         if (in_array('admin', $roles)) {
             return redirect()->route('admin.dashboard');
         } elseif (in_array('hr', $roles)) {

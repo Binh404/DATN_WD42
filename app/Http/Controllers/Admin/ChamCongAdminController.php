@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\ChamCongExport;
 use App\Http\Controllers\Controller;
+use App\Models\BangLuong;
 use App\Models\ChamCong;
 use App\Models\NguoiDung;
 use App\Models\PhongBan;
+use App\Services\GioLamViecService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
@@ -14,11 +16,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 
 class ChamCongAdminController extends Controller
 {
+     protected $workScheduleService;
+
+    public function __construct(GioLamViecService $workScheduleService)
+    {
+        $this->workScheduleService = $workScheduleService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -97,7 +106,7 @@ class ChamCongAdminController extends Controller
                 $q->where('phong_ban_id', $phongBanId)
                 ->where('id', '<>', $userId)
                 ->whereHas('vaiTro', function ($qr) {
-                    $qr->where('ten', '<>', 'department'); // loại trưởng phòng khác
+                    $qr->where('name', '<>', 'department'); // loại trưởng phòng khác
                 });;
             });
         } else {
@@ -281,73 +290,330 @@ class ChamCongAdminController extends Controller
     /**
      * Bulk actions for multiple records
      */
-    public function bulkAction(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'ids' => 'required|json',
-                'action' => 'required|in:1,2,4',
-                'reason' => 'nullable|string|max:500'
-            ]);
+    // public function bulkAction(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'ids' => 'required|json',
+    //             'action' => 'required|in:1,2,4',
+    //             'reason' => 'nullable|string|max:500'
+    //         ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dữ liệu không hợp lệ!'
-                ], 400);
-            }
+    //         if ($validator->fails()) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Dữ liệu không hợp lệ!'
+    //             ], 400);
+    //         }
 
-            $ids = json_decode($request->ids, true);
-            $action = $request->action;
-            $reason = $request->reason;
+    //         $ids = json_decode($request->ids, true);
+    //         $action = $request->action;
+    //         $reason = $request->reason;
 
-            if (empty($ids) || !is_array($ids)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không có bản ghi nào được chọn!'
-                ], 400);
-            }
+    //         if (empty($ids) || !is_array($ids)) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Không có bản ghi nào được chọn!'
+    //             ], 400);
+    //         }
 
-            DB::beginTransaction();
+    //         DB::beginTransaction();
 
-            if ($action === 'delete') {
-                // Bulk delete
-                $deletedCount = ChamCong::whereIn('id', $ids)->delete();
-                $message = "Đã xóa {$deletedCount} bản ghi thành công!";
-            } else {
-                // Bulk approve/reject
-                $updateData = [
-                    'trang_thai_duyet' => (int) $action,
-                    'thoi_gian_phe_duyet' => now(),
-                    'nguoi_phe_duyet_id' => auth()->id()
-                ];
+    //         if ($action === 'delete') {
+    //             // Bulk delete
+    //             $deletedCount = ChamCong::whereIn('id', $ids)->delete();
+    //             $message = "Đã xóa {$deletedCount} bản ghi thành công!";
+    //         } else {
+    //             // Bulk approve/reject
+    //             $updateData = [
+    //                 'trang_thai_duyet' => (int) $action,
+    //                 'thoi_gian_phe_duyet' => now(),
+    //                 'nguoi_phe_duyet_id' => auth()->id()
+    //             ];
 
-                if ($action == 2 && $reason) {
-                    $updateData['ghi_chu_duyet'] = $reason;
-                }
+    //             if ($action == 2 && $reason) {
+    //                 $updateData['ghi_chu_duyet'] = $reason;
+    //             }
 
-                $updatedCount = ChamCong::whereIn('id', $ids)->update($updateData);
+    //             $updatedCount = ChamCong::whereIn('id', $ids)->update($updateData);
 
-                $actionText = $action == 1 ? 'phê duyệt' : 'từ chối';
-                $message = "Đã {$actionText} {$updatedCount} bản ghi thành công!";
-            }
+    //             $actionText = $action == 1 ? 'phê duyệt' : 'từ chối';
+    //             $message = "Đã {$actionText} {$updatedCount} bản ghi thành công!";
+    //         }
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => $message
-            ]);
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => $message
+    //         ]);
 
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Error in PheDuyetController@bulkAction: ' . $e->getMessage());
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         Log::error('Error in PheDuyetController@bulkAction: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+   public function bulkAction(Request $request)
+{
+    try {
+        // Validate input data với backward compatibility
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|json',
+            'action' => 'required|in:1,2,4,delete,approve,reject', // accept cả old và new values
+            'reason' => 'nullable|string|max:500'
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Dữ liệu không hợp lệ!',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Parse and validate IDs
+        $ids = json_decode($request->ids, true);
+        if (empty($ids) || !is_array($ids) || !$this->validateIds($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Danh sách ID không hợp lệ!'
+            ], 400);
+        }
+
+        // Map old action values to new standard
+        $actionMap = [
+            '1' => 'approve',
+            '2' => 'reject',
+            '4' => 'Huy',
+            'delete' => 'delete',
+            'approve' => 'approve',
+            'reject' => 'reject'
+        ];
+
+        $normalizedAction = $actionMap[$request->action] ?? $request->action;
+
+        // Check if records exist and user has permission
+        $chamCongs = ChamCong::whereIn('id', $ids)->get();
+        if ($chamCongs->count() !== count($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Một số bản ghi không tồn tại!'
+            ], 404);
+        }
+
+        // Check salary lock status
+        $lockCheckResult = $this->checkSalaryLock($chamCongs);
+        if (!$lockCheckResult['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $lockCheckResult['message']
+            ],  200);
+        }
+        // 🔒 Check trạng thái approve/reject đã tồn tại
+        foreach ($chamCongs as $chamCong) {
+            $email = $chamCong->nguoiDung->email;
+            if ($normalizedAction === 'approve' && $chamCong->trang_thai_duyet == 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bản ghi của {$email} đã bị từ chối trước đó, không thể phê duyệt lại!"
+                ], 200);
+            }
+
+            if ($normalizedAction === 'reject' && $chamCong->trang_thai_duyet == 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bản ghi {$email} đã được phê duyệt trước đó, không thể từ chối lại!"
+                ], 200);
+            }
+        }
+        // Execute bulk action với normalized action
+        DB::beginTransaction();
+
+        $result = $this->executeBulkAction($normalizedAction, $ids, $request->reason);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => $result['message'],
+            'affected_count' => $result['count']
+        ]);
+
+    } catch (ValidationException $e) {
+        DB::rollback();
+        return response()->json([
+            'success' => false,
+            'message' => 'Dữ liệu không hợp lệ!',
+            'errors' => $e->errors()
+        ], 422);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error in PheDuyetController@bulkAction', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'user_id' => auth()->id(),
+            'request_data' => $request->all()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại!'
+        ], 500);
+    }
+}
+
+/**
+ * Validate array of IDs
+ */
+private function validateIds(array $ids): bool
+{
+    foreach ($ids as $id) {
+        if (!is_numeric($id) || $id <= 0) {
+            return false;
         }
     }
+    return true;
+}
+
+/**
+ * Check salary lock status for attendance records
+ */
+private function checkSalaryLock($chamCongs): array
+{
+    $lockedMonths = [];
+
+    foreach ($chamCongs as $chamCong) {
+        $date = Carbon::parse($chamCong->ngay_cham_cong);
+        $year = $date->year;
+        $month = $date->month;
+
+        $monthKey = "{$month}/{$year}";
+
+        // Skip if already checked this month
+        if (in_array($monthKey, $lockedMonths)) {
+            continue;
+        }
+
+        $bangLuong = BangLuong::where('nam', $year)
+            ->where('thang', $month)
+            ->where('nguoi_xu_ly_id', $chamCong->nguoi_dung_id)
+            ->with('nguoiXuLy')
+            ->first();
+
+        if ($bangLuong ) {
+            $emailNguoiXuLy = $bangLuong->nguoiXuLy->email;
+            return [
+                'success' => false,
+                'message' => "{$emailNguoiXuLy} - Tháng {$monthKey} đã được chốt lương, không thể thay đổi chấm công!"
+            ];
+        }
+
+        $lockedMonths[] = $monthKey;
+    }
+
+    return ['success' => true];
+}
+
+/**
+ * Execute the bulk action
+ */
+private function executeBulkAction(string $action, array $ids, ?string $reason): array
+{
+    switch ($action) {
+        case 'delete':
+            return $this->executeBulkDelete($ids);
+
+        case 'approve':
+            return $this->executeBulkApprove($ids);
+
+        case 'reject':
+            return $this->executeBulkReject($ids, $reason);
+
+        case 'Huy':
+            return $this->executeBulkHuy($ids);
+
+        default:
+            throw new \InvalidArgumentException("Invalid action: {$action}");
+    }
+}
+
+/**
+ * Execute bulk delete
+ */
+private function executeBulkDelete(array $ids): array
+{
+    $deletedCount = ChamCong::whereIn('id', $ids)->delete();
+
+    return [
+        'count' => $deletedCount,
+        'message' => "Đã xóa {$deletedCount} bản ghi thành công!"
+    ];
+}
+
+/**
+ * Execute bulk approve
+ */
+private function executeBulkApprove(array $ids): array
+{
+    $updateData = [
+        'trang_thai_duyet' => 1,
+        'thoi_gian_phe_duyet' => now(),
+        'nguoi_phe_duyet_id' => auth()->id(),
+        'ghi_chu_duyet' => null // Clear rejection reason
+    ];
+
+    $updatedCount = ChamCong::whereIn('id', $ids)->update($updateData);
+
+    return [
+        'count' => $updatedCount,
+        'message' => "Đã phê duyệt {$updatedCount} bản ghi thành công!"
+    ];
+}
+
+/**
+ * Execute bulk reject
+ */
+private function executeBulkReject(array $ids, ?string $reason): array
+{
+    $updateData = [
+        'trang_thai_duyet' => 2,
+        'thoi_gian_phe_duyet' => now(),
+        'nguoi_phe_duyet_id' => auth()->id()
+    ];
+
+    if ($reason) {
+        $updateData['ghi_chu_duyet'] = $reason;
+    }
+
+    $updatedCount = ChamCong::whereIn('id', $ids)->update($updateData);
+
+    return [
+        'count' => $updatedCount,
+        'message' => "Đã từ chối {$updatedCount} bản ghi thành công!"
+    ];
+}
+private function executeBulkHuy(array $ids): array
+{
+    $updateData = [
+        'trang_thai_duyet' => 4,
+        'thoi_gian_phe_duyet' => now(),
+        'nguoi_phe_duyet_id' => auth()->id()
+    ];
+
+
+
+    $updatedCount = ChamCong::whereIn('id', $ids)->update($updateData);
+
+    return [
+        'count' => $updatedCount,
+        'message' => "Đã hủy {$updatedCount} bản ghi thành công!"
+    ];
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -738,6 +1004,17 @@ class ChamCongAdminController extends Controller
         } else {
             abort(403, 'Bạn không có quyền phê duyệt bản ghi này.');
         }
+        $nam = Carbon::parse($chamCong->ngay_cham_cong)->year;
+        $thang = Carbon::parse($chamCong->ngay_cham_cong)->month;
+        $bangLuong = BangLuong::where('nam', $nam)
+        ->where('thang', $thang)
+        ->where('nguoi_xu_ly_id', $chamCong->nguoi_dung_id)
+        ->first();
+         if ($bangLuong ) {
+            return back()->with(
+                'error' ,    'Bảng lương tháng ' . $thang . '/' . $nam . ' đã được chốt, không thể thay đổi chấm công.'
+            );
+        }
         $trangThai = $chamCong->trang_thai;
         $validated = $request->validate([
             'trang_thai_duyet' => 'required|numeric',
@@ -748,8 +1025,9 @@ class ChamCongAdminController extends Controller
         // dd($trangThaiDuyet);
         // Nếu không có giờ ra thì đặt mặc định là 17:30
         if (empty($chamCong->gio_ra) && $trangThaiDuyet == 1) {
-
-            $chamCong->gio_ra = '17:30';
+            $workingHours = $this->workScheduleService->getWorkingHours();
+            $overtimeStartTime = Carbon::parse($workingHours['end_time']) ?? '17:30'; // $workingHours['start_time_tang_ca']; // 18:45
+            $chamCong->gio_ra = $overtimeStartTime;
         }
 
         DB::beginTransaction();
@@ -815,15 +1093,15 @@ class ChamCongAdminController extends Controller
         // Lấy tham số thời gian từ request
         $tuNgay = $request->input('tu_ngay');
         $denNgay = $request->input('den_ngay');
-        
+
         // Tạo query builder cơ bản
         $query = ChamCong::query();
-        
+
         // Áp dụng filter thời gian nếu có
         if ($tuNgay && $denNgay) {
             $query->whereBetween('ngay_cham_cong', [$tuNgay, $denNgay]);
         }
-        
+
         // Thống kê tổng quan
         $tongChamCong = (clone $query)->count();
         $chamCongDungGio = (clone $query)->where('trang_thai', 'dung_gio')->count();
@@ -833,19 +1111,19 @@ class ChamCongAdminController extends Controller
         $chamCongChuaDuyet = (clone $query)->where('trang_thai_duyet', 'chua_duyet')->count();
         $chamCongDaDuyet = (clone $query)->where('trang_thai_duyet', 'da_duyet')->count();
         $chamCongTuChoi = (clone $query)->where('trang_thai_duyet', 'tu_choi')->count();
-        
+
         // Thống kê theo trạng thái chấm công
         $thongKeTrangThai = (clone $query)->selectRaw('trang_thai, COUNT(*) as so_luong')
             ->groupBy('trang_thai')
             ->get()
             ->keyBy('trang_thai');
-        
+
         // Thống kê theo trạng thái duyệt
         $thongKeTrangThaiDuyet = (clone $query)->selectRaw('trang_thai_duyet, COUNT(*) as so_luong')
             ->groupBy('trang_thai_duyet')
             ->get()
             ->keyBy('trang_thai_duyet');
-        
+
         // Thống kê theo tháng trong năm hiện tại hoặc năm được chọn
         $namHienTai = $tuNgay ? date('Y', strtotime($tuNgay)) : now()->year;
         $thongKeTheoThang = (clone $query)->selectRaw('MONTH(ngay_cham_cong) as thang, COUNT(*) as so_luong')
@@ -853,7 +1131,7 @@ class ChamCongAdminController extends Controller
             ->groupBy('thang')
             ->orderBy('thang')
             ->get();
-        
+
         // Thống kê theo phòng ban
         $thongKeTheoPhongBan = (clone $query)->join('nguoi_dung', 'cham_cong.nguoi_dung_id', '=', 'nguoi_dung.id')
             ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
@@ -861,13 +1139,13 @@ class ChamCongAdminController extends Controller
             ->groupBy('phong_ban.id', 'phong_ban.ten_phong_ban')
             ->orderBy('so_luong', 'desc')
             ->get();
-        
+
         // Thống kê theo ngày trong tuần
         $thongKeTheoNgayTrongTuan = (clone $query)->selectRaw('DAYOFWEEK(ngay_cham_cong) as ngay_trong_tuan, COUNT(*) as so_luong')
             ->groupBy('ngay_trong_tuan')
             ->orderBy('ngay_trong_tuan')
             ->get();
-        
+
         // Thống kê giờ vào trung bình theo phòng ban
         $gioVaoTrungBinhTheoPhongBan = (clone $query)->join('nguoi_dung', 'cham_cong.nguoi_dung_id', '=', 'nguoi_dung.id')
             ->join('phong_ban', 'nguoi_dung.phong_ban_id', '=', 'phong_ban.id')
@@ -879,24 +1157,24 @@ class ChamCongAdminController extends Controller
                 $item->gio_vao_trung_binh = gmdate('H:i:s', $item->gio_vao_trung_binh_giay);
                 return $item;
             });
-        
+
         // Thống kê theo năm
         $thongKeTheoNam = ChamCong::selectRaw('YEAR(ngay_cham_cong) as nam, COUNT(*) as so_luong')
             ->groupBy('nam')
             ->orderBy('nam', 'desc')
             ->get();
-        
+
         // Thống kê chấm công hôm nay
         $chamCongHomNay = (clone $query)->whereDate('ngay_cham_cong', today())->count();
-        
+
         // Thống kê chấm công tuần này
         $chamCongTuanNay = (clone $query)->whereBetween('ngay_cham_cong', [now()->startOfWeek(), now()->endOfWeek()])->count();
-        
+
         // Thống kê chấm công tháng này
         $chamCongThangNay = (clone $query)->whereMonth('ngay_cham_cong', now()->month)
             ->whereYear('ngay_cham_cong', now()->year)
             ->count();
-        
+
         return view('admin.chamcong.thong-ke', compact(
             'tongChamCong',
             'chamCongDungGio',

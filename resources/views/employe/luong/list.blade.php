@@ -39,7 +39,7 @@
         @forelse ($luongs as $luong)
             <tr>
                 <td>
-                    {{ $luong->created_at ? $luong->created_at->format('m/Y') : '/' }}
+                    {{ $luong->luong_thang }}/{{ $luong->luong_nam }}
                 </td>
                 <td>
                     {{ $luong->created_at ? $luong->created_at->format('d/m/Y') : '/' }}
@@ -49,12 +49,14 @@
                 <td>{{ number_format($luong->cong_tang_ca) }}</td>
                 <td><strong>{{ number_format($luong->luong_thuc_nhan) }} VNĐ</strong></td>
                 <td>
-                    {{-- <a href="{{ route('nhanvien.luong.download', $luong->id) }}" class="btn btn-sm btn-success">Tải PDF</a> --}}
+                    <a class="dropdown-item" href="{{ route('luong.pdf.employee', ['thang' => $luong->luong_thang, 'nam' => $luong->luong_nam]) }}">
+                       <i class="mdi mdi-download"></i> Tải PDF
+                    </a>
                 </td>
             </tr>
         @empty
             <tr>
-                <td colspan="6" class="text-center">Không có dữ liệu lương.</td>
+                <td colspan="7" class="text-center">Không có dữ liệu lương.</td>
             </tr>
         @endforelse
         </tbody>

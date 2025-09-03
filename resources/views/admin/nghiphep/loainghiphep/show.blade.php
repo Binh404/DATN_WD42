@@ -394,6 +394,43 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="info-item">
+                            <div class="info-label">Trạng thái</div>
+                            @if ($loaiNghiPhep->trang_thai == 1)
+                                <span class="badge text-success px-3 py-2">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            @else
+                                <span class="badge  text-danger px-3 py-2">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Tính theo tỷ lệ</div>
+                            @if ($loaiNghiPhep->tinh_theo_ty_le == 1)
+                                <span class="badge text-success px-3 py-2">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            @else
+                                <span class="badge  text-danger px-3 py-2">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Nghỉ chế độ</div>
+                            @if ($loaiNghiPhep->nghi_che_do == 1)
+                                <span class="badge text-success px-3 py-2">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            @else
+                                <span class="badge  text-danger px-3 py-2">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            @endif
+                        </div>
+                        
 
                     </div>
                 </div>

@@ -317,7 +317,7 @@
                             <i class="fas fa-chevron-left"></i>
                         </button>
                         <h5 class="mb-0 text-center" id="monthYearDisplay" style="min-width: 150px;">
-                            Tháng 7/2025
+                            Tháng {{ now()->format('n') }}/{{ now()->format('Y') }}
                         </h5>
                         <button class="btn btn-outline-light btn-sm" onclick="changeMonth(1)" title="Tháng sau">
                             <i class="fas fa-chevron-right"></i>

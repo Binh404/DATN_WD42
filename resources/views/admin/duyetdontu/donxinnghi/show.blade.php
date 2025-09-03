@@ -786,13 +786,13 @@
                     </h3>
                     <div class="attachment-list" id="attachments">
                         @if ($donNghiPhep->tai_lieu_ho_tro)
-                            @foreach ($donNghiPhep->tai_lieu_ho_tro as $taiLieu)
-                                <div class="attachment-item"
-                                    onclick="showImagePopup('{{ asset('storage/' . $taiLieu) }}', '{{ basename($taiLieu) }}')">
-                                    <i data-lucide="file-image"></i>
-                                    <span>{{ basename($taiLieu) }}</span>
-                                </div>
-                            @endforeach
+                           @foreach ($donNghiPhep->tai_lieu_ho_tro as $taiLieu)
+    <div class="attachment-item"
+        onclick="showImagePopup('{{ asset('storage/don_xin_nghi/tai_lieu/' . ltrim($taiLieu, '/')) }}', '{{ basename($taiLieu) }}')">
+        <i data-lucide="file-image"></i>
+        <span>{{ basename($taiLieu) }}</span>
+    </div>
+@endforeach
                         @else
                             <p>Không có tài liệu nào</p>
                         @endif
@@ -804,7 +804,7 @@
 
                 @php
                     $ketQua = $donNghiPhep->ketQuaDuyetTheoCap(
-                        $vaiTro->ten == 'hr' ? 2 : ($vaiTro->ten == 'admin' ? 3 : 1),
+                        $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1),
                     );
                 @endphp
                 <!-- Các hành động -->

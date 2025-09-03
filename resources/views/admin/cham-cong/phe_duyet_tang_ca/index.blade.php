@@ -235,10 +235,10 @@
                                                             onclick="bulkReject()">
                                                             <i class="mdi mdi-close"></i> Từ chối hàng loạt
                                                         </button>
-                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                        {{-- <button type="button" class="btn btn-danger btn-sm"
                                                             onclick="bulkDelete()">
                                                             <i class="mdi mdi-delete"></i> Hủy hàng loạt
-                                                        </button>
+                                                        </button> --}}
                                                     </div>
 
                                                 </div>
@@ -276,13 +276,15 @@
                                                                 @endphp
                                                                 <tr>
                                                                     <td>
-                                                                        <div class="form-check form-check-flat mt-0">
-                                                                            <label class="form-check-label">
-                                                                                <input type="checkbox" class="form-check-input"
-                                                                                    value="{{ $cc->id }}"
-                                                                                    id="check{{ $cc->id }}"><i
-                                                                                    class="input-helper"></i></label>
-                                                                        </div>
+                                                                        @if ($cc->trang_thai == 'cho_duyet')
+                                                                            <div class="form-check form-check-flat mt-0">
+                                                                                <label class="form-check-label">
+                                                                                    <input type="checkbox" class="form-check-input"
+                                                                                        value="{{ $cc->id }}"
+                                                                                        id="check{{ $cc->id }}"><i
+                                                                                        class="input-helper"></i></label>
+                                                                            </div>
+                                                                        @endif
 
                                                                     </td>
                                                                     <td>
@@ -415,7 +417,7 @@
                                                                                     </a>
                                                                                 </li>
 
-                                                                                @if($cc->trang_thai == 'cho_duyet' || !$cc->trang_thai || $cc->trang_thai == 'huy')
+                                                                                @if($cc->trang_thai == 'cho_duyet' || !$cc->trang_thai )
                                                                                     <li>
                                                                                         <hr class="dropdown-divider">
                                                                                     </li>
@@ -436,7 +438,7 @@
                                                                                         </a>
                                                                                     </li>
                                                                                 @endif
-                                                                                @if(!($cc->trang_thai == 'huy'))
+                                                                                {{-- @if(!($cc->trang_thai == 'huy'))
 
                                                                                 <li>
                                                                                     <hr class="dropdown-divider">
@@ -448,7 +450,7 @@
                                                                                         <i class="mdi mdi-delete me-2"></i>Hủy đơn
                                                                                     </a>
                                                                                 </li>
-                                                                                @endif
+                                                                                @endif --}}
 
                                                                             </ul>
                                                                         </div>

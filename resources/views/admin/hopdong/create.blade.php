@@ -14,7 +14,30 @@
             <h6 class="m-0 font-weight-bold text-primary">Thông tin hợp đồng</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('hopdong.store') }}" method="POST" enctype="multipart/form-data">
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra:
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('hopdong.store') }}" method="POST" enctype="multipart/form-data" id="hopdongForm">
                 @csrf
 
                 <div class="row">
@@ -29,7 +52,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                           
+
                             @error('nguoi_dung_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -47,6 +70,7 @@
                                     </option>
                                 @endforeach
                             </select>
+
                             @error('chuc_vu_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -60,7 +84,7 @@
                             <label for="so_hop_dong">Số hợp đồng <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('so_hop_dong') is-invalid @enderror"
                                    id="so_hop_dong" name="so_hop_dong" value="{{ $soHopDongTuDong }}" readonly required>
-                          
+
                             @error('so_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -72,7 +96,7 @@
                             <label for="loai_hop_dong">Loại hợp đồng <span class="text-danger">*</span></label>
                             <select name="loai_hop_dong" id="loai_hop_dong" class="form-control @error('loai_hop_dong') is-invalid @enderror" required>
                                 <option value="">-- Chọn loại hợp đồng --</option>
-                                <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
+                                {{-- <option value="thu_viec" {{ old('loai_hop_dong') == 'thu_viec' ? 'selected' : '' }}>Thử việc</option> --}}
                                 <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
                                 <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
                                 <!-- <option value="mua_vu" {{ old('loai_hop_dong') == 'mua_vu' ? 'selected' : '' }}>Mùa vụ</option> -->
@@ -98,7 +122,7 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="ngay_ket_thuc">Ngày kết thúc</label>
+                            <label for="ngay_ket_thuc">Ngày kết thúc <span class="text-danger" id="ngay_ket_thuc_required" style="display: none;">*</span></label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
                                    id="ngay_ket_thuc" name="ngay_ket_thuc" value="{{ old('ngay_ket_thuc') }}"
                                    {{ old('loai_hop_dong') == 'khong_xac_dinh_thoi_han' ? 'disabled' : '' }}>
@@ -112,9 +136,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" name="luong_co_ban" value="{{ old('luong_co_ban') }}" required>
+                            <label for="luong_co_ban">Lương  <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   class="form-control @error('luong_co_ban') is-invalid @enderror"
+                                   id="luong_co_ban"
+                                   name="luong_co_ban"
+                                   value="{{ old('luong_co_ban') }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)"
+                                   required>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -124,8 +155,14 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="number" class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" name="phu_cap" value="{{ old('phu_cap') }}">
+                            <input type="text"
+                                   class="form-control @error('phu_cap') is-invalid @enderror"
+                                   id="phu_cap"
+                                   name="phu_cap"
+                                   value="{{ old('phu_cap') }}"
+                                   pattern="[0-9]*"
+                                   inputmode="numeric"
+                                   placeholder="Nhập số tiền (chỉ số)">
                             @error('phu_cap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -134,18 +171,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="hinh_thuc_lam_viec">Hình thức làm việc <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('hinh_thuc_lam_viec') is-invalid @enderror"
-                                   id="hinh_thuc_lam_viec" name="hinh_thuc_lam_viec" value="{{ old('hinh_thuc_lam_viec') }}" required>
-                            @error('hinh_thuc_lam_viec')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="dia_diem_lam_viec">Địa điểm làm việc <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('dia_diem_lam_viec') is-invalid @enderror"
@@ -156,15 +182,15 @@
                         </div>
                     </div>
                 </div>
-<!-- 
+<!--
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <strong>Lưu ý:</strong> 
+                            <strong>Lưu ý:</strong>
                             <ul class="mb-0 mt-2">
                                 <li>Hợp đồng mới tạo sẽ ở trạng thái <strong>"Tạo mới"</strong></li>
-                                <li>Sau khi tạo, HR/Admin cần <strong>phê duyệt</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
+                                <li>Sau khi tạo, HR/Admin cần <strong>gửi cho nhân viên</strong> để chuyển sang trạng thái <strong>"Chưa hiệu lực"</strong></li>
                                 <li>Sau khi phê duyệt, HR/Admin có thể <strong>ký hợp đồng</strong> để chuyển sang trạng thái <strong>"Hiệu lực"</strong></li>
                             </ul>
                         </div>
@@ -182,10 +208,21 @@
 
                 <div class="form-group">
                     <label for="file_hop_dong">File hợp đồng <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
-                           id="file_hop_dong" name="file_hop_dong" required>
-                    <small class="form-text text-muted">Định dạng: PDF, DOC, DOCX. Kích thước tối đa: 2MB</small>
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
+                           id="file_hop_dong" name="file_hop_dong[]" multiple required>
+
                     @error('file_hop_dong')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div id="file-list" class="mt-2"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="file_dinh_kem">File đính kèm (tùy chọn)</label>
+                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror"
+                           id="file_dinh_kem" name="file_dinh_kem">
+
+                    @error('file_dinh_kem')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -219,50 +256,104 @@
     setTimeout(function() {
         var loaiHopDong = document.getElementById('loai_hop_dong');
         var ngayKetThuc = document.getElementById('ngay_ket_thuc');
-        
+        var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
+
         if (loaiHopDong && ngayKetThuc) {
             // Xử lý khi thay đổi loại hợp đồng
             loaiHopDong.addEventListener('change', function() {
                 if (this.value === 'khong_xac_dinh_thoi_han') {
                     ngayKetThuc.disabled = true;
                     ngayKetThuc.value = '';
+                    ngayKetThuc.required = false;
+                    ngayKetThucRequired.style.display = 'none';
                 } else {
                     ngayKetThuc.disabled = false;
+                    ngayKetThuc.required = true;
+                    ngayKetThucRequired.style.display = 'inline';
                 }
             });
-            
+
             // Chạy lần đầu
             if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
                 ngayKetThuc.disabled = true;
                 ngayKetThuc.value = '';
+                ngayKetThuc.required = false;
+                ngayKetThucRequired.style.display = 'none';
+            } else {
+                ngayKetThuc.required = true;
+                ngayKetThucRequired.style.display = 'inline';
             }
         }
     }, 100);
 
     // Validate ngày kết thúc phải sau ngày bắt đầu
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('ngay_ket_thuc').addEventListener('change', function() {
-            var ngayBatDau = new Date(document.getElementById('ngay_bat_dau').value);
-            var ngayKetThuc = new Date(this.value);
+        var ngayBatDau = document.getElementById('ngay_bat_dau');
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc');
 
-            if (ngayKetThuc < ngayBatDau) {
-                alert('Ngày kết thúc phải sau ngày bắt đầu');
-                this.value = '';
-            }
-        });
+        if (ngayBatDau && ngayKetThuc) {
+            ngayBatDau.addEventListener('change', function() {
+                ngayKetThuc.min = this.value;
+            });
+        }
+    });
 
-        // Format số tiền
-        document.getElementById('luong_co_ban').addEventListener('input', function() {
-            if (this.value < 0) {
-                this.value = 0;
-            }
-        });
+    // Form validation trước khi submit
+    document.getElementById('hopdongForm').addEventListener('submit', function(e) {
+        var nguoiDungId = document.getElementById('nguoi_dung_id').value;
+        var chucVuId = document.getElementById('chuc_vu_id').value;
+        var soHopDong = document.getElementById('so_hop_dong').value;
+        var loaiHopDong = document.getElementById('loai_hop_dong').value;
+        var ngayBatDau = document.getElementById('ngay_bat_dau').value;
+        var ngayKetThuc = document.getElementById('ngay_ket_thuc').value;
+        var luongCoBan = document.getElementById('luong_co_ban').value;
+        var diaDiemLamViec = document.getElementById('dia_diem_lam_viec').value;
+        var dieuKhoan = document.getElementById('dieu_khoan').value;
+        var fileHopDong = document.getElementById('file_hop_dong').files;
 
-        document.getElementById('phu_cap').addEventListener('input', function() {
-            if (this.value < 0) {
-                this.value = 0;
+        var errors = [];
+
+        if (!nguoiDungId) errors.push('Vui lòng chọn nhân viên');
+        if (!chucVuId) errors.push('Vui lòng chọn chức vụ');
+        if (!soHopDong) errors.push('Vui lòng nhập số hợp đồng');
+        if (!loaiHopDong) errors.push('Vui lòng chọn loại hợp đồng');
+        if (!ngayBatDau) errors.push('Vui lòng chọn ngày bắt đầu');
+        if (!luongCoBan) errors.push('Vui lòng nhập lương cơ bản');
+        if (!diaDiemLamViec) errors.push('Vui lòng nhập địa điểm làm việc');
+        if (!dieuKhoan) errors.push('Vui lòng nhập điều khoản');
+        if (fileHopDong.length === 0) errors.push('Vui lòng chọn file hợp đồng');
+
+        // Kiểm tra ngày kết thúc nếu không phải hợp đồng không xác định thời hạn
+        if (loaiHopDong !== 'khong_xac_dinh_thoi_han' && ngayKetThuc) {
+            if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                errors.push('Ngày kết thúc phải sau ngày bắt đầu');
             }
-        });
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert('Vui lòng sửa các lỗi sau:\n' + errors.join('\n'));
+            return false;
+        }
+
+        // Disable submit button để tránh double submit
+        var submitBtn = document.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+    });
+
+    // Hiển thị danh sách file được chọn
+    document.getElementById('file_hop_dong').addEventListener('change', function() {
+        var fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+
+        for (var i = 0; i < this.files.length; i++) {
+            var file = this.files[i];
+            var fileInfo = document.createElement('div');
+            fileInfo.className = 'alert alert-info';
+            fileInfo.innerHTML = '<i class="fas fa-file"></i> ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+            fileList.appendChild(fileInfo);
+        }
     });
 </script>
 @endsection

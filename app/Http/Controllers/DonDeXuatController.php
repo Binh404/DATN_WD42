@@ -24,7 +24,7 @@ class DonDeXuatController extends Controller
             $danhSachNhanVien = NguoiDung::whereHas('hoSo')
             // ->where('id', '!=', $user->id)
             ->whereDoesntHave('vaiTros', function ($query) {
-                $query->whereIn('ten', ['HR', 'admin']);
+                $query->whereIn('name', ['HR', 'admin']);
             })
             ->get();
             $loaiDeXuat = [
@@ -39,7 +39,7 @@ class DonDeXuatController extends Controller
             $danhSachNhanVien = NguoiDung::whereHas('hoSo')
             ->where('phong_ban_id', $user->phong_ban_id)
             ->whereDoesntHave('vaiTros', function ($query) {
-                $query->whereIn('ten', ['HR', 'admin', 'department']);
+                $query->whereIn('name', ['HR', 'admin', 'department']);
             })
             ->get();
             $loaiDeXuat = [
@@ -276,10 +276,10 @@ class DonDeXuatController extends Controller
     if ($request->trang_thai === 'da_duyet' ) {
         if( $DonDeXuat->loai_de_xuat === 'de_cu_truong_phong'){
             $trangThaiHoatDong = 1;
-            $vaiTroNguoiDuocDeXuatId = VaiTro::where('ten', 'department')->first()->id ?? $vaiTroNguoiDuocDeXuatId;
+            $vaiTroNguoiDuocDeXuatId = VaiTro::where('name', 'department')->first()->id ?? $vaiTroNguoiDuocDeXuatId;
         }elseif($DonDeXuat->loai_de_xuat === 'mien_nhiem_truong_phong'){
             $trangThaiHoatDong = 1;
-            $vaiTroNguoiDuocDeXuatId = VaiTro::where('ten', 'employee')->first()->id ?? $vaiTroNguoiDuocDeXuatId;
+            $vaiTroNguoiDuocDeXuatId = VaiTro::where('name', 'employee')->first()->id ?? $vaiTroNguoiDuocDeXuatId;
         }elseif($DonDeXuat->loai_de_xuat === 'mien_nhiem_nhan_vien'){
             $trangThaiHoatDong = 0;
         }

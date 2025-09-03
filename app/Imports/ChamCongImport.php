@@ -2,7 +2,9 @@
 
 namespace App\Imports;
 
+use App\Models\BangLuong;
 use App\Models\ChamCong;
+use App\Models\Luong;
 use App\Models\NguoiDung;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -117,6 +119,16 @@ class ChamCongDataImport implements ToCollection, WithHeadingRow, WithValidation
             $ngayChamCong = $this->parseDate($row['ngay_cham_cong']);
             if (!$ngayChamCong) {
                 $this->errors[] = "Dòng {$rowNumber}: Ngày chấm công không hợp lệ";
+                $this->skipCount++;
+                return;
+            }
+            $ngayChamCong = Carbon::parse($ngayChamCong);
+            $daChot = BangLuong::where('nguoi_xu_ly_id', $user->id)
+                ->where('thang', $ngayChamCong->format('m'))
+                ->where('nam', $ngayChamCong->format('Y'))
+                ->exists();
+            if ($daChot) {
+                $this->errors[] = "Dòng {$rowNumber}: Lương tháng {$ngayChamCong->format('m/Y')} của {$row['email']} đã chốt";
                 $this->skipCount++;
                 return;
             }

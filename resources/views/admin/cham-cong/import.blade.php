@@ -39,19 +39,40 @@
                 <!-- File Upload -->
                 <div class="mb-4">
                     <label for="file" class="form-label">Chọn file Excel</label>
-                    <div class="border border-dashed p-4 text-center">
-                        <i class="mdi mdi-file-upload mx-auto mb-3 text-muted" style="font-size: 48px;"></i>
-                        <div>
-                            <label for="file" class="btn btn-outline-primary">
-                                <span>Chọn file</span>
-                                <input id="file" name="file" type="file" class="d-none" accept=".xlsx,.xls,.csv" required>
-                            </label>
-                            <p class="mt-2">hoặc kéo thả vào đây</p>
+                    <div id="dropZone" class="border border-dashed p-4 text-center">
+                        <!-- Default state -->
+                        <div id="defaultState">
+                            <i class="mdi mdi-file-upload mx-auto mb-3 text-muted" style="font-size: 48px;"></i>
+                            <div>
+                                <label for="file" class="btn btn-outline-primary">
+                                    <span>Chọn file</span>
+                                </label>
+                                <p class="mt-2">hoặc kéo thả vào đây</p>
+                            </div>
                         </div>
-                        <p class="text-muted">Chỉ hỗ trợ file Excel (.xlsx, .xls) hoặc CSV, tối đa 10MB</p>
+
+                        <!-- Selected file state -->
+                        <div id="selectedState" class="d-none">
+                            <i class="mdi mdi-file-check-outline mx-auto mb-3 text-success" style="font-size: 48px;"></i>
+                            <div>
+                                <p id="fileName" class="fw-bold text-success"></p>
+                                <p id="fileSize" class="text-muted"></p>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFile()">
+                                    <i class="mdi mdi-close me-1"></i>
+                                    Xóa file
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-muted mt-3">Chỉ hỗ trợ file Excel (.xlsx, .xls) hoặc CSV, tối đa 10MB</p>
                     </div>
+
+                    <!-- Hidden file input -->
+                    <input id="file" name="file" type="file" class="d-none" accept=".xlsx,.xls,.csv" required>
+
+                    <div id="fileError" class="text-danger mt-2 d-none"></div>
                     @error('file')
-                        <p class="text-danger">{{ $message }}</p>
+                        <p class="text-danger mt-2">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -59,11 +80,11 @@
                 <div class="alert alert-info">
                     <h5 class="alert-heading">Hướng dẫn:</h5>
                     <ul class="list-unstyled mb-0">
-                        <li>File phải có định dạng Excel (.xlsx, .xls) hoặc CSV</li>
-                        <li>Dòng đầu tiên phải là tiêu đề cột</li>
-                        <li>Các cột bắt buộc: Email, Ngày chấm công, Giờ ra , Giời vào </li>
-                        <li>Định dạng ngày: dd/mm/yyyy (VD: 01/01/2025)</li>
-                        <li>Định dạng giờ: HH:mm (VD: 08:00)</li>
+                        <li>• File phải có định dạng Excel (.xlsx, .xls) hoặc CSV</li>
+                        <li>• Dòng đầu tiên phải là tiêu đề cột</li>
+                        <li>• Các cột bắt buộc: Email, Ngày chấm công, Giờ vào, Giờ ra</li>
+                        <li>• Định dạng ngày: dd/mm/yyyy (VD: 01/01/2025)</li>
+                        <li>• Định dạng giờ: HH:mm (VD: 08:00)</li>
                     </ul>
                 </div>
 
@@ -73,7 +94,7 @@
                         <i class="mdi mdi-download me-2" style="font-size: 16px;"></i>
                         Tải template mẫu
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button id="submitBtn" type="submit" class="btn btn-primary" disabled>
                         <i class="mdi mdi-upload me-2" style="font-size: 16px;"></i>
                         Import dữ liệu
                     </button>
@@ -134,27 +155,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('file');
     const dropZone = document.getElementById('dropZone');
     const fileError = document.getElementById('fileError');
-    const fileInfo = document.getElementById('fileInfo');
+    const defaultState = document.getElementById('defaultState');
+    const selectedState = document.getElementById('selectedState');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
     const submitBtn = document.getElementById('submitBtn');
+    const selectFileBtn = document.querySelector('label[for="file"]');
+
     const allowedExtensions = ['.xlsx', '.xls', '.csv'];
-    const maxSizeMB = 10; // Max file size in MB
+    const maxSizeMB = 10;
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
     // Check if critical elements exist
-    if (!fileInput || !dropZone || !fileError || !fileInfo || !submitBtn) {
-        console.error('One or more required DOM elements are missing:', {
-            fileInput: !!fileInput,
-            dropZone: !!dropZone,
-            fileError: !!fileError,
-            fileInfo: !!fileInfo,
-            submitBtn: !!submitBtn
-        });
+    if (!fileInput || !dropZone || !fileError || !defaultState || !selectedState || !submitBtn) {
+        console.error('One or more required DOM elements are missing');
         return;
     }
 
     // Prevent default drag behaviors
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
     });
 
     function preventDefaults(e) {
@@ -180,55 +201,56 @@ document.addEventListener('DOMContentLoaded', function() {
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             console.log('File dropped:', files[0].name);
-            validateAndUpdateFile(files[0]);
+            handleFileSelect(files[0]);
         }
     }, false);
+
+    // Handle click on drop zone to trigger file input
+    selectFileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        fileInput.click();
+    });
 
     // Handle file input change
     fileInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             console.log('File selected:', e.target.files[0].name);
-            validateAndUpdateFile(e.target.files[0]);
+            handleFileSelect(e.target.files[0]);
         }
     });
 
-    // Validate file and update display
-    function validateAndUpdateFile(file) {
-        resetFileDisplay();
+    // Handle file selection and validation
+    function handleFileSelect(file) {
+        resetErrors();
 
         // Check file extension
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
             showError(`Định dạng file không hợp lệ. Chỉ chấp nhận ${allowedExtensions.join(', ')}.`);
+            clearFileInput();
             return;
         }
 
         // Check file size
         if (file.size > maxSizeBytes) {
             showError(`File vượt quá dung lượng cho phép (${maxSizeMB}MB).`);
+            clearFileInput();
             return;
         }
 
         // Valid file, update display
-        fileInput.files = [file]; // Update file input
         updateFileDisplay(file);
     }
 
     // Update file display
     function updateFileDisplay(file) {
-        if (!fileInfo) {
-            console.error('fileInfo element is null');
-            showError('Không thể hiển thị thông tin file do lỗi giao diện.');
-            return;
-        }
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
 
-        fileInfo.innerHTML = `
-            <i class="mdi mdi-file-check-outline mx-auto mb-3 text-success" style="font-size: 48px;"></i>
-            <div>
-                <p class="font-weight-bold text-success">${sanitizeHTML(file.name)}</p>
-                <p class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
-            </div>
-        `;
+        // Switch states
+        defaultState.classList.add('d-none');
+        selectedState.classList.remove('d-none');
+
         submitBtn.disabled = false; // Enable submit button
     }
 
@@ -236,33 +258,29 @@ document.addEventListener('DOMContentLoaded', function() {
     function showError(message) {
         fileError.textContent = message;
         fileError.classList.remove('d-none');
-        submitBtn.disabled = true; // Disable submit button
+        submitBtn.disabled = true;
     }
 
-    // Reset file display
-    function resetFileDisplay() {
+    // Reset errors
+    function resetErrors() {
         fileError.classList.add('d-none');
         fileError.textContent = '';
-        if (fileInfo) {
-            fileInfo.innerHTML = `
-                <label for="file" class="btn btn-outline-primary">
-                    <span>Chọn file</span>
-                    <input id="file" name="file" type="file" class="d-none" accept=".xlsx,.xls,.csv" required>
-                </label>
-                <p class="mt-2">hoặc kéo thả vào đây</p>
-            `;
-        }
-        submitBtn.disabled = true; // Disable submit button
-        fileInput.value = ''; // Clear file input
     }
 
-    // Basic HTML sanitization to prevent XSS
-    function sanitizeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+    // Clear file input
+    function clearFileInput() {
+        fileInput.value = '';
+        // Switch back to default state
+        selectedState.classList.add('d-none');
+        defaultState.classList.remove('d-none');
+        submitBtn.disabled = true;
     }
+
+    // Global function to clear file (called from button)
+    window.clearFile = function() {
+        clearFileInput();
+        resetErrors();
+    };
 });
 </script>
 @endsection
-

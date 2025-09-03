@@ -4,6 +4,8 @@ namespace App\Http\Controllers\employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\DangKyTangCa;
+use App\Models\NguoiDung;
+use App\Notifications\TaoYeuCauTangCa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -159,7 +161,21 @@ class DangKyTangCaController extends Controller
         ]);
 
         DB::commit();
+        $user = Auth::user();
+        $nguoiNhan = NguoiDung::where(function ($query) use ($user) {
+                $query->where('phong_ban_id', $user->phong_ban_id)
+                    ->whereHas('vaiTros', function ($q) {
+                        $q->where('name', 'department');
+                    });
+            })
+            ->orWhereHas('vaiTros', function ($q) {
+                $q->whereIn('name', ['hr', 'admin']);
+            })
+            ->get();
 
+        foreach ($nguoiNhan as $nhanVien) {
+            $nhanVien->notify(new TaoYeuCauTangCa($overtimeRequest,$nhanVien));
+        }
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,

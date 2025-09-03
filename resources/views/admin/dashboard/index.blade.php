@@ -327,7 +327,7 @@
             <!-- Header Section -->
             <div class="d-sm-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
                 <div>
-                    <h2 class="fw-bold mb-1">Thống kê</h2>
+                    <h2 class="fw-bold mb-1">Tổng quan</h2>
                     <p class="mb-0 text-muted">Tổng quan về hoạt động nhân sự và chấm công</p>
                 </div>
                 <div class="action-buttons">

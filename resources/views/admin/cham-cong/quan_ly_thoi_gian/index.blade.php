@@ -129,7 +129,7 @@
                                                                     <td >{{ $gio->gio_nghi_trua }} giờ</td>
                                                                     <td >{{ $gio->so_phut_cho_phep_di_tre }} phút</td>
                                                                     <td >{{ $gio->so_phut_cho_phep_ve_som }} phút</td>
-                                                                    <td>{{ $gio->updated_at->format('d/m/Y H:i') }}</td>
+                                                                    <td>{{ $gio->updated_at }}</td>
                                                                     <td>
                                                                         <div class="btn-group" role="group">                                                                  <div class="btn-group" role="group">
                                                                             <a href="{{ route('admin.giolamviec.edit') }}"

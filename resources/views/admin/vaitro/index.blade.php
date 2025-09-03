@@ -7,8 +7,9 @@
     </div>
 @endif
 <div class="container">
-    <h2>Danh sách vai trò</h2>
-    <a href="{{ route('vaitro.create') }}" class="btn btn-primary mb-3">Thêm vai trò</a>
+    <h2>Danh sách vai trò cố định</h2>
+    <br>
+    {{-- <a href="{{ route('vaitro.create') }}" class="btn btn-primary mb-3">Thêm vai trò</a> --}}
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -18,7 +19,7 @@
                 <th>Mô tả</th>
                 {{-- <th>Level</th> --}}
                 {{-- <th>Hệ thống</th> --}}
-                <th>Hành động</th>
+                {{-- <th>Hành động</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -30,7 +31,7 @@
                     <td>{{ $role->mo_ta }}</td>
                     {{-- <td>{{ $role->la_vai_tro_he_thong }}</td> --}}
                     {{-- <td>{{ $role->trang_thai ? '✔' : '' }}</td> --}}
-                    <td>
+                    {{-- <td>
                         <a href="{{route('vaitro.edit', $role->id)}}" class="btn btn-warning btn-sm">Sửa</a>
                          <form action="{{ route('vaitro.destroy', $role->id) }}" method="post" class="d-inline">
                                         @csrf
@@ -39,7 +40,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
-                    </td>
+                    </td> --}}
                 </tr>
             @endforeach
         </tbody>

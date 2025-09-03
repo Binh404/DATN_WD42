@@ -1,7 +1,7 @@
 @extends('layoutsAdmin.master')
 @section('title', 'Chat Messenger')
 @section('style')
-    @vite(['resources/js/bootstrap.js'])
+    {{-- @vite(['resources/js/bootstrap.js']) --}}
 @endsection
 @section('content')
 

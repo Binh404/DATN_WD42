@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChamCong;
 use App\Models\DonXinNghi;
 use App\Models\LichSuDuyetDonNghi;
+use App\Models\LoaiNghiPhep;
 use App\Models\NguoiDung;
 use App\Models\SoDuNghiPhepNhanVien;
 use App\Models\VaiTro;
@@ -19,16 +20,20 @@ class LichSuDuyetDonXinNghiController extends Controller
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
 
-        if (!$vaiTro || !in_array($vaiTro->ten, ['department', 'hr', 'admin'])) {
+        if (!$vaiTro || !in_array($vaiTro->name, ['department', 'hr', 'admin'])) {
             return redirect()->back()->with('error', 'Bạn không có quyền duyệt đơn.');
         }
 
         $donXinNghi = DonXinNghi::findOrFail($id);
+
+        if ($donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
         $ngayBatDau = $donXinNghi->ngay_bat_dau;
         $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
         // dd($ngayBatDau, $ngayKetThuc);
         // Gán cấp duyệt theo vai trò
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         // Kiểm tra đã duyệt cấp này chưa
         $daDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)
@@ -53,6 +58,14 @@ class LichSuDuyetDonXinNghiController extends Controller
         if ($capDuyet == 1) {
             // Trưởng phòng duyệt xong → đẩy lên HR
             $donXinNghi->cap_duyet_hien_tai = 2;
+
+            // tạo thông báo lên hr
+            $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
+                $q->where('name', 'hr');
+            })->get();
+            foreach ($hrUsers as $hr) {
+                $hr->notify(new \App\Notifications\TaoDonXinNghi($donXinNghi,  $hr));
+            }
         } elseif ($capDuyet == 2 || $capDuyet == 3) {
             // HR hoặc Admin duyệt xong → duyệt hoàn tất
             $donXinNghi->trang_thai = 'da_duyet';
@@ -64,19 +77,29 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                     'so_ngay_da_dung'   => DB::raw('so_ngay_da_dung + ' . $donXinNghi->so_ngay_nghi),
                 ]);
+                $coLuong = optional(LoaiNghiPhep::find($donXinNghi->loai_nghi_phep_id))->co_luong == 1;
 
-            for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
-                ChamCong::create([
-                    'ngay_cham_cong' => $ngay->format('Y-m-d'),
-                    'nguoi_dung_id' => $donXinNghi->nguoi_dung_id,
-                    'gio_vao' => '08:30',
-                    'gio_ra' => '17:30',
-                    'so_gio_lam' => 8,
-                    'so_cong' => 1,
-                    'trang_thai' => 'nghi_phep',
-                    'trang_thai_duyet' => 1
-                ]);
-            }
+                for ($ngay = $ngayBatDau->copy(); $ngay->lte($ngayKetThuc); $ngay->addDay()) {
+                    // Điều kiện tìm kiếm bản ghi chấm công theo ngày + user
+                    $conditions = [
+                        'ngay_cham_cong' => $ngay->format('Y-m-d'),
+                        'nguoi_dung_id' => $donXinNghi->nguoi_dung_id
+                    ];
+
+                    // Dữ liệu sẽ cập nhật hoặc tạo mới
+                    $data = [
+                        'gio_vao' => $coLuong ? '08:30' : '00:00',
+                        'gio_ra' => $coLuong ? '17:30' : '00:00',
+                        'so_gio_lam' => $coLuong ? 8 : 0,
+                        'so_cong' => $coLuong ? 1 : 0,
+                        'trang_thai' => 'nghi_phep',
+                        'trang_thai_duyet' => 1
+                    ];
+
+                    // Update hoặc tạo mới nếu chưa có
+                    ChamCong::updateOrCreate($conditions, $data);
+                }
+
         }
 
         $donXinNghi->save();
@@ -102,9 +125,14 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
+        $loaiNghiPhep = LoaiNghiPhep::where('id', $donXinNghi->loai_nghi_phep_id)->first();
+
+        if ($donXinNghi->trang_thai == 'huy_bo') {
+            return redirect()->route(route: 'department.donxinnghi.danhsach')->with('error', 'Người gửi đã hủy đơn xin nghỉ này.');
+        }
 
         // Tránh từ chối trùng cấp
         if (LichSuDuyetDonNghi::where('don_xin_nghi_id', $donXinNghi->id)->where('cap_duyet', $capDuyet)->exists()) {
@@ -127,12 +155,21 @@ class LichSuDuyetDonXinNghiController extends Controller
         ]);
 
         // cập nhật số dư nghỉ phép
-        SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
-            ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
-            ->update([
-                'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
-                'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
-            ]);
+        if($loaiNghiPhep->nghi_che_do == 0){
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                    'so_ngay_con_lai'   => DB::raw('so_ngay_con_lai + ' . $donXinNghi->so_ngay_nghi),
+                ]);
+        }else{
+            SoDuNghiPhepNhanVien::where('nguoi_dung_id', $donXinNghi->nguoi_dung_id)
+                ->where('loai_nghi_phep_id', $donXinNghi->loai_nghi_phep_id)
+                ->update([
+                    'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
+                ]);
+        }
+
 
         // tạo thông báo
         $nguoiNhanThongBaoId = $donXinNghi->nguoi_dung_id;

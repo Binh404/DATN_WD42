@@ -102,7 +102,7 @@
                         <option value="">Chọn vai trò</option>
                         @foreach ($vaiTros as $key => $item)
                             <option value="{{ $item->id }}">
-                                {{ $item->ten == 'department' ? 'Trưởng phòng' : ($item->ten == 'hr' ? 'HR' : 'Nhân viên')  }}
+                                {{ $item->name == 'department' ? 'Trưởng phòng' : ($item->name == 'hr' ? 'HR' : 'Nhân viên')  }}
                             </option>
                         @endforeach
                     </select>
@@ -229,8 +229,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4" class="form-label">Cho phép làm việc từ xa<span
-                            class="required">*</span></label>
+                    <label for="inputEmail4" class="form-label">Cho phép làm việc từ xa</label>
                     <input type="checkbox" id="lam_viec_tu_xa" name="lam_viec_tu_xa" value="1"
                         {{ old('lam_viec_tu_xa') ? 'checked' : '' }}>
                     @error('lam_viec_tu_xa')
@@ -239,7 +238,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4" class="form-label">Tuyển gấp<span class="required">*</span></label>
+                    <label for="inputEmail4" class="form-label">Tuyển gấp</label>
                     <input type="checkbox" id="tuyen_gap" name="tuyen_gap" value="1"
                         {{ old('tuyen_gap') ? 'checked' : '' }}>
                     @error('tuyen_gap')

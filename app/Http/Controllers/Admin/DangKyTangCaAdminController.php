@@ -7,6 +7,7 @@ use App\Mail\TangCaApprovalMail;
 use App\Models\DangKyTangCa;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
+use App\Notifications\PheDuyetYeuCauTangCa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -166,11 +167,25 @@ class DangKyTangCaAdminController extends Controller
         }else{
             abort(403, 'Bạn không có quyền xem bản ghi này.');
         }
+         // Nếu đơn đã bị hủy -> không cho phép Admin/HR/Trưởng phòng phê duyệt
+        if ($dangKyTangCa->trang_thai === 'huy' && $request->trang_thai !== 'huy') {
+            return back()->with(
+                'error' , 'Đơn đã bị hủy, không thể phê duyệt!'
+            );
+        }
+
+        // Nếu đơn đã được duyệt -> nhân viên không thể hủy
+        if ($dangKyTangCa->trang_thai === 'da_duyet' && $request->trang_thai === 'huy') {
+            return back()->with(
+                'error' , 'Đơn đã được phê duyệt, bạn không thể hủy!'
+            );
+        }
         // $trangThai = $dangKyTangCa->trang_thai;
         $thucHienTangCa = thucHienTangCa::where('dang_ky_tang_ca_id', $id)->first();
         if(!empty($thucHienTangCa)){
             return back()->with('error', 'Đăng ký tăng ca ngày ' .$dangKyTangCa->ngay_tang_ca->format('d/m/Y').' đã thực hiện chấm công không thể thay đổi');
         }
+
         $validated = $request->validate([
             'trang_thai' => 'required',
             'ly_do_tu_choi' => 'nullable|string'
@@ -197,7 +212,10 @@ class DangKyTangCaAdminController extends Controller
             // $chamCong->capNhatTrangThai($trangThai);
             // $chamCong->tinhSoCong();
             $dangKyTangCa->save();
-         // Gửi mail thông báo
+            // Gửi mail thông báo
+            // dd($dangKyTangCa->nguoiDung);
+            $dangKyTangCa->nguoiDung->notify(new PheDuyetYeuCauTangCa($dangKyTangCa, $validated['trang_thai'], $dangKyTangCa->ly_do_tu_choi));
+
             if($dangKyTangCa->trang_thai !== 'huy'){
                 $this->sendApprovalNotification($dangKyTangCa, $user);
 
