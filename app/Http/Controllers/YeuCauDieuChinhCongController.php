@@ -118,7 +118,8 @@ class YeuCauDieuChinhCongController extends Controller
                 'tep_dinh_kem' => $tepDinhKem,
                 'trang_thai' => 'cho_duyet'
             ]);
-           $nguoiNhan = NguoiDung::where(function ($query) use ($user) {
+          // Code gửi notification (trong Controller hoặc Service)
+            $nguoiNhan = NguoiDung::where(function ($query) use ($user) {
                 $query->where('phong_ban_id', $user->phong_ban_id)
                     ->whereHas('vaiTros', function ($q) {
                         $q->where('name', 'department');
@@ -127,9 +128,13 @@ class YeuCauDieuChinhCongController extends Controller
             ->orWhereHas('vaiTros', function ($q) {
                 $q->whereIn('name', ['hr', 'admin']);
             })
-            ->get();
+            ->get()
+            ;
 
-        Notification::send($nguoiNhan, new TaoDonYeuCauChinhCong($donYeuCau));
+            // Gửi notification đến từng người nhận
+            foreach ($nguoiNhan as $nguoi) {
+                $nguoi->notify(new TaoDonYeuCauChinhCong($donYeuCau, $nguoi));
+            }
             DB::commit();
 
             return redirect()->route('yeu-cau-dieu-chinh-cong.index')

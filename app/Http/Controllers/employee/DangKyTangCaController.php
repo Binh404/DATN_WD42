@@ -174,7 +174,7 @@ class DangKyTangCaController extends Controller
             ->get();
 
         foreach ($nguoiNhan as $nhanVien) {
-            $nhanVien->notify(new TaoYeuCauTangCa($overtimeRequest));
+            $nhanVien->notify(new TaoYeuCauTangCa($overtimeRequest,$nhanVien));
         }
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

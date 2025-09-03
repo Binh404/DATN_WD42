@@ -64,7 +64,7 @@ class LichSuDuyetDonXinNghiController extends Controller
                 $q->where('name', 'hr');
             })->get();
             foreach ($hrUsers as $hr) {
-                $hr->notify(new \App\Notifications\TaoDonXinNghi($donXinNghi));
+                $hr->notify(new \App\Notifications\TaoDonXinNghi($donXinNghi,  $hr));
             }
         } elseif ($capDuyet == 2 || $capDuyet == 3) {
             // HR hoặc Admin duyệt xong → duyệt hoàn tất
@@ -169,7 +169,7 @@ class LichSuDuyetDonXinNghiController extends Controller
                     'so_ngay_cho_duyet' => DB::raw('so_ngay_cho_duyet - ' . $donXinNghi->so_ngay_nghi),
                 ]);
         }
-        
+
 
         // tạo thông báo
         $nguoiNhanThongBaoId = $donXinNghi->nguoi_dung_id;

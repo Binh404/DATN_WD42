@@ -48,7 +48,7 @@
                                                         <!-- Tên nhân viên -->
                                                         <div class="col-md-8 mb-3">
                                                             <label for="search" class="form-label">Tìm theo
-                                                                tên, họ, email</label>
+                                                                tên, họ</label>
                                                             <div class="input-group">
                                                                 <span class="input-group-text"><i
                                                                         class="mdi mdi-account-search"></i></span>
@@ -251,14 +251,14 @@
                                                                                 </button>
                                                                             </form>
 
-@if($cc->hoSo->tien_do < 100)
-    <form action="{{ route('admin.hoso.remind', $cc->hoSo->id) }}" method="POST" style="display:inline;">
-        @csrf
-        <button class="btn btn-warning btn-sm" onclick="return confirm('Gửi nhắc nhở tới nhân viên này?')">
-            Gửi nhắc nhở
-        </button>
-    </form>
-@endif
+                                                                        @if($cc->percent < 100)
+                                                                            <form action="{{ route('admin.hoso.remind', $cc->hoSo->id) }}" method="POST" style="display:inline;">
+                                                                                @csrf
+                                                                                <button class="btn btn-warning btn-sm" onclick="return confirm('Gửi nhắc nhở tới nhân viên này?')">
+                                                                                    Gửi nhắc nhở
+                                                                                </button>
+                                                                            </form>
+                                                                        @endif                                                                       
                                                                         @else
                                                                             <span class="text-muted fst-italic">Chưa có hồ sơ</span>
                                                                         @endif

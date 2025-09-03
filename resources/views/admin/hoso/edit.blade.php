@@ -81,22 +81,17 @@
                             </div>
 
                             {{-- Giới tính: 2 radio Nam/Nữ --}}
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <label class="form-label d-block mb-2">Giới tính <span class="text-danger">*</span></label>
-                                <div class="gender-group">
-                                    <div class="form-check">
-                                        <input class="form-check-input @error('gioi_tinh') is-invalid @enderror" type="radio"
-                                               name="gioi_tinh" value="nam"
-                                               {{ old('gioi_tinh', $hoSo->gioi_tinh) == 'nam' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Nam</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input @error('gioi_tinh') is-invalid @enderror" type="radio"
-                                               name="gioi_tinh" value="nu"
-                                               {{ old('gioi_tinh', $hoSo->gioi_tinh) == 'nu' ? 'checked' : '' }}>
-                                        <label class="form-check-label">Nữ</label>
-                                    </div>
-                                </div>
+                                
+                            
+                                            <select name="gioi_tinh" class="form-select @error('gioi_tinh') is-invalid @enderror">
+                                                <option value="">-- Chọn --</option>
+                                                <option value="nam" {{ old('gioi_tinh', $hoSo->gioi_tinh) == 'nam' ? 'selected' : '' }}>Nam</option>
+                                                <option value="nu" {{ old('gioi_tinh', $hoSo->gioi_tinh) == 'nu' ? 'selected' : '' }}>Nữ</option>
+                                                <option value="khac" {{ old('gioi_tinh', $hoSo->gioi_tinh) == 'khac' ? 'selected' : '' }}>Khác</option>
+                                            </select>
+                                           
                                 @error('gioi_tinh') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
                         </div>
@@ -155,7 +150,7 @@
                                 <label class="form-label">Ảnh đại diện</label><br>
                                 <div class="avatar-wrapper">
                                     <img style="width: 100px;" id="previewImage" src="{{ asset($hoSo->anh_dai_dien) }}" alt="Avatar">
-                                    <input type="file" id="inputImage" name="anh_dai_dien" class="@error('anh_dai_dien') is-invalid @enderror">
+                                    <input type="file"  id="inputImage" name="anh_dai_dien" class="@error('anh_dai_dien') is-invalid @enderror">
                                 </div>
                                 @error('anh_dai_dien') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
@@ -165,30 +160,30 @@
             </div>
 
             {{-- Khung thông tin CCCD --}}
-<div class="card mb-3">
-    <div class="card-header fw-bold">Ảnh CCCD</div>
-    <div class="card-body row">
-        <!-- Mặt trước CCCD -->
-<div class="col-md-6 mb-3">
-    <label for="anh_cccd_truoc" class="form-label">Mặt trước CCCD</label>
-    <input class="form-control" type="file" name="anh_cccd_truoc" id="anh_cccd_truoc" accept="image/*">
-    <img id="preview_truoc"
-         src="{{ $hoSo->anh_cccd_truoc ? asset($hoSo->anh_cccd_truoc) : '' }}"
-         class="img-fluid mt-2 border"
-         style="max-height: 200px; {{ $hoSo->anh_cccd_truoc ? '' : 'display:none;' }}">
-</div>
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Ảnh CCCD</div>
+                <div class="card-body row">
+                    <!-- Mặt trước CCCD -->
+            <div class="col-md-6 mb-3">
+                <label for="anh_cccd_truoc" class="form-label">Mặt trước CCCD</label>
+                <input class="form-control" type="file" name="anh_cccd_truoc" id="anh_cccd_truoc" accept="image/*">
+                <img id="preview_truoc"
+                    src="{{ $hoSo->anh_cccd_truoc ? asset($hoSo->anh_cccd_truoc) : '' }}"
+                    class="img-fluid mt-2 border"
+                    style="max-height: 200px; {{ $hoSo->anh_cccd_truoc ? '' : 'display:none;' }}">
+            </div>
 
-<!-- Mặt sau CCCD -->
-<div class="col-md-6 mb-3">
-    <label for="anh_cccd_sau" class="form-label">Mặt sau CCCD</label>
-    <input class="form-control" type="file" name="anh_cccd_sau" id="anh_cccd_sau" accept="image/*">
-    <img id="preview_sau"
-         src="{{ $hoSo->anh_cccd_sau ? asset($hoSo->anh_cccd_sau) : '' }}"
-         class="img-fluid mt-2 border"
-         style="max-height: 200px; {{ $hoSo->anh_cccd_sau ? '' : 'display:none;' }}">
-</div>
-    </div>
-</div>
+            <!-- Mặt sau CCCD -->
+            <div class="col-md-6 mb-3">
+                <label for="anh_cccd_sau" class="form-label">Mặt sau CCCD</label>
+                <input class="form-control" type="file" name="anh_cccd_sau" id="anh_cccd_sau" accept="image/*">
+                <img id="preview_sau"
+                    src="{{ $hoSo->anh_cccd_sau ? asset($hoSo->anh_cccd_sau) : '' }}"
+                    class="img-fluid mt-2 border"
+                    style="max-height: 200px; {{ $hoSo->anh_cccd_sau ? '' : 'display:none;' }}">
+            </div>
+                </div>
+            </div>
 
 
             {{-- -------- Liên hệ khẩn cấp -------- --}}

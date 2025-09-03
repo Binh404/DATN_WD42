@@ -15,24 +15,26 @@ class HoSoNhanVienController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function indexAll(Request $request)
-    {
-        $keyword = $request->input('search');
+public function indexAll(Request $request)
+{
+    $keyword = $request->input('search');
+    $currentUserId = auth()->id(); // lấy id user đang đăng nhập
 
-        $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
-            // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
-            ->whereHas('hoSo', function ($query) {
-                $query->where('trang_thai_cong_viec', 'dang_lam');
-            })
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
-                    $subQuery->where('ho', 'like', "%$keyword%")
-                        ->orWhere('ten', 'like', "%$keyword%")
-                        ->orWhere('email_cong_ty', 'like', "%$keyword%");
-                });
-            })
-            ->orderByDesc('created_at')
-            ->paginate(10);
+    $nguoiDungs = NguoiDung::with(['hoSo', 'phongBan', 'chucVu'])
+        // ->where('trang_thai_cong_viec', 'dang_lam') // chỉ lấy nhân viên đang làm
+        ->whereHas('hoSo', function ($query) {
+            $query->where('trang_thai_cong_viec', 'dang_lam');
+        })
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->whereHas('hoSo', function ($subQuery) use ($keyword) {
+                $subQuery->where('ho', 'like', "%$keyword%")
+                         ->orWhere('ten', 'like', "%$keyword%")
+                         ->orWhere('email_cong_ty', 'like', "%$keyword%");
+            });
+        })
+        ->where('id', '!=', $currentUserId)
+        ->orderByDesc('created_at')
+        ->paginate(10);
 
         foreach ($nguoiDungs as $nguoiDung) {
             $hoSo = $nguoiDung->hoSo;
@@ -182,34 +184,32 @@ class HoSoNhanVienController extends Controller
     {
         $hoSo = HoSoNguoiDung::findOrFail($id);
 
-        $validated = $request->validate([
-            'ho' => 'required|string|max:50',
-            'ten' => 'required|string|max:50',
-            'so_dien_thoai' => [
-                'required',
-                'regex:/^0[0-9]{9}$/',
-                Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id, 'nguoi_dung_id')
-            ],
-            'ngay_sinh' => [
-                'required',
-                'date',
-                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
-                'after_or_equal:' . now()->subYears(50)->format('Y-m-d'),
-            ],
-            'gioi_tinh' => 'required|in:nam,nu,khac',
-            'dia_chi_hien_tai' => 'required|string|max:255',
-            'dia_chi_thuong_tru' => 'required|string|max:255',
-            'cmnd_cccd' => [
-                'required',
-                'string',
-                'regex:/^[0-9]{12}$/', // CCCD 12 số theo chuẩn mới Việt Nam
-                Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
-            ],
-            'so_ho_chieu' => 'nullable|string|max:20',
-            'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
-            'anh_dai_dien' => 'nullable|image|max:2048',
-            'anh_cccd_truoc' => 'nullable|image|max:2048',
-            'anh_cccd_sau' => 'nullable|image|max:2048',
+     $validated = $request->validate([
+        'ho' => 'required|string|max:50',
+        'ten' => 'required|string|max:50',
+        'so_dien_thoai' => ['required',
+                            'regex:/^0[0-9]{9}$/',
+                            Rule::unique('ho_so_nguoi_dung', 'so_dien_thoai')->ignore($hoSo->id)],
+        'ngay_sinh' => [
+            'required',
+            'date',
+            'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            'after_or_equal:' . now()->subYears(50)->format('Y-m-d'),
+        ],
+        'gioi_tinh' => 'required|in:nam,nu,khac',
+        'dia_chi_hien_tai' => 'required|string|max:255',
+        'dia_chi_thuong_tru' => 'required|string|max:255',
+        'cmnd_cccd' => [
+            'required',
+            'string',
+            'regex:/^[0-9]{12}$/', // CCCD 12 số theo chuẩn mới Việt Nam
+            Rule::unique('ho_so_nguoi_dung', 'cmnd_cccd')->ignore($hoSo->id),
+        ],
+        'so_ho_chieu' => 'nullable|string|max:20',
+        'tinh_trang_hon_nhan' => 'required|in:doc_than,da_ket_hon,ly_hon,goa',
+        'anh_dai_dien' => 'nullable|image|max:2048',
+        'anh_cccd_truoc' => 'nullable|image|max:2048',
+        'anh_cccd_sau' => 'nullable|image|max:2048',
 
             'lien_he_khan_cap' => 'nullable|string|max:100',
             'sdt_khan_cap'        => [

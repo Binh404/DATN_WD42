@@ -6,6 +6,7 @@ use App\Exports\ChamCongTangCaExport;
 use App\Http\Controllers\Controller;
 use App\Imports\ChamCongImport;
 use App\Imports\ChamCongTangCaImport;
+use App\Models\BangLuong;
 use App\Models\PhongBan;
 use App\Models\thucHienTangCa;
 use Illuminate\Http\Request;
@@ -207,8 +208,8 @@ class ThucHienTangCaAdminController extends Controller
         // dd($thucHienTangCa);
         // Danh sách trạng thái chấm công
         $trangThaiList = [
-            'chua_lam' => 'Chưa làm',
-            'dang_lam' => 'Đang làm',
+            // 'chua_lam' => 'Chưa làm',
+            // 'dang_lam' => 'Đang làm',
             'hoan_thanh' => 'Hoàn thành',
             'khong_hoan_thanh' => 'Không hoàn thành',
         ];
@@ -219,7 +220,20 @@ class ThucHienTangCaAdminController extends Controller
     {
         $thucHienTangCa = thucHienTangCa::layBanGhiTheoDonTangCaById($id);
         $user = auth()->user();
-
+        $dangKyTangCa = $thucHienTangCa->dangKyTangCa;
+        // dd($dangKyTangCa);
+        $ngayTangCa = $dangKyTangCa->ngay_tang_ca;
+        $nam = Carbon::parse($ngayTangCa)->year;
+        $thang = Carbon::parse($ngayTangCa)->month;
+        $bangLuong = BangLuong::where('nam', $nam)
+        ->where('thang', $thang)
+        ->where('nguoi_xu_ly_id', $dangKyTangCa->nguoi_dung_id)
+        ->first();
+         if ($bangLuong ) {
+            return back()->with(
+                'error' ,    'Bảng lương tháng ' . $thang . '/' . $nam . ' đã được chốt, không thể thay đổi trạng thái.'
+            );
+        }
         if ($user->coVaiTro('Admin') || $user->coVaiTro('HR')) {
             // Admin, HR xem được hết
         } else if ($user->coVaiTro('department')) {

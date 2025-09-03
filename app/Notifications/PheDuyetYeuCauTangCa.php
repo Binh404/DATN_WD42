@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
 class PheDuyetYeuCauTangCa extends Notification implements ShouldQueue
@@ -23,22 +24,36 @@ class PheDuyetYeuCauTangCa extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
-
     public function toDatabase($notifiable): array
     {
+        return $this->formatMessage();
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage($this->formatMessage());
+    }
+
+    public function broadcastOn()
+    {
+        // Gửi đến user cụ thể
+        return new \Illuminate\Broadcasting\PrivateChannel('App.Models.User.' . $this->yeuCau->nguoi_dung_id);
+    }
+
+    protected function formatMessage(): array
+    {
+        $ngayTangCa = $this->yeuCau->ngay_tang_ca->format('d/m/Y');
         if ($this->status === 'approved') {
-            $message = 'Yêu cầu tăng ca của bạn vào ngày ' . $this->yeuCau->ngay_tang_ca->format('d/m/Y') . ' đã được phê duyệt.';
+            $message = "Yêu cầu tăng ca của bạn vào ngày $ngayTangCa đã được phê duyệt.";
         } else { // rejected
-            $message = 'Yêu cầu tăng ca của bạn vào ngày ' . $this->yeuCau->ngay_tang_ca->format('d/m/Y') . ' đã bị từ chối.';
+            $lyDoText = $this->lyDo ? " Lý do: {$this->lyDo}" : '';
+            $message = "Yêu cầu tăng ca của bạn vào ngày $ngayTangCa đã bị từ chối." . $lyDoText;
         }
 
         return [
             'message' => $message,
-            // 'user_id' => $this->yeuCau->nguoi_dung_id,
-            // 'yeu_cau_id' => $this->yeuCau->id,
-            // 'status' => $this->status,
             'url' => route('cham-cong.tao-don-xin-tang-ca'),
         ];
     }
