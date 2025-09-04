@@ -89,23 +89,28 @@
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td class="text-start ps-3">Tổng lương</td>
-                        <td class="text-end pe-3">{{ number_format($luong->tong_luong) }} đ</td>
+                        <td class="text-start ps-3">Phụ cấp</td>
+                        <td class="text-end pe-3">{{ number_format($luong->tong_phu_cap ?? 0) }} đ</td>
                         <td class="text-start ps-3">Công tăng ca</td>
                         <td>{{ $luong->cong_tang_ca }}</td>
 
                     </tr>
                     <tr >
                         <td>3</td>
-                        <td class="text-start ps-3">Phụ cấp</td>
-                        <td class="text-end pe-3">{{ number_format($luong->tong_phu_cap ?? 0) }} đ</td>
+                        <td class="text-start ps-3">Tổng lương cả phụ cấp</td>
+                        <td class="text-end pe-3">{{ number_format($luong->tong_phu_cap + $luong->luong_co_ban) }} đ</td>
                          <td class="text-start ps-3">Thuế TNCN</td>
-                        <td class="text-end pe-3">- {{ number_format($luong->thue_thu_nhap_ca_nhan ?? 0) }} đ</td>
+                        <td >- {{ number_format($luong->thue_thu_nhap_ca_nhan ?? 0) }} đ</td>
                         {{-- <td class="text-start ps-3">Bảo hiểm</td>
                         <td class="text-end pe-3">{{ number_format($nhanVien->bao_hiem ?? 0) }}</td> --}}
                     </tr>
                     <tr class="fw-bold">
                         <td>4</td>
+                        <td colspan="3" class="text-start ps-3">Tổng lương</td>
+                        <td class="text-end pe-3"> {{ number_format(  ($luong->tong_luong ?? 0)) }} đ</td>
+                    </tr>
+                    <tr class="fw-bold">
+                        <td>5</td>
                         <td colspan="3" class="text-start ps-3">Tổng trừ</td>
                         <td class="text-end pe-3">- {{ number_format(  ($luong->thue_thu_nhap_ca_nhan ?? 0)) }} đ</td>
                     </tr>

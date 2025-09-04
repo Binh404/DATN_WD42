@@ -362,7 +362,7 @@ class UngTuyenController extends Controller
 
         // Cập nhật thời gian gửi cho tất cả ứng viên và gửi thông tin đến n8n
         foreach ($ungviens as $ungvien) {
-          Http::withOptions(['verify' => false])->post('https://quanglinheternity.app.n8n.cloud/webhook-test/send-email', [
+          Http::withOptions(['verify' => false])->post('https://quanglinheternity.app.n8n.cloud/webhook/send-email', [
 
                 'email' => $ungvien->email,
                 'name' => $ungvien->ten_ung_vien,
@@ -443,7 +443,7 @@ class UngTuyenController extends Controller
 
             // Gửi thông tin đến webhook (bỏ qua lỗi nếu có)
             try {
-                Http::withOptions(['verify' => false])->timeout(5)->post('https://quanglinheternity.app.n8n.cloud/webhook-test/email-di-lam', [
+                Http::withOptions(['verify' => false])->timeout(5)->post('https://quanglinheternity.app.n8n.cloud/webhook/email-di-lam', [
                     'ma_ung_vien' => $ungvien->ma_ung_tuyen,
                     'ten_dang_nhap' => $email,
                     'email' => $ungvien->email,

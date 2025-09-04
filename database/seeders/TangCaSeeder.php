@@ -34,7 +34,7 @@ class TangCaSeeder extends Seeder
             $nguoiDungId = $nguoiDungIds[array_rand($nguoiDungIds)];
 
             // Random ngày trong tháng hiện tại
-           $ngayTangCa = Carbon::create(2025, 7, 1)->addDays(rand(0, 30));
+           $ngayTangCa = Carbon::create(2025, 8, 1)->addDays(rand(0, 30));
 
             // Xác định loại tăng ca
             $loaiTangCa = $this->xacDinhLoaiTangCa($ngayTangCa);

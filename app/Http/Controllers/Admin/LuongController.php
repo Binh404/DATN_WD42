@@ -172,12 +172,12 @@ class LuongController extends Controller
     $chucVu = $luong->nguoiDung->chucVu->ten ?? '-';
 
      // Tính công tăng ca
-    // $congTangCa = DB::table('thuc_hien_tang_ca')
-    //     ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
-    //     ->where('dang_ky_tang_ca.nguoi_dung_id', $luong->nguoi_dung_id)
-    //     ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-    //     ->whereYear('thuc_hien_tang_ca.created_at', $nam)
-    //     ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
+    $congTangCa = DB::table('thuc_hien_tang_ca')
+        ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
+        ->where('dang_ky_tang_ca.nguoi_dung_id', $luong->nguoi_dung_id)
+        ->whereMonth('dang_ky_tang_ca.ngay_tang_ca', $thang)
+        ->whereYear('dang_ky_tang_ca.ngay_tang_ca', $nam)
+        ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
 
 
     // Xử lý logo base64
@@ -203,7 +203,7 @@ class LuongController extends Controller
         'luongThucNhan',
         'luongCoBan',
         'congOT',
-        // 'congTangCa',
+        'congTangCa',
         'base64'
     );
 
@@ -372,6 +372,7 @@ class LuongController extends Controller
             ->whereMonth('ngay_cham_cong', $thang)
             ->whereYear('ngay_cham_cong', $nam)
             ->groupBy('nguoi_dung_id')
+            ->where('trang_thai_duyet', 1)
             ->pluck('tong_so_cong', 'nguoi_dung_id'); // dạng [id => công]
 
        $congTangCa = [];
@@ -380,8 +381,9 @@ class LuongController extends Controller
         $soCongTangCa = DB::table('thuc_hien_tang_ca')
             ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
             ->where('dang_ky_tang_ca.nguoi_dung_id', $nhanVien->id)
-            ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-            ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+            ->whereMonth('dang_ky_tang_ca.ngay_tang_ca', $thang)
+            ->whereYear('dang_ky_tang_ca.ngay_tang_ca', $nam)
+            ->where('thuc_hien_tang_ca.trang_thai', 'hoan_thanh')
             ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
 
         $congTangCa[$nhanVien->id] = $soCongTangCa;
@@ -564,8 +566,8 @@ public function tinhLuongVaLuu(Request $request)
             $tongCongTangCa = DB::table('thuc_hien_tang_ca')
                 ->join('dang_ky_tang_ca', 'thuc_hien_tang_ca.dang_ky_tang_ca_id', '=', 'dang_ky_tang_ca.id')
                 ->where('dang_ky_tang_ca.nguoi_dung_id', $nguoiDung->id)
-                ->whereMonth('thuc_hien_tang_ca.created_at', $thang)
-                ->whereYear('thuc_hien_tang_ca.created_at', $nam)
+                ->whereMonth('dang_ky_tang_ca.ngay_tang_ca', $thang)
+                ->whereYear('dang_ky_tang_ca.ngay_tang_ca', $nam)
                 ->sum('thuc_hien_tang_ca.so_cong_tang_ca');
         }
 
@@ -605,7 +607,7 @@ public function tinhLuongVaLuu(Request $request)
             'luong_nam' => $nam,            // Năm lương (2025)
             'nguoi_dung_id' => $nguoiDung->id,
             'luong_co_ban' => $luongCoBan,
-            'tong_luong' => round($tongLuong, 0),
+            'tong_luong' => round($tongLuongTruocThue, 0),
             'luong_thuc_nhan' => round($luongThucNhan, 0),
             'thue_thu_nhap_ca_nhan' => round($thuePhaiNop, 0),
             'so_ngay_cong' => $soNgayCong,
