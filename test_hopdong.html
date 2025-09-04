@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test HopDong Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .error { color: red; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Test Form Tạo Hợp Đồng</h1>
+    
+    <form action="/hop-dong/store" method="POST" enctype="multipart/form-data" id="testForm">
+        <div class="form-group">
+            <label for="nguoi_dung_id">Nhân viên *</label>
+            <select name="nguoi_dung_id" id="nguoi_dung_id" required>
+                <option value="">-- Chọn nhân viên --</option>
+                <option value="1">Nguyễn Văn A</option>
+                <option value="2">Trần Thị B</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="chuc_vu_id">Chức vụ *</label>
+            <select name="chuc_vu_id" id="chuc_vu_id" required>
+                <option value="">-- Chọn chức vụ --</option>
+                <option value="1">Nhân viên</option>
+                <option value="2">Trưởng nhóm</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="so_hop_dong">Số hợp đồng *</label>
+            <input type="text" name="so_hop_dong" id="so_hop_dong" value="HD001" required>
+        </div>
+
+        <div class="form-group">
+            <label for="loai_hop_dong">Loại hợp đồng *</label>
+            <select name="loai_hop_dong" id="loai_hop_dong" required>
+                <option value="">-- Chọn loại hợp đồng --</option>
+                <option value="thu_viec">Thử việc</option>
+                <option value="xac_dinh_thoi_han">Xác định thời hạn</option>
+                <option value="khong_xac_dinh_thoi_han">Không xác định thời hạn</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ngay_bat_dau">Ngày bắt đầu *</label>
+            <input type="date" name="ngay_bat_dau" id="ngay_bat_dau" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ngay_ket_thuc">Ngày kết thúc</label>
+            <input type="date" name="ngay_ket_thuc" id="ngay_ket_thuc">
+        </div>
+
+        <div class="form-group">
+            <label for="luong_co_ban">Lương cơ bản *</label>
+            <input type="number" name="luong_co_ban" id="luong_co_ban" value="10000000" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phu_cap">Phụ cấp</label>
+            <input type="number" name="phu_cap" id="phu_cap" value="500000">
+        </div>
+
+        <div class="form-group">
+            <label for="dia_diem_lam_viec">Địa điểm làm việc *</label>
+            <input type="text" name="dia_diem_lam_viec" id="dia_diem_lam_viec" value="Hà Nội" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dieu_khoan">Điều khoản *</label>
+            <textarea name="dieu_khoan" id="dieu_khoan" rows="4" required>Điều khoản hợp đồng lao động</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="ghi_chu">Ghi chú</label>
+            <textarea name="ghi_chu" id="ghi_chu" rows="3">Ghi chú hợp đồng</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="file_hop_dong">File hợp đồng *</label>
+            <input type="file" name="file_hop_dong[]" id="file_hop_dong" multiple required>
+        </div>
+
+        <div class="form-group">
+            <label for="file_dinh_kem">File đính kèm</label>
+            <input type="file" name="file_dinh_kem" id="file_dinh_kem">
+        </div>
+
+        <button type="submit">Tạo hợp đồng</button>
+    </form>
+
+    <script>
+        // Set ngày bắt đầu mặc định là hôm nay
+        document.getElementById('ngay_bat_dau').value = new Date().toISOString().split('T')[0];
+        
+        // Set ngày kết thúc mặc định là 1 năm sau
+        const nextYear = new Date();
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        document.getElementById('ngay_ket_thuc').value = nextYear.toISOString().split('T')[0];
+
+        // Form validation
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            const nguoiDungId = document.getElementById('nguoi_dung_id').value;
+            const chucVuId = document.getElementById('chuc_vu_id').value;
+            const soHopDong = document.getElementById('so_hop_dong').value;
+            const loaiHopDong = document.getElementById('loai_hop_dong').value;
+            const ngayBatDau = document.getElementById('ngay_bat_dau').value;
+            const ngayKetThuc = document.getElementById('ngay_ket_thuc').value;
+            const luongCoBan = document.getElementById('luong_co_ban').value;
+            const diaDiemLamViec = document.getElementById('dia_diem_lam_viec').value;
+            const dieuKhoan = document.getElementById('dieu_khoan').value;
+            const fileHopDong = document.getElementById('file_hop_dong').files;
+
+            let errors = [];
+
+            if (!nguoiDungId) errors.push('Vui lòng chọn nhân viên');
+            if (!chucVuId) errors.push('Vui lòng chọn chức vụ');
+            if (!soHopDong) errors.push('Vui lòng nhập số hợp đồng');
+            if (!loaiHopDong) errors.push('Vui lòng chọn loại hợp đồng');
+            if (!ngayBatDau) errors.push('Vui lòng chọn ngày bắt đầu');
+            if (!luongCoBan) errors.push('Vui lòng nhập lương cơ bản');
+            if (!diaDiemLamViec) errors.push('Vui lòng nhập địa điểm làm việc');
+            if (!dieuKhoan) errors.push('Vui lòng nhập điều khoản');
+            if (fileHopDong.length === 0) errors.push('Vui lòng chọn file hợp đồng');
+
+            if (errors.length > 0) {
+                e.preventDefault();
+                alert('Vui lòng sửa các lỗi sau:\n' + errors.join('\n'));
+                return false;
+            }
+
+            console.log('Form data:', {
+                nguoi_dung_id: nguoiDungId,
+                chuc_vu_id: chucVuId,
+                so_hop_dong: soHopDong,
+                loai_hop_dong: loaiHopDong,
+                ngay_bat_dau: ngayBatDau,
+                ngay_ket_thuc: ngayKetThuc,
+                luong_co_ban: luongCoBan,
+                phu_cap: document.getElementById('phu_cap').value,
+                dia_diem_lam_viec: diaDiemLamViec,
+                dieu_khoan: dieuKhoan,
+                ghi_chu: document.getElementById('ghi_chu').value,
+                file_hop_dong: fileHopDong.length + ' files',
+                file_dinh_kem: document.getElementById('file_dinh_kem').files.length > 0 ? '1 file' : 'No file'
+            });
+        });
+    </script>
+</body>
+</html>
+
