@@ -17,7 +17,7 @@
 @if(($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky')
     <div class="alert alert-warning">
         <i class="fas fa-exclamation-triangle"></i>
-        <strong>Lưu ý:</strong> 
+        <strong>Lưu ý:</strong>
         @if($hopDong->trang_thai_ky === 'tu_choi_ky')
             Hợp đồng này đã bị từ chối ký. Bạn có thể xem thông tin nhưng không thể sửa đổi.
         @else
@@ -86,7 +86,7 @@
     <option value="thu_viec" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'thu_viec' ? 'selected' : '' }}>Thử việc</option>
     <option value="xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'xac_dinh_thoi_han' ? 'selected' : '' }}>Xác định thời hạn</option>
     <option value="khong_xac_dinh_thoi_han" {{ old('loai_hop_dong', $hopDong->loai_hop_dong) == 'khong_xac_dinh_thoi_han' ? 'selected' : '' }}>Không xác định thời hạn</option>
-    
+
 </select>
                             @error('loai_hop_dong')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -112,7 +112,7 @@
                             <label for="ngay_ket_thuc">Ngày kết thúc <span class="text-danger" id="ngay_ket_thuc_required" style="display: none;">*</span></label>
                             <input type="date" class="form-control @error('ngay_ket_thuc') is-invalid @enderror"
     id="ngay_ket_thuc" name="ngay_ket_thuc"
-    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}" 
+    value="{{ old('ngay_ket_thuc', $hopDong->ngay_ket_thuc ? (is_string($hopDong->ngay_ket_thuc) ? date('Y-m-d', strtotime($hopDong->ngay_ket_thuc)) : $hopDong->ngay_ket_thuc->format('Y-m-d')) : '') }}"
     @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('ngay_ket_thuc')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -124,16 +124,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="luong_co_ban">Lương cơ bản <span class="text-danger">*</span></label>
-                            <input type="text" 
+                            <label for="luong_co_ban">Lương <span class="text-danger">*</span></label>
+                            <input type="text"
                                    class="form-control @error('luong_co_ban') is-invalid @enderror"
-                                   id="luong_co_ban" 
-                                   name="luong_co_ban" 
-                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban) }}" 
+                                   id="luong_co_ban"
+                                   name="luong_co_ban"
+                                   value="{{ old('luong_co_ban', $hopDong->luong_co_ban ? (int)$hopDong->luong_co_ban : '') }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
-                                   required 
+                                   required
                                    @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') readonly @endif>
                             @error('luong_co_ban')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -144,11 +144,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="phu_cap">Phụ cấp</label>
-                            <input type="text" 
+                            <input type="text"
                                    class="form-control @error('phu_cap') is-invalid @enderror"
-                                   id="phu_cap" 
-                                   name="phu_cap" 
-                                   value="{{ old('phu_cap', $hopDong->phu_cap) }}"
+                                   id="phu_cap"
+                                   name="phu_cap"
+                                   value="{{ old('phu_cap', $hopDong->phu_cap ? (int)$hopDong->phu_cap : '') }}"
                                    pattern="[0-9]*"
                                    inputmode="numeric"
                                    placeholder="Nhập số tiền (chỉ số)"
@@ -242,9 +242,9 @@
                             @endforeach
                         </div>
                     @endif
-                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_hop_dong') is-invalid @enderror"
                            id="file_hop_dong" name="file_hop_dong[]" multiple @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
-                  
+
                     <div id="file-list" class="mt-2"></div>
                     @error('file_hop_dong')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -263,9 +263,9 @@
                             </div>
                         </div>
                     @endif
-                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror" 
+                    <input type="file" class="form-control-file @error('file_dinh_kem') is-invalid @enderror"
                            id="file_dinh_kem" name="file_dinh_kem" @if(!in_array($hopDong->trang_thai_hop_dong, ['tao_moi', 'chua_hieu_luc']) || ($hopDong->trang_thai_ky === 'cho_ky' && $hopDong->trang_thai_hop_dong === 'chua_hieu_luc') || $hopDong->trang_thai_ky === 'tu_choi_ky') disabled @endif>
-                  
+
                     @error('file_dinh_kem')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -281,14 +281,14 @@
                     </a>
                 </div>
             </form>
-            
+
             <script>
                 setTimeout(function() {
                     var loaiHopDong = document.getElementById('loai_hop_dong');
                     var ngayKetThuc = document.getElementById('ngay_ket_thuc');
                     var ngayKetThucRequired = document.getElementById('ngay_ket_thuc_required');
                     var trangThaiHopDong = '{{ $hopDong->trang_thai_hop_dong }}';
-                    
+
                     if (loaiHopDong && ngayKetThuc) {
                         // Xử lý khi thay đổi loại hợp đồng
                         loaiHopDong.addEventListener('change', function() {
@@ -306,7 +306,7 @@
                                 }
                             }
                         });
-                        
+
                         // Chạy lần đầu
                         if (['tao_moi', 'chua_hieu_luc'].includes(trangThaiHopDong)) {
                             if (loaiHopDong.value === 'khong_xac_dinh_thoi_han') {
@@ -348,7 +348,7 @@
             // Loại bỏ tất cả ký tự không phải số
             var value = $(this).val().replace(/[^0-9]/g, '');
             $(this).val(value);
-            
+
             // Nếu giá trị âm thì đặt về 0
             if (value < 0) {
                 $(this).val(0);
@@ -357,42 +357,42 @@
 
         // Xử lý hiển thị danh sách file đã chọn
         var selectedFiles = []; // Mảng lưu trữ các file đã chọn
-        
+
         $('#file_hop_dong').on('change', function() {
             console.log('Files selected:', this.files.length);
-            
+
             // Thêm các file mới vào mảng selectedFiles
             for (var i = 0; i < this.files.length; i++) {
                 var file = this.files[i];
                 console.log('File ' + (i + 1) + ':', file.name, file.size);
-                
+
                 // Kiểm tra xem file đã tồn tại chưa
                 var exists = selectedFiles.some(function(existingFile) {
                     return existingFile.name === file.name && existingFile.size === file.size;
                 });
-                
+
                 if (!exists) {
                     selectedFiles.push(file);
                 }
             }
-            
+
             // Hiển thị lại tất cả file đã chọn
             displaySelectedFiles();
-            
+
             // Tạo DataTransfer object để cập nhật input
             updateFileInput();
         });
-        
+
         function displaySelectedFiles() {
             var fileList = $('#file-list');
             fileList.empty();
-            
+
             if (selectedFiles.length > 0) {
                 var list = $('<ul class="list-group list-group-flush"></ul>');
-                
+
                 for (var i = 0; i < selectedFiles.length; i++) {
                     var file = selectedFiles[i];
-                    
+
                     var item = $(`
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
@@ -409,31 +409,31 @@
                     `);
                     list.append(item);
                 }
-                
+
                 // Thêm event listener cho các nút xóa
                 list.find('.remove-file-btn').on('click', function() {
                     var index = parseInt($(this).attr('data-index'));
                     removeFile(index);
                 });
-                
+
                 fileList.append(list);
             }
         }
-        
+
         function removeFile(index) {
             selectedFiles.splice(index, 1);
             displaySelectedFiles();
             updateFileInput();
         }
-        
+
         function updateFileInput() {
             var fileInput = document.getElementById('file_hop_dong');
             var dataTransfer = new DataTransfer();
-            
+
             selectedFiles.forEach(function(file) {
                 dataTransfer.items.add(file);
             });
-            
+
             fileInput.files = dataTransfer.files;
         }
     });

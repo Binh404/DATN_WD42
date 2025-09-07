@@ -334,13 +334,17 @@ Route::middleware(['auth', PreventBackHistory::class,  CheckRole::class . ':admi
         Route::get('/export-luong', [LuongController::class, 'luongExcel'])->name('export.luong');
         Route::get('/export-luongcb', [LuongController::class, 'luongcbExcel'])->name('export.luongcb');
         Route::get('/luong/{user_id}/{thang}/{nam}/pdf', [LuongController::class, 'luongPdf'])->name('pdf');
-        Route::delete('/{id}', [LuongController::class, 'destroy'])->name('delete');
+        Route::delete('/{id}/delete', [LuongController::class, 'destroy'])->name('delete');
+        Route::get('/danh-sach-da-tinh-luong', [LuongController::class, 'danhSachDaTinhLuong'])->name('danh-sach-da-tinh-luong');
+        Route::get('/trang-thai-tinh-luong-hien-tai', [LuongController::class, 'trangThaiTinhLuongHienTai'])->name('trang-thai-hien-tai');
+        Route::get('/test', [LuongController::class, 'test'])->name('test');
+        Route::get('/kiem-tra-vi-pham', [LuongController::class, 'kiemTraViPhamQuyTac'])->name('kiem-tra-vi-pham');
 
         // Routes cho bảng luong cơ bản
         Route::get('/list', [LuongController::class, 'listLuong'])->name('list');
         Route::get('/{id}/edit', [LuongController::class, 'edit'])->name('edit');
         Route::put('/{id}', [LuongController::class, 'update'])->name('update');
-        Route::delete('/{id}/delete', [LuongController::class, 'delete'])->name('delete');
+
 
         // Thống kê lương
         Route::get('/thong-ke', [LuongController::class, 'thongKe'])->name('thong-ke');

@@ -23,18 +23,19 @@
         {{-- Hồ sơ - Tất cả role đều có quyền --}}
         <li class="nav-item nav-category">Các chức năng</li>
 
+
         @if(MenuHelper::hasMenuPermission('hoso'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-hoso" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-clipboard-account-outline"></i>
-                <span class="menu-title">Người dùng</span>
+                <span class="menu-title">Nhân sự</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-hoso">
                 <ul class="nav flex-column sub-menu">
                     @if(MenuHelper::hasSubMenuPermission('hoso', 'qlhoso'))
                     <li class="nav-item">
-                        <a class="nav-link" href="/hoso/admin/hoso">Quản lý hồ sơ</a>
+                        <a class="nav-link" href="/hoso/admin/hoso">Hồ sơ</a>
                     </li>
                     @endif
 
@@ -53,6 +54,16 @@
                         <a class="nav-link" href="{{ route('employee.profile.show') }}">Hồ sơ cá nhân</a>
                     </li>
                     @endif
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('vaitro.index')}}">
+                           Vai trò
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('phongban.index') }}">
+                           Phòng ban
+                        </a>
+                    </li>
                 </ul>
 
             </div>
@@ -61,7 +72,7 @@
         @endif
 
         {{-- Phòng ban - Chỉ admin, hr có quyền --}}
-        @if(MenuHelper::hasMenuPermission('phongban'))
+        {{-- @if(MenuHelper::hasMenuPermission('phongban'))
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
                 <i class="menu-icon mdi mdi-office-building-outline"></i>
@@ -76,7 +87,7 @@
                 </ul>
             </div>
         </li>
-        @endif
+        @endif --}}
 
         @if(MenuHelper::hasMenuPermission('thongbaotuyendung'))
         <li class="nav-item">
@@ -101,6 +112,9 @@
                 <ul class="nav flex-column sub-menu">
                     {{-- <li class="nav-item"> <a class="nav-link" href="{{route("luong.create")}}">Tính lương</a></li>
                     <li class="nav-item"> <a class="nav-link" href="{{route("luong.index")}}">Bảng lương</a></li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('luong.list') }}">Danh sách</a>
+                    </li>
                     @if(MenuHelper::hasSubMenuPermission('luong', 'luong'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('luong.create') }}">Tính lương</a>
@@ -248,7 +262,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.index') }}">Danh sách</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('hopdong.luu-tru') }}">Lưu trữ</a>
                     </li>
@@ -264,7 +278,7 @@
         </li>
         @endif
 
-        
+
 
         {{-- Tin tuyển dụng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('tintuyendung'))
@@ -401,10 +415,10 @@
         </li>
         @endif
 
-        {{-- Thống kê - admin, hr có quyền --}}
+        {{-- Thống kê hợp đồng - admin, hr có quyền --}}
         @if(MenuHelper::hasMenuPermission('thongke'))
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" data-bs-toggle="collapse" href="#thongke" aria-expanded="false" aria-controls="thongke">
                 <i class="menu-icon mdi mdi-clock-check"></i>
                 <span class="menu-title">Thống kê</span>
                 <i class="menu-arrow"></i>
@@ -433,9 +447,10 @@
         </li>
         @endif
 
-       
+
     </ul>
 </nav>
+
 
 
 

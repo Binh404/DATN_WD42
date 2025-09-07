@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('hop_dong_lao_dong', function (Blueprint $table) {
-            //
+            $table->text('file_dinh_kem')->nullable()->after('duong_dan_file')->comment('Đường dẫn file đính kèm hợp đồng');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('hop_dong_lao_dong', function (Blueprint $table) {
-            //
+            $table->dropColumn('file_dinh_kem');
         });
     }
 };

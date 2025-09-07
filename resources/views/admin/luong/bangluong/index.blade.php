@@ -32,6 +32,13 @@
     <!-- Bên trái -->
     <div class="d-flex align-items-end gap-3 flex-wrap">
         <h3 class="font-weight-bold mb-0">Phiếu Lương</h3>
+        {{-- <div class="alert alert-warning mb-0 py-2 px-3">
+            <i class="fas fa-exclamation-triangle"></i>
+             <strong>Quy tắc:</strong> Chỉ được tính lương tháng trước khi sang tháng mới
+
+
+        </div> --}}
+          {{-- <p class="form-text text-muted">Có {{ $nhanViensChuaTinhLuong->count() }} nhân viên chưa được tính lương</p> --}}
        <form method="GET" action="{{ route('luong.index') }}" class="d-flex flex-wrap gap-2 align-items-end">
                         <div class="me-2">
                             <select name="thang" id="thang" class="form-select">
@@ -61,6 +68,27 @@
 
     <!-- Bên phải -->
     <div class="d-flex gap-2">
+        @php
+            $thangHienTai = now()->month;
+            $namHienTai = now()->year;
+            $thangTruoc = $thangHienTai == 1 ? 12 : $thangHienTai - 1;
+            $namTruoc = $thangHienTai == 1 ? $namHienTai - 1 : $namHienTai;
+        @endphp
+        <a href="{{ route('luong.create', ['thang' => $thangTruoc, 'nam' => $namTruoc]) }}" class="btn btn-warning">
+            <i class="fas fa-calculator"></i> Tính lương tháng {{ $thangTruoc }}/{{ $namTruoc }}
+        </a>
+        {{-- <a href="{{ route('luong.create') }}" class="btn btn-outline-warning">
+            <i class="fas fa-calculator"></i> Tính lương mới
+        </a> --}}
+        {{-- <a href="{{ route('luong.danh-sach-da-tinh-luong') }}" class="btn btn-info">
+            <i class="fas fa-list"></i> Danh sách đã tính lương
+        </a> --}}
+        <a href="{{ route('luong.trang-thai-hien-tai') }}" class="btn btn-primary">
+            <i class="fas fa-chart-pie"></i> Trạng thái tính lương
+        </a>
+        {{-- <a href="{{ route('luong.kiem-tra-vi-pham') }}" class="btn btn-danger" target="_blank">
+            <i class="fas fa-exclamation-triangle"></i> Kiểm tra vi phạm
+        </a> --}}
         <a href="{{ route('luong.export.luong') }}" class="btn btn-success">📤 Xuất Excel</a>
         <form action="{{ route('luong.gui-mail-tat-ca') }}" method="POST">
             @csrf
@@ -101,46 +129,27 @@
                                             Không có tên
                                         @endif
                                     </td>
-                                    <td>{{ $luong->nguoiDung->chucVu->ten ?? 'Không có chức vụ' }}</td>
-                                    <td>{{ number_format($luong->luong_co_ban) }} đ</td>
-
-                                    <td>{{ number_format($luong->so_ngay_cong) }}</td>
-
-                                    <td class="text-success fw-bold">{{ number_format($luong->luong_thuc_nhan) }} đ</td>
+                                    <td>{{ optional($luong->nguoiDung->chucVu)->ten ?? 'Không có chức vụ' }}</td>
+                                    <td>{{ $luong->luong_thang }}/{{ $luong->luong_nam }}</td>
+                                    <td>{{ $luong->so_ngay_cong }}</td>
+                                    <td>{{ number_format($luong->luong_thuc_nhan, 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ $luong->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        {{-- {{ $luong->bangLuong->ngay ?? '-' }}/{{ $luong->bangLuong->thang ?? '-' }}/{{ $luong->bangLuong->nam ?? '-' }} --}}
-                                        {{ $luong->bangLuong->created_at ? $luong->bangLuong->created_at->format('d/m/Y') : '-' }}
-                                    </td>
-                                    {{-- <td></td> --}}
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <i class="mdi mdi-dots-vertical"></i>
+                                        {{-- lỗi --}}
+                                        <a  href="{{ route('luong.chitiet', ['id' => $luong->id, 'thang' => $thang, 'nam' => $nam]) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('luong.pdf', ['user_id' => $luong->nguoi_dung_id, 'thang' => $luong->luong_thang, 'nam' => $luong->luong_nam]) }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <form action="{{ route('luong.delete', $luong->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phiếu lương này?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
                                             </button>
-                                            <ul class="dropdown-menu">
-
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('luong.chitiet', ['id' => $luong->id, 'thang' => $thang, 'nam' => $nam]) }}">
-                                                        <i class="mdi mdi-eye"></i> Xem chi
-                                                        tiết
-                                                    </a>
-                                                </li>
-
-                                                <li>
-                                                    <form action="{{ route('luong.delete', $luong->id) }}" method="POST" style="display:inline-block;"
-                                                        onsubmit="return confirm('Bạn có chắc muốn xoá?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button onclick="return confirm('Bạn có chắc muốn xoá?')" class="dropdown-item"><i
-                                                                class="mdi mdi-delete me-2"></i>Xoá</button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        </form>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
