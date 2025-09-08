@@ -131,12 +131,14 @@
                                     </td>
                                     <td>{{ optional($luong->nguoiDung->chucVu)->ten ?? 'Không có chức vụ' }}</td>
                                     <td>{{ $luong->luong_thang }}/{{ $luong->luong_nam }}</td>
-                                    <td>{{ $luong->so_ngay_cong }}</td>
+                                    <td>{{ number_format($luong->so_ngay_cong) }}</td>
                                     <td>{{ number_format($luong->luong_thuc_nhan, 0, ',', '.') }} VNĐ</td>
-                                    <td>{{ $luong->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $luong->created_at->format('d/m/Y') }}</td>
                                     <td>
-                                        {{-- lỗi --}}
-                                        <a  href="{{ route('luong.chitiet', ['id' => $luong->id, 'thang' => $thang, 'nam' => $nam]) }}" class="btn btn-sm btn-info">
+                                        {{-- <a  href="{{ route('luong.chitiet', ['id' => $luong->id, 'thang' => $thang, 'nam' => $nam]) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a> --}}
+                                        <a  href="{{ route('luong.chitiet', $luong->id) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('luong.pdf', ['user_id' => $luong->nguoi_dung_id, 'thang' => $luong->luong_thang, 'nam' => $luong->luong_nam]) }}" class="btn btn-sm btn-success">

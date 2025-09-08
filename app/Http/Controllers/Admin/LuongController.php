@@ -255,8 +255,8 @@ class LuongController extends Controller
 
     $luong = LuongNhanVien::with('nguoiDung.hoSo', 'bangLuong', 'nguoiDung.chucVu')
         ->where('id', $id)
-        ->where('luong_thang', $thang)
-        ->where('luong_nam', $nam)
+        // ->where('luong_thang', $thang)
+        // ->where('luong_nam', $nam)
         ->first(); // Dùng first thay vì find vì bạn có thêm điều kiện where
 
     if (!$luong) {
