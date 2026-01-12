@@ -19,7 +19,7 @@ class LichSuDuyetDonXinNghiController extends Controller
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
 
-        if (!$vaiTro || !in_array($vaiTro->ten, ['department', 'hr', 'admin'])) {
+        if (!$vaiTro || !in_array($vaiTro->name, ['department', 'hr', 'admin'])) {
             return redirect()->back()->with('error', 'Bạn không có quyền duyệt đơn.');
         }
 
@@ -28,7 +28,7 @@ class LichSuDuyetDonXinNghiController extends Controller
         $ngayKetThuc = $donXinNghi->ngay_ket_thuc;
         // dd($ngayBatDau, $ngayKetThuc);
         // Gán cấp duyệt theo vai trò
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         // Kiểm tra đã duyệt cấp này chưa
         $daDuyet = LichSuDuyetDonNghi::where('don_xin_nghi_id', $id)
@@ -102,7 +102,7 @@ class LichSuDuyetDonXinNghiController extends Controller
 
         $user = auth()->user();
         $vaiTro = VaiTro::find($user->vai_tro_id);
-        $capDuyet = $vaiTro->ten == 'department' ? 1 : ($vaiTro->ten == 'hr' ? 2 : 3);
+        $capDuyet = $vaiTro->name == 'department' ? 1 : ($vaiTro->name == 'hr' ? 2 : 3);
 
         $donXinNghi = DonXinNghi::findOrFail($request->don_xin_nghi_id);
 

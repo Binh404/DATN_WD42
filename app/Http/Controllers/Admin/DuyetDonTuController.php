@@ -42,7 +42,7 @@ class DuyetDonTuController extends Controller
         $truongPhong->notify(new \App\Notifications\DuyetDonYeuCauTuyenDung($yeuCau));
 
         $hrUsers = NguoiDung::whereHas('vaiTros', function ($q) {
-            $q->where('ten', 'hr');
+            $q->where('name', 'hr');
         })->get();
         foreach ($hrUsers as $hr) {
             $hr->notify(new \App\Notifications\ThongBaoTuyenDung($yeuCau));

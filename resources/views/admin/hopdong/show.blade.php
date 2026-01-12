@@ -365,7 +365,7 @@
                                             @if($hopDong->trang_thai_hop_dong === 'tao_moi')
                                                 @php
                                                     $user = \Illuminate\Support\Facades\Auth::user();
-                                                    $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+                                                    $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
                                                     $canApprove = in_array('admin', $userRoles) || in_array('hr', $userRoles);
                                                 @endphp
                                                 @if($canApprove)

@@ -513,6 +513,7 @@ class UngTuyenController extends Controller
                 }
                 $nguoiDung = NguoiDung::create($nguoiDungData);
 
+                // tạo số dư nghỉ phép
                 $loaiNghiPhep = LoaiNghiPhep::all();
                 $thangBatDauLam = Carbon::parse($nguoiDung->created_at)->month;
                 $soThangLamTrongNam = 12 - $thangBatDauLam + 1;

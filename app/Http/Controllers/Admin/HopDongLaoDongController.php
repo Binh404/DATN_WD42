@@ -512,7 +512,7 @@ class HopDongLaoDongController extends Controller
 
         // Kiểm tra quyền hủy hợp đồng (chỉ admin và HR mới có quyền)
         $user = Auth::user();
-        $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+        $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
 
         if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
             return redirect()->back()->with('error', 'Bạn không có quyền hủy hợp đồng');
@@ -541,7 +541,7 @@ class HopDongLaoDongController extends Controller
 
             // Kiểm tra quyền phê duyệt (chỉ admin và HR mới có quyền)
             $user = Auth::user();
-            $userRoles = optional($user->vaiTros)->pluck('ten')->toArray();
+            $userRoles = optional($user->vaiTros)->pluck('name')->toArray();
 
             if (!in_array('admin', $userRoles) && !in_array('hr', $userRoles)) {
                 return redirect()->back()->with('error', 'Bạn không có quyền phê duyệt hợp đồng');

@@ -238,8 +238,10 @@
                                         <td class="px-4 py-3 align-middle">
                                             @php
                                                 $ketQua = $item->ketQuaDuyetTheoCap(
-                                                    $vaiTro->ten == 'hr' ? 2 : ($vaiTro->ten == 'admin' ? 3 : 1),
+                                                    $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1),
                                                 );
+                                                // dd($item->lichSuDuyet->toArray(), $vaiTro->name, $cap = $vaiTro->name == 'hr' ? 2 : ($vaiTro->name == 'admin' ? 3 : 1));
+
                                             @endphp
 
                                             @if ($ketQua === 'da_duyet')
